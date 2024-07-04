@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pronoun Case Exercise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 20px;
+        }
+        .counters {
+            font-size: 1.2em;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        .columns {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1000px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .column {
+            width: 48%;
+        }
+        .sentence {
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        select {
+            width: 92px;
+            margin: 0 5px;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .incorrect {
+            color: red;
+        }
+        .correct {
+            color: green;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .translation-link {
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 0.9em;
+            color: #007BFF;
+            text-decoration: underline;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.25);
+            width: 50%;
+            max-width: 800px;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+        }
+        .modal-close {
+            cursor: pointer;
+            float: right;
+            font-size: 1.2em;
+        }
+        .modal-header {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal" id="translation-modal">
+        <span class="modal-close" id="modal-close">&times;</span>
+        <div class="modal-header">Translation</div>
+        <p id="translation-text"></p>
+    </div>
+
+    <div class="modal" id="exercise-modal">
+        <span class="modal-close" id="exercise-close">&times;</span>
+        <div class="modal-header">This Exercise</div>
+        <p>Here is a set of 30 unfinished sentences. In each sentence, the subject and the object are missing. Click the translate link next to the sentence to see the full sentence in English, then pick the correct two pronoun cases in Swedish.</p>
+    </div>
+
+    <div class="modal" id="congratulation-modal">
+        <span class="modal-close" id="congratulation-close">&times;</span>
+        <div class="modal-header">Congratulations!</div>
+        <p id="congratulation-text">You got all 30 sentences correct!</p>
+        <p id="proverb-text"></p>
+    </div>
+
+    <div class="top-bar">
+        <div class="counters">
+            <span>Correct: <span id="correct-counter">0</span></span>
+            <span style="margin-left: 20px;">Mistakes: <span id="mistake-counter">0</span></span>
+        </div>
+        <div class="button-group">
+            <button type="button" onclick="showExerciseModal()">This Exercise</button>
+            <button type="button" onclick="checkAnswers()">Check Answers</button>
+            <button type="button" onclick="window.location.reload()">Start Over</button>
+        </div>
+    </div>
+
+    <form id="exercise-form">
+        <div class="columns">
+            <div class="column" id="column1"></div>
+            <div class="column" id="column2"></div>
+        </div>
+    </form>
+
+    <script>
+        const sentences = [
+            {subject: ["Vi", "Oss"], verb: "bjöd in", object: ["de", "dem"], rest: "till festen.", translation: "We invited them to the party."},
+            {subject: ["Vi", "Oss"], verb: "gav", object: ["han", "honom"], rest: "en kram.", translation: "We gave him a hug."},
+            {subject: ["Jag", "Mig"], verb: "såg", object: ["hon", "henne"], rest: "idag.", translation: "I saw her today."},
+            {subject: ["Han", "Honom"], verb: "skickade ett brev till", object: ["vi", "oss"], rest: ".", translation: "He sent a letter to us."},
+            {subject: ["De", "Dem"], verb: "väntade på", object: ["jag", "mig"], rest: "vid dörren.", translation: "They waited for me at the door."},
+            {subject: ["Du", "Dig"], verb: "pratade med", object: ["vi", "oss"], rest: ".", translation: "You talked with us."},
+            {subject: ["Han", "Honom"], verb: "väntade på", object: ["du", "dig"], rest: "vid stationen.", translation: "He waited for you at the station."},
+            {subject: ["Du", "Dig"], verb: "ringde", object: ["de", "dem"], rest: "igår.", translation: "You called them yesterday."},
+            {subject: ["De", "Dem"], verb: "hörde", object: ["vi", "oss"], rest: "ropa.", translation: "They heard us shout."},
+            {subject: ["Han", "Honom"], verb: "mötte", object: ["jag", "mig"], rest: "på flygplatsen.", translation: "He met me at the airport."},
+            {subject: ["De", "Dem"], verb: "ringde", object: ["de", "dem"], rest: "på kvällen.", translation: "They called them in the evening."},
+            {subject: ["Du", "Dig"], verb: "gav", object: ["hon", "henne"], rest: "en present.", translation: "You gave her a present."},
+            {subject: ["Ni", "Er"], verb: "träffade", object: ["du", "dig"], rest: "på caféet.", translation: "You met you at the cafe."},
+            {subject: ["Vi", "Oss"], verb: "såg", object: ["hon", "henne"], rest: "på stan.", translation: "We saw her in town."},
+            {subject: ["Jag", "Mig"], verb: "gav", object: ["vi", "oss"], rest: "en bok.", translation: "I gave us a book."},
+            {subject: ["Han", "Honom"], verb: "såg", object: ["hon", "henne"], rest: "på konserten.", translation: "He saw her at the concert."},
+            {subject: ["Ni", "Er"], verb: "såg", object: ["han", "honom"], rest: "vid parken.", translation: "You saw him at the park."},
+            {subject: ["Hon", "Henne"], verb: "följde", object: ["han", "honom"], rest: "hem.", translation: "She followed him home."},
+            {subject: ["Vi", "Oss"], verb: "hälsade på", object: ["de", "dem"], rest: "i somras.", translation: "We visited them last summer."},
+            {subject: ["Ni", "Er"], verb: "såg", object: ["hon", "henne"], rest: "på stranden.", translation: "You saw her on the beach."},
+            {subject: ["Du", "Dig"], verb: "hjälpte", object: ["han", "honom"], rest: "med projektet.", translation: "You helped him with the project."},
+            {subject: ["Ni", "Er"], verb: "lärde", object: ["jag", "mig"], rest: "att simma.", translation: "You taught me to swim."},
+            {subject: ["Hon", "Henne"], verb: "hörde", object: ["hon", "henne"], rest: "sjunga.", translation: "She heard her sing."},
+            {subject: ["Jag", "Mig"], verb: "träffade", object: ["han", "honom"], rest: "på torget.", translation: "I met him at the square."},
+            {subject: ["De", "Dem"], verb: "följde", object: ["hon", "henne"], rest: "till bussen.", translation: "They followed her to the bus."},
+            {subject: ["Du", "Dig"], verb: "bjöd", object: ["jag", "mig"], rest: "på middag.", translation: "You invited me to dinner."},
+            {subject: ["Hon", "Henne"], verb: "såg", object: ["vi", "oss"], rest: "på bion.", translation: "She saw us at the cinema."},
+            {subject: ["Hon", "Henne"], verb: "skickade ett sms till", object: ["du", "dig"], rest: ".", translation: "She sent an SMS to you."},
+            {subject: ["Jag", "Mig"], verb: "såg", object: ["hon", "henne"], rest: "i parken.", translation: "I saw her in the park."},
+            {subject: ["Jag", "Mig"], verb: "hjälpte", object: ["de", "dem"], rest: "med läxan.", translation: "I helped them with the homework."}
+        ];
+
+        const congratulationsMessages = [
+            "The journey of a thousand miles begins with one step. – Lao Tzu",
+            "Happiness is not something ready-made. It comes from your own actions. – Dalai Lama",
+            "Success is not the key to happiness. Happiness is the key to success. – Albert Schweitzer",
+            "Happiness depends upon ourselves. – Aristotle",
+            "The purpose of our lives is to be happy. – Dalai Lama",
+            "Success is not how high you have climbed, but how you make a positive difference to the world. – Roy T. Bennett",
+            "The only way to do great work is to love what you do. – Steve Jobs",
+            "The best way to predict the future is to create it. – Peter Drucker",
+            "Believe you can and you're halfway there. – Theodore Roosevelt",
+            "Happiness is not in the mere possession of money; it lies in the joy of achievement, in the thrill of creative effort. – Franklin D. Roosevelt"
+        ];
+
+        let correctCount = 0;
+        let mistakeCount = 0;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Shuffle sentences once
+        shuffleArray(sentences);
+
+        function populateSentences() {
+            const column1 = document.getElementById('column1');
+            const column2 = document.getElementById('column2');
+            sentences.forEach((sentence, index) => {
+                shuffleArray(sentence.subject);
+                shuffleArray(sentence.object);
+                const subjectDropdown = createDropdown(sentence.subject, `subject${index}`);
+                const objectDropdown = createDropdown(sentence.object, `object${index}`);
+                const translationLink = document.createElement('span');
+                translationLink.className = 'translation-link';
+                translationLink.innerText = 'Transl.';
+                translationLink.onclick = () => showTranslation(sentence.translation);
+                const sentenceElement = document.createElement('div');
+                sentenceElement.className = 'sentence';
+                sentenceElement.id = `sentence${index}`;
+                sentenceElement.innerHTML = `${subjectDropdown.outerHTML} ${sentence.verb} ${objectDropdown.outerHTML} ${sentence.rest}`;
+                sentenceElement.appendChild(translationLink);
+                if (index < 15) {
+                    column1.appendChild(sentenceElement);
+                } else {
+                    column2.appendChild(sentenceElement);
+                }
+            });
+        }
+
+        function createDropdown(options, id) {
+            const dropdown = document.createElement('select');
+            dropdown.id = id;
+            dropdown.style.width = '92px'; // 15% wider than previous 80px
+            const pickOption = document.createElement('option');
+            pickOption.value = "";
+            pickOption.text = "Pick";
+            dropdown.appendChild(pickOption);
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.text = option;
+                dropdown.appendChild(optionElement);
+            });
+            return dropdown;
+        }
+
+        function checkAnswers() {
+            correctCount = 0;
+            mistakeCount = 0;
+            sentences.forEach((sentence, index) => {
+                const subject = document.getElementById(`subject${index}`).value;
+                const object = document.getElementById(`object${index}`).value;
+                const sentenceElement = document.getElementById(`sentence${index}`);
+                const correctSubject = sentence.subject.includes("Jag") ? "Jag" : sentence.subject.includes("Du") ? "Du" : sentence.subject.includes("Vi") ? "Vi" : sentence.subject.includes("Han") ? "Han" : sentence.subject.includes("Hon") ? "Hon" : sentence.subject.includes("De") ? "De" : sentence.subject.includes("Ni") ? "Ni" : "";
+                const correctObject = sentence.object.includes("mig") ? "mig" : sentence.object.includes("dig") ? "dig" : sentence.object.includes("oss") ? "oss" : sentence.object.includes("honom") ? "honom" : sentence.object.includes("henne") ? "henne" : sentence.object.includes("dem") ? "dem" : sentence.object.includes("er") ? "er" : "";
+
+                if (subject === correctSubject && object === correctObject) {
+                    correctCount++;
+                    sentenceElement.classList.remove('incorrect');
+                    sentenceElement.classList.add('correct');
+                } else {
+                    mistakeCount++;
+                    sentenceElement.classList.remove('correct');
+                    sentenceElement.classList.add('incorrect');
+                }
+            });
+            document.getElementById('correct-counter').innerText = correctCount;
+            document.getElementById('mistake-counter').innerText = mistakeCount;
+
+            if (correctCount === sentences.length && mistakeCount === 0) {
+                showCongratulations();
+            }
+        }
+
+        function showTranslation(translation) {
+            document.getElementById('translation-text').innerText = translation;
+            document.getElementById('modal-overlay').style.display = 'block';
+            document.getElementById('translation-modal').style.display = 'block';
+        }
+
+        function showExerciseModal() {
+            document.getElementById('modal-overlay').style.display = 'block';
+            document.getElementById('exercise-modal').style.display = 'block';
+        }
+
+        function showCongratulations() {
+            const randomMessage = congratulationsMessages[Math.floor(Math.random() * congratulationsMessages.length)];
+            document.getElementById('congratulation-text').innerText = "You got all 30 sentences correct!";
+            document.getElementById('proverb-text').innerText = randomMessage;
+            document.getElementById('modal-overlay').style.display = 'block';
+            document.getElementById('congratulation-modal').style.display = 'block';
+        }
+
+        document.getElementById('modal-overlay').onclick = function() {
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('translation-modal').style.display = 'none';
+            document.getElementById('exercise-modal').style.display = 'none';
+            document.getElementById('congratulation-modal').style.display = 'none';
+        };
+
+        document.getElementById('modal-close').onclick = function() {
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('translation-modal').style.display = 'none';
+        };
+
+        document.getElementById('exercise-close').onclick = function() {
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('exercise-modal').style.display = 'none';
+        };
+
+        document.getElementById('congratulation-close').onclick = function() {
+            document.getElementById('modal-overlay').style.display = 'none';
+            document.getElementById('congratulation-modal').style.display = 'none';
+        };
+
+        populateSentences();
+    </script>
+</body>
+</html>
