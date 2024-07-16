@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<title>Svenska Adjektivövningen</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 20px;
+    margin: 0;
+    line-height: 1.6;  /* Improve readability */
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 800px;
+    width: 95%; /* Responsive width */
+    margin: auto;
+}
+
+.sentence {
+    margin-bottom: 5px; /* Further reduced for tighter spacing */
+    display: flex;
+    justify-content: center; /* Center aligning the sentences horizontally */
+    align-items: center;
+    flex-direction: column; /* Keeps elements stacked vertically on small screens */
+    width: 100%; /* Ensures full width usage */
+}
+
+button {
+    margin: 10px 0;
+    padding: 12px 16px; /* Increased padding for easier interaction on touch devices */
+    font-size: 16px; /* Ensure readability */
+    cursor: pointer;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
+    width: 100%; /* Full width for mobile */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+}
+
+button:hover {
+    background-color: #0066cc; /* Slightly darker shade on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Enhanced shadow for a lifted effect */
+}
+
+button.small {
+    padding: 8px 10px;
+    width: auto; /* Keep smaller buttons less wide */
+    font-size: 12px; /* Smaller font size for secondary buttons */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 90%; /* Responsive width */
+    max-width: 500px; /* Limit maximum size */
+}
+
+.close-button {
+    float: right;
+    padding: 5px; /* Consistent padding all around */
+    cursor: pointer;
+    font-size: 18px; /* Ensures visibility */
+    background-color: #ccc; /* Background color for visibility */
+    border-radius: 50%; /* Ensures circular shape */
+    line-height: 20px; /* Adjust line height to help center the text */
+    width: 30px; /* Equal width and height */
+    height: 30px; /* Equal width and height */
+    margin: 5px; /* Adds space around the button */
+    display: flex; /* Flexbox to center the content */
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transitions for hover effects */
+}
+
+.close-button:hover {
+    background-color: #f44336; /* Red background on hover for emphasis */
+    transform: scale(1.2); /* Slightly enlarges on hover */
+    color: white; /* White text for contrast on hover */
+}
+
+@media (min-width: 600px) {
+    .sentence {
+        flex-direction: row; /* Horizontal layout on larger screens */
+    }
+    button {
+        width: auto; /* Auto width for buttons on larger screens */
+    }
+}
+
+.correct {
+    color: green; /* Styles correct answers in green */
+    background-color: #d4edda; /* Optional: adds a light green background */
+}
+
+.incorrect {
+    color: red; /* Styles incorrect answers in red */
+    background-color: #f8d7da; /* Optional: adds a light red background */
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Svenska Adjektivövningen</h1>
+    <button onclick="checkAnswers()">Kontrollera svar</button>
+    <button onclick="startOver()">Starta om</button>
+    <div id="results">
+        <p>Rätta svar: <span id="correctCount">0</span></p>
+        <p>Fel svar: <span id="incorrectCount">0</span></p>
+    </div>
+    <div id="sentences"></div>
+</div>
+<div class="modal" id="congratulationsModal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeModal('congratulationsModal')">&times;</span>
+        <h2>Congratulations!</h2>
+        <p>You got all answers correct!</p>
+    </div>
+</div>
+<div class="modal" id="translationModal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeModal('translationModal')">&times;</span>
+        <h2>Translation</h2>
+        <p id="translationText"></p>
+    </div>
+</div>
+<script>
+const sentences = [
+	{ text: "Jag kände mig sjuk igår, men idag känner jag mig __.", correct: "värre", translation: "I felt sick yesterday, but today I feel worse." },
+	{ text: "Vädret var dåligt förra veckan, men den här veckan är det __.", correct: "värre", translation: "The weather was bad last week, but this week it's worse." },
+	{ text: "Min huvudvärk var hanterbar på morgonen, men nu är det __.", correct: "värre", translation: "My headache was manageable in the morning, but now it's worse." },
+	{ text: "Trafiken var långsam igår, men idag är den __.", correct: "värre", translation: "The traffic was slow yesterday, but today it's worse." },
+	{ text: "Han var upprörd över nyheterna, nu mår han __.", correct: "värre", translation: "He was upset about the news, now he is worse." },
+	{ text: "Bullret var högt under dagen, men på natten blev det __.", correct: "värre", translation: "The noise was loud during the day, but at night it became worse." },
+	{ text: "Arbetet var tufft förra kvartalet, men det här kvartalet är det __.", correct: "värre", translation: "Work was tough last quarter, but this quarter it’s worse." },
+	{ text: "Skadan från stormen var dålig, men det som följde var __.", correct: "värre", translation: "The damage from the storm was bad, but what followed was worse." },
+	{ text: "Hon tyckte att provet var svårt, men fann slutprovet __.", correct: "värre", translation: "She thought the test was hard, but found the final exam worse." },
+	{ text: "Diskussionen var upphetsad, men den blev __ allteftersom tiden gick.", correct: "värre", translation: "The discussion was heated, but it got __ as time went on." },
+	{ text: "Min telefon fungerade dåligt igår, men idag är den __.", correct: "värre", translation: "My phone was working poorly yesterday, but today it's worse." },
+	{ text: "Smärtan i min rygg var dålig igår kväll, men i morse är den __.", correct: "värre", translation: "The pain in my back was bad last night, but this morning it's worse." },
+	{ text: "De hade ont om pengar förra månaden, men den här månaden är det __.", correct: "värre", translation: "They were short on funds last month, but this month it's worse." },
+	{ text: "Lägenheten var rörig innan, men nu är den __.", correct: "värre", translation: "The apartment was messy before, but now it's worse." },
+	{ text: "Hans prestation var under genomsnittet, men nu är den __.", correct: "värre", translation: "His performance was below average, but now it's worse." },
+	{ text: "Han var nöjd med sin bil, men nu känner han att den presterar __.", correct: "sämre", translation: "He was happy with his car, but now he feels it performs worse." },
+	{ text: "Mitt jobb var tillfredsställande, men nu känns det __.", correct: "sämre", translation: "My job was satisfying, but now it feels worse." },
+	{ text: "Måltiden var utsökt förra gången, men den här gången smakar den __.", correct: "sämre", translation: "The meal was delicious last time, but this time it tastes worse." },
+	{ text: "Hon var stolt över sin trädgård, men i år ser den __ ut.", correct: "sämre", translation: "She was proud of her garden, but this year it looks worse." },
+	{ text: "Företaget var lönsamt förra året, men i år är det __.", correct: "sämre", translation: "The company was profitable last year, but this year it's worse." },
+	{ text: "Han var optimistisk om projektet, men nu är han __.", correct: "sämre", translation: "He was optimistic about the project, but now he's worse." },
+	{ text: "Filmen var spännande i början, men senare blev den __.", correct: "sämre", translation: "The movie was exciting at the start, but later it got worse." },
+	{ text: "Hon kände sig stark efter träningen, men senare kände hon sig __.", correct: "sämre", translation: "She felt strong after the workout, but later felt worse." },
+	{ text: "De var entusiastiska över resan, men den faktiska upplevelsen var __.", correct: "sämre", translation: "They were thrilled about the trip, but the actual experience was worse." },
+	{ text: "Mjukvaran var funktionell före uppdateringen, men nu är den __.", correct: "sämre", translation: "The software was functional before the update, but now it's worse." },
+	{ text: "Hans attityd var positiv, men sedan nyligen är den __.", correct: "sämre", translation: "His attitude was positive, but since recently it's worse." },
+	{ text: "Laget var enat, men deras samordning har blivit __.", correct: "sämre", translation: "The team was unified, but their coordination has become worse." },
+	{ text: "Hennes hälsa förbättrades, men på senare tid är den __.", correct: "sämre", translation: "Her health was improving, but lately, it's worse." },
+	{ text: "Boken var engagerande i de första kapitlen, men blev __ mot slutet.", correct: "sämre", translation: "The book was engaging in the first chapters, but became __ towards the end." },
+	{ text: "Konserten började bra, men ljudkvaliteten blev __.", correct: "sämre", translation: "The concert started off well, but the sound quality got worse." }
+];
+
+function generateSentenceHTML(sentence) {
+    return `
+        <div class="sentence">
+            <p>${sentence.text.replace('__', `<select data-correct="${sentence.correct}">
+                <option value="">Välj ett adjektiv</option>
+                <option value="värre">värre</option>
+                <option value="sämre">sämre</option>
+            </select>`)}
+            <button class="small" onclick="showTranslation(${sentences.indexOf(sentence)})">Transl.</button></p>
+        </div>
+    `;
+}
+
+function renderSentences() {
+    // Shuffle sentences each time they are rendered
+    const shuffledSentences = [...sentences].sort(() => Math.random() - 0.5);
+    const sentencesHTML = shuffledSentences.map(generateSentenceHTML).join('');
+    document.getElementById('sentences').innerHTML = sentencesHTML;
+}
+
+function showTranslation(index) {
+    const translationText = sentences[index].translation;
+    document.getElementById('translationText').textContent = translationText;
+    openModal('translationModal');
+}
+
+function checkAnswers() {
+    const selections = document.querySelectorAll('select');
+    let correctCount = 0;
+    let incorrectCount = 0;
+
+    selections.forEach((select) => {
+        const correctAnswer = select.getAttribute('data-correct'); // Get the correct answer from data attribute
+        const parent = select.closest('.sentence');
+        parent.classList.remove('correct', 'incorrect');
+
+        if (select.value === correctAnswer) {
+            parent.classList.add('correct');
+            correctCount++;
+        } else {
+            parent.classList.add('incorrect');
+            incorrectCount++;
+        }
+    });
+
+    document.getElementById('correctCount').textContent = correctCount;
+    document.getElementById('incorrectCount').textContent = incorrectCount;
+
+    if (correctCount === selections.length) {
+        openModal('congratulationsModal');
+    }
+}
+
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'flex';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function startOver() {
+    renderSentences();
+    document.getElementById('correctCount').textContent = '0';
+    document.getElementById('incorrectCount').textContent = '0';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderSentences();
+
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    });
+
+    document.querySelectorAll('.close-button').forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+        });
+    });
+});
+</script>
+</body>
+</html>
