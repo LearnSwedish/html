@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Rearrange the Jumbled Words</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+        .score {
+            font-size: 16px; /* Smaller font size */
+            margin-right: 20px; /* Space between score and button */
+            position: fixed; /* Make the score fixed */
+            top: 20px;
+            right: 150px; /* Adjust position to the left of the button */
+            z-index: 1001; /* Ensure it stays above other content */
+            background-color: #fff; /* Add background color */
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow */
+        }
+        .word-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 700px;
+            position: relative;
+        }
+        .word {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: move;
+            font-size: 18px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .fixed-word {
+            font-weight: bold;
+            color: black;
+            background: none;
+            border: none;
+            cursor: default;
+            margin-right: 5px;
+        }
+        .word:hover {
+            background-color: #d4d4d4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .correct {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 24px;
+            color: green;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 99%;
+            max-width: 550px; /* 10% wider than 500px */
+            font-size: 85%; /* 15% smaller */
+        }
+
+        .close-button {
+            float: right;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 20px;
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .close-button:hover {
+            background-color: #f44336;
+            transform: scale(1.2);
+            color: white;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .vocab-table th, .vocab-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .vocab-table th {
+            background-color: #f2f2f2;
+        }
+		.vocab-table td:nth-child(1),
+        .vocab-table td:nth-child(3) {
+            background-color: #f0f0f0; /* Darker background for first and third columns */
+        }
+        .modal-button {
+            position: fixed; /* Make the button fixed */
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1001; /* Ensure it stays above other content */
+        }
+        .modal-button:hover {
+            background-color: #0056b3;
+        }
+        .bottom-space {
+            height: 100px; /* Adjust this value as needed for more or less space */
+        }
+
+        .celebration-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 100%;
+        }
+
+        .celebration-modal-content img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="score">Score: <span id="score">0</span> (maximum score: 15)</div>
+    <h1>Rearrange the jumbled words</h1>
+    <button class="modal-button" onclick="openModal()">Vocabulary</button>
+
+    <!-- Sentences Setup -->
+    <div id="sortable1" class="word-container" data-correct="Du gillar att läsa en bok innan sängdags" data-scored="false">
+        <span class="fixed-word">Du</span>
+        <div class="word">innan sängdags</div>
+        <div class="word">att läsa</div>
+        <div class="word">gillar</div>
+        <div class="word">en bok</div>
+    </div>
+    <div id="sortable2" class="word-container" data-correct="Hon glömmer aldrig viktiga möten" data-scored="false">
+        <span class="fixed-word">Hon</span>
+        <div class="word">aldrig</div>
+        <div class="word">möten</div>
+        <div class="word">viktiga</div>
+        <div class="word">glömmer</div>
+    </div>
+    <div id="sortable3" class="word-container" data-correct="Han spelar ofta fotboll efter skolan" data-scored="false">
+        <span class="fixed-word">Han</span>
+        <div class="word">ofta</div>
+        <div class="word">spelar</div>
+        <div class="word">efter skolan</div>
+        <div class="word">fotboll</div>
+    </div>
+    <div id="sortable4" class="word-container" data-correct="De kommer alltid till jobbet i tid" data-scored="false">
+        <span class="fixed-word">De</span>
+        <div class="word">till jobbet</div>
+        <div class="word">kommer</div>
+        <div class="word">i tid</div>
+        <div class="word">alltid</div>
+    </div>
+    <div id="sortable5" class="word-container" data-correct="Kanske kan jag gå på bio ikväll" data-scored="false">
+        <span class="fixed-word">Kanske</span>
+        <div class="word">ikväll</div>
+        <div class="word">kan</div>
+        <div class="word">på bio</div>
+        <div class="word">jag</div>
+        <div class="word">gå</div>
+    </div>
+    <div id="sortable6" class="word-container" data-correct="Vi äter sällan på restaurang nuförtiden" data-scored="false">
+        <span class="fixed-word">Vi</span>
+        <div class="word">äter</div>
+        <div class="word">nuförtiden</div>
+        <div class="word">på restaurang</div>
+        <div class="word">sällan</div>
+    </div>
+    <div id="sortable7" class="word-container" data-correct="Barnet somnar ofta tidigt i sin säng på kvällen" data-scored="false">
+        <span class="fixed-word">Barnet</span>
+        <div class="word">på kvällen</div>
+        <div class="word">somnar</div>
+        <div class="word">i sin säng</div>
+        <div class="word">ofta</div>
+        <div class="word">tidigt</div>
+    </div>
+    <div id="sortable8" class="word-container" data-correct="Ofta kommer du till mig på fredagar" data-scored="false">
+        <span class="fixed-word">Ofta</span>
+        <div class="word">mig</div>
+        <div class="word">på fredagar</div>
+        <div class="word">till</div>
+        <div class="word">kommer</div>
+        <div class="word">du</div>
+    </div>
+    <div id="sortable9" class="word-container" data-correct="Ibland bakar min mormor kakor på helgerna" data-scored="false">
+        <span class="fixed-word">Ibland</span>
+        <div class="word">min</div>
+        <div class="word">bakar</div>
+        <div class="word">på helgerna</div>
+        <div class="word">kakor</div>
+        <div class="word">mormor</div>
+    </div>
+    <div id="sortable10" class="word-container" data-correct="Katten vill aldrig gå ut i regnet" data-scored="false">
+        <span class="fixed-word">Katten</span>
+        <div class="word">i regnet</div>
+        <div class="word">gå ut</div>
+        <div class="word">aldrig</div>
+        <div class="word">vill</div>
+    </div>
+    <div id="sortable11" class="word-container" data-correct="Pappa lagar sällan mat till oss på helgerna" data-scored="false">
+        <span class="fixed-word">Pappa</span>
+        <div class="word">på helgerna</div>
+        <div class="word">sällan</div>
+        <div class="word">mat</div>
+        <div class="word">till oss</div>
+        <div class="word">lagar</div>
+    </div>
+    <div id="sortable12" class="word-container" data-correct="Kanske kommer hon till festen i Stockholm imorgon" data-scored="false">
+        <span class="fixed-word">Kanske</span>
+        <div class="word">hon</div>
+        <div class="word">kommer</div>
+        <div class="word">i Stockholm</div>
+        <div class="word">imorgon</div>
+        <div class="word">till festen</div>
+    </div>
+    <div id="sortable13" class="word-container" data-correct="Den lilla hunden springer alltid i parken på morgonen" data-scored="false">
+        <span class="fixed-word">Den</span>
+        <div class="word">hunden</div>
+        <div class="word">i parken</div>
+        <div class="word">alltid</div>
+        <div class="word">lilla</div>
+        <div class="word">springer</div>
+        <div class="word">på morgonen</div>
+    </div>
+    <div id="sortable14" class="word-container" data-correct="Ibland går hon på gymmet i centrum efter jobbet" data-scored="false">
+        <span class="fixed-word">Ibland</span>
+        <div class="word">hon</div>
+        <div class="word">i centrum</div>
+        <div class="word">på gymmet</div>
+        <div class="word">går</div>
+        <div class="word">jobbet</div>
+        <div class="word">efter</div>
+    </div>
+    <div id="sortable15" class="word-container" data-correct="Du sjunger ofta intensivt i duschen på morgonen" data-scored="false">
+        <span class="fixed-word">Du</span>
+        <div class="word">intensivt</div>
+        <div class="word">ofta</div>
+        <div class="word">sjunger</div>
+        <div class="word">på</div>
+        <div class="word">morgonen</div>
+        <div class="word">i duschen</div>
+    </div>
+    <div class="bottom-space"></div> <!-- Add this line -->
+	
+    <!-- Vocabulary Modal -->
+    <div id="vocabModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2>Vocabulary</h2>
+            <table class="vocab-table">
+    <tr>
+        <th>Swedish</th>
+        <th>English</th>
+        <th>Swedish</th>
+        <th>English</th>
+    </tr>
+    <tr>
+        <td>alltid</td>
+        <td>always</td>
+        <td>innan sängdags</td>
+        <td>before bedtime</td>
+    </tr>
+    <tr>
+        <td>efter</td>
+        <td>after</td>
+        <td>jobbet</td>
+        <td>work/job</td>
+    </tr>
+    <tr>
+        <td>gå ut</td>
+        <td>go out</td>
+        <td>kakor</td>
+        <td>cookies</td>
+    </tr>
+    <tr>
+        <td>ikväll</td>
+        <td>tonight</td>
+        <td>Kanske</td>
+        <td>maybe</td>
+    </tr>
+    <tr>
+        <td>Ibland</td>
+        <td>sometimes</td>
+        <td>lagar</td>
+        <td>cook/make food</td>
+    </tr>
+    <tr>
+        <td>i centrum</td>
+        <td>in the center</td>
+        <td>lilla</td>
+        <td>little</td>
+    </tr>
+    <tr>
+        <td>i duschen</td>
+        <td>in the shower</td>
+        <td>möten</td>
+        <td>meetings</td>
+    </tr>
+    <tr>
+        <td>i parken</td>
+        <td>in the park</td>
+        <td>mormor</td>
+        <td>grandmother, maternal</td>
+    </tr>
+    <tr>
+        <td>i regnet</td>
+        <td>in the rain</td>
+        <td>nuförtiden</td>
+        <td>nowadays</td>
+    </tr>
+    <tr>
+        <td>i sin säng</td>
+        <td>in their bed</td>
+        <td>på fredagar</td>
+        <td>on Fridays</td>
+    </tr>
+    <tr>
+        <td>i Stockholm</td>
+        <td>in Stockholm</td>
+        <td>på gymmet</td>
+        <td>at the gym</td>
+    </tr>
+    <tr>
+        <td>imorgon</td>
+        <td>tomorrow</td>
+        <td>på helgerna</td>
+        <td>on weekends</td>
+    </tr>
+    <tr>
+        <td>intensivt</td>
+        <td>intensely</td>
+        <td>på morgonen</td>
+        <td>in the morning</td>
+    </tr>
+    <tr>
+        <td>Pappa</td>
+        <td>dad</td>
+        <td>på restaurang</td>
+        <td>at a restaurant</td>
+    </tr>
+    <tr>
+        <td>somnar</td>
+        <td>fall asleep</td>
+        <td>sällan</td>
+        <td>rarely</td>
+    </tr>
+    <tr>
+        <td>till festen</td>
+        <td>to the party</td>
+        <td>till jobbet</td>
+        <td>to work</td>
+    </tr>
+    <tr>
+        <td>till oss</td>
+        <td>to us</td>
+        <td>viktiga</td>
+        <td>important</td>
+    </tr>
+            </table>
+        </div>
+    </div>
+	
+    <!-- Celebration Modal -->
+    <div id="celebrationModal" class="modal">
+        <div class="celebration-modal-content">
+            <span class="close-button" onclick="closeCelebrationModal()">&times;</span>
+            <img src="https://i.imgur.com/Ed2TZZn.gif" alt="Celebration">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize sortable for each container
+            for (let i = 1; i <= 15; i++) {
+                let container = document.getElementById('sortable' + i);
+                Sortable.create(container, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function(evt) {
+                        checkSentenceOrder(container);
+                    }
+                });
+            }
+        });
+
+        function checkSentenceOrder(container) {
+            let words = [container.querySelector('.fixed-word').textContent.trim()]
+                .concat(Array.from(container.querySelectorAll('.word:not(.fixed-word)')).map(function(el) {
+                    return el.textContent.trim();
+                })).join(' ');
+            let correct = container.dataset.correct;
+            let scored = container.dataset.scored === 'true';
+            if (words === correct) {
+                if (!scored) {
+                    if (!container.querySelector('.correct')) {
+                        let correctMark = document.createElement('span');
+                        correctMark.className = 'correct';
+                        correctMark.innerHTML = '&#10004;';
+                        container.appendChild(correctMark);
+                    }
+                    let score = parseInt(document.getElementById('score').textContent);
+                    document.getElementById('score').textContent = score + 1;
+                    container.dataset.scored = 'true';
+                    checkForMaxScore(score + 1);
+                }
+            } else {
+                if (scored) {
+                    let correctMark = container.querySelector('.correct');
+                    if (correctMark) {
+                        container.removeChild(correctMark);
+                    }
+                    let score = parseInt(document.getElementById('score').textContent);
+                    document.getElementById('score').textContent = score - 1;
+                    container.dataset.scored = 'false';
+                }
+            }
+        }
+
+        function checkForMaxScore(score) {
+            if (score >= 15) {
+                openCelebrationModal();
+            }
+        }
+
+        // Modal handling
+        function openModal() {
+            document.getElementById('vocabModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('vocabModal').style.display = 'none';
+        }
+
+        function openCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'flex';
+        }
+
+        function closeCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('vocabModal')) {
+                closeModal();
+            } else if (event.target == document.getElementById('celebrationModal')) {
+                closeCelebrationModal();
+            }
+        }
+    </script>
+</body>
+</html>
