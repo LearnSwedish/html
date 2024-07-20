@@ -247,6 +247,7 @@
                     Sortable.create(container, {
                         animation: 150,
                         ghostClass: 'sortable-ghost',
+                        handle: '.movable-blue',
                         onEnd: function(evt) {
                             checkPlacement(container, evt.item);
                         }
@@ -259,19 +260,26 @@
                 const correctOrder = container.dataset.correct;
                 const scored = container.dataset.scored === 'true';
 
+                movedItem.classList.remove('correct', 'incorrect'); // Clear previous styles
+
                 if (currentOrder === correctOrder) {
                     if (!scored) {
                         movedItem.classList.add('correct');
                         updateScore(1);
                         container.dataset.scored = 'true';
+                        // Disable further movement
+                        movedItem.classList.remove('movable-blue');
+                        movedItem.removeAttribute('draggable');
                     }
                 } else {
-                    if (scored) {
-                        movedItem.classList.remove('correct');
-                        updateScore(-1);
-                        container.dataset.scored = 'false';
-                    }
                     movedItem.classList.add('incorrect');
+                    if (!scored) {
+                        updateScore(-1);
+                        container.dataset.scored = 'true';
+                        // Disable further movement
+                        movedItem.classList.remove('movable-blue');
+                        movedItem.removeAttribute('draggable');
+                    }
                 }
             }
 
