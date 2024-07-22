@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Övning: Välj rätt form för adjektiven</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .column {
+            flex: 1;
+            min-width: 300px;
+        }
+        .exercise {
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 10px;
+        }
+        .btn {
+            background-color: #ccc;
+            border: none;
+            color: black;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 5px 2px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn:hover {
+            background-color: #888;
+            color: white;
+        }
+        .btn.correct {
+            background-color: green;
+            color: white;
+        }
+        .btn.incorrect {
+            background-color: red;
+            color: white;
+        }
+        .score, .start-over {
+            font-size: 16px;
+            position: fixed;
+            top: 20px;
+            z-index: 1001;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .score {
+            right: 20px;
+        }
+        .start-over {
+            left: 20px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .start-over:hover {
+            background-color: #0056b3;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 600px;
+        }
+        .close-button {
+            float: right;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 20px;
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .close-button:hover {
+            background-color: #f44336;
+            transform: scale(1.2);
+            color: white;
+        }
+        .celebration-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 100%;
+        }
+        .celebration-modal-content img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="start-over" onclick="startOver()">Starta om</div>
+    <div class="score">Score: <span id="score">0</span> / 21</div>
+
+    <center><h1>Click the correct adjective</h1></center>
+
+    <div class="container" id="exercise-container">
+        <div class="column" id="column1"></div>
+        <div class="column" id="column2"></div>
+        <div class="column" id="column3"></div>
+    </div>
+
+    <div id="celebrationModal" class="modal">
+        <div class="celebration-modal-content">
+            <span class="close-button" onclick="closeCelebrationModal()">&times;</span>
+            <img src="https://i.imgur.com/Ed2TZZn.gif" alt="Celebration">
+        </div>
+    </div>
+
+    <script>
+        const exercises = [
+            { question: "1. Hon är ganska _______.", options: ["vacker", "vackrast", "vackrare", "vackert"], correct: "vacker" },
+            { question: "8. Det finns _______ elever i klassrummet.", options: ["många", "flest", "flera", "flesta"], correct: "många" },
+            { question: "15. Vägen är _______ än jag trodde.", options: ["längre", "långt", "lång", "längsta"], correct: "längre" },
+            { question: "2. Han är den _______ sonen i familjen.", options: ["yngsta", "yngste", "yngst", "yngre"], correct: "yngste" },
+            { question: "9. Paketet är _______ än det andra.", options: ["tyngre", "tungast", "tungt", "tung"], correct: "tyngre" },
+            { question: "16. Det här är den _______ boken jag har läst.", options: ["sämsta", "sämre", "dåligare", "värsta"], correct: "sämsta" },
+            { question: "3. Byggnaden är den _______ i staden.", options: ["största", "större", "storast", "storaste"], correct: "största" },
+            { question: "10. Detta är den _______ maten jag någonsin har ätit.", options: ["bästa", "bästaste", "bättre", "bäst"], correct: "bästa" },
+            { question: "17. Han är den _______ pojken i klassen.", options: ["äldste", "äldsta", "gamlare", "gamlaste"], correct: "äldste" },
+            { question: "4. Filmen var riktigt _______.", options: ["dåligt", "dålig", "sämre", "värst"], correct: "dålig" },
+            { question: "11. Det finns bara _______ stolar kvar.", options: ["få", "färre", "färsta", "färst"], correct: "få" },
+            { question: "18. Boken var _______ än filmen.", options: ["sämre", "värre", "sämsta", "dåligare"], correct: "sämre" },
+            { question: "5. Tornet är det _______ i staden.", options: ["högsta", "högaste", "högre", "högast"], correct: "högsta" },
+            { question: "12. Vem bor i den _______ byggnaden?", options: ["högare", "höga", "högt", "högast"], correct: "höga" },
+            { question: "19. Huset är mycket _______.", options: ["stort", "störst", "storare", "stora"], correct: "stort" },
+            { question: "6. Detta är den _______ resa har gjort.", options: ["långt", "långa", "längsta", "längre"], correct: "längsta" },
+            { question: "13. Denna klänning är _______ än den andra.", options: ["litet", "mindre", "minsta", "lilla"], correct: "mindre" },
+            { question: "20. Trädet är mycket _______.", options: ["gammal", "gammalt", "äldst", "gamlare"], correct: "gammalt" },
+            { question: "7. Idag är priset _______ än igår.", options: ["lägre", "lågast", "lägst", "lågt"], correct: "lägre" },
+            { question: "14. Han gjorde nog bara sitt _______.", options: ["bättre", "bästa", "bäste", "bra"], correct: "bästa" },
+            { question: "21. Lådan är mycket _______ än den andra.", options: ["mindre", "liten", "minst", "litet"], correct: "mindre" }
+        ];
+
+        let score = 0;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function createExercise(exercise) {
+            const container = document.createElement('div');
+            container.className = 'exercise';
+            const question = document.createElement('div');
+            question.className = 'question';
+            question.innerText = exercise.question;
+            container.appendChild(question);
+            
+            shuffle(exercise.options);
+            exercise.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'btn';
+                button.innerText = option;
+                button.onclick = () => checkAnswer(button, option === exercise.correct);
+                container.appendChild(button);
+            });
+            return container;
+        }
+
+        function populateExercises() {
+            const columns = [document.getElementById('column1'), document.getElementById('column2'), document.getElementById('column3')];
+            exercises.forEach((exercise, index) => {
+                const exerciseElement = createExercise(exercise);
+                columns[index % 3].appendChild(exerciseElement);
+            });
+        }
+
+        function checkAnswer(button, isCorrect) {
+            if (isCorrect) {
+                button.classList.add('correct');
+                updateScore(1);
+            } else {
+                button.classList.add('incorrect');
+                updateScore(-1);
+            }
+            const buttons = button.parentElement.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+            });
+        }
+
+        function updateScore(value) {
+            score += value;
+            document.getElementById('score').innerText = score;
+            if (score >= 21) {
+                openCelebrationModal();
+            }
+        }
+
+        function openCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'flex';
+        }
+
+        function closeCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'none';
+        }
+
+        function startOver() {
+            location.reload();
+        }
+
+        window.onload = populateExercises;
+    </script>
+
+</body>
+</html>
