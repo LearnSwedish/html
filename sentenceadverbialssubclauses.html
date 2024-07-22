@@ -175,6 +175,20 @@
         .subclause-button:hover {
             background-color: #000000; /* Black */
         }
+        .celebration-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 100%;
+        }
+
+        .celebration-modal-content img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -423,6 +437,14 @@
         </div>
     </div>
 
+    <!-- Celebration Modal -->
+    <div id="celebrationModal" class="modal">
+        <div class="celebration-modal-content">
+            <span class="close-button" onclick="closeCelebrationModal()">&times;</span>
+            <img src="https://i.imgur.com/Ed2TZZn.gif" alt="Celebration">
+        </div>
+    </div>
+
     <div id="translationModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeModal()">&times;</span>
@@ -520,6 +542,21 @@
         const scoreElement = document.getElementById('score');
         let currentScore = parseFloat(scoreElement.textContent); // Ensure floating-point operation
         scoreElement.textContent = (currentScore + value).toFixed(1); // Update with precision to handle halves
+        checkForMaxScore(currentScore + value);
+    }
+
+    function checkForMaxScore(score) {
+        if (score >= 15) {
+            openCelebrationModal();
+        }
+    }
+
+    function openCelebrationModal() {
+        document.getElementById('celebrationModal').style.display = 'flex';
+    }
+
+    function closeCelebrationModal() {
+        document.getElementById('celebrationModal').style.display = 'none';
     }
 
     function startOver() {
