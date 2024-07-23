@@ -189,6 +189,24 @@ button:hover {
     align-items: center;
     margin: 2px 0; /* Adjust this value to make the space between lines more narrow */
 }
+.tooltip {
+    padding: 8px 12px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+    position: absolute;
+    display: none;
+    transition: opacity 0.3s;
+}
+
+.tooltip.visible {
+    display: block;
+    opacity: 1;
+}
     </style>
 </head>
 <body>
@@ -196,25 +214,26 @@ button:hover {
         <h2>Practise Swedish agreement</h2>
         <center><p>In grammar books, it is stated that pronouns, adjectives, and articles must agree with<br />
                    their head word. What does that mean? Well, <strong>this exercise</strong> is exactly what it means.<br />
-                   Good luck! And by the way, "bil" and "färg" have N gender, while the other head words don't.</p></center>
+				   Hover a word in the word bank to see its meaning. Click Translate button to see the full sentence.<br />
+				   Good luck! And by the way, "bil" and "färg" have N gender, while the other head words don't.</p></center>
         
         <!-- First Sentence -->    
         <div class="sentence-container">
         <div class="word-bank" id="word-bank">
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word1">en</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word2">ett</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word3">fin</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word4">fint</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word5">Den</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word6">Det</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word7">ny</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word8">nytt</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word9">en</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word10">ett</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word11">vacker</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word12">vackert</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word13">röd</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word14">rött</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word1" data-title="a/an">en</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word2" data-title="a/an">ett</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word3" data-title="lovely">fin</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word4" data-title="lovely">fint</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word5" data-title="It">Den</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word6" data-title="It">Det</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word7" data-title="new">ny</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word8" data-title="new">nytt</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word9" data-title="a/an">en</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word10" data-title="a/an">ett</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word11" data-title="beautiful">vacker</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word12" data-title="beautiful">vackert</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word13" data-title="red">röd</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word14" data-title="red">rött</div>
         </div>
         <div>
             <div class="sentences">
@@ -249,20 +268,20 @@ button:hover {
         <!-- Second Sentence -->    
         <div class="sentence-container">
         <div class="word-bank" id="word-bank2">
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word15">en</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word16">ett</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word17">min</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word18">mitt</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word19">Den</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word20">Det</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word21">stor</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word22">stort</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word23">tung</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word24">tungt</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word25">en</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word26">ett</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word27">klar</div>
-            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word28">klart</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word15" data-title="a/an">en</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word16" data-title="a/an">ett</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word17" data-title="my">min</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word18" data-title="my">mitt</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word19" data-title="It">Den</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word20" data-title="It">Det</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word21" data-title="large">stor</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word22" data-title="large">stort</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word23" data-title="heavy">tung</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word24" data-title="heavy">tungt</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word25" data-title="a/an">en</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word26" data-title="a/an">ett</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word27" data-title="clear">klar</div>
+            <div class="pickword" draggable="true" ondragstart="drag(event)" id="word28" data-title="clear">klart</div>
         </div>
         <div class="sentences">
             <div class="sentence-line">
@@ -460,6 +479,35 @@ button:hover {
         wordBank2.innerHTML = '';  // Clear the current content
         words2.forEach(word => wordBank2.appendChild(word));  // Append shuffled words
     });
+</script>
+<script>
+document.querySelectorAll('.pickword').forEach(word => {
+    word.addEventListener('mouseover', function(event) {
+        let tooltip = document.querySelector('.tooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.classList.add('tooltip');
+            document.body.appendChild(tooltip);
+        }
+        tooltip.textContent = word.getAttribute('data-title');
+        tooltip.style.left = `${event.clientX + 20}px`;
+        tooltip.style.top = `${event.clientY + 20}px`;
+        tooltip.classList.add('visible');
+    });
+
+    word.addEventListener('mousemove', function(event) {
+        let tooltip = document.querySelector('.tooltip');
+        tooltip.style.left = `${event.clientX + 20}px`;
+        tooltip.style.top = `${event.clientY + 20}px`;
+    });
+
+    word.addEventListener('mouseout', function() {
+        let tooltip = document.querySelector('.tooltip');
+        if (tooltip) {
+            tooltip.classList.remove('visible');
+        }
+    });
+});
 </script>
 
 </body>
