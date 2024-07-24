@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>En eller ett: Arbete</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600&display=swap');
+
+    body, html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        background-color: #f0f0f0;
+        font-family: 'Work Sans', sans-serif; /* Apply Work Sans globally */
+    }
+
+    header {
+        width: 100%;
+        margin-bottom: 100px;
+        text-align: center;
+        font-size: 24px;
+        padding: 20px 0;
+        font-weight: bold; /* Bold text for the header */
+    }
+
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .textboxes {
+        display: flex;
+        flex-direction: column;
+        margin: 10px;
+    }
+
+    .textbox {
+        width: 130px; /* Set the width of the textbox */
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s, border-color 0.3s;
+        text-align: center; /* Center text inside the textbox */
+        font-weight: 600; /* Semi-bold text for the textboxes */
+    }
+
+    .textbox:hover {
+        background-color: #e8e8e8;
+        border-color: #aaa;
+    }
+
+    .circle {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .tooltip {
+        position: absolute;
+        top: -35px; /* Position above the textbox */
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 6px 12px;
+        color: white;
+        background: #333;
+        border-radius: 4px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        z-index: 100;
+        display: none; /* Initially hidden */
+        font-weight: 400; /* Normal weight for tooltip */
+    }
+</style>
+
+</head>
+<body>
+    <header>
+        En eller ett: kategori ARBETE (work)<br />
+		<span style="font-size:18px;">N gender words to the left, T gender words to the right.<br />
+		Hover words for translation – click words for listenting.</span>
+    </header>
+    <div class="container">
+        <!-- Left Column -->
+        <div class="textboxes left-textboxes">
+            <div class="textbox" onclick="playAudio('audio1')" data-title="employment">anställning</div>
+            <div class="textbox" onclick="playAudio('audio2')" data-title="boss">chef</div>
+            <div class="textbox" onclick="playAudio('audio3')" data-title="colleague">kollega</div>
+			<div class="textbox" onclick="playAudio('audio4')" data-title="computer">dator</div>
+            <div class="textbox" onclick="playAudio2()" data-title="laptop">bärbar dator</div>
+            <audio id="audio5a" src="https://lexin.nada.kth.se/sound/v2/129017_1.mp3"></audio>
+            <audio id="audio5b" src="https://lexin.nada.kth.se/sound/dator.mp3"></audio>
+        </div>
+        <div class="textboxes left-textboxes">
+            <div class="textbox" onclick="playAudio('audio6')" data-title="department">avdelning</div>
+            <div class="textbox" onclick="playAudio('audio7')" data-title="customer">kund</div>
+            <div class="textbox" onclick="playAudio('audio8')" data-title="salary">lön</div>
+		</div>
+        <div class="circle">
+            <img src="https://i.imgur.com/NauUX9d.jpeg" alt="Circle Image">
+        </div>
+        <!-- Right Column -->
+		<div class="textboxes right-textboxes">
+            <div class="textbox" onclick="playAudio('audio9')" data-title="responsibility">ansvar</div>
+            <div class="textbox" onclick="playAudio('audio10')" data-title="meeting">möte</div>
+        </div>
+		<div class="textboxes right-textboxes">
+            <div class="textbox" onclick="playAudio('audio11')" data-title="contract">avtal</div>
+            <div class="textbox" onclick="playAudio('audio12')" data-title="job">jobb</div>
+            <div class="textbox" onclick="playAudio('audio13')" data-title="work">arbete</div>
+		</div>
+        <div class="textboxes right-textboxes">
+            <div class="textbox" onclick="playAudio('audio14')" data-title="company">företag</div>
+            <div class="textbox" onclick="playAudio('audio15')" data-title="co-operation">samarbete</div>
+            <div class="textbox" onclick="playAudio('audio16')" data-title="project">projekt</div>
+            <div class="textbox" onclick="playAudio('audio17')" data-title="result">resultat</div>
+            <div class="textbox" onclick="playAudio('audio18')" data-title="tool">verktyg</div>
+        </div>
+
+		<!-- Audio elements hidden in the page -->
+        <audio id="audio1" src="https://lexin.nada.kth.se/sound/v2/105388_1.mp3"></audio>
+        <audio id="audio2" src="https://lexin.nada.kth.se/sound/chef.mp3"></audio>
+        <audio id="audio3" src="https://lexin.nada.kth.se/sound/kollega.mp3"></audio>
+        <audio id="audio4" src="https://lexin.nada.kth.se/sound/dator.mp3"></audio>
+        <audio id="audio6" src="https://lexin.nada.kth.se/sound/avdelning.mp3"></audio>
+        <audio id="audio7" src="https://lexin.nada.kth.se/sound/kund.mp3"></audio>
+        <audio id="audio8" src="https://lexin.nada.kth.se/sound/v2/236432_1.mp3"></audio>
+        <audio id="audio9" src="https://lexin.nada.kth.se/sound/ansvar.mp3"></audio>
+        <audio id="audio10" src="https://lexin.nada.kth.se/sound/v2/253540_1.mp3"></audio>
+        <audio id="audio11" src="https://lexin.nada.kth.se/sound/avtal.mp3"></audio>
+        <audio id="audio12" src="https://lexin.nada.kth.se/sound/jobb.mp3"></audio>
+        <audio id="audio13" src="https://lexin.nada.kth.se/sound/arbete.mp3"></audio>
+        <audio id="audio14" src="https://lexin.nada.kth.se/sound/v2/161551_1.mp3"></audio>
+        <audio id="audio15" src="https://lexin.nada.kth.se/sound/samarbete.mp3"></audio>
+        <audio id="audio16" src="https://lexin.nada.kth.se/sound/projekt.mp3"></audio>
+        <audio id="audio17" src="https://lexin.nada.kth.se/sound/resultat.mp3"></audio>
+        <audio id="audio18" src="https://lexin.nada.kth.se/sound/verktyg.mp3"></audio>
+    </div>
+
+
+    <script>
+        function playAudio(audioId) {
+            var audio = document.getElementById(audioId);
+            if (audio) {
+                audio.play().catch(e => alert("Error playing audio: " + e.message));
+            } else {
+                console.error("Audio element not found for ID: ", audioId);
+            }
+        }
+
+        function playAudio2() {
+            var audio5a = document.getElementById('audio5a');
+            var audio5b = document.getElementById('audio5b');
+
+            audio5a.play();
+
+            audio5a.addEventListener('ended', function() {
+                audio5b.play();
+            });
+        }
+
+        // Add tooltip functionality
+document.querySelectorAll('.textbox').forEach(box => {
+    box.addEventListener('mousemove', function(event) {
+        showTooltip(event, this.getAttribute('data-title'));
+    });
+
+    box.addEventListener('mouseleave', function() {
+        hideTooltip();
+    });
+});
+
+function showTooltip(event, text) {
+    let tooltip = document.querySelector('.tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.classList.add('tooltip');
+        tooltip.style.position = 'fixed';
+        tooltip.style.padding = '6px 12px';
+        tooltip.style.color = 'white';
+        tooltip.style.background = '#333';
+        tooltip.style.borderRadius = '4px';
+        tooltip.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.5)';
+        tooltip.style.zIndex = '100';
+        document.body.appendChild(tooltip);
+    }
+    tooltip.textContent = text;
+    tooltip.style.display = 'block';
+    // Position the tooltip slightly down and to the right of the cursor
+    tooltip.style.left = `${event.clientX + 65}px`;
+    tooltip.style.top = `${event.clientY - 30}px`;
+}
+
+function hideTooltip() {
+    let tooltip = document.querySelector('.tooltip');
+    if (tooltip) {
+        tooltip.style.display = 'none';
+    }
+}
+    </script>
+</body>
+</html>
