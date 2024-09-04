@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do you know the gender?</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Title styling */
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 30px;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Sticky refresh button */
+        .refresh-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #6a0dad;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        /* Table styling */
+        table {
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            width: 400px; /* Fixed table width */
+            background-color: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        th {
+            background-color: #6a0dad; /* Nice purple color */
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* Set fixed column widths: 25%, 25%, and 50% for a total of 400px */
+        th:nth-child(1), td:nth-child(1) {
+            width: 100px; /* 25% of 400px */
+        }
+        th:nth-child(2), td:nth-child(2) {
+            width: 100px; /* 25% of 400px */
+        }
+        th:nth-child(3), td:nth-child(3) {
+            width: 200px; /* 50% of 400px */
+        }
+
+        td {
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Hover effect for table cells */
+        td:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Correct and incorrect styles */
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+        }
+
+        /* Modal content */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1002;
+            text-align: center;
+        }
+
+        /* Close button for modal */
+        .modal-close {
+            float: right;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 20px;
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .modal-close:hover {
+            background-color: #f44336;
+            transform: scale(1.2);
+            color: white;
+        }
+
+        /* Center the page content */
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1><center>Do you know the gender?</center></h1>
+    <p><center>If you are familiar with the 126 nouns in <a href="https://learnswedish.github.io/html/learngender7mindmaps.html" target="_blank">the seven mind maps</a>, you are ready to do this exercise. <br /><br />Explanation: When a noun has N gender, we say for example "<strong style="color:red;">en</strong> bil" (a car), "<strong style="color:red;">min</strong> bil" (my car), "<strong style="color:red;">din</strong> bil" (your car), "<strong style="color:red;">en ny</strong>, <strong style="color:red;">fin</strong>, <strong style="color:red;">dyr</strong> bil" (a new, lovely, expensive car). When a noun has T gender, we say instead "<strong style="color:black;">ett</strong> hus" (a house), "<strong style="color:black;">mitt</strong> hus" (my house), "<strong style="color:black;">ditt</strong> hus", "<strong style="color:black;">ett nytt</strong>, <strong style="color:black;">fint</strong>, <strong style="color:black;">dyrt</strong> hus" (a new, lovely, expensive house). That means you need to know the gender of the nouns to use the correct articles, pronouns, and adjectives.<br /><br />Below, 35 randomly selected nouns from the 126 nouns are displayed. If you click "New set", you will get a new randomly selected set. We focus on the difference between "min" and "mitt". Can you manage it without making any mistakes? Good luck!</center></p>
+
+    
+    <button class="refresh-button" onclick="location.reload()">New set</button>
+
+    <table id="wordTable">
+        <thead>
+            <tr>
+                <th>min</th>
+                <th>mitt</th>
+                <th>Word</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be generated here by JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for celebration (no mistakes) -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="modal" id="celebrationModal">
+    <button class="modal-close" id="modalClose">×</button>
+    <h3>🎉 Congratulations! 🎉</h3>
+    <p>You solved this set without any mistakes! Can you make it again?</p>
+</div>
+
+<!-- Modal for mistakes -->
+<div class="modal" id="mistakeModal">
+    <button class="modal-close" id="mistakeClose">×</button>
+    <h3>Great job!</h3>
+    <p>Now try a new set without making any mistakes.</p>
+</div>
+
+<script>
+// N-gender nouns (use "min")
+const nGenderNouns = [
+    "mamma", "pappa", "pojke", "flicka", "son", "dotter", "partner", "sambo", "särbo", "kompis", "vän", 
+    "släkting", "granne", "fru", "man", "bror", "syster", "näsa", "kind", "tand", "hand", "fot", "mage", 
+    "rygg", "tå", "arm", "axel", "kropp", "panna", "mun", "bil", "cykel", "buss", "taxi", "moped", 
+    "motorcykel", "promenad", "lastbil", "husvagn", "rullstol", "tunnelbana", "segelbåt", "raket", 
+    "flygplats", "parkering", "ost", "korv", "apelsin", "morot", "sallad", "soppa", "hamburgare", "pizza", 
+    "kaka", "smörgås", "mjölk", "yoghurt", "öl", "natt", "dag", "morgon", "förmiddag", "lunch", 
+    "eftermiddag", "kväll", "vardag", "helg", "vecka", "månad", "tid", "klocka", "timme", "årstid", 
+    "anställning", "chef", "kollega", "dator", "bärbara dator", "avdelning", "kund", "lön", "stol", "sked", 
+    "gaffel", "kniv", "tallrik", "servett", "kastrull", "gryta", "spis", "ugn", "mat", "dryck", 
+    "diskmaskin"
+];
+
+// T-gender nouns (use "mitt")
+const tGenderNouns = [
+    "kök", "bord", "glas", "recept", "fat", "barn", "ben", "öra", "öga", "huvud", "finger", "fordon", 
+    "flygplan", "tåg", "vin", "smör", "bröd", "kaffe", "kött", "år", "århundrade", "liv", "ansvar", 
+    "möte", "avtal", "jobb", "arbete", "företag", "samarbete", "projekt", "resultat", "verktyg"
+];
+
+// Combine both into one bank with their types
+const wordBank = [
+    ...nGenderNouns.map(word => ({ word, type: 'en' })),
+    ...tGenderNouns.map(word => ({ word, type: 'ett' }))
+];
+
+// Track correct answers and mistakes
+let correctCount = 0;
+let mistakeMade = false;
+
+function getRandomWords(wordBank, count) {
+    // Shuffle wordBank
+    let shuffled = wordBank.sort(() => 0.5 - Math.random());
+    
+    // Ensure at least 10 T-gender nouns
+    let tGenderWords = shuffled.filter(word => word.type === 'ett').slice(0, 10);
+    
+    // Get remaining N-gender nouns to fill up to 35
+    let nGenderWords = shuffled.filter(word => word.type === 'en').slice(0, count - tGenderWords.length);
+    
+    // Combine both and shuffle again
+    return [...tGenderWords, ...nGenderWords].sort(() => 0.5 - Math.random());
+}
+
+function createTableRow(wordObj) {
+    const row = document.createElement("tr");
+
+    const minCell = document.createElement("td");
+    minCell.addEventListener('click', () => handleChoice(minCell, row, wordObj, 'min'));
+    
+    const mittCell = document.createElement("td");
+    mittCell.addEventListener('click', () => handleChoice(mittCell, row, wordObj, 'mitt'));
+    
+    const wordCell = document.createElement("td");
+    wordCell.textContent = wordObj.word;
+
+    row.appendChild(minCell);
+    row.appendChild(mittCell);
+    row.appendChild(wordCell);
+
+    return row;
+}
+
+function handleChoice(cell, row, wordObj, choice) {
+    const correctChoice = wordObj.type === 'en' ? 'min' : 'mitt';
+    const minCell = row.children[0];
+    const mittCell = row.children[1];
+
+    // Clear the other cell
+    if (choice === 'min') {
+        mittCell.textContent = '';
+        mittCell.classList.remove('correct', 'incorrect');
+    } else {
+        minCell.textContent = '';
+        minCell.classList.remove('correct', 'incorrect');
+    }
+
+    // Apply the correct or incorrect style
+    if (choice === correctChoice) {
+        cell.textContent = choice;
+        cell.classList.add("correct");
+        if (!cell.classList.contains("incorrect")) {
+            correctCount++;
+        }
+    } else {
+        cell.textContent = choice;
+        cell.classList.add("incorrect");
+        mistakeMade = true;
+    }
+
+    // Check if all 35 are correct without any mistake
+    if (correctCount === 35) {
+        if (!mistakeMade) {
+            showCelebrationModal();
+        } else {
+            showMistakeModal();
+        }
+    }
+}
+
+function showCelebrationModal() {
+    const modal = document.getElementById('celebrationModal');
+    const overlay = document.getElementById('modalOverlay');
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+
+    // Close modal when clicking outside or on the close button
+    overlay.addEventListener('click', closeModal);
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+}
+
+function showMistakeModal() {
+    const modal = document.getElementById('mistakeModal');
+    const overlay = document.getElementById('modalOverlay');
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+
+    // Close modal when clicking outside or on the close button
+    overlay.addEventListener('click', closeModal);
+    document.getElementById('mistakeClose').addEventListener('click', closeModal);
+}
+
+function closeModal() {
+    const modal = document.querySelector('.modal[style="display: block;"]');
+    const overlay = document.getElementById('modalOverlay');
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+}
+
+// On page load, generate 35 random rows ensuring at least 10 T-gender nouns
+document.addEventListener("DOMContentLoaded", () => {
+    const tbody = document.querySelector("#wordTable tbody");
+    const randomWords = getRandomWords(wordBank, 35);
+
+    randomWords.forEach(wordObj => {
+        const row = createTableRow(wordObj);
+        tbody.appendChild(row);
+    });
+});
+</script>
+
+</body>
+</html>
