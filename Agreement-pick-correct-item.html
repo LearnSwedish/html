@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick the correct item</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 30px;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .info-text {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .progress-container {
+            width: 500px;
+            height: 20px;
+            margin: 0 auto;
+            background-color: #ddd;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow: hidden;
+        }
+        .progress-bar-segment {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        .progress-bar-green {
+            background-color: #4CAF50;
+        }
+        .progress-bar-red {
+            background-color: #f44336;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 5px;
+            font-size: 16px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        #feedback {
+            font-size: 20px;
+            margin-top: 10px;
+            display: none;
+        }
+        #next-btn {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+        #next-btn:hover {
+            background-color: #45a049;
+        }
+        .feedback-row {
+            margin-top: 20px;
+        }
+        /* Modal Styles */
+        #myModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 50px;
+            padding-top: 40px; /* Adjust this value to move the content lower */
+            border-radius: 10px;
+            width: 80%;
+            height: 140px;
+            max-width: 500px;
+            text-align: center;
+            position: relative; /* Added to position the close button */
+        }
+        /* Updated Close Button Styles */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.2s ease-in-out;
+        }
+        .close:hover,
+        .close:focus {
+            color: black; /* Darker on hover */
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #restart-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+        #restart-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Pick the correct option</h1>
+    <p class="info-text">The progress bar will reflect whether your first choice is correct or incorrect.</p>
+    <div class="progress-container" id="progress-container">
+        <!-- Progress bar segments will be dynamically created here -->
+    </div>
+    <div class="question">
+        <p id="translation" style="font-style: italic;"></p> <!-- New translation paragraph -->
+        <p id="sentence">Laddar mening...</p>
+    </div>
+    <div class="feedback-row">
+        <div id="feedback"></div>
+        <button id="next-btn" onclick="loadNextSentence()">Nästa</button>
+    </div>
+    <div id="final-message"></div>
+</div>
+
+<!-- Modal for Congratulations/Good work message -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p id="modal-message"></p>
+        <!-- Start Over button -->
+        <button id="restart-btn" onclick="restartQuiz()">Start over</button>
+    </div>
+</div>
+
+<script>
+    // Array of sentences with placeholders for the dropdown
+    const sentences = [
+        { text: "Jag ska köpa <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='ett'>ett</option><option value='en'>en</option><option value='sitt'>sitt</option></select>yoghurt till frukost.", correct: "en", translation: "I’m going to buy a yoghurt for breakfast." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Ditt'>Ditt</option><option value='Mitt'>Mitt</option><option value='Din'>Din</option><option value='Min'>Min</option></select>år har varit fullt av framgångar.", correct: "Ditt", translation: "Your year has been full of success." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Ditt'>Ditt</option><option value='Min'>Min</option><option value='Din'>Din</option><option value='Mitt'>Mitt</option></select>lastbil är parkerad utanför.", correct: "Min", translation: "My truck is parked outside." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Din'>Din</option><option value='Ditt'>Ditt</option><option value='Mitt'>Mitt</option><option value='Min'>Min</option></select>son älskar att spela fotboll.", correct: "Din", translation: "Your son loves playing football." },
+{ text: "Hon torkade sig med <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='sitt'>sitt</option><option value='min'>min</option><option value='sin'>sin</option></select>servett efter måltiden.", correct: "sin", translation: "She wiped herself with her napkin after the meal." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Din'>Din</option><option value='Ditt'>Ditt</option><option value='Mitt'>Mitt</option><option value='Min'>Min</option></select>liv är som en saga.", correct: "Mitt", translation: "My life is like a fairytale." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Ditt'>Ditt</option><option value='Min'>Min</option><option value='Mitt'>Mitt</option><option value='Din'>Din</option></select>klocka går alltid några minuter för snabbt.", correct: "Min", translation: "My watch is always a few minutes fast." },
+{ text: "Efter <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='mitt'>mitt</option><option value='ditt'>ditt</option><option value='din'>din</option></select>promenad kan vi ta en fika.", correct: "din", translation: "After your walk, we can have a coffee." },
+{ text: "Varför gifter de sig på <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='en'>en</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='ett'>ett</option></select>vardag mitt i veckan?", correct: "en", translation: "Why are they getting married on a weekday in the middle of the week?" },
+{ text: "Det blir fel varje gång hon öppnar <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='mitt'>mitt</option><option value='sin'>sin</option><option value='min'>min</option></select>mun.", correct: "sin", translation: "It goes wrong every time she opens her mouth." },
+{ text: "Jag hoppas att <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ert'>ert</option><option value='vårt'>vårt</option><option value='vår'>vår</option><option value='er'>er</option></select>lunch smakar bra.", correct: "er", translation: "I hope your lunch tastes good. (plural)" },
+{ text: "Var försiktig med <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='min'>min</option><option value='din'>din</option><option value='ditt'>ditt</option></select>fat, det är ömtåligt.", correct: "ditt", translation: "Be careful with your plate, it’s fragile." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Din'>Din</option><option value='Ditt'>Ditt</option><option value='Min'>Min</option></select>bord är fullt av papper just nu.", correct: "Mitt", translation: "My table is full of papers right now." },
+{ text: "Kan du kontrollera temperaturen i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='din'>din</option><option value='min'>min</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option></select>ugn?", correct: "din", translation: "Can you check the temperature in your oven?" },
+{ text: "Jag såg något konstigt i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option><option value='din'>din</option><option value='min'>min</option></select>öra.", correct: "ditt", translation: "I saw something strange in your ear." },
+{ text: "Vi väntade länge och till sist kom det <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='ett'>ett</option><option value='en'>en</option><option value='sin'>sin</option></select>buss.", correct: "en", translation: "We waited for a long time, and finally a bus arrived." },
+{ text: "Jag måste boka tid för <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='min'>min</option><option value='din'>din</option><option value='ditt'>ditt</option></select>tand hos tandläkaren.", correct: "min", translation: "I need to book an appointment for my tooth with the dentist." },
+{ text: "Jag har alltid ont i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='din'>din</option><option value='ditt'>ditt</option><option value='min'>min</option></select>axel efter träningen.", correct: "min", translation: "I always have pain in my shoulder after training." },
+{ text: "Hon njöt av <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='min'>min</option><option value='sin'>sin</option><option value='sitt'>sitt</option></select>eftermiddag på stranden.", correct: "sin", translation: "She enjoyed her afternoon on the beach." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Min'>Min</option><option value='Mitt'>Mitt</option><option value='Din'>Din</option><option value='Ditt'>Ditt</option></select>motorcykel är verkligen imponerande.", correct: "Din", translation: "Your motorcycle is really impressive." },
+{ text: "Vi måste serva <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='vår'>vår</option><option value='ert'>ert</option><option value='er'>er</option><option value='vårt'>vårt</option></select>bil snart.", correct: "vår", translation: "We need to service our car soon." },
+{ text: "Det har bara gått <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='en'>en</option><option value='sitt'>sitt</option><option value='ett'>ett</option></select>timme.", correct: "en", translation: "It’s only been an hour." },
+{ text: "Du har ätit upp <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='din'>din</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option><option value='min'>min</option></select>mat.", correct: "min", translation: "You’ve finished my food." },
+{ text: "Han åt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='sin'>sin</option><option value='ett'>ett</option><option value='en'>en</option></select>apelsin varje dag.", correct: "en", translation: "He ate an orange every day." },
+{ text: "Hon måste reparera <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='sin'>sin</option><option value='mitt'>mitt</option><option value='sitt'>sitt</option></select>diskmaskin.", correct: "sin", translation: "She needs to repair her dishwasher." },
+{ text: "Hur gammalt är <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='vårt'>vårt</option><option value='er'>er</option><option value='vår'>vår</option><option value='ert'>ert</option></select>barn nu?", correct: "ert", translation: "How old is your child now? (plural)" },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Vårt'>Vårt</option><option value='er'>er</option><option value='ert'>ert</option><option value='Vår'>Vår</option></select>flygplan landade precis i tid.", correct: "Vårt", translation: "Our plane landed just in time." },
+{ text: "Han bor i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='sitt'>sitt</option><option value='sin'>sin</option><option value='min'>min</option></select>husvagn hela semestern.", correct: "sin", translation: "He lives in his caravan all summer." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Min'>Min</option><option value='Din'>Din</option><option value='Ditt'>Ditt</option></select>partner är verkligen stödjande i allt jag gör.", correct: "Min", translation: "My partner is really supportive in everything I do." },
+{ text: "Hon gav <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='sitt'>sitt</option><option value='sin'>sin</option><option value='mitt'>mitt</option></select>hamburgare till en främling.", correct: "sin", translation: "She gave her burger to a stranger." },
+{ text: "Tänk dig <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='en'>en</option><option value='sitt'>sitt</option><option value='sin'>sin</option><option value='ett'>ett</option></select>morgon med nykokt kaffe och nybakat bröd.", correct: "en", translation: "Imagine a morning with freshly brewed coffee and freshly baked bread." },
+{ text: "Det har inkommit klagomål från <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='en'>en</option><option value='ett'>ett</option></select>kund.", correct: "en", translation: "A complaint has been received from a customer." },
+{ text: "Kan vi tala om <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='mitt'>mitt</option><option value='ditt'>ditt</option><option value='din'>din</option></select>tid här?", correct: "din", translation: "Can we talk about your time here?" },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Min'>Min</option><option value='Din'>Din</option><option value='Mitt'>Mitt</option><option value='Ditt'>Ditt</option></select>släkting från Norge kommer på besök.", correct: "Min", translation: "My relative from Norway is coming to visit." },
+{ text: "Vi beställde <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='en'>en</option><option value='ett'>ett</option><option value='sitt'>sitt</option></select>pizza för 40 minuter sedan.", correct: "en", translation: "We ordered a pizza 40 minutes ago." },
+{ text: "Hösten är <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='en'>en</option><option value='sin'>sin</option><option value='ett'>ett</option><option value='sitt'>sitt</option></select>årstid full av färger.", correct: "en", translation: "Autumn is a season full of colours." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Ditt'>Ditt</option><option value='Min'>Min</option><option value='Din'>Din</option><option value='Mitt'>Mitt</option></select>taxi är på väg.", correct: "Min", translation: "My taxi is on its way." },
+{ text: "Arlanda är <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='en'>en</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='ett'>ett</option></select>flygplats norr om Stockholm.", correct: "en", translation: "Arlanda is an airport north of Stockholm." },
+{ text: "Det tar <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='en'>en</option><option value='ett'>ett</option><option value='sitt'>sitt</option></select>förmiddag att planera detta.", correct: "en", translation: "It takes a morning to plan this." },
+{ text: "Förlåt, jag trampade på <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='din'>din</option><option value='mitt'>mitt</option><option value='ditt'>ditt</option></select>tå.", correct: "din", translation: "Sorry, I stepped on your toe." },
+{ text: "Sedan 1970 finns också <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='sin'>sin</option><option value='ett'>ett</option><option value='en'>en</option></select>tunnelbana.", correct: "en", translation: "Since 1970, there’s also been an underground." },
+{ text: "Vi måste tyvärr lägga ner <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='en'>en</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='ett'>ett</option></select>avdelning.", correct: "en", translation: "Unfortunately, we have to close a department." },
+{ text: "Han bröt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='en'>en</option><option value='sitt'>sitt</option><option value='ett'>ett</option></select>arm under matchen.", correct: "sin", translation: "He broke his arm during the match." },
+{ text: "Hon hjälpte <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='mitt'>mitt</option><option value='sin'>sin</option><option value='min'>min</option></select>kollega med att skriva färdigt en rapport.", correct: "sin", translation: "She helped her colleague finish writing a report." },
+{ text: "Hon skadade <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='min'>min</option></select>finger när hon lagade mat.", correct: "sitt", translation: "She hurt her finger while cooking." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Din'>Din</option><option value='Ditt'>Ditt</option><option value='Min'>Min</option></select>spis fungerar inte, jag behöver en ny.", correct: "Min", translation: "My stove doesn’t work, I need a new one." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Sin'>Sin</option><option value='Ett'>Ett</option><option value='Sitt'>Sitt</option><option value='En'>En</option></select>segelbåt är perfekt för sommaren.", correct: "En", translation: "A sailboat is perfect for the summer." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Ditt'>Ditt</option><option value='Din'>Din</option><option value='Mitt'>Mitt</option><option value='Min'>Min</option></select>företag verkar gå riktigt bra.", correct: "Ditt", translation: "Your company seems to be doing really well." },
+{ text: "På köksgolvet låg det <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ett'>ett</option><option value='en'>en</option><option value='sitt'>sitt</option><option value='sin'>sin</option></select>korv.", correct: "en", translation: "There was a sausage on the kitchen floor." },
+{ text: "Han tog med sig <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='sitt'>sitt</option><option value='sin'>sin</option><option value='mitt'>mitt</option></select>bärbara dator till mötet.", correct: "sin", translation: "He brought his laptop to the meeting." },
+{ text: "Han hade en tatuering på <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='min'>min</option><option value='sitt'>sitt</option><option value='sin'>sin</option></select>kind.", correct: "sin", translation: "He had a tattoo on his cheek." },
+{ text: "Vi har använt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ert'>ert</option><option value='er'>er</option><option value='vårt'>vårt</option><option value='vår'>vår</option></select>gryta i över 25 år.", correct: "vår", translation: "We’ve been using our pot for over 25 years." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Min'>Min</option><option value='Ditt'>Ditt</option><option value='Din'>Din</option></select>pojke vill börja spela gitarr.", correct: "Min", translation: "My boy wants to start playing guitar." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Er'>Er</option><option value='Ert'>Ert</option><option value='Vårt'>Vårt</option><option value='Vår'>Vår</option></select>avtal undertecknades igår.", correct: "Vårt", translation: "Our agreement was signed yesterday." },
+{ text: "Jag fick en bula i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='mitt'>mitt</option><option value='ditt'>ditt</option><option value='din'>din</option></select>huvud igår.", correct: "mitt", translation: "I got a bump on my head yesterday." },
+{ text: "Han bröt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='en'>en</option><option value='sitt'>sitt</option><option value='ett'>ett</option></select>ben när han cyklade.", correct: "sitt", translation: "He broke his leg while cycling." },
+{ text: "Hon visade <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='din'>din</option><option value='ditt'>ditt</option><option value='sitt'>sitt</option><option value='sin'>sin</option></select>hand för läkaren.", correct: "sin", translation: "She showed her hand to the doctor." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Sitt'>Sitt</option><option value='En'>En</option><option value='Ett'>Ett</option><option value='Sin'>Sin</option></select>kniv föll från köksbänken.", correct: "En", translation: "A knife fell from the kitchen counter." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Sin'>Sin</option><option value='Sitt'>Sitt</option><option value='Ett'>Ett</option><option value='En'>En</option></select>kompis från min barndom ringde igår.", correct: "En", translation: "A friend from my childhood called yesterday." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Din'>Din</option><option value='Min'>Min</option><option value='Ditt'>Ditt</option><option value='Mitt'>Mitt</option></select>moped startade inte i morse.", correct: "Min", translation: "My moped didn’t start this morning." },
+{ text: "Hur var <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='din'>din</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option></select>dag idag?", correct: "din", translation: "How was your day today?" },
+{ text: "Han beställde <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='ett'>ett</option><option value='en'>en</option><option value='sitt'>sitt</option></select>öl på restaurangen.", correct: "en", translation: "He ordered a beer at the restaurant." },
+{ text: "På tallriken låg det bara <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='en'>en</option><option value='ett'>ett</option><option value='sitt'>sitt</option><option value='sin'>sin</option></select>morot.", correct: "en", translation: "There was only a carrot on the plate." },
+{ text: "Jag har haft ont i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option><option value='din'>din</option><option value='min'>min</option></select>mage hela dagen.", correct: "min", translation: "I’ve had a stomach ache all day." },
+{ text: "Igår såg jag <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ett'>ett</option><option value='sitt'>sitt</option><option value='sin'>sin</option><option value='en'>en</option></select>flicka på bryggan.", correct: "en", translation: "Yesterday, I saw a girl on the pier." },
+{ text: "Hon flyttade ihop med <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='din'>din</option><option value='ditt'>ditt</option></select>pojkvän i våras.", correct: "sin", translation: "She moved in with her boyfriend last spring." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Din'>Din</option><option value='Min'>Min</option><option value='Ditt'>Ditt</option><option value='Mitt'>Mitt</option></select>chef gav mig löneförhöjning.", correct: "Min", translation: "My boss gave me a raise." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Ditt'>Ditt</option><option value='Mitt'>Mitt</option><option value='Din'>Din</option><option value='Min'>Min</option></select>lön är alldeles för låg.", correct: "Din", translation: "Your salary is far too low." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Vår'>Vår</option><option value='Ert'>Ert</option><option value='Er'>Er</option><option value='Vårt'>Vårt</option></select>arbete går framåt som planerat.", correct: "Vårt", translation: "Our work is progressing as planned." },
+{ text: "Vi behöver köpa en ny skärm till <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='vår'>vår</option><option value='vårt'>vårt</option><option value='ert'>ert</option><option value='er'>er</option></select>dator.", correct: "vår", translation: "We need to buy a new screen for our computer." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Din'>Din</option><option value='Min'>Min</option><option value='Ditt'>Ditt</option></select>jobb kräver mycket av min tid.", correct: "Mitt", translation: "My job requires a lot of my time." },
+{ text: "Han har ont i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='din'>din</option><option value='sitt'>sitt</option><option value='ditt'>ditt</option></select>rygg efter flera tunga lyft.", correct: "sin", translation: "He has pain in his back after several heavy lifts." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Vår'>Vår</option><option value='Er'>Er</option><option value='Ert'>Ert</option><option value='Vårt'>Vårt</option></select>projekt blev precis godkänt.", correct: "Vårt", translation: "Our project has just been approved." },
+{ text: "Jag gjorde <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='en'>en</option><option value='ett'>ett</option><option value='sin'>sin</option></select>soppa igår kväll.", correct: "en", translation: "I made soup last night." },
+{ text: "Vem har använt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option><option value='din'>din</option><option value='min'>min</option></select>sked?", correct: "min", translation: "Who has used my spoon?" },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Sitt'>Sitt</option><option value='Ett'>Ett</option><option value='Sin'>Sin</option><option value='En'>En</option></select>pappa tröstade sitt barn på lekplatsen.", correct: "En", translation: "A dad comforted his child at the playground." },
+{ text: "Hon tappade <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='din'>din</option><option value='sin'>sin</option><option value='ditt'>ditt</option></select>gaffel under middagen.", correct: "sin", translation: "She dropped her fork during dinner." },
+{ text: "Jag ser fram emot <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='ett'>ett</option><option value='en'>en</option></select>helg utan arbete.", correct: "en", translation: "I’m looking forward to a weekend without work." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Min'>Min</option><option value='Ditt'>Ditt</option><option value='Din'>Din</option></select>vän väntar på dig utanför.", correct: "Din", translation: "Your friend is waiting for you outside." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Vår'>Vår</option><option value='Er'>Er</option><option value='Ert'>Ert</option><option value='Vårt'>Vårt</option></select>granne är väldigt trevlig.", correct: "Vår", translation: "Our neighbour is very nice." },
+{ text: "Jag bakade <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='ett'>ett</option><option value='en'>en</option><option value='sitt'>sitt</option></select>kaka till festen.", correct: "en", translation: "I baked a cake for the party." },
+{ text: "Gräsbete resulterar i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ett'>ett</option><option value='en'>en</option><option value='sin'>sin</option><option value='sitt'>sitt</option></select>kött som är otroligt saftigt.", correct: "ett", translation: "Grass-fed results in incredibly juicy meat." },
+{ text: "Han presenterade <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='din'>din</option></select>fru för de andra.", correct: "sin", translation: "He introduced his wife to the others." },
+{ text: "Hon älskar <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='ditt'>ditt</option><option value='din'>din</option><option value='sitt'>sitt</option></select>man.", correct: "sin", translation: "She loves her husband." },
+{ text: "Vi stannar <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='ett'>ett</option><option value='en'>en</option><option value='sitt'>sitt</option></select>natt i Paris.", correct: "en", translation: "We’re staying one night in Paris." },
+{ text: "Han friade till henne <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='ett'>ett</option><option value='sitt'>sitt</option><option value='en'>en</option></select>kväll i juni.", correct: "en", translation: "He proposed to her one evening in June." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Vår'>Vår</option><option value='Vårt'>Vårt</option><option value='Er'>Er</option><option value='Ert'>Ert</option></select>samarbete har varit väldigt framgångsrikt.", correct: "Vårt", translation: "Our collaboration has been very successful." },
+{ text: "Vin är <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='en'>en</option><option value='ett'>ett</option><option value='sitt'>sitt</option></select>dryck med uråldriga traditioner.", correct: "en", translation: "Wine is a drink with ancient traditions." },
+{ text: "1942 byggde tyska forskare <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='en'>en</option><option value='ett'>ett</option><option value='sin'>sin</option><option value='sitt'>sitt</option></select>raket.", correct: "en", translation: "In 1942, German scientists built a rocket." },
+{ text: "Vi gav honom en flaska av <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ert'>ert</option><option value='vårt'>vårt</option><option value='vår'>vår</option><option value='er'>er</option></select>vin.", correct: "vårt", translation: "We gave him a bottle of our wine." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Vår'>Vår</option><option value='Ert'>Ert</option><option value='Er'>Er</option><option value='Vårt'>Vårt</option></select>dotter har precis börjat skolan.", correct: "Vår", translation: "Our daughter has just started school." },
+{ text: "Det har gått <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='ett'>ett</option><option value='sin'>sin</option><option value='en'>en</option></select>århundrade sedan kriget.", correct: "ett", translation: "A century has passed since the war." },
+{ text: "Någon stal <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='din'>din</option><option value='mitt'>mitt</option><option value='min'>min</option></select>cykel igår.", correct: "min", translation: "Someone stole my bike yesterday." },
+{ text: "Hur gör jag för att få ett kvitto på <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='ditt'>ditt</option><option value='din'>din</option><option value='mitt'>mitt</option></select>parkering?", correct: "min", translation: "How do I get a receipt for my parking?" },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Din'>Din</option><option value='Ditt'>Ditt</option><option value='Min'>Min</option></select>syster bor i New York.", correct: "Min", translation: "My sister lives in New York." },
+{ text: "Jag måste träna mer för att stärka <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='mitt'>mitt</option><option value='ditt'>ditt</option><option value='din'>din</option></select>kropp.", correct: "min", translation: "I need to train more to strengthen my body." },
+{ text: "Han har ett stort ärr i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='din'>din</option><option value='ditt'>ditt</option><option value='sin'>sin</option></select>panna.", correct: "sin", translation: "He has a large scar on his forehead." },
+{ text: "Han satte sig på <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='din'>din</option><option value='min'>min</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option></select>stol av misstag.", correct: "din", translation: "He sat in your chair by mistake." },
+{ text: "Vi stannar på Kreta ungefär <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ett'>ett</option><option value='en'>en</option><option value='sin'>sin</option><option value='sitt'>sitt</option></select>vecka.", correct: "en", translation: "We’re staying in Crete for about a week." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Ditt'>Ditt</option><option value='Din'>Din</option><option value='Min'>Min</option></select>bror kommer på besök i helgen.", correct: "Min", translation: "My brother is coming to visit this weekend." },
+{ text: "Jag älskar att laga mat i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='vårt'>vårt</option><option value='ert'>ert</option><option value='er'>er</option><option value='vår'>vår</option></select>kök.", correct: "vårt", translation: "I love cooking in our kitchen." },
+{ text: "På torsdag åker jag till <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option><option value='din'>din</option><option value='min'>min</option></select>särbo i Göteborg.", correct: "min", translation: "On Thursday, I’m going to my partner in Gothenburg." },
+{ text: "Har du sett <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='min'>min</option><option value='mitt'>mitt</option><option value='din'>din</option></select>smörgås?", correct: "min", translation: "Have you seen my sandwich?" },
+{ text: "Jag är så glad över <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='din'>din</option><option value='min'>min</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option></select>anställning.", correct: "min", translation: "I’m so happy about my job." },
+{ text: "Såhär tar du hand om <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='min'>min</option><option value='mitt'>mitt</option><option value='din'>din</option></select>bröd på bästa sätt.", correct: "ditt", translation: "This is how you take care of your bread in the best way." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Er'>Er</option><option value='Vårt'>Vårt</option><option value='Vår'>Vår</option><option value='Ert'>Ert</option></select>tåg går om 10 minuter.", correct: "Vårt", translation: "Our train leaves in 10 minutes." },
+{ text: "Han kokade ägg i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ett'>ett</option><option value='sin'>sin</option><option value='en'>en</option><option value='sitt'>sitt</option></select>kastrull.", correct: "en", translation: "He boiled eggs in a pot." },
+{ text: "Var försiktig med <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option><option value='din'>din</option></select>verktyg, det är dyrt.", correct: "ditt", translation: "Be careful with your tool, it’s expensive." },
+{ text: "Hon skadade <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='sitt'>sitt</option><option value='din'>din</option><option value='sin'>sin</option></select>fot på promenaden.", correct: "sin", translation: "She hurt her foot on the walk." },
+{ text: "Vi har <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='en'>en</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='ett'>ett</option></select>möte senare idag.", correct: "ett", translation: "We have a meeting later today." },
+{ text: "Det är <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='ditt'>ditt</option><option value='min'>min</option><option value='din'>din</option></select>ansvar att se till att allt fungerar.", correct: "ditt", translation: "It is your responsibility to ensure that everything works." },
+{ text: "Jag drack upp <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='min'>min</option><option value='ditt'>ditt</option><option value='din'>din</option><option value='mitt'>mitt</option></select>mjölk och gav mig sedan iväg.", correct: "min", translation: "I drank up my milk and then left." },
+{ text: "Nu har det gått <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ett'>ett</option><option value='sin'>sin</option><option value='sitt'>sitt</option><option value='en'>en</option></select>månad sedan vi sågs.", correct: "en", translation: "It’s been a month since we last saw each other." },
+{ text: "Du får gärna fylla på <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='din'>din</option><option value='mitt'>mitt</option><option value='min'>min</option></select>glas.", correct: "mitt", translation: "Feel free to fill up my glass." },
+{ text: "Mesost är <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ett'>ett</option><option value='en'>en</option><option value='sin'>sin</option><option value='sitt'>sitt</option></select>ost som tillverkas av vassle.", correct: "en", translation: "Whey cheese is a cheese made from whey." },
+{ text: "Är det här <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='er'>er</option><option value='vår'>vår</option><option value='ert'>ert</option><option value='vårt'>vårt</option></select>fordon?", correct: "ert", translation: "Is this your vehicle? (plural)" },
+{ text: "Jag behöver <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mitt'>mitt</option><option value='min'>min</option><option value='ditt'>ditt</option><option value='din'>din</option></select>kaffe för att vakna på morgonen.", correct: "mitt", translation: "I need my coffee to wake up in the morning." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Er'>Er</option><option value='Vårt'>Vårt</option><option value='Ert'>Ert</option><option value='Vår'>Vår</option></select>mamma bakar den bästa pajen.", correct: "Vår", translation: "Our mum bakes the best pies." },
+{ text: "Han rekommenderar <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sitt'>sitt</option><option value='en'>en</option><option value='sin'>sin</option><option value='ett'>ett</option></select>smör gjort på grädde.", correct: "ett", translation: "He recommends a butter made from cream." },
+{ text: "Jag såg en man i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ett'>ett</option><option value='sitt'>sitt</option><option value='sin'>sin</option><option value='en'>en</option></select>rullstol idag.", correct: "en", translation: "I saw a man in a wheelchair today." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Min'>Min</option><option value='Din'>Din</option><option value='Mitt'>Mitt</option><option value='Ditt'>Ditt</option></select>recept på kakan blev en succé.", correct: "Mitt", translation: "My cake recipe was a success." },
+{ text: "Hon var lycklig över <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='din'>din</option><option value='ditt'>ditt</option><option value='sitt'>sitt</option><option value='sin'>sin</option></select>resultat.", correct: "sitt", translation: "She was happy with her result." },
+{ text: "Var försiktig med <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ditt'>ditt</option><option value='mitt'>mitt</option><option value='min'>min</option><option value='din'>din</option></select>tallrik, den är ömtålig.", correct: "din", translation: "Be careful with your plate, it’s fragile." },
+{ text: "<select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='Mitt'>Mitt</option><option value='Min'>Min</option><option value='Din'>Din</option><option value='Ditt'>Ditt</option></select>sallad är full av färska grönsaker.", correct: "Min", translation: "My salad is full of fresh vegetables." },
+{ text: "Det är en bild på <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sin'>sin</option><option value='en'>en</option><option value='ett'>ett</option><option value='sitt'>sitt</option></select>öga i genomskärning.", correct: "ett", translation: "It’s a picture of an eye in cross-section." },
+{ text: "Jag har ont i <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='din'>din</option><option value='mitt'>mitt</option><option value='min'>min</option><option value='ditt'>ditt</option></select>näsa.", correct: "min", translation: "My nose is sore." }
+
+    ];
+
+    let sentenceOrder = [];
+    let currentSentenceIndex = 0;
+    let progressPerStep = 0;
+    let firstAttempt = true;
+    let madeMistakes = false; // Track whether the user made any mistakes
+
+    // Initialize and shuffle the sentences when the page loads
+    window.onload = function() {
+        sentenceOrder = Array.from({ length: sentences.length }, (_, i) => i);
+        shuffle(sentenceOrder);
+        progressPerStep = 100 / sentences.length;  // Calculate progress per sentence
+        setupProgressBar();
+        loadNextSentence();
+    };
+
+    // Function to shuffle the sentence order
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Function to create progress bar segments dynamically
+    function setupProgressBar() {
+        const progressContainer = document.getElementById("progress-container");
+        for (let i = 0; i < sentences.length; i++) {
+            const progressSegment = document.createElement("div");
+            progressSegment.classList.add("progress-bar-segment");
+            progressSegment.style.width = progressPerStep + "%"; // Each segment takes equal width
+            progressContainer.appendChild(progressSegment);
+        }
+    }
+
+    // Function to load the next sentence
+    function loadNextSentence() {
+        document.getElementById('feedback').style.display = "none";  // Hide feedback
+        document.getElementById('next-btn').style.display = "none";  // Hide next button
+        firstAttempt = true;  // Reset for next question
+
+        if (currentSentenceIndex < sentenceOrder.length) {
+            const sentence = sentences[sentenceOrder[currentSentenceIndex]];
+            document.getElementById('sentence').innerHTML = sentence.text;
+            document.getElementById('translation').innerHTML = sentence.translation; // Set translation
+            currentSentenceIndex++;
+        } else {
+            endQuiz();
+        }
+    }
+
+    // Function to check the answer
+    function checkAnswer() {
+        const selectedPreposition = document.getElementById('preposition').value;
+        const feedback = document.getElementById('feedback');
+        const sentence = sentences[sentenceOrder[currentSentenceIndex - 1]];
+        const progressSegments = document.getElementsByClassName("progress-bar-segment");
+
+        if (selectedPreposition === sentence.correct) {
+            feedback.innerHTML = "Rätt!";
+            feedback.style.color = "green";
+            feedback.style.display = "block";  // Show feedback
+
+            // If it's the last sentence, show modal instead of "Nästa" button
+            if (currentSentenceIndex === sentences.length) {
+                document.getElementById('next-btn').style.display = "none";  // Don't show the "Nästa" button
+                showModal();  // Show modal message
+            } else {
+                document.getElementById('next-btn').style.display = "inline-block";  // Show next button
+            }
+
+            // Fill the progress bar with green if it's the first attempt
+            if (firstAttempt) {
+                progressSegments[currentSentenceIndex - 1].classList.add("progress-bar-green");
+            }
+        } else {
+            feedback.innerHTML = "Fel, försök igen.";
+            feedback.style.color = "red";
+            feedback.style.display = "block";
+            madeMistakes = true;  // Track that the user made a mistake
+
+            // Fill the progress bar with red if it's the first attempt
+            if (firstAttempt) {
+                progressSegments[currentSentenceIndex - 1].classList.add("progress-bar-red");
+            }
+            firstAttempt = false;  // After first wrong attempt, it remains false
+        }
+    }
+
+    // Function to show modal with congratulations message
+    function showModal() {
+        const modal = document.getElementById("myModal");
+        const modalMessage = document.getElementById("modal-message");
+
+        if (madeMistakes) {
+            modalMessage.innerHTML = "<strong>Good work!</strong><br /><br />Now, can you do it without making any mistakes?<br />Try again!";
+        } else {
+            modalMessage.innerHTML = "<strong>Congratulations!</strong><br /><br />You got every answer correct on the first try!<br />Can you do it again?";
+        }
+
+        modal.style.display = "block";  // Show the modal
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+    }
+
+    // Function to restart the quiz by refreshing the page
+    function restartQuiz() {
+        window.location.reload();
+    }
+</script>
+
+</body>
+</html>
