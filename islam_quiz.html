@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -6,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Islam Quiz</title>
     <style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px auto; /* Ensure margins on both sides */
-    max-width: 600px;  /* Set a max width for larger screens */
-    padding-left: 15px; /* Add padding on left */
-    padding-right: 15px; /* Add padding on right */
-}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px auto;
+            max-width: 600px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
 
         h1 {
             text-align: center;
@@ -62,6 +61,7 @@ body {
             cursor: pointer;
             width: 100%;
             font-size: 18px;
+            display: none; /* Initially hidden */
         }
 
         button:hover {
@@ -73,25 +73,31 @@ body {
             display: none;
         }
 
-@media (max-width: 600px) {
-    body {
-        margin: 10px;
-        padding: 10px;
-    }
+        @media (max-width: 600px) {
+            body {
+                margin: 10px;
+                padding: 10px;
+            }
 
-    h1 {
-        font-size: 20px;
-    }
+            h1 {
+                font-size: 20px;
+            }
 
-    button {
-        font-size: 16px;
-    }
+            button {
+                font-size: 16px;
+            }
+        }
+	p#feedback {
+    font-weight: bold;
+    height: 20px; /* Fixed height to reserve space */
+    margin-bottom: 10px; /* Optional: add space between feedback and other content */
 }
     </style>
 </head>
 <body>
 
-<h1>Islam Quiz</h1>
+<h1>Islam-Quiz</h1>
+<p><center>Här är 100 frågor om islam. Du kommer inte vidare förrän du har svarat rätt!</center></p>
 
 <div class="progress-bar">
     <div class="progress" id="progress">0%</div>
@@ -99,9 +105,11 @@ body {
 
 <div id="quiz-container" class="quiz-container">
     <p id="question-text"></p>
+    <p id="feedback" style="font-weight: bold; height: 20px;"></p> <!-- Feedback row with placeholder height -->
     <label for="answers">Välj ett svar:</label>
-    <select id="answers"></select>
-    <button id="next-btn" onclick="nextQuestion()">Nästa</button>
+    <select id="answers" onchange="checkAnswer()"> <!-- Dropdown for selecting answers -->
+    </select>
+    <button id="next-btn" onclick="nextQuestion()">Nästa</button> <!-- Button hidden initially -->
 </div>
 
 <div class="quiz-end" id="quiz-end">
@@ -1112,12 +1120,12 @@ const questions = [
         "Islam introducerade choklad till hela världen, och alla var glada."
     ]
 }
-
-    // Continue with the rest of the questions similarly.
 ];
+
     let currentQuestionIndex = 0;
     let correctAnswers = 0;
 
+    // Function to shuffle the answers
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -1125,17 +1133,28 @@ const questions = [
         }
     }
 
+    // Function to load a question
     function loadQuestion() {
         const questionContainer = document.getElementById('question-text');
         const answerDropdown = document.getElementById('answers');
+        const feedback = document.getElementById('feedback');
+        const nextButton = document.getElementById('next-btn');
         const question = questions[currentQuestionIndex];
 
-        questionContainer.innerText = question.question;
-        answerDropdown.innerHTML = '';
+        feedback.textContent = '';  // Reset feedback
+        answerDropdown.innerHTML = '';  // Clear previous answers
+        nextButton.style.display = 'none';  // Hide the "Nästa" button
 
-        // Shuffle answers each time
+        // Add default "Välj svar..." option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Välj svar...';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        answerDropdown.appendChild(defaultOption);
+
+        // Shuffle answers and add them to the dropdown
         shuffle(question.answers);
-
         question.answers.forEach(answer => {
             const option = document.createElement('option');
             option.value = answer;
@@ -1143,9 +1162,13 @@ const questions = [
             answerDropdown.appendChild(option);
         });
 
-        updateProgress();
+        // Set question text
+        questionContainer.innerText = question.question;
+
+        updateProgress(); // Update progress bar
     }
 
+    // Function to update the progress bar
     function updateProgress() {
         const progress = document.getElementById('progress');
         const progressValue = ((currentQuestionIndex / questions.length) * 100);
@@ -1153,16 +1176,33 @@ const questions = [
         progress.textContent = `${Math.round(progressValue)}%`;
     }
 
-    function nextQuestion() {
+    // Function to check the selected answer
+    function checkAnswer() {
         const selectedAnswer = document.getElementById('answers').value;
         const correctAnswer = questions[currentQuestionIndex].correctAnswer;
+        const feedback = document.getElementById('feedback');
+        const nextButton = document.getElementById('next-btn');
 
-        if (selectedAnswer === correctAnswer) {
-            correctAnswers++;
+        // Ensure a valid answer is selected
+        if (selectedAnswer === '') {
+            return; // Do nothing if the default "Välj svar..." is selected
         }
 
-        currentQuestionIndex++;
+        // Check if the selected answer is correct
+        if (selectedAnswer === correctAnswer) {
+            correctAnswers++;
+            feedback.textContent = 'Rätt svar!';
+            feedback.style.color = 'green';
+            nextButton.style.display = 'block'; // Show the "Nästa" button when the correct answer is picked
+        } else {
+            feedback.textContent = 'Fel svar, försök igen.';
+            feedback.style.color = 'red';
+        }
+    }
 
+    // Function to load the next question
+    function nextQuestion() {
+        currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
             loadQuestion();
         } else {
@@ -1170,6 +1210,7 @@ const questions = [
         }
     }
 
+    // Function to display the results
     function showResults() {
         const quizContainer = document.getElementById('quiz-container');
         const quizEnd = document.getElementById('quiz-end');
@@ -1184,6 +1225,7 @@ const questions = [
         progress.textContent = '100%';
     }
 
+    // Initialize the quiz on page load
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('quiz-container').style.display = 'block';
         loadQuestion();
