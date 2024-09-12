@@ -1,0 +1,1179 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islam Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 13px;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            width: 0%;
+            height: 20px;
+            background-color: #4caf50;
+            border-radius: 13px;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+        }
+
+        .quiz-container {
+            display: none;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .quiz-end {
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Islam Quiz</h1>
+
+<div class="progress-bar">
+    <div class="progress" id="progress">0%</div>
+</div>
+
+<div id="quiz-container" class="quiz-container">
+    <p id="question-text"></p>
+    <label for="answers">Välj ett svar:</label>
+    <select id="answers"></select>
+    <button id="next-btn" onclick="nextQuestion()">Nästa</button>
+</div>
+
+<div class="quiz-end" id="quiz-end">
+    <h2>Grattis, du har klarat quizen!</h2>
+    <p>Resultat: <span id="result"></span></p>
+    <button onclick="location.reload()">Starta om</button>
+</div>
+
+<script>
+const questions = [
+    {
+        question: "Var och när uppkom islam?",
+        correctAnswer: "I Mecka, nuvarande Saudiarabien, på 600-talet.",
+        answers: [
+            "I Mecka, nuvarande Saudiarabien, på 600-talet.",
+            "I Medina, på 700-talet.",
+            "I Jerusalem, på 500-talet.",
+            "I en magisk tekopp i London."
+        ]
+    },
+    {
+        question: "Vem var Muhammed och vilken betydelse har han haft för islam?",
+        correctAnswer: "Han var den sista profeten och grundade islam.",
+        answers: [
+            "Han var den sista profeten och grundade islam.",
+            "Han var en ledare och militärstrateg.",
+            "Han var en lärd forskare.",
+            "Han var den första personen att vinna en talangtävling."
+        ]
+    },
+    {
+        question: "Vad var Muhammeds kärnbudskap?",
+        correctAnswer: "Att tro på en gud, Allah, och inte flera.",
+        answers: [
+            "Att tro på en gud, Allah, och inte flera.",
+            "Att alla borde leva i fred.",
+            "Att följa rättvisa och moral.",
+            "Att alltid bära färgglada strumpor."
+        ]
+    },
+    {
+        question: "Hur påverkade Muhammeds budskap människorna i hans samtid?",
+        correctAnswer: "Människor trodde på många gudar och hans budskap var nytt och kontroversiellt.",
+        answers: [
+            "Människor trodde på många gudar och hans budskap var nytt och kontroversiellt.",
+            "Människor följde redan monoteism, så det var inget nytt.",
+            "Hans budskap accepterades snabbt av alla.",
+            "De blev så förvirrade att de åt upp sina egna hattar."
+        ]
+    },
+    {
+        question: "Varför är Mecka en viktig plats inom islam?",
+        correctAnswer: "Där föddes Muhammed och där finns Kaba.",
+        answers: [
+            "Där föddes Muhammed och där finns Kaba.",
+            "Det är en plats för handel.",
+            "Det är där Muhammed uppenbarades som profet.",
+            "Där säljer de världens bästa kebab."
+        ]
+    },
+    {
+        question: "Varför är Medina en viktig plats inom islam?",
+        correctAnswer: "Muhammed levde och begravdes där, och islam växte i Medina.",
+        answers: [
+            "Muhammed levde och begravdes där, och islam växte i Medina.",
+            "Det var huvudstaden för de första kaliferna.",
+            "Det är platsen för den första moskén.",
+            "Där finns världens största chokladfontän."
+        ]
+    },
+    {
+        question: "Varför är Jerusalem en viktig plats inom islam?",
+        correctAnswer: "Muhammed gjorde sin nattliga resa dit och klippmoskén ligger där.",
+        answers: [
+            "Muhammed gjorde sin nattliga resa dit och klippmoskén ligger där.",
+            "Det är där många profeter har predikat.",
+            "Det är en helig plats för alla abrahamitiska religioner.",
+            "Där finns en hemlig skatt gömd av tempelriddarna."
+        ]
+    },
+    {
+        question: "Hur spreds islam efter Muhammeds död?",
+        correctAnswer: "Genom erövringar och kaliferna som ledde spridningen till flera länder.",
+        answers: [
+            "Genom erövringar och kaliferna som ledde spridningen till flera länder.",
+            "Genom fredliga missioner och diplomati.",
+            "Genom handel och kulturella utbyten.",
+            "Genom att skicka brev via flygande mattor."
+        ]
+    },
+    {
+        question: "Hur kom Koranen till enligt islam?",
+        correctAnswer: "Den uppenbarades för Muhammed av ängeln Gabriel.",
+        answers: [
+            "Den uppenbarades för Muhammed av ängeln Gabriel.",
+            "Den skrevs av Muhammed själv under hans livstid.",
+            "Den är en samling av tidigare religiösa texter.",
+            "Den hittades i en magisk grotta av en talande kamel."
+        ]
+    },
+    {
+        question: "Varför kan Koranen inte översättas helt korrekt enligt muslimer?",
+        correctAnswer: "För att det är Guds exakta ord på arabiska.",
+        answers: [
+            "För att det är Guds exakta ord på arabiska.",
+            "För att språket är för komplext.",
+            "För att alla översättningar förlorar något i överföringen.",
+            "För att varje försök att översätta den leder till att man blir hungrig."
+        ]
+    },
+    {
+        question: "Hur många suror innehåller Koranen?",
+        correctAnswer: "114 suror.",
+        answers: [
+            "114 suror.",
+            "99 suror.",
+            "123 suror.",
+            "10 suror och en extra pizza."
+        ]
+    },
+    {
+        question: "Vad händer enligt islam efter döden?",
+        correctAnswer: "Goda hamnar i paradiset, onda i helvetet.",
+        answers: [
+            "Goda hamnar i paradiset, onda i helvetet.",
+            "Alla återföds som djur.",
+            "Själavandring till en annan kropp.",
+            "Man förvandlas till en chokladkaka."
+        ]
+    },
+    {
+        question: "Vilka är de fem pelarna inom islam?",
+        correctAnswer: "Trosbekännelsen, tidebönen, allmosan, fastan, vallfärden.",
+        answers: [
+            "Trosbekännelsen, tidebönen, allmosan, fastan, vallfärden.",
+            "Tro, hopp, kärlek, fred och tolerans.",
+            "Bön, fasta, rättvisa, medkänsla och fred.",
+            "Äta, sova, festa, dansa och meditera."
+        ]
+    },
+    {
+        question: "Vad innebär trosbekännelsen?",
+        correctAnswer: "Att vittna om att det inte finns någon gud utom Allah och att Muhammed är hans profet.",
+        answers: [
+            "Att vittna om att det inte finns någon gud utom Allah och att Muhammed är hans profet.",
+            "Att följa alla islams regler och bud.",
+            "Att tro på det gudomliga och eviga livet.",
+            "Att dansa varje fredag kväll med en hatt."
+        ]
+    },
+    {
+        question: "Vad innebär tidebönen?",
+        correctAnswer: "Att be fem gånger om dagen.",
+        answers: [
+            "Att be fem gånger om dagen.",
+            "Att be varje morgon och kväll.",
+            "Att be vid speciella högtider.",
+            "Att sjunga en sång om pizza varje måndag."
+        ]
+    },
+    {
+        question: "Vad innebär allmosan inom islam?",
+        correctAnswer: "En religiös skatt på cirka 2,5 % av ens ägodelar.",
+        answers: [
+            "En religiös skatt på cirka 2,5 % av ens ägodelar.",
+            "Att ge till de fattiga vid speciella tillfällen.",
+            "Att donera till moskéer och välgörenhet.",
+            "Att ge bort all sin choklad till grannen."
+        ]
+    },
+    {
+        question: "Vad innebär fastan under Ramadan?",
+        correctAnswer: "Att avstå från mat och dryck från soluppgång till solnedgång.",
+        answers: [
+            "Att avstå från mat och dryck från soluppgång till solnedgång.",
+            "Att fasta hela månaden utan avbrott.",
+            "Att endast äta vegetariskt under månaden.",
+            "Att äta en enorm glassbuffé varje kväll."
+        ]
+    },
+    {
+        question: "Vad innebär vallfärden inom islam?",
+        correctAnswer: "En pilgrimsresa till Mecka som en muslim bör göra minst en gång i livet.",
+        answers: [
+            "En pilgrimsresa till Mecka som en muslim bör göra minst en gång i livet.",
+            "Att besöka en helig plats varje år.",
+            "Att göra en resa för att söka andlig vägledning.",
+            "Att åka på semester till en exotisk ö och meditera."
+        ]
+    },
+	{
+    question: "Vad säger muslimer i vittnesbördet?",
+    correctAnswer: "\"Det finns ingen gud utom Allah och Muhammed är hans sändebud.\"",
+    answers: [
+        "\"Det finns ingen gud utom Allah och Muhammed är hans sändebud.\"",
+        "\"Allah är den största och Koranen är hans bok.\"",
+        "\"Jag vittnar om att tro är vägen till frälsning.\"",
+        "\"Jag älskar pizza och kaffe lika mycket som livet självt.\""
+    ]
+},
+{
+    question: "Hur ber muslimer?",
+    correctAnswer: "De ber vända mot Mecka, utför specifika rörelser och tvättar sig innan bön.",
+    answers: [
+        "De ber vända mot Mecka, utför specifika rörelser och tvättar sig innan bön.",
+        "De ber varje kväll innan de går till sängs.",
+        "De ber när solen går upp och går ner.",
+        "De dansar runt en chokladfontän medan de sjunger en hymn."
+    ]
+},
+{
+    question: "Hur fungerar den religiösa skatten (allmosan) inom islam?",
+    correctAnswer: "Man betalar 2,5 % av sin inkomst till de fattiga under Ramadan.",
+    answers: [
+        "Man betalar 2,5 % av sin inkomst till de fattiga under Ramadan.",
+        "Man donerar till välgörenhet när man vill.",
+        "Man ger allmosor under specifika högtider.",
+        "Man ger bort sin favoritchoklad varje fredag."
+    ]
+},
+{
+    question: "Varför fastar muslimer under Ramadan?",
+    correctAnswer: "För att efterlikna Muhammed och lära sig tänka på de mindre lyckligt lottade.",
+    answers: [
+        "För att efterlikna Muhammed och lära sig tänka på de mindre lyckligt lottade.",
+        "För att rena själen och visa hängivenhet till Gud.",
+        "För att följa islams regler och stärka tron.",
+        "För att få en ursäkt att äta jättemycket mat efter solnedgången."
+    ]
+},
+{
+    question: "Vilka tider under året pågår fastan inom islam?",
+    correctAnswer: "Under månaden Ramadan, som förändras varje år eftersom det muslimska året är kortare.",
+    answers: [
+        "Under månaden Ramadan, som förändras varje år eftersom det muslimska året är kortare.",
+        "Under sommarmånaderna.",
+        "Under det islamska kalenderårets tolfte månad.",
+        "Endast när det är måndag och solen skiner."
+    ]
+},
+{
+    question: "Vad är undantagen för att inte fasta under Ramadan?",
+    correctAnswer: "Sjukdom, hög ålder, graviditet, menstruation eller om man är barn.",
+    answers: [
+        "Sjukdom, hög ålder, graviditet, menstruation eller om man är barn.",
+        "Om man reser långt bort.",
+        "Om man har ett viktigt arbete.",
+        "Om man är allergisk mot luft."
+    ]
+},
+{
+    question: "Vad innebär vallfärden till Mecka?",
+    correctAnswer: "En pilgrimsresa till Mecka för att utföra heliga riter vid Kaba.",
+    answers: [
+        "En pilgrimsresa till Mecka för att utföra heliga riter vid Kaba.",
+        "En resa till en annan helig plats.",
+        "En ritual där man fastar hela resan.",
+        "Att åka till Mecka och prova alla desserter."
+    ]
+},
+{
+    question: "Vilka platser besöker muslimer under vallfärden?",
+    correctAnswer: "Mecka, Kaba, och områdena runt Muhammeds liv.",
+    answers: [
+        "Mecka, Kaba, och områdena runt Muhammeds liv.",
+        "Jerusalem, Kaba och Mekka.",
+        "Kaba och Medina.",
+        "Den lokala snabbköpet och glassbaren."
+    ]
+},
+{
+    question: "Vad är Eid al-Fitr och hur firas den?",
+    correctAnswer: "Firandet av Ramadan där man ger presenter, äter och träffar familj.",
+    answers: [
+        "Firandet av Ramadan där man ger presenter, äter och träffar familj.",
+        "En dag för att ge allmosor till de fattiga.",
+        "En dag för att visa kärlek och medkänsla.",
+        "En dag då alla dansar runt ett stort tårtfat."
+    ]
+},
+{
+    question: "Vad är Eid al-Adha och varför firar muslimer den?",
+    correctAnswer: "Till minne av Abrahams villighet att offra sin son; firas med att offra ett djur.",
+    answers: [
+        "Till minne av Abrahams villighet att offra sin son; firas med att offra ett djur.",
+        "För att fira en god skörd.",
+        "För att hedra Muhammeds födelse.",
+        "För att fira med en gigantisk pizzafest."
+    ]
+},
+{
+    question: "Vad är ashura och hur firar shiamuslimer den?",
+    correctAnswer: "En sorgedag till minne av Husayn, där vissa skadar sig själva för att minnas hans lidande.",
+    answers: [
+        "En sorgedag till minne av Husayn, där vissa skadar sig själva för att minnas hans lidande.",
+        "En dag för att minnas profeten Muhammed.",
+        "En festdag där man ber och fastar.",
+        "En tävling om vem som kan äta mest choklad på en timme."
+    ]
+},
+{
+    question: "Vilka är några viktiga riter inom islam?",
+    correctAnswer: "Omskärelse, fasta, bröllop och begravning.",
+    answers: [
+        "Omskärelse, fasta, bröllop och begravning.",
+        "Fasta, bön, och donation till moskéer.",
+        "Vallfärd, bön och bröllop.",
+        "Att dansa tango på fredagskvällar."
+    ]
+},
+{
+    question: "Hur går en begravning till inom islam?",
+    correctAnswer: "Kroppen begravs så snabbt som möjligt, med huvudet riktat mot Mecka.",
+    answers: [
+        "Kroppen begravs så snabbt som möjligt, med huvudet riktat mot Mecka.",
+        "Kroppen bränns och askan sprids på en helig plats.",
+        "Kroppen placeras i ett mausoleum.",
+        "Begravningen sker efter att kroppen har åkt på en åkattraktion."
+    ]
+},
+{
+    question: "Vad är sharia och vad innebär det?",
+    correctAnswer: "Den islamiska lagen som reglerar hur man lever rätt enligt islam.",
+    answers: [
+        "Den islamiska lagen som reglerar hur man lever rätt enligt islam.",
+        "En samling moraliska riktlinjer.",
+        "En vägledning för religiösa plikter.",
+        "Ett recept på hur man bakar världens godaste tårta."
+    ]
+},
+{
+    question: "Vad är haditherna och vad handlar de om?",
+    correctAnswer: "Berättelser om Muhammeds liv och hans handlingar.",
+    answers: [
+        "Berättelser om Muhammeds liv och hans handlingar.",
+        "Historiska krönikor om islam.",
+        "Filosofiska skrifter om Gud.",
+        "En samling skämt från 700-talet."
+    ]
+},
+{
+    question: "Vad är islamism och hur definieras det?",
+    correctAnswer: "En fundamentalistisk tolkning av islam där religion och stat är ett.",
+    answers: [
+        "En fundamentalistisk tolkning av islam där religion och stat är ett.",
+        "En rörelse för att förena alla muslimer under en ledare.",
+        "En form av politisk islam som främjar social rättvisa.",
+        "En tävling om vem som kan hoppa högst i moskén."
+    ]
+},
+{
+    question: "Vilka länder har islamistiska styren?",
+    correctAnswer: "Afghanistan och Iran är exempel.",
+    answers: [
+        "Afghanistan och Iran är exempel.",
+        "Saudiarabien och Pakistan.",
+        "Marocko och Egypten.",
+        "Disneyland och Månen."
+    ]
+},
+{
+    question: "Hur är livet i islamistiska länder som Afghanistan och Iran?",
+    correctAnswer: "Strikta lagar styr baserade på religion; begränsade rättigheter för kvinnor.",
+    answers: [
+        "Strikta lagar styr baserade på religion; begränsade rättigheter för kvinnor.",
+        "Full frihet för alla medborgare.",
+        "Större fokus på utbildning och teknologi.",
+        "Alla måste klä sig i rosa varje tisdag."
+    ]
+},
+{
+    question: "Hur lever kvinnor inom islamistiska länder?",
+    correctAnswer: "De har få rättigheter och lever ofta under strikt övervakning.",
+    answers: [
+        "De har få rättigheter och lever ofta under strikt övervakning.",
+        "De har samma rättigheter som män men måste följa vissa religiösa regler.",
+        "De får inte resa eller arbeta utan tillstånd.",
+        "De får bara äta glass på söndagar."
+    ]
+},
+{
+    question: "Varför bär vissa muslimska kvinnor slöja?",
+    correctAnswer: "Som ett tecken på vördnad för Gud och för att inte fresta män.",
+    answers: [
+        "Som ett tecken på vördnad för Gud och för att inte fresta män.",
+        "Som en kulturell tradition.",
+        "För att följa religiösa regler om klädsel.",
+        "För att gömma sin superhjälteidentitet."
+    ]
+},
+{
+    question: "Vad är feministisk islam?",
+    correctAnswer: "En rörelse som kämpar för lika rättigheter för kvinnor och män inom islam.",
+    answers: [
+        "En rörelse som kämpar för lika rättigheter för kvinnor och män inom islam.",
+        "En tolkning av islam som främjar social rättvisa.",
+        "En rörelse för att stärka kvinnors roll i moskén.",
+        "En förening för att lära kvinnor att dansa flamenco."
+    ]
+},
+{
+    question: "Vilka saker kämpar feministiska muslimer för?",
+    correctAnswer: "Rätten att välja slöja, utbildning, skilsmässa och att vara imam.",
+    answers: [
+        "Rätten att välja slöja, utbildning, skilsmässa och att vara imam.",
+        "Bättre arbetsvillkor för kvinnor.",
+        "Jämställdhet i alla samhällsfrågor.",
+        "Att alla kvinnor ska ha rosa hattar på sig på fredagar."
+    ]
+},
+{
+    question: "Vad innebär sekularistisk islam?",
+    correctAnswer: "Att islam bör separeras från staten och anpassas till det moderna samhället.",
+    answers: [
+        "Att islam bör separeras från staten och anpassas till det moderna samhället.",
+        "En tolkning av islam där religion och politik hålls åtskilda.",
+        "En strävan efter att integrera islam i moderna demokratiska system.",
+        "Att man bara kan vara religiös om man äger en enhörning."
+    ]
+},
+{
+    question: "Varför delades islam i två grenar: shia och sunni?",
+    correctAnswer: "Oenighet om vem som skulle efterträda Muhammed.",
+    answers: [
+        "Oenighet om vem som skulle efterträda Muhammed.",
+        "Skillnader i tolkningen av Koranen.",
+        "Skillnader i religiösa och kulturella traditioner.",
+        "För att de inte kunde komma överens om vad de skulle ha till lunch."
+    ]
+},
+{
+    question: "Vilken skillnad är det mellan shia- och sunnimuslimer?",
+    correctAnswer: "Shiamuslimer anser att ledaren ska vara släkt med Muhammed, sunnimuslimer följer kalifer.",
+    answers: [
+        "Shiamuslimer anser att ledaren ska vara släkt med Muhammed, sunnimuslimer följer kalifer.",
+        "De har olika tolkningar av sharia.",
+        "De firar olika högtider och har olika religiösa ritualer.",
+        "Shiamuslimer gillar kaffe, medan sunnimuslimer föredrar te."
+    ]
+},
+{
+    question: "Vilken av islamiska grenarna är störst?",
+    correctAnswer: "Sunnimuslimer (cirka 90 % av alla muslimer).",
+    answers: [
+        "Sunnimuslimer (cirka 90 % av alla muslimer).",
+        "Shiamuslimer.",
+        "Ibadi-muslimer.",
+        "Den gren som dansar mest på fredagar."
+    ]
+},
+{
+    question: "Vad är ett shiamuslimskt land?",
+    correctAnswer: "Iran.",
+    answers: [
+        "Iran.",
+        "Irak.",
+        "Bahrain.",
+        "Utopia."
+    ]
+},
+{
+    question: "Hur ser islam på Jesus?",
+    correctAnswer: "Han är en viktig profet, men inte Guds son.",
+    answers: [
+        "Han är en viktig profet, men inte Guds son.",
+        "Han är en helig man med en viktig plats i Koranen.",
+        "Han var en lärare och andlig ledare.",
+        "Han var den bästa bagaren i Mellanöstern."
+    ]
+},
+{
+    question: "Hur ser kristendomen på Jesus?",
+    correctAnswer: "Som Guds son och världens frälsare.",
+    answers: [
+        "Som Guds son och världens frälsare.",
+        "Som en stor lärare och profet.",
+        "Som en andlig ledare och vägledare.",
+        "Som skaparen av den bästa pizzan i Jerusalem."
+    ]
+},
+{
+    question: "Hur ser judendomen på Jesus?",
+    correctAnswer: "Han är inte viktig för judendomen.",
+    answers: [
+        "Han är inte viktig för judendomen.",
+        "Han var en vanlig man med stora idéer.",
+        "Han var en av många profeter som har predikat genom historien.",
+        "Han var den som introducerade choklad till världen."
+    ]
+},
+{
+    question: "Vad är det gemensamma ursprunget för islam, kristendom och judendom?",
+    correctAnswer: "Abraham är stamfader till alla tre religionerna.",
+    answers: [
+        "Abraham är stamfader till alla tre religionerna.",
+        "De delar profeter och heliga texter.",
+        "De uppstod alla i Mellanöstern.",
+        "De alla började med en episkt stor tefest."
+    ]
+},
+{
+    question: "Vilka gemensamma personer finns i islam, kristendom och judendom?",
+    correctAnswer: "Abraham, Moses, Isaak, Ismael och ängeln Gabriel.",
+    answers: [
+        "Abraham, Moses, Isaak, Ismael och ängeln Gabriel.",
+        "Jesus, Muhammed och David.",
+        "Moses, Maria och Josef.",
+        "Aladdin, Jafar och Anden i lampan."
+    ]
+},
+{
+    question: "Varför är Jerusalem heligt för flera religioner?",
+    correctAnswer: "Det är viktigt för både judendom, kristendom och islam.",
+    answers: [
+        "Det är viktigt för både judendom, kristendom och islam.",
+        "Det är där många profeter har predikat.",
+        "Där finns flera heliga platser för olika religioner.",
+        "Där serveras den bästa falafeln i hela Mellanöstern."
+    ]
+},
+{
+    question: "Vad innebär den gyllene regeln inom islam, kristendom och judendom?",
+    correctAnswer: "Behandla andra som du själv vill bli behandlad.",
+    answers: [
+        "Behandla andra som du själv vill bli behandlad.",
+        "Respektera alla levande varelser.",
+        "Sprid fred och kärlek.",
+        "Ät choklad varje gång du är ledsen."
+    ]
+},
+{
+    question: "Vilka matregler delar judendom och islam?",
+    correctAnswer: "Förbudet mot att äta fläskkött.",
+    answers: [
+        "Förbudet mot att äta fläskkött.",
+        "Att fasta vid vissa högtider.",
+        "Att endast äta halal- eller koshermat.",
+        "Att alltid ha en extra dessert till middagen."
+    ]
+},
+{
+    question: "Hur används Gamla testamentet inom judendomen och kristendomen?",
+    correctAnswer: "Det är en helig text för både judar och kristna.",
+    answers: [
+        "Det är en helig text för både judar och kristna.",
+        "Det är en samling av moraliska och religiösa berättelser.",
+        "Det används för att vägleda troende.",
+        "Det är en fantastisk deckare om mysteriet med den försvunna fruktskålen."
+    ]
+},
+{
+    question: "Vad är de viktigaste skillnaderna mellan islam och kristendom?",
+    correctAnswer: "Islam ser Jesus som profet, kristendom ser honom som Guds son.",
+    answers: [
+        "Islam ser Jesus som profet, kristendom ser honom som Guds son.",
+        "Kristendomens tro baseras på treenigheten, medan islam har strikt monoteism.",
+        "Islam följer Koranen, kristendom följer Bibeln.",
+        "Kristendomen kräver att du älskar kaffe, islam föredrar te."
+    ]
+},
+{
+    question: "Vad är de viktigaste skillnaderna mellan judendom och islam?",
+    correctAnswer: "Judar erkänner inte Muhammed som profet, muslimer gör det.",
+    answers: [
+        "Judar erkänner inte Muhammed som profet, muslimer gör det.",
+        "Judendomen följer Torah, medan islam följer Koranen.",
+        "Judendomen betonar väntan på Messias, medan islam tror på profeterna.",
+        "I judendomen är chokladkakor heliga, i islam är de bara goda."
+    ]
+},
+{
+    question: "Varför har vissa muslimska länder strikta regler för kvinnor?",
+    correctAnswer: "Baserat på islamistiska tolkningar av sharia.",
+    answers: [
+        "Baserat på islamistiska tolkningar av sharia.",
+        "För att upprätthålla social ordning enligt religiösa traditioner.",
+        "För att bevara kulturella normer och traditioner.",
+        "För att alla kvinnor ska kunna springa snabbare ifall en enhörning dyker upp."
+    ]
+},
+{
+    question: "Hur lever muslimer i sekulära muslimska länder?",
+    correctAnswer: "Ofta med mer frihet, särskilt för kvinnor.",
+    answers: [
+        "Ofta med mer frihet, särskilt för kvinnor.",
+        "Sekulära lagar påverkar både privat och offentligt liv.",
+        "De kan utöva sin tro utan att religion styr staten.",
+        "Varje onsdag måste de bära en röd hatt."
+    ]
+},
+{
+    question: "Vad innebär det att vara muslimsk feminist i olika delar av världen?",
+    correctAnswer: "Att kämpa för rättigheter som varierar beroende på land.",
+    answers: [
+        "Att kämpa för rättigheter som varierar beroende på land.",
+        "Att arbeta för jämställdhet mellan könen.",
+        "Att balansera tro och moderna värderingar.",
+        "Att alltid ha en chokladkaka till hands för att bryta patriarkatet."
+    ]
+},
+{
+    question: "Vad innebär omskärelsen inom islam?",
+    correctAnswer: "Att ta bort förhuden på pojkar som en religiös rit.",
+    answers: [
+        "Att ta bort förhuden på pojkar som en religiös rit.",
+        "Det är en traditionell handling som utförs på unga pojkar.",
+        "Det markerar pojkens övergång till vuxenlivet.",
+        "Det är en dans med tre geter och en enhörning."
+    ]
+},
+{
+    question: "När börjar muslimska ungdomar fasta för första gången?",
+    correctAnswer: "Under tonåren, som en del av att bli vuxen.",
+    answers: [
+        "Under tonåren, som en del av att bli vuxen.",
+        "När de är mogna nog att förstå fastans betydelse.",
+        "När de kan klara en hel dag utan att äta.",
+        "När de klarar att springa ett maraton utan att bli andfådda."
+    ]
+},
+{
+    question: "Varför är bröllopet en viktig rit inom islam?",
+    correctAnswer: "Att bilda familj är en central del av det muslimska livet.",
+    answers: [
+        "Att bilda familj är en central del av det muslimska livet.",
+        "Det är en religiös och social ceremoni.",
+        "Det markerar början på ett nytt liv tillsammans.",
+        "För att alla älskar en bra fest med dans och falafel."
+    ]
+},
+{
+    question: "Hur påverkade Muhammed arabvärlden under sin tid?",
+    correctAnswer: "Han enade klanerna och spred ett monoteistiskt budskap.",
+    answers: [
+        "Han enade klanerna och spred ett monoteistiskt budskap.",
+        "Han introducerade nya sociala och moraliska värderingar.",
+        "Han skapade en stark politisk och religiös rörelse.",
+        "Han var den första som uppfann kamelmjölksglass."
+    ]
+},
+{
+    question: "Vad är domens dag inom islam?",
+    correctAnswer: "Den dag då Allah dömer människors handlingar.",
+    answers: [
+        "Den dag då Allah dömer människors handlingar.",
+        "Dagen då alla själar bedöms för sina handlingar på jorden.",
+        "Den dag då det avgörs vem som kommer till paradiset eller helvetet.",
+        "Dagen då alla bestämmer vad de ska äta till middag."
+    ]
+},
+{
+    question: "Vad innebär vallfärden (hajj) för en muslims tro?",
+    correctAnswer: "Det är en av de fem pelarna och en symbol för lydnad mot Gud.",
+    answers: [
+        "Det är en av de fem pelarna och en symbol för lydnad mot Gud.",
+        "Det är en viktig resa för att stärka den andliga tron.",
+        "Den markerar ett fullbordat religiöst liv.",
+        "Det är en resa där man får gratis glass vid ankomsten."
+    ]
+},
+{
+    question: "Hur påverkar islam synen på rättvisa och orättvisor?",
+    correctAnswer: "Genom att följa sharia och rättvisa regler.",
+    answers: [
+        "Genom att följa sharia och rättvisa regler.",
+        "Rättvisa ses som en central del av Guds vilja.",
+        "Orättvisor ska motarbetas genom goda handlingar.",
+        "Alla konflikter löses med choklad."
+    ]
+},
+{
+    question: "Vad är Guds roll enligt islam?",
+    correctAnswer: "Allah är den enda guden och den högsta auktoriteten.",
+    answers: [
+        "Allah är den enda guden och den högsta auktoriteten.",
+        "Gud är skaparen och domaren över allt liv.",
+        "Allah styr och vägleder mänskligheten genom Koranen.",
+        "Allah skickar småkakor till de som följer reglerna."
+    ]
+},
+{
+    question: "Vad betyder ordet \"islam\"?",
+    correctAnswer: "Underkastelse inför Gud.",
+    answers: [
+        "Underkastelse inför Gud.",
+        "Fred och harmoni.",
+        "Att leva i enlighet med Guds vilja.",
+        "Att äta glass på söndagar."
+    ]
+},
+{
+    question: "Vad är skillnaden mellan sunna och sharia?",
+    correctAnswer: "Sunna är Muhammeds exempel, sharia är den islamiska lagen.",
+    answers: [
+        "Sunna är Muhammeds exempel, sharia är den islamiska lagen.",
+        "Sharia är lagen, medan sunna är religiösa traditioner.",
+        "Sunna reglerar hur muslimer bör leva sina liv.",
+        "Sharia handlar om att göra världens största smörgås."
+    ]
+},
+{
+    question: "Hur påverkar Koranens tolkning muslimer i vardagen?",
+    correctAnswer: "Den styr deras handlingar och beslut i det dagliga livet.",
+    answers: [
+        "Den styr deras handlingar och beslut i det dagliga livet.",
+        "Den ger vägledning i religiösa och moraliska frågor.",
+        "Den används som en rättesnöre för tro och liv.",
+        "Den ger recept på de bästa chokladkakorna i världen."
+    ]
+},
+{
+    question: "Vad innebär begreppet ummah inom islam?",
+    correctAnswer: "Den globala muslimska gemenskapen.",
+    answers: [
+        "Den globala muslimska gemenskapen.",
+        "Ett arabiskt ord för nation.",
+        "Det är en term för den muslimska trosfamiljen.",
+        "En grupp människor som älskar falafel."
+    ]
+},
+{
+    question: "Vad är en kalif?",
+    correctAnswer: "En andlig och politisk ledare inom islam.",
+    answers: [
+        "En andlig och politisk ledare inom islam.",
+        "En efterträdare till Muhammed.",
+        "En ledare för den muslimska gemenskapen.",
+        "Den som ansvarar för att göra bästa kebaben i byn."
+    ]
+},
+{
+    question: "Vad är en imam inom islam?",
+    correctAnswer: "En religiös ledare som leder böner i moskén.",
+    answers: [
+        "En religiös ledare som leder böner i moskén.",
+        "En expert på Koranens läror.",
+        "En person som undervisar om islamisk tro och praktik.",
+        "En hemlig superhjälte med bönekompass i fickan."
+    ]
+},
+{
+    question: "Vilka är några exempel på heliga platser för muslimer utanför Saudiarabien?",
+    correctAnswer: "Jerusalem (klippmoskén), Medina.",
+    answers: [
+        "Jerusalem (klippmoskén), Medina.",
+        "Kairo och Damaskus.",
+        "Alhambra i Spanien.",
+        "Mount Everest och Grand Canyon."
+    ]
+},
+{
+    question: "Hur förhåller sig islam till vetenskap och kunskap?",
+    correctAnswer: "Islam uppmuntrar till kunskap och vetenskap.",
+    answers: [
+        "Islam uppmuntrar till kunskap och vetenskap.",
+        "Koranen betonar vikten av utbildning.",
+        "Vetenskap och religion kan samexistera enligt islamisk tradition.",
+        "Islam förespråkar att uppfinna flygande mattor."
+    ]
+},
+{
+    question: "Vad är halal och haram inom islam?",
+    correctAnswer: "Halal är tillåtet, haram är förbjudet enligt islamisk lag.",
+    answers: [
+        "Halal är tillåtet, haram är förbjudet enligt islamisk lag.",
+        "Halal är mat som är ren, haram är mat som är orättfärdig.",
+        "Halal och haram handlar om vad som är moraliskt tillåtet eller inte.",
+        "Halal är den godaste maten, haram är allt som inte innehåller choklad."
+    ]
+},
+{
+    question: "Vilka regler finns det för ekonomiska transaktioner inom islam?",
+    correctAnswer: "Ränta är förbjuden, affärer ska ske rättvist.",
+    answers: [
+        "Ränta är förbjuden, affärer ska ske rättvist.",
+        "Att investera i företag som inte skadar människor eller miljön.",
+        "Att undvika ekonomiskt oetiska affärsmetoder.",
+        "Alla affärer måste avslutas med en dans."
+    ]
+},
+{
+    question: "Vad är moralpolis och vilken roll spelar den i vissa muslimska länder?",
+    correctAnswer: "En polis som övervakar efterlevnaden av religiösa regler, särskilt klädsel.",
+    answers: [
+        "En polis som övervakar efterlevnaden av religiösa regler, särskilt klädsel.",
+        "En enhet som kontrollerar att människor följer islamisk lag.",
+        "En grupp som övervakar moraliskt beteende i det offentliga rummet.",
+        "En polisstyrka som delar ut choklad till alla som är artiga."
+    ]
+},
+{
+    question: "Vad är den nattliga resan som Muhammed gjorde?",
+    correctAnswer: "En andlig resa från Mecka till Jerusalem och vidare till himlen.",
+    answers: [
+        "En andlig resa från Mecka till Jerusalem och vidare till himlen.",
+        "En vision där Muhammed mötte Gud och änglarna.",
+        "En resa genom drömmar där Muhammed fick vägledning.",
+        "En hemlig resa för att hitta den försvunna kamelen."
+    ]
+},
+{
+    question: "Vilken betydelse har ängeln Gabriel inom islam?",
+    correctAnswer: "Han uppenbarade Koranen för Muhammed.",
+    answers: [
+        "Han uppenbarade Koranen för Muhammed.",
+        "Han är en budbärare från Gud.",
+        "Han spelar en central roll i Guds kommunikation med profeterna.",
+        "Han levererar Guds brev med flygande enhörningar."
+    ]
+},
+{
+    question: "Hur firar muslimer den natt då Koranen började uppenbaras för Muhammed?",
+    correctAnswer: "Genom bön och läsning av Koranen under Ramadan.",
+    answers: [
+        "Genom bön och läsning av Koranen under Ramadan.",
+        "Genom att fasta och reflektera över Koranens budskap.",
+        "Genom att samla familjen för en religiös ceremoni.",
+        "Genom att ha en storslagen fest med dansande kameler."
+    ]
+},
+{
+    question: "Vad är Muhammeds roll i den muslimska trosbekännelsen?",
+    correctAnswer: "Han är Allahs sändebud.",
+    answers: [
+        "Han är Allahs sändebud.",
+        "Han är den sista profeten.",
+        "Han är Guds vägledare till människorna.",
+        "Han är den bästa kock som någonsin har lagat falafel."
+    ]
+},
+{
+    question: "Vilka regler finns för moskébesök för muslimer?",
+    correctAnswer: "Man ska vara ren och tvätta sig före besöket.",
+    answers: [
+        "Man ska vara ren och tvätta sig före besöket.",
+        "Man ska bära kläder som täcker kroppen.",
+        "Man ska uppträda respektfullt och inte prata högt.",
+        "Man måste kunna jonglera med böner om tre bollar samtidigt."
+    ]
+},
+{
+    question: "Vad är den rätta riktningen för bön inom islam?",
+    correctAnswer: "Mot Mecka.",
+    answers: [
+        "Mot Mecka.",
+        "Mot närmaste moské.",
+        "Mot den heliga Kaba i Mecka.",
+        "Mot det närmaste chokladståndet."
+    ]
+},
+{
+    question: "Vilka böner är obligatoriska för muslimer?",
+    correctAnswer: "De fem dagliga bönerna.",
+    answers: [
+        "De fem dagliga bönerna.",
+        "Fredagsbönen i moskén.",
+        "Böner vid soluppgång och solnedgång.",
+        "Böner innan man äter en stor pizza."
+    ]
+},
+{
+    question: "Vilken roll spelar fasta för muslimernas tro?",
+    correctAnswer: "Det är ett sätt att rena själen och visa lydnad inför Gud.",
+    answers: [
+        "Det är ett sätt att rena själen och visa lydnad inför Gud.",
+        "Det är en form av andlig disciplin.",
+        "Fasta stärker den religiösa tron och gemenskapen.",
+        "Det är en chans att äta jättemycket godis efter solnedgången."
+    ]
+},
+{
+    question: "Hur relaterar tro och handlingar till varandra inom islam?",
+    correctAnswer: "Goda handlingar visar på en stark tro och leder till belöning i nästa liv.",
+    answers: [
+        "Goda handlingar visar på en stark tro och leder till belöning i nästa liv.",
+        "Tro utan handling är inte fullständig enligt islam.",
+        "Handlingar är bevis på ens tro och lydnad till Gud.",
+        "Det handlar om att jonglera tro, choklad och kaffe samtidigt."
+    ]
+},
+{
+    question: "Hur påverkar fastan under Ramadan en muslims dagliga liv?",
+    correctAnswer: "Man avstår från mat och dryck under dagtid och fokuserar på andlighet.",
+    answers: [
+        "Man avstår från mat och dryck under dagtid och fokuserar på andlighet.",
+        "Man ber oftare och reflekterar över sitt liv.",
+        "Man använder tiden för att stärka sin tro och sin disciplin.",
+        "Man får hemliga superkrafter vid solnedgång."
+    ]
+},
+{
+    question: "Vilka profeter erkänns både inom islam och kristendom?",
+    correctAnswer: "Abraham, Moses, Jesus.",
+    answers: [
+        "Abraham, Moses, Jesus.",
+        "David, Salomo, Jesaja.",
+        "Adam, Noah, Johannes döparen.",
+        "Batman, Spiderman och Supermannen."
+    ]
+},
+{
+    question: "Hur ser islam på slaveri historiskt sett?",
+    correctAnswer: "Muhammed motsatte sig slaveri och ville att slavar skulle frigöras.",
+    answers: [
+        "Muhammed motsatte sig slaveri och ville att slavar skulle frigöras.",
+        "Slaveri var en accepterad del av samhället under tidig islam.",
+        "Islam förespråkar rättvisa och frihet för alla människor.",
+        "Islam rekommenderar att byta slavar mot chokladkakor."
+    ]
+},
+{
+    question: "Vad innebär fred och rättvisa enligt islam?",
+    correctAnswer: "Att följa Guds lag och behandla andra rättvist.",
+    answers: [
+        "Att följa Guds lag och behandla andra rättvist.",
+        "Att arbeta för att skapa ett rättvist samhälle.",
+        "Att alla människor har lika rättigheter enligt Guds vilja.",
+        "Att alltid bära med sig en godisskål för att sprida fred."
+    ]
+},
+{
+    question: "Hur påverkar islamsk lag familjelivet i vissa länder?",
+    correctAnswer: "Genom regler om äktenskap, arv och skilsmässa.",
+    answers: [
+        "Genom regler om äktenskap, arv och skilsmässa.",
+        "Familjerelationer styrs av traditioner och religiösa lagar.",
+        "Familjen är en central del av samhället enligt islam.",
+        "Alla måste dansa en vals varje torsdag."
+    ]
+},
+{
+    question: "Vilken roll spelar haditherna för tolkningen av Koranen?",
+    correctAnswer: "De kompletterar Koranen och hjälper till att förstå Muhammeds handlingar.",
+    answers: [
+        "De kompletterar Koranen och hjälper till att förstå Muhammeds handlingar.",
+        "De ger vägledning i praktiska frågor och levnadsregler.",
+        "Haditherna används som en källa för att tolka islamisk lag.",
+        "Haditherna förklarar hur man gör världens största chokladkaka."
+    ]
+},
+{
+    question: "Hur kan man beskriva islams spridning till Europa?",
+    correctAnswer: "Genom handel, erövringar och kulturellt utbyte.",
+    answers: [
+        "Genom handel, erövringar och kulturellt utbyte.",
+        "Genom diplomatiska förbindelser och fredliga relationer.",
+        "Genom migration och etablering av muslimska samhällen.",
+        "Genom att skicka chokladkakor med varje handelskaravan."
+    ]
+},
+{
+    question: "Vilka lärdomar drar muslimer från Muhammeds liv och exempel?",
+    correctAnswer: "Hans liv ses som en förebild för hur man ska leva.",
+    answers: [
+        "Hans liv ses som en förebild för hur man ska leva.",
+        "Han visade på moralisk styrka och mod.",
+        "Han är en modell för religiöst och socialt liv.",
+        "Han lärde alla hur man bakar den perfekta baklavan."
+    ]
+},
+{
+    question: "Hur ser islam på skapelsen och människans plats i världen?",
+    correctAnswer: "Allah skapade världen och människan för att dyrka honom.",
+    answers: [
+        "Allah skapade världen och människan för att dyrka honom.",
+        "Människan har ansvar att ta hand om skapelsen.",
+        "Gud gav människan förmågan att forma världen genom goda handlingar.",
+        "Människan skapades för att odla chokladplantor och sprida glädje."
+    ]
+},
+{
+    question: "Vilken betydelse har den första moskén inom islam?",
+    correctAnswer: "Den etablerade en plats för kollektiv bön och gemenskap.",
+    answers: [
+        "Den etablerade en plats för kollektiv bön och gemenskap.",
+        "Den är en symbol för samhörighet och tro.",
+        "Den första moskén är en viktig historisk och religiös plats.",
+        "Det var där den första baklavan någonsin bakades."
+    ]
+},
+{
+    question: "Hur utövas islam på olika sätt i olika delar av världen?",
+    correctAnswer: "Genom lokala traditioner, olika tolkningar och kulturella skillnader.",
+    answers: [
+        "Genom lokala traditioner, olika tolkningar och kulturella skillnader.",
+        "Praktiken varierar beroende på sociala och politiska faktorer.",
+        "Islam anpassas ofta till lokala förhållanden och normer.",
+        "Alla firar varje fredag med en gigantisk chokladtårta."
+    ]
+},
+{
+    question: "Hur relaterar muslimska helgdagar till Muhammeds liv?",
+    correctAnswer: "De flesta helgdagar firas till minne av händelser i Muhammeds liv.",
+    answers: [
+        "De flesta helgdagar firas till minne av händelser i Muhammeds liv.",
+        "De symboliserar viktiga religiösa händelser och lärdomar.",
+        "Många helgdagar firas i enlighet med profetens föredöme.",
+        "Alla helgdagar avslutas med att kasta konfetti och äta glass."
+    ]
+},
+{
+    question: "Vilken inverkan har islam haft på samhällen utanför Mellanöstern?",
+    correctAnswer: "Det har påverkat kultur, vetenskap och politik i många regioner.",
+    answers: [
+        "Det har påverkat kultur, vetenskap och politik i många regioner.",
+        "Islam har bidragit till utvecklingen av konst, arkitektur och filosofi.",
+        "Islams spridning har haft en varaktig inverkan på många samhällen.",
+        "Islam introducerade choklad till hela världen, och alla var glada."
+    ]
+}
+
+    // Continue with the rest of the questions similarly.
+];
+    let currentQuestionIndex = 0;
+    let correctAnswers = 0;
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function loadQuestion() {
+        const questionContainer = document.getElementById('question-text');
+        const answerDropdown = document.getElementById('answers');
+        const question = questions[currentQuestionIndex];
+
+        questionContainer.innerText = question.question;
+        answerDropdown.innerHTML = '';
+
+        // Shuffle answers each time
+        shuffle(question.answers);
+
+        question.answers.forEach(answer => {
+            const option = document.createElement('option');
+            option.value = answer;
+            option.textContent = answer;
+            answerDropdown.appendChild(option);
+        });
+
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const progress = document.getElementById('progress');
+        const progressValue = ((currentQuestionIndex / questions.length) * 100);
+        progress.style.width = `${progressValue}%`;
+        progress.textContent = `${Math.round(progressValue)}%`;
+    }
+
+    function nextQuestion() {
+        const selectedAnswer = document.getElementById('answers').value;
+        const correctAnswer = questions[currentQuestionIndex].correctAnswer;
+
+        if (selectedAnswer === correctAnswer) {
+            correctAnswers++;
+        }
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        const quizContainer = document.getElementById('quiz-container');
+        const quizEnd = document.getElementById('quiz-end');
+        const result = document.getElementById('result');
+
+        quizContainer.style.display = 'none';
+        quizEnd.style.display = 'block';
+        result.textContent = `${correctAnswers} av ${questions.length} korrekta!`;
+
+        const progress = document.getElementById('progress');
+        progress.style.width = '100%';
+        progress.textContent = '100%';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('quiz-container').style.display = 'block';
+        loadQuestion();
+    });
+</script>
+
+</body>
+</html>
