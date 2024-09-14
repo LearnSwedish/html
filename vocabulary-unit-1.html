@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocabulary, Unit One</title>
+    <title>Unit One: all</title>
     <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
     <style>
 /* Base Styles */
@@ -19,9 +19,9 @@ body {
 
 .container {
     max-width: 700px;
-    margin: 40px auto;
+    margin: 10px auto;
     background-color: #ffffff;
-    padding: 40px;
+    padding: 20px;
     border-radius: 15px;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
@@ -223,8 +223,8 @@ input:checked + .slider:before {
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
+    font-size: 0.8rem; /* Adjust the font size to make words smaller */
 }
-
 .protocol ul {
     list-style-type: none;
     padding: 0;
@@ -352,7 +352,7 @@ input:checked + .slider:before {
     </div>
 
     <div class="container">
-        <h1>Vocabulary – Unit One</h1>
+        <h1>Unit One: all</h1>
         <div class="progress-bar">
             <div id="progress" class="progress"></div>
         </div>
@@ -373,7 +373,7 @@ input:checked + .slider:before {
         </div>
 
         <div class="protocol">
-            <p><strong>Words Missed on First Try:</strong></p>
+            <p><strong>Words missed on first try:</strong></p>
             <ul id="missed-words-list"></ul>
         </div>
 
@@ -398,101 +398,102 @@ input:checked + .slider:before {
         let correctAnswers = 0;
         let mistakes = 0;
         let missedWords = [];
+        let previousRoundMissedWords = []; // New variable to track missed words across rounds
         const vocabulary = [
-            { swedish: "hej", english: ["hello", "goodbye", "evening", "thanks"], correct: 0 },
-{ swedish: "jag", english: ["I", "you", "she", "they"], correct: 0 },
-{ swedish: "att heta", english: ["to be called", "to run", "to jump", "to sing"], correct: 0 },
-{ swedish: "jag heter", english: ["my name is", "I live", "I like", "I sing"], correct: 0 },
-{ swedish: "nitton", english: ["nineteen", "sixteen", "twenty-one", "thirty"], correct: 0 },
-{ swedish: "år", english: ["years", "days", "hours", "minutes"], correct: 0 },
-{ swedish: "att komma", english: ["to come", "to leave", "to cry", "to laugh"], correct: 0 },
-{ swedish: "jag kommer från", english: ["I come from", "I go to", "I live with", "I leave from"], correct: 0 },
-{ swedish: "att studera", english: ["to study", "to teach", "to cook", "to drive"], correct: 0 },
-{ swedish: "svenska", english: ["Swedish", "Norwegian", "English", "German"], correct: 0 },
-{ swedish: "pojkvän", english: ["boyfriend", "girlfriend", "mother", "teacher"], correct: 0 },
-{ swedish: "jag kallas för", english: ["I am called", "I am walking", "I am working", "I am eating"], correct: 0 },
-{ swedish: "svensk", english: ["Swedish", "French", "Italian", "Russian"], correct: 0 },
-{ swedish: "datavetenskap", english: ["computer science", "physics", "biology", "history"], correct: 0 },
-{ swedish: "på", english: ["at, on", "under", "beside", "behind"], correct: 0 },
-{ swedish: "universitet", english: ["university", "school", "hospital", "library"], correct: 0 },
-{ swedish: "universitetet", english: ["the university", "the restaurant", "the museum", "the airport"], correct: 0 },
-{ swedish: "det här", english: ["this", "that", "those", "these"], correct: 0 },
-{ swedish: "min / mitt", english: ["my", "your", "his", "their"], correct: 0 },
-{ swedish: "mamma", english: ["mum", "dad", "brother", "teacher"], correct: 0 },
-{ swedish: "och", english: ["and", "or", "but", "because"], correct: 0 },
-{ swedish: "pappa", english: ["dad", "mum", "sister", "teacher"], correct: 0 },
-{ swedish: "syster", english: ["sister", "brother", "cousin", "mother"], correct: 0 },
-{ swedish: "det", english: ["it", "she", "him", "they"], correct: 0 },
-{ swedish: "att vara", english: ["to be", "to eat", "to walk", "to read"], correct: 0 },
-{ swedish: "jag är", english: ["I am", "I run", "I drink", "I sleep"], correct: 0 },
-{ swedish: "i", english: ["in", "on", "over", "under"], correct: 0 },
-{ swedish: "Skottland", english: ["Scotland", "Ireland", "Wales", "France"], correct: 0 },
-{ swedish: "musiker", english: ["musician", "actor", "dancer", "writer"], correct: 0 },
-{ swedish: "att spela", english: ["to play", "to sing", "to write", "to cook"], correct: 0 },
-{ swedish: "jag spelar", english: ["I play", "I sing", "I read", "I walk"], correct: 0 },
-{ swedish: "fiol", english: ["violin", "guitar", "piano", "trumpet"], correct: 0 },
-{ swedish: "barndomsvän", english: ["childhood friend", "cousin", "teacher", "neighbour"], correct: 0 },
-{ swedish: "med", english: ["with", "under", "over", "behind"], correct: 0 },
-{ swedish: "att vilja", english: ["to want", "to need", "to have", "to like"], correct: 0 },
-{ swedish: "jag vill", english: ["I want", "I need", "I see", "I speak"], correct: 0 },
-{ swedish: "att ha", english: ["to have", "to walk", "to speak", "to learn"], correct: 0 },
-{ swedish: "jag har", english: ["I have", "I do", "I see", "I know"], correct: 0 },
-{ swedish: "kopp", english: ["cup", "plate", "fork", "knife"], correct: 0 },
-{ swedish: "kaffe", english: ["coffee", "tea", "juice", "water"], correct: 0 },
-{ swedish: "bulle", english: ["bun", "cake", "sandwich", "ice cream"], correct: 0 },
-{ swedish: "nej", english: ["no", "yes", "maybe", "thanks"], correct: 0 },
-{ swedish: "tack", english: ["thank you", "goodbye", "hello", "maybe"], correct: 0 },
-{ swedish: "vill ha", english: ["want", "give", "take", "know"], correct: 0 },
-{ swedish: "jag vill ha", english: ["I want", "I give", "I take", "I know"], correct: 0 },
-{ swedish: "smörgås", english: ["sandwich", "pizza", "soup", "drink"], correct: 0 },
-{ swedish: "hungrig", english: ["hungry", "tired", "happy", "cold"], correct: 0 },
-{ swedish: "skinksmörgås", english: ["ham sandwich", "cheese sandwich", "salad", "soup"], correct: 0 },
-{ swedish: "tyvärr", english: ["unfortunately", "certainly", "happily", "immediately"], correct: 0 },
-{ swedish: "slut", english: ["out of", "ready", "full", "big"], correct: 0 },
-{ swedish: "ostsmörgås", english: ["cheese sandwich", "ham sandwich", "soup", "salad"], correct: 0 },
-{ swedish: "då", english: ["then", "now", "here", "there"], correct: 0 },
-{ swedish: "att ta", english: ["to take", "to give", "to leave", "to walk"], correct: 0 },
-{ swedish: "jag tar", english: ["I take", "I give", "I see", "I speak"], correct: 0 },
-{ swedish: "te", english: ["tea", "coffee", "water", "milk"], correct: 0 },
-{ swedish: "apelsinjuice", english: ["orange juice", "apple juice", "milk", "soda"], correct: 0 },
-{ swedish: "javisst", english: ["certainly", "unfortunately", "maybe", "never"], correct: 0 },
-{ swedish: "kan jag få", english: ["may I have", "will I give", "should I go", "can I see"], correct: 0 },
-{ swedish: "att kunna", english: ["to be able to (can)", "to want", "to have", "to see"], correct: 0 },
-{ swedish: "jag kan", english: ["I can", "I need", "I give", "I take"], correct: 0 },
-{ swedish: "kanelbulle", english: ["cinnamon bun", "sandwich", "pizza", "ice cream"], correct: 0 },
-{ swedish: "att bli", english: ["to become", "to run", "to eat", "to drink"], correct: 0 },
-{ swedish: "det blir", english: ["it becomes", "it takes", "it needs", "it gives"], correct: 0 },
-{ swedish: "åttio", english: ["eighty", "fifty", "thirty", "hundred"], correct: 0 },
-{ swedish: "krona", english: ["crown (currency)", "dollar", "euro", "pound"], correct: 0 },
-{ swedish: "åttio kronor", english: ["eighty crowns", "thirty pounds", "ten euros", "fifty dollars"], correct: 0 },
-{ swedish: "varsågod", english: ["you're welcome", "goodbye", "thanks", "sorry"], correct: 0 },
-{ swedish: "tack så mycket", english: ["thank you very much", "goodbye", "yes please", "sorry"], correct: 0 },
-{ swedish: "att omfatta", english: ["to include, comprise", "to run", "to eat", "to work"], correct: 0 },
-{ swedish: "att tala", english: ["to speak", "to run", "to sleep", "to walk"], correct: 0 },
-{ swedish: "jag talar", english: ["I speak", "I run", "I eat", "I know"], correct: 0 },
-{ swedish: "mest", english: ["mostly", "sometimes", "rarely", "never"], correct: 0 },
-{ swedish: "engelska", english: ["English", "French", "Spanish", "Italian"], correct: 0 },
-{ swedish: "drottning", english: ["queen", "king", "princess", "prime minister"], correct: 0 },
-{ swedish: "huvudstad", english: ["capital city", "small town", "village", "country"], correct: 0 },
-{ swedish: "kung", english: ["king", "queen", "prince", "emperor"], correct: 0 },
-{ swedish: "industriland", english: ["industrial country", "desert", "forest", "island"], correct: 0 },
-{ swedish: "mycket", english: ["a lot, much", "a little", "never", "sometimes"], correct: 0 },
-{ swedish: "skog", english: ["forest", "river", "mountain", "city"], correct: 0 },
-{ swedish: "ganska", english: ["quite", "never", "rarely", "often"], correct: 0 },
-{ swedish: "sällan", english: ["rarely", "always", "often", "never"], correct: 0 },
-{ swedish: "sol", english: ["sun", "moon", "star", "sky"], correct: 0 },
-{ swedish: "regn", english: ["rain", "sun", "wind", "fog"], correct: 0 },
-{ swedish: "ibland", english: ["sometimes", "never", "always", "rarely"], correct: 0 },
-{ swedish: "både … och …", english: ["both … and …", "neither … nor …", "either … or …", "only … not …"], correct: 0 },
+            { swedish: "hej", english: ["hi, hello", "goodbye", "evening", "thanks"], correct: 0 },
+			{ swedish: "jag", english: ["I", "you", "she", "they"], correct: 0 },
+			{ swedish: "att heta", english: ["to be called", "to run", "to jump", "to sing"], correct: 0 },
+			{ swedish: "jag heter", english: ["I am called, my name is", "I live", "I like", "I sing"], correct: 0 },
+			{ swedish: "nitton", english: ["nineteen", "sixteen", "twenty-one", "thirty"], correct: 0 },
+			{ swedish: "år", english: ["year", "days", "hours", "minutes"], correct: 0 },
+			{ swedish: "att komma", english: ["to come", "to leave", "to cry", "to laugh"], correct: 0 },
+			{ swedish: "jag kommer från", english: ["I come from", "I go to", "I live with", "I leave from"], correct: 0 },
+			{ swedish: "att studera", english: ["to study", "to teach", "to cook", "to drive"], correct: 0 },
+			{ swedish: "jag studerar", english: ["I study", "I teach", "I cook", "I drive"], correct: 0 },
+			{ swedish: "svenska", english: ["Swedish (language)", "Norwegian (language)", "English (language)", "German (language)"], correct: 0 },
+			{ swedish: "pojkvän", english: ["boyfriend", "girlfriend", "mother", "teacher"], correct: 0 },
+			{ swedish: "jag kallas för", english: ["I am called", "I am walking", "I am working", "I am eating"], correct: 0 },
+			{ swedish: "svensk", english: ["Swedish", "French", "Italian", "Russian"], correct: 0 },
+			{ swedish: "datavetenskap", english: ["computer science", "physics", "biology", "history"], correct: 0 },
+			{ swedish: "på", english: ["at, on", "under", "beside", "behind"], correct: 0 },
+			{ swedish: "universitet", english: ["university", "school", "hospital", "library"], correct: 0 },
+			{ swedish: "universitetet", english: ["the university", "the restaurant", "the museum", "the airport"], correct: 0 },
+			{ swedish: "det här", english: ["this", "that", "those", "these"], correct: 0 },
+			{ swedish: "min / mitt", english: ["my, mine", "your, yours", "his", "their"], correct: 0 },
+			{ swedish: "mamma", english: ["mum", "dad", "brother", "teacher"], correct: 0 },
+			{ swedish: "och", english: ["and", "or", "but", "because"], correct: 0 },
+			{ swedish: "pappa", english: ["dad", "mum", "sister", "teacher"], correct: 0 },
+			{ swedish: "syster", english: ["sister", "brother", "cousin", "mother"], correct: 0 },
+			{ swedish: "det", english: ["it", "she", "him", "they"], correct: 0 },
+			{ swedish: "att vara", english: ["to be", "to eat", "to walk", "to read"], correct: 0 },
+			{ swedish: "jag är", english: ["I am", "I run", "I drink", "I sleep"], correct: 0 },
+			{ swedish: "i", english: ["in", "on", "over", "under"], correct: 0 },
+			{ swedish: "Skottland", english: ["Scotland", "Ireland", "Wales", "France"], correct: 0 },
+			{ swedish: "musiker", english: ["musician", "actor", "dancer", "writer"], correct: 0 },
+			{ swedish: "att spela", english: ["to play", "to sing", "to write", "to cook"], correct: 0 },
+			{ swedish: "jag spelar", english: ["I play", "I sing", "I read", "I walk"], correct: 0 },
+			{ swedish: "fiol", english: ["violin", "guitar", "piano", "trumpet"], correct: 0 },
+			{ swedish: "barndomsvän", english: ["childhood friend", "cousin", "teacher", "neighbour"], correct: 0 },
+			{ swedish: "med", english: ["with", "under", "over", "behind"], correct: 0 },
+			{ swedish: "att vilja", english: ["to want (to)", "to need (to)", "to have (to)", "to like (to)"], correct: 0 },
+			{ swedish: "jag vill", english: ["I want (to)", "I need (to)", "I see", "I speak"], correct: 0 },
+			{ swedish: "att ha", english: ["to have", "to walk", "to speak", "to learn"], correct: 0 },
+			{ swedish: "jag har", english: ["I have", "I do", "I see", "I know"], correct: 0 },
+			{ swedish: "kopp", english: ["cup", "plate", "fork", "knife"], correct: 0 },
+			{ swedish: "kaffe", english: ["coffee", "tea", "juice", "water"], correct: 0 },
+			{ swedish: "bulle", english: ["bun", "cake", "sandwich", "ice cream"], correct: 0 },
+			{ swedish: "nej", english: ["no", "yes", "maybe", "thanks"], correct: 0 },
+			{ swedish: "tack", english: ["thanks, please", "goodbye", "hello", "maybe"], correct: 0 },
+			{ swedish: "vill ha", english: ["want", "give", "take", "know"], correct: 0 },
+			{ swedish: "jag vill ha", english: ["I want (to have)", "I give", "I take", "I know"], correct: 0 },
+			{ swedish: "smörgås", english: ["sandwich", "pizza", "soup", "drink"], correct: 0 },
+			{ swedish: "hungrig", english: ["hungry", "tired", "happy", "cold"], correct: 0 },
+			{ swedish: "skinksmörgås", english: ["ham sandwich", "cheese sandwich", "salad", "soup"], correct: 0 },
+			{ swedish: "tyvärr", english: ["unfortunately", "certainly", "happily", "immediately"], correct: 0 },
+			{ swedish: "slut", english: ["all gone", "ready", "full", "big"], correct: 0 },
+			{ swedish: "ostsmörgås", english: ["cheese sandwich", "ham sandwich", "soup", "salad"], correct: 0 },
+			{ swedish: "då", english: ["then", "now", "here", "there"], correct: 0 },
+			{ swedish: "att ta", english: ["to take", "to give", "to leave", "to walk"], correct: 0 },
+			{ swedish: "jag tar", english: ["I take", "I give", "I see", "I speak"], correct: 0 },
+			{ swedish: "te", english: ["tea", "coffee", "water", "milk"], correct: 0 },
+			{ swedish: "apelsinjuice", english: ["orange juice", "apple juice", "milk", "soda"], correct: 0 },
+			{ swedish: "javisst", english: ["(yes) of course", "unfortunately", "maybe", "never"], correct: 0 },
+			{ swedish: "kan jag få", english: ["can I have", "will I give", "should I go", "can I see"], correct: 0 },
+			{ swedish: "att kunna", english: ["to be able to (can)", "to want", "to have", "to see"], correct: 0 },
+			{ swedish: "jag kan", english: ["I can", "I need", "I give", "I take"], correct: 0 },
+			{ swedish: "kanelbulle", english: ["cinnamon bun", "sandwich", "pizza", "ice cream"], correct: 0 },
+			{ swedish: "att bli", english: ["to become", "to run", "to eat", "to drink"], correct: 0 },
+			{ swedish: "det blir", english: ["it will be", "it takes", "it needs", "it gives"], correct: 0 },
+			{ swedish: "åttio", english: ["eighty", "fifty", "thirty", "hundred"], correct: 0 },
+			{ swedish: "krona", english: ["crown", "dollar", "euro", "pound"], correct: 0 },
+			{ swedish: "åttio kronor", english: ["eighty crowns", "thirty pounds", "ten euros", "fifty dollars"], correct: 0 },
+			{ swedish: "varsågod", english: ["here you are", "goodbye", "thanks", "sorry"], correct: 0 },
+			{ swedish: "tack så mycket", english: ["thank you very much", "goodbye", "yes please", "sorry"], correct: 0 },
+			{ swedish: "att omfatta", english: ["to include, comprise", "to run", "to eat", "to work"], correct: 0 },
+			{ swedish: "att tala", english: ["to speak", "to run", "to sleep", "to walk"], correct: 0 },
+			{ swedish: "jag talar", english: ["I speak", "I run", "I eat", "I know"], correct: 0 },
+			{ swedish: "mest", english: ["mostly", "sometimes", "rarely", "never"], correct: 0 },
+			{ swedish: "engelska", english: ["English", "French", "Spanish", "Italian"], correct: 0 },
+			{ swedish: "drottning", english: ["queen", "king", "princess", "prime minister"], correct: 0 },
+			{ swedish: "huvudstad", english: ["capital city", "small town", "village", "country"], correct: 0 },
+			{ swedish: "kung", english: ["king", "queen", "prince", "emperor"], correct: 0 },
+			{ swedish: "industriland", english: ["industrial country", "desert", "forest", "island"], correct: 0 },
+			{ swedish: "mycket", english: ["a lot, much", "a little", "never", "sometimes"], correct: 0 },
+			{ swedish: "skog", english: ["forest", "river", "mountain", "city"], correct: 0 },
+			{ swedish: "ganska", english: ["rather, quite", "never", "rarely", "often"], correct: 0 },
+			{ swedish: "sällan", english: ["rarely, seldom", "always", "often", "never"], correct: 0 },
+			{ swedish: "sol", english: ["sun", "moon", "star", "sky"], correct: 0 },
+			{ swedish: "regn", english: ["rain", "sun", "wind", "fog"], correct: 0 },
+			{ swedish: "ibland", english: ["sometimes", "never", "always", "rarely"], correct: 0 },
+			{ swedish: "både … och …", english: ["both … and …", "neither … nor …", "either … or …", "only … not …"], correct: 0 },
 
         ];
+		
         let isRetry = false;
 
         // New Variables for Progress Tracking
         let totalQuestions = 0;
         let answeredQuestions = 0;
-
-        // Variable to track the correct answer index after shuffling
         let currentCorrectIndex = 0;
 
         // Function to shuffle an array (Fisher-Yates Shuffle)
@@ -516,48 +517,35 @@ input:checked + .slider:before {
             });
         }
 
-        // Reset missed words for the current set
+        // Start a new set of questions
         function startNewSet() {
-            if (!isRetry) {
-                missedWords = []; // Reset missed words for the main set only
-            }
+            missedWords = []; // Reset missed words for the new round
             renderMissedWordsList(); // Clear or update UI list based on missedWords
 
-            // Determine the current word list based on retry status
-            const wordList = isRetry ? missedWords : vocabulary;
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
             totalQuestions = wordList.length;
             answeredQuestions = 0;
             document.getElementById("progress").style.width = "0%";
 
-            // Reset counters only when starting the main set
             if (!isRetry) {
                 correctAnswers = 0;
                 mistakes = 0;
                 document.getElementById("correct-counter").innerText = "0";
                 document.getElementById("mistake-counter").innerText = "0";
             }
-
-            console.log(`Starting new set. isRetry: ${isRetry}, totalQuestions: ${totalQuestions}`);
         }
 
         // Load a question
         function loadQuestion() {
-            const wordList = isRetry ? missedWords : vocabulary;
-
-            console.log(`Loading question. CurrentQuestion: ${currentQuestion}, WordList Length: ${wordList.length}`);
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
 
             if (currentQuestion >= wordList.length) {
-                // All questions have been answered
                 if (missedWords.length === 0) {
-                    // All answers were correct, show the completion feedback
                     document.getElementById("feedback").innerText = "You've completed the quiz!";
-                    isRetry = false;  // Reset retry flag
-                    document.getElementById("missedModal").style.display = "none"; // Ensure modal doesn't show
-                    console.log("Quiz completed without any missed words.");
+                    isRetry = false;
+                    document.getElementById("missedModal").style.display = "none";
                 } else {
-                    // Only trigger modal if there are missed words
-                    showModal();  
-                    console.log(`Quiz completed with ${missedWords.length} missed words.`);
+                    showModal();
                 }
                 return;
             }
@@ -565,110 +553,79 @@ input:checked + .slider:before {
             const currentWord = wordList[currentQuestion];
             document.getElementById("swedish-word").innerText = currentWord.swedish;
 
-            // Shuffle the answer choices
             let shuffledChoices = [...currentWord.english];
             shuffledChoices = shuffleArray(shuffledChoices);
 
-            // Determine the new index of the correct answer after shuffling
             const correctAnswerText = currentWord.english[currentWord.correct];
             currentCorrectIndex = shuffledChoices.indexOf(correctAnswerText);
 
-            // Assign shuffled choices to buttons
             for (let i = 0; i < 4; i++) {
                 document.getElementById(`choice${i}`).innerText = shuffledChoices[i];
             }
 
             document.getElementById("feedback").innerText = "";
-
-            console.log(`Loaded word: ${currentWord.swedish}`);
-            console.log(`Shuffled choices: ${shuffledChoices}`);
-            console.log(`Correct answer is at index: ${currentCorrectIndex}`);
         }
 
         // Speak the Swedish word
         function speakSwedish() {
-            const wordList = isRetry ? missedWords : vocabulary;
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
             if (currentQuestion >= wordList.length) {
-                console.log(`Attempted to speak word, but currentQuestion (${currentQuestion}) is out of bounds.`);
                 return;
             }
             const swedishWord = wordList[currentQuestion].swedish;
-            console.log(`Speaking word: ${swedishWord}`);
             responsiveVoice.speak(swedishWord, 'Swedish Female');
         }
 
-        // Function to update the progress bar
+        // Update the progress bar
         function updateProgressBar() {
-            if (totalQuestions === 0) return; // Prevent division by zero
+            if (totalQuestions === 0) return;
             const progress = (answeredQuestions / totalQuestions) * 100;
             document.getElementById("progress").style.width = `${progress}%`;
-            console.log(`Progress updated: ${answeredQuestions}/${totalQuestions} (${progress}%)`);
         }
 
         // Check the user's answer
         function checkAnswer(choice) {
-            const wordList = isRetry ? missedWords : vocabulary;
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+
             if (currentQuestion >= wordList.length) {
-                console.log(`Attempted to check answer, but currentQuestion (${currentQuestion}) is out of bounds.`);
                 return;
             }
+
             const currentWord = wordList[currentQuestion];
             const isCorrect = choice === currentCorrectIndex;
-
-            console.log(`User selected choice ${choice} for word "${currentWord.swedish}". Correct answer index: ${currentCorrectIndex}. Is correct: ${isCorrect}`);
 
             if (isCorrect) {
                 document.getElementById("feedback").innerText = "Correct!";
                 correctAnswers++;
                 document.getElementById("correct-counter").innerText = correctAnswers;
-                console.log(`Correct answer. Total correctAnswers: ${correctAnswers}`);
 
+                // Remove word from missedWords if answered correctly in retry
                 if (isRetry) {
-                    // Remove the word from missedWords if answered correctly during retry
-                    missedWords.splice(currentQuestion, 1);
-                    renderMissedWordsList(); // Update the DOM list
-                    console.log(`Removed word "${currentWord.swedish}" from missedWords.`);
-
-                    // Increment answeredQuestions and update progress bar
-                    answeredQuestions++;
-                    updateProgressBar();
-
-                    // Do not increment currentQuestion because the array has shifted
-                } else {
-                    // Increment answeredQuestions and update progress bar for main set
-                    answeredQuestions++;
-                    updateProgressBar();
-                    currentQuestion++;
-                }
-            } else {
-                document.getElementById("feedback").innerText = "Wrong answer!";
-                console.log(`Incorrect answer for word "${currentWord.swedish}".`);
-
-                // Add missed word to missedWords array if not already there
-                if (!missedWords.some(word => word.swedish === currentWord.swedish)) {
-                    missedWords.push(currentWord);
-                    mistakes++;
-                    document.getElementById("mistake-counter").innerText = mistakes;
-                    renderMissedWordsList(); // Update the DOM list
-                    console.log(`Added word "${currentWord.swedish}" to missedWords. Total mistakes: ${mistakes}`);
-                } else {
-                    console.log(`Word "${currentWord.swedish}" is already in missedWords. Mistakes not incremented.`);
+                    missedWords = missedWords.filter(word => word.swedish !== currentWord.swedish);
+                    renderMissedWordsList();
                 }
 
-                // Increment answeredQuestions and update progress bar
                 answeredQuestions++;
                 updateProgressBar();
+            } else {
+                document.getElementById("feedback").innerText = "Wrong answer!";
+                mistakes++;
+                document.getElementById("mistake-counter").innerText = mistakes;
 
-                currentQuestion++;
+                // Add to missedWords for the current round
+                if (!missedWords.some(word => word.swedish === currentWord.swedish)) {
+                    missedWords.push(currentWord);
+                    renderMissedWordsList();
+                }
+
+                answeredQuestions++;
+                updateProgressBar();
             }
 
-            document.getElementById("feedback").classList.add("show-feedback");
-
-            // Delay before loading the next question (Reduced from 1.5s to 0.5s)
+            currentQuestion++;
             setTimeout(() => {
                 loadQuestion();
-                document.getElementById("feedback").classList.remove("show-feedback");
-            }, 500); // Load next question after 0.5 seconds
+            }, 500);
         }
 
         // Show the modal if there are missed words
@@ -680,39 +637,42 @@ input:checked + .slider:before {
                 modalMessage.innerHTML = `You made ${mistakes} mistake${mistakes > 1 ? 's' : ''}. Do you want to try those words again?`;
             }
             document.getElementById("missedModal").style.display = "flex";
-
-            console.log(`Modal displayed. MissedWords: ${missedWords.length}, Mistakes: ${mistakes}`);
         }
 
-        // Close the modal
-        function closeModal() {
-            document.getElementById("missedModal").style.display = "none";
-            console.log("Modal closed.");
-        }
+// Close the modal
+function closeModal() {
+    document.getElementById("missedModal").style.display = "none";
+    
+    // Clear the missed words list when the modal closes
+    missedWords = [];
+    renderMissedWordsList(); // Update the UI to reflect the cleared list
+}
 
         // Retry with missed words
         function retryMissed() {
             if (missedWords.length === 0) {
-                // No missed words to retry
                 document.getElementById("feedback").innerText = "Great job! No words to retry.";
                 closeModal();
-                console.log("No missed words to retry.");
                 return;
             }
 
-            isRetry = true;
-            currentQuestion = 0;
-            answeredQuestions = 0;
-            totalQuestions = missedWords.length;
-            mistakes = 0; // Reset mistakes counter for the new set
-            document.getElementById("mistake-counter").innerText = mistakes;
-            document.getElementById("progress").style.width = "0%";
-            document.getElementById("correct-counter").innerText = "0";
-            correctAnswers = 0;
-            console.log(`Retrying missed words. TotalQuestions: ${totalQuestions}`);
+            previousRoundMissedWords = [...missedWords]; // Store missed words for this retry round
+            missedWords = []; // Clear missedWords for the new retry round
 
-            closeModal(); // Close the modal
-            loadQuestion(); // Load the first missed word
+            isRetry = true;
+
+            currentQuestion = 0;
+            correctAnswers = 0;
+            mistakes = 0;
+            document.getElementById("correct-counter").innerText = correctAnswers;
+            document.getElementById("mistake-counter").innerText = mistakes;
+
+            answeredQuestions = 0;
+            totalQuestions = previousRoundMissedWords.length;
+            document.getElementById("progress").style.width = "0%";
+
+            closeModal();
+            loadQuestion();
         }
 
         // Reset the quiz by refreshing the page
@@ -720,24 +680,18 @@ input:checked + .slider:before {
             location.reload();
         }
 
-        // Toggle dark mode and update the mode label
+        // Toggle dark mode
         function toggleDarkMode() {
             document.body.classList.toggle("dark-mode");
             const modeLabel = document.getElementById("modeLabel");
-            if (document.body.classList.contains("dark-mode")) {
-                modeLabel.innerText = "Dark mode";
-            } else {
-                modeLabel.innerText = "Dark mode";
-            }
-            console.log("Dark mode toggled.");
+            modeLabel.innerText = document.body.classList.contains("dark-mode") ? "Dark mode" : "Dark mode";
         }
 
-        // Initialize the quiz and start a new set
+        // Initialize the quiz
         window.onload = function() {
-            document.getElementById("missedModal").style.display = "none"; // Ensure modal is hidden on load
-            startNewSet(); // Reset missed words for the first set
-            loadQuestion();  // Load the first question
-            console.log("Quiz initialized.");
+            document.getElementById("missedModal").style.display = "none";
+            startNewSet();
+            loadQuestion();
         };
     </script>
 </body>
