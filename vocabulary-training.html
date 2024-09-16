@@ -1,143 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocabulary Mastery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Gloslistor</title>
     <style>
-        /* Base Styles */
+        /* Grundläggande styling */
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            padding: 0;
             background-color: #f4f4f9;
-            color: #333;
-        }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* Header */
-        .header {
-            background-color: #5c67f2;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header .logo {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-        .header nav a {
-            margin: 0 15px;
-            font-weight: 300;
-            color: white;
-        }
-
-        /* Hero Section */
-        .hero {
-            background-color: #5c67f2;
-            color: white;
-            padding: 60px 30px;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-        }
-        .hero .cta-btn {
-            padding: 15px 30px;
-            background-color: #ff4d4d;
-            color: white;
-            font-size: 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .hero .cta-btn:hover {
-            background-color: #e04343;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 60px 30px;
+			color: #333;
             display: flex;
             justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-        .feature-box {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            flex: 1 1 250px;
-        }
-        .feature-box h3 {
-            margin-bottom: 15px;
-            color: #5c67f2;
-        }
-        .feature-box p {
-            font-size: 1rem;
         }
 
-        /* Footer */
-        .footer {
-            background-color: #333;
-            color: #d1d1e0;
-            text-align: center;
-            padding: 20px 30px;
-            margin-top: 60px;
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
         }
-.button-container {
-    display: flex;
-    justify-content: center; /* Centers buttons horizontally */
-    gap: 15px; /* Adds space between buttons */
-    margin-top: 20px; /* Adds some space above the buttons */
-}
 
-/* Button Styling */
-.cta-btn {
-    padding: 15px 30px;
-    background-color: #ff4d4d;
-    color: white;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        /* Container för kapitel */
+        .container {
+            width: 500px;
+            max-width: 90%;
+            padding: 10px;
+            margin-top: 20px; /* Flyttar innehållet 40px från toppen */
+        }
 
-.cta-btn:hover {
-    background-color: #e04343;
-}
+        /* Kapitelcontainer */
+        .kapitel {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #fff;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        /* Kapitelrubrik */
+        .kapitel-header {
+            padding: 15px;
+            cursor: pointer;
+            background-color: #333; /* Tydligare bakgrundsfärg */
+            color: white; /* Vit textfärg */
+            font-size: 18px; /* Större textstorlek */
+            font-weight: bold; /* Fetstil */
+            text-align: center; /* Centrera texten */
+            border-radius: 5px; /* Rundade hörn */
+            transition: background-color 0.3s, transform 0.2s; /* Lägg till övergång för hover-effekt */
+        }
+
+        /* Hover-effekt för kapitelrubrik */
+        .kapitel-header:hover {
+            background-color: #333; /* Mörkare grönt vid hover */
+        }
+
+        /* Aktivt kapitel */
+        .kapitel.active .kapitel-header {
+            background-color: #4CAF50; /* Annan färg för aktivt kapitel */
+            color: white; /* Ändra textfärg */
+        }
+
+        /* Göra kapitelinnehåll dolt som standard */
+        .kapitel-content {
+            display: none;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+
+        /* Gör första kapitlet expanderat från början */
+        .kapitel.active .kapitel-content {
+            display: block;
+        }
+
+        /* Dropdown-lista */
+        select {
+            width: 100%;
+            padding: 5px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Header Section -->
-
-    <!-- Hero Section -->
-<section class="hero">
+    <div class="container">
     <h1>Master Your Vocabulary</h1>
     <p>Expand your word bank with easy-to-use vocabulary exercises. Practice, track your progress, and become a word wizard!</p>
-    <div class="button-container">
-        <a href="vocab-unit-1-01.html" target="_blank"><button class="cta-btn">Unit One: 1</button></a>
-        <a href="vocab-unit-1-02" target="_blank"><button class="cta-btn">Unit One: 2</button></a>
-        <a href="vocab-unit-1-03" target="_blank"><button class="cta-btn">Unit One: 3</button></a>
-        <a href="vocabulary-unit-1.html" target="_blank"><button class="cta-btn">Unit One: all</button></a>		
+        
+        <!-- Kapitel 1 -->
+        <div class="kapitel active">
+            <div class="kapitel-header">Unit One</div>
+            <div class="kapitel-content">
+                <p>Vocabulary lists</p>
+                <select onchange="openGloslista(this)">
+                    <option value="">Choose vocabulary list</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-1-01.html">Vocabulary 1</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-1-02.html">Vocabulary  2</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-1-03.html">Vocabulary  3</option>
+					<option value="https://learnswedish.github.io/html/vocabulary-unit-1.html">All together</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Kapitel 2 -->
+        <div class="kapitel">
+            <div class="kapitel-header">Unit Two</div>
+            <div class="kapitel-content">
+                <p>Vocabulary lists</p>
+                 <select onchange="openGloslista(this)">
+                    <option value="">Choose vocabulary list</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-2-01.html">Vocabulary 1</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-2-02.html">Vocabulary  2</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-2-03.html">Vocabulary  3</option>
+					<option value="https://learnswedish.github.io/html/vocabulary-unit-2.html">All together</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Kapitel 3 -->
+        <div class="kapitel">
+            <div class="kapitel-header">Unit Three</div>
+            <div class="kapitel-content">
+                <p>Vocabulary lists</p>
+                 <select onchange="openGloslista(this)">
+                    <option value="">Choose vocabulary list</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-3-01.html">Vocabulary 1</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-3-02.html">Vocabulary  2</option>
+                    <option value="https://learnswedish.github.io/html/vocab-unit-3-03.html">Vocabulary  3</option>
+					<option value="https://learnswedish.github.io/html/vocabulary-unit-3.html">All together</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Fler kapitel kan läggas till här -->
     </div>
-</section>
+
+    <script>
+        // JavaScript för att hantera expandering och kollaps
+        document.querySelectorAll('.kapitel-header').forEach(header => {
+            header.addEventListener('click', () => {
+                // Stäng alla öppna kapitel
+                document.querySelectorAll('.kapitel').forEach(kapitel => {
+                    kapitel.classList.remove('active');
+                });
+                // Öppna det klickade kapitlet
+                header.parentElement.classList.add('active');
+            });
+        });
+
+        // Funktion för att öppna gloslista i ett nytt fönster
+        function openGloslista(select) {
+            const url = select.value;
+            if (url) {
+                window.open(url, '_blank'); // Öppnar i nytt fönster/flik
+                select.selectedIndex = 0; // Återställ dropdown till första valet
+            }
+        }
+    </script>
 
 </body>
 </html>
