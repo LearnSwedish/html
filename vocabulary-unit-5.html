@@ -1,0 +1,773 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Five: all</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+    <style>
+/* Base Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    max-width: 700px;
+    margin: 10px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+h1 {
+    color: #5c67f2;
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+}
+
+/* Toggle Switch Styles */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: background-color 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: transform 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #5c67f2;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #1e1e2f;
+    color: #d1d1e0;
+}
+
+.dark-mode .container {
+    background-color: #2a2a3b;
+}
+
+.dark-mode h1 {
+    color: #ffffff; /* Change <h1> color to white in dark mode */
+    font-size: 2.8rem; /* Optional: Adjust font size */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Optional: Add text shadow */
+}
+
+.dark-mode .clickable-word {
+    color: #87baf3;
+}
+
+.dark-mode .answer-btn {
+    background-color: #5e6bff; /* Solid color for dark mode */
+    border: none; /* Removed border for consistency */
+}
+
+.dark-mode .answer-btn:hover {
+    background-color: #1a23ff; /* Bigger color change on hover in dark mode */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover in dark mode */
+}
+
+.dark-mode .feedback {
+    color: #87baf3;
+}
+
+.dark-mode .modal-btn {
+    background-color: #87baf3;
+}
+
+.dark-mode .modal-content {
+    color: #000; /* Set the text color to black */
+}
+
+/* Question Box Styles */
+.question-box {
+    margin: 30px 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.clickable-word {
+    color: #5c67f2;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.clickable-word:hover {
+    color: #4a54e1;
+}
+
+/* Choices (Answer Buttons) Styles */
+.choices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.answer-btn {
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #6b73ff; /* Solid color */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.answer-btn:hover {
+    background-color: #2e3bff; /* Bigger color change on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Dark Mode Hover Effect */
+.dark-mode .answer-btn:hover {
+    background-color: #1a23ff; /* Bigger color change on hover in dark mode */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover in dark mode */
+}
+
+/* Feedback Styles */
+.feedback {
+    font-size: 1.3rem;
+    margin-top: 30px;
+    color: #5c67f2;
+    height: 40px; /* Fixed height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+/* Progress Bar Styles */
+.progress-bar {
+    width: 100%;
+    background-color: #ddd;
+    height: 20px;
+    border-radius: 10px;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.progress {
+    background-color: #5c67f2;
+    height: 100%;
+    border-radius: 10px;
+    width: 0%; /* Start at 0% */
+    transition: width 0.4s ease;
+}
+
+/* Counters and Protocol Styles */
+.protocol, .counters {
+    margin-top: 30px;
+    font-size: 1.2rem;
+    text-align: left;
+}
+
+.protocol p, .counters p {
+    margin-bottom: 10px;
+}
+
+/* Fixed height for Missed Words List */
+#missed-words-list {
+    height: 60px; /* Adjust as needed */
+    overflow-y: auto;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 0.8rem; /* Adjust the font size to make words smaller */
+}
+.protocol ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.protocol ul li {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.modal-btn {
+    padding: 12px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #5c67f2;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.modal-btn:hover {
+    background-color: #4557f0;
+}
+
+/* Reset Button Styles */
+.reset-btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff4d4d;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.reset-btn:hover {
+    background-color: #e04343;
+}
+
+/* Mode Label Styles */
+#modeLabel {
+    font-size: 1rem;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.dark-mode #modeLabel {
+    color: #d1d1e0;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .choices {
+        grid-template-columns: 1fr;
+    }
+
+    .protocol, .counters {
+        font-size: 1rem;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-btn, .reset-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    #modeLabel {
+        font-size: 0.9rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dark mode</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Unit Five: all</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+            <p id="swedish-word" class="clickable-word" onclick="speakSwedish()"></p>
+        </div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Correct Answers: <span id="correct-counter">0</span></p>
+            <p>Mistakes: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Words missed on first try:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Reset</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Yes</button>
+                <button class="modal-btn" onclick="closeModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let mistakes = 0;
+        let missedWords = [];
+        let previousRoundMissedWords = []; // New variable to track missed words across rounds
+        const vocabulary = [
+{ swedish: "(en) matlagning", english: ["cooking", "drinking", "sleeping", "dancing"], correct: 0 },
+{ swedish: "allt", english: ["everything", "nothing", "something", "anything"], correct: 0 },
+{ swedish: "bra", english: ["good", "bad", "ugly", "poor"], correct: 0 },
+{ swedish: "att laga (mat)", english: ["prepare (food)", "eat (food)", "buy (food)", "avoid (food)"], correct: 0 },
+{ swedish: "(en) fiskpinne", english: ["fishfinger", "hotdog", "sandwich", "cake"], correct: 0 },
+{ swedish: "pommes frites", english: ["french fries", "pizza", "salad", "ice cream"], correct: 0 },
+{ swedish: "god, gott", english: ["good (to eat)", "bad", "disgusting", "tasteless"], correct: 0 },
+{ swedish: "imorgon", english: ["tomorrow", "yesterday", "today", "weekend"], correct: 0 },
+{ swedish: "(en) tur", english: ["turn", "stop", "pause", "restart"], correct: 0 },
+{ swedish: "att stå", english: ["stand", "sit", "lie", "jump"], correct: 0 },
+{ swedish: "(ett) kök", english: ["kitchen", "bathroom", "bedroom", "garage"], correct: 0 },
+{ swedish: "något", english: ["something", "nothing", "everything", "anything"], correct: 0 },
+{ swedish: "typiskt", english: ["typically", "rarely", "occasionally", "never"], correct: 0 },
+{ swedish: "Janssons frestelse", english: ["Jansson's temptation", "Jansson's pudding", "Jansson's stew", "Jansson's soup"], correct: 0 },
+{ swedish: "att tänka", english: ["think", "forget", "ignore", "dream"], correct: 0 },
+{ swedish: "att skicka", english: ["send", "receive", "catch", "grab"], correct: 0 },
+{ swedish: "(ett) recept", english: ["recipe", "medicine", "letter", "document"], correct: 0 },
+{ swedish: "ju", english: ["of course, indeed", "really, why", "naturally", "maybe"], correct: 0 },
+{ swedish: "bäst", english: ["best", "worst", "average", "poor"], correct: 0 },
+{ swedish: "att äta", english: ["eat", "drink", "sleep", "walk"], correct: 0 },
+{ swedish: "tyvärr", english: ["unfortunately", "fortunately", "luckily", "happily"], correct: 0 },
+{ swedish: "mycket", english: ["a lot of", "a few", "none", "some"], correct: 0 },
+{ swedish: "stekt", english: ["fried", "boiled", "baked", "steamed"], correct: 0 },
+{ swedish: "fet, fett", english: ["fatty", "lean", "dry", "light"], correct: 0 },
+{ swedish: "(en) mat", english: ["food", "drink", "toy", "book"], correct: 0 },
+{ swedish: "mer", english: ["more", "less", "none", "few"], correct: 0 },
+{ swedish: "nyttig (hälsosam)", english: ["wholesome", "unhealthy", "harmful", "toxic"], correct: 0 },
+{ swedish: "(en) grönsak", english: ["vegetable", "fruit", "meat", "candy"], correct: 0 },
+{ swedish: "(en) frukt", english: ["fruit", "vegetable", "candy", "drink"], correct: 0 },
+{ swedish: "att sluta", english: ["stop", "start", "continue", "pause"], correct: 0 },
+{ swedish: "(en) sockerbit", english: ["lump of sugar", "slice of bread", "piece of meat", "block of cheese"], correct: 0 },
+{ swedish: "(ett) te", english: ["tea", "coffee", "juice", "soda"], correct: 0 },
+{ swedish: "i övermorgon", english: ["the day after tomorrow", "tomorrow", "yesterday", "last week"], correct: 0 },
+{ swedish: "genast", english: ["immediately", "slowly", "eventually", "later"], correct: 0 },
+{ swedish: "(en) tand", english: ["tooth", "bone", "finger", "toe"], correct: 0 },
+{ swedish: "(ett) jobb", english: ["work", "rest", "sleep", "play"], correct: 0 },
+{ swedish: "att dricka", english: ["drink", "eat", "sleep", "run"], correct: 0 },
+{ swedish: "(en) tårta", english: ["cream cake", "cookie", "bread", "pie"], correct: 0 },
+{ swedish: "Prinsesstårta", english: ["marzipan-covered gâteau", "apple pie", "chocolate cake", "ice cream"], correct: 0 },
+{ swedish: "favorit", english: ["favourite", "least liked", "average", "neutral"], correct: 0 },
+{ swedish: "att veta", english: ["know", "ignore", "forget", "miss"], correct: 0 },
+{ swedish: "att fylla år", english: ["have a birthday", "throw a party", "celebrate a holiday", "sleep"], correct: 0 },
+{ swedish: "att baka", english: ["bake", "fry", "boil", "roast"], correct: 0 },
+{ swedish: "enkel", english: ["simple", "complex", "difficult", "confusing"], correct: 0 },
+{ swedish: "Vill du ha den…", english: ["If you would like it…", "Leave it…", "If you hate it...", "Throw it away…"], correct: 0 },
+{ swedish: "mindre", english: ["less", "more", "none", "all"], correct: 0 },
+{ swedish: "lite", english: ["a little", "a lot", "nothing", "everything"], correct: 0 },
+{ swedish: "att byta", english: ["replace… with", "keep", "fix", "ignore"], correct: 0 },
+{ swedish: "(en) grädde", english: ["cream", "water", "sugar", "butter"], correct: 0 },
+{ swedish: "mot", english: ["for", "next to", "without", "to"], correct: 0 },
+{ swedish: "(en) mjölk", english: ["milk", "juice", "tea", "coffee"], correct: 0 },
+{ swedish: "noga", english: ["carefully", "quickly", "sloppily", "hastily"], correct: 0 },
+{ swedish: "(ett) kilogram (kg)", english: ["kilogram", "pound", "gram", "ounce"], correct: 0 },
+{ swedish: "(en) deciliter (dl)", english: ["decilitre", "litre", "millilitre", "centilitre"], correct: 0 },
+{ swedish: "(en) matsked (msk)", english: ["tablespoon(ful)", "teaspoon", "cup", "plate"], correct: 0 },
+{ swedish: "(en) potatis", english: ["potato", "tomato", "carrot", "pepper"], correct: 0 },
+{ swedish: "gul", english: ["yellow", "green", "red", "blue"], correct: 0 },
+{ swedish: "(en) lök", english: ["onion", "garlic", "lettuce", "cucumber"], correct: 0 },
+{ swedish: "(en) burk", english: ["can", "bottle", "jar", "box"], correct: 0 },
+{ swedish: "(en) ansjovis", english: ["anchovy", "salmon", "tuna", "crab"], correct: 0 },
+{ swedish: "(en) vispgrädde", english: ["whipping cream", "yogurt", "ice cream", "custard"], correct: 0 },
+{ swedish: "(en) skorpsmula", english: ["bread crumb", "loaf", "crust", "whole bread"], correct: 0 },
+{ swedish: "(ett) smör", english: ["butter", "oil", "cheese", "milk"], correct: 0 },
+{ swedish: "att skala", english: ["peel", "cut", "chop", "slice"], correct: 0 },
+{ swedish: "att skära", english: ["cut", "mix", "boil", "stir"], correct: 0 },
+{ swedish: "tunn, tunt", english: ["thin", "thick", "wide", "deep"], correct: 0 },
+{ swedish: "(en) skiva", english: ["slice", "chunk", "piece", "block"], correct: 0 },
+{ swedish: "att använda", english: ["use", "ignore", "avoid", "waste"], correct: 0 },
+{ swedish: "(en) färskpotatis", english: ["new potatoes", "old potatoes", "mashed potatoes", "sweet potatoes"], correct: 0 },
+{ swedish: "att smörja", english: ["grease", "dry", "clean", "wash"], correct: 0 },
+{ swedish: "eldfast form", english: ["oven-proof dish", "frying pan", "grill", "stove"], correct: 0 },
+{ swedish: "rak, rakt", english: ["straight", "curved", "bent", "crooked"], correct: 0 },
+{ swedish: "(en) kant", english: ["edje", "middle", "center", "core"], correct: 0 },
+{ swedish: "att lägga", english: ["lay", "stand", "sit", "jump"], correct: 0 },
+{ swedish: "(ett) lager", english: ["layer", "row", "column", "pile"], correct: 0 },
+{ swedish: "att fortsätta", english: ["continue", "stop", "end", "pause"], correct: 0 },
+{ swedish: "att upprepa", english: ["repeat", "ignore", "stop", "remove"], correct: 0 },
+{ swedish: "att avsluta", english: ["finish off", "begin", "continue", "start"], correct: 0 },
+{ swedish: "(att) platta till", english: ["flatten off", "inflate", "raise", "expand"], correct: 0 },
+{ swedish: "(en) yta", english: ["surface", "bottom", "depth", "inside"], correct: 0 },
+{ swedish: "att hälla", english: ["pour", "throw", "spill", "spread"], correct: 0 },
+{ swedish: "över", english: ["across", "under", "beside", "through"], correct: 0 },
+{ swedish: "att späda", english: ["dilute", "concentrate", "boil", "evaporate"], correct: 0 },
+{ swedish: "(ett) spad", english: ["juice, stock", "solid", "meat", "fruit"], correct: 0 },
+{ swedish: "att strö", english: ["sprinkle", "pour", "mix", "stir"], correct: 0 },
+{ swedish: "att sätta", english: ["place, put", "throw", "scatter", "remove"], correct: 0 },
+{ swedish: "att klicka ut smöret", english: ["dot with knobs af butter", "spread evenly", "melt completely", "add salt"], correct: 0 },
+{ swedish: "(en) grad", english: ["degree", "centimetre", "meter", "inch"], correct: 0 },
+{ swedish: "(en) ugn", english: ["oven-proof dish", "microwave", "refrigerator", "freezer"], correct: 0 },
+{ swedish: "att grädda", english: ["bake", "fry", "boil", "grill"], correct: 0 },
+{ swedish: "en dryg timme", english: ["a good hour", "a short minute", "a full day", "a few seconds"], correct: 0 },
+{ swedish: "kall, kallt", english: ["cold", "hot", "warm", "boiling"], correct: 0 },
+{ swedish: "(en god) öl", english: ["beer", "wine", "whiskey", "vodka"], correct: 0 },
+{ swedish: "(kall öl är gott) till", english: ["with it", "without it", "beside it", "in it"], correct: 0 },
+{ swedish: "(en) snaps", english: ["snaps", "beer", "wine", "rum"], correct: 0 },
+{ swedish: "lycka till", english: ["good luck", "bad luck", "congratulations", "farewell"], correct: 0 },
+{ swedish: "(en) rumskompis", english: ["flat-mate", "neighbor", "roommate", "colleague"], correct: 0 },
+{ swedish: "hemma", english: ["at home, in", "abroad", "inside", "away"], correct: 0 },
+{ swedish: "att ringa", english: ["ring", "answer", "call back", "silence"], correct: 0 },
+{ swedish: "att be", english: ["ask", "demand", "ignore", "request"], correct: 0 },
+{ swedish: "senare", english: ["later", "earlier", "immediately", "suddenly"], correct: 0 },
+{ swedish: "vore", english: ["would be", "is", "will be", "could have been"], correct: 0 },
+{ swedish: "snäll, snällt", english: ["kind, good", "cruel", "indifferent", "mean"], correct: 0 },
+{ swedish: "(ett) telefonnummer", english: ["phone number", "address", "contact list", "PIN code"], correct: 0 },
+{ swedish: "att säga", english: ["tell", "ask", "listen", "respond"], correct: 0 },
+{ swedish: "att komma", english: ["come", "leave", "arrive", "escape"], correct: 0 },
+{ swedish: "äntligen", english: ["finally, at last", "quickly", "soon", "early"], correct: 0 },
+{ swedish: "lång, långt", english: ["long", "short", "brief", "tiny"], correct: 0 },
+{ swedish: "att fråga", english: ["ask", "tell", "answer", "ignore"], correct: 0 },
+{ swedish: "om", english: ["whether, if", "because", "since", "after"], correct: 0 },
+{ swedish: "hem", english: ["home", "abroad", "outside", "office"], correct: 0 },
+{ swedish: "(en) middag", english: ["dinner", "breakfast", "snack", "brunch"], correct: 0 },
+{ swedish: "imorgon", english: ["tomorrow", "yesterday", "tonight", "next week"], correct: 0 },
+{ swedish: "att låta", english: ["sound", "silence", "noise", "echo"], correct: 0 },
+{ swedish: "trevlig, trevligt", english: ["nice", "rude", "unpleasant", "boring"], correct: 0 },
+{ swedish: "gärna", english: ["gladly, by all means", "reluctantly", "unwillingly", "forcefully"], correct: 0 },
+{ swedish: "att veta", english: ["know", "forget", "ignore", "guess"], correct: 0 },
+{ swedish: "duktig, duktigt", english: ["good, clever", "foolish", "clumsy", "lazy"], correct: 0 },
+{ swedish: "jodå", english: ["oh yes", "no", "maybe", "probably not"], correct: 0 },
+{ swedish: "flest", english: ["most", "least", "fewest", "none"], correct: 0 },
+{ swedish: "(en) kille", english: ["guy, man", "girl", "child", "old man"], correct: 0 },
+{ swedish: "att ta med något", english: ["bring something", "take away something", "drop something", "abandon someone"], correct: 0 },
+{ swedish: "det behövs inte", english: ["it isn't necessary", "it isn't required", "it isn't important", "it isn't crucial"], correct: 0 },
+{ swedish: "hur dags?", english: ["what time?", "why?", "where?", "how often?"], correct: 0 },
+{ swedish: "vid sju-tiden", english: ["about seven", "exactly seven", "after nine", "before five"], correct: 0 },
+{ swedish: "att låta", english: ["sound", "silence", "speak", "listen"], correct: 0 },
+{ swedish: "toppen", english: ["terrific", "terrible", "mediocre", "bad"], correct: 0 },
+{ swedish: "vi ses", english: ["see you", "goodbye", "later", "farewell"], correct: 0 },
+{ swedish: "hej så länge", english: ["bye for now", "see you later", "hello", "good evening"], correct: 0 },
+{ swedish: "(en) ö", english: ["island", "mountain", "river", "forest"], correct: 0 },
+{ swedish: "(en) sjö", english: ["lake", "ocean", "desert", "stream"], correct: 0 },
+{ swedish: "Östersjön", english: ["the Baltic", "the Atlantic", "the Mediterranean", "the Pacific"], correct: 0 },
+{ swedish: "(ett) område", english: ["area", "point", "border", "line"], correct: 0 },
+{ swedish: "Gamla stan", english: ["the Old Town", "city center", "countryside", "new district"], correct: 0 },
+{ swedish: "att breda", english: ["spread", "narrow", "confine", "gather"], correct: 0 },
+{ swedish: "(ett) arbetarkvarter", english: ["working class district", "business district", "residential block", "commercial area"], correct: 0 },
+{ swedish: "(en) början", english: ["beginning", "ending", "middle", "aftermath"], correct: 0 },
+{ swedish: "(ett) bostadskvarter", english: ["residential area", "industrial zone", "farmland", "parking lot"], correct: 0 },
+{ swedish: "(en) förort", english: ["suburb", "downtown", "rural area", "capital"], correct: 0 },
+{ swedish: "långt", english: ["far", "near", "close", "adjacent"], correct: 0 },
+{ swedish: "(en) gränd", english: ["alley", "boulevard", "avenue", "highway"], correct: 0 },
+{ swedish: "Kungliga slottet", english: ["the Royal Palace", "the city hall", "the museum", "the tower"], correct: 0 },
+{ swedish: "väldig, väldigt", english: ["mighty", "weak", "small", "insignificant"], correct: 0 },
+{ swedish: "(en) fyrkant", english: ["rectangle", "circle", "triangle", "hexagon"], correct: 0 },
+{ swedish: "Storkyrkan", english: ["the cathedral", "the chapel", "the mosque", "the synagogue"], correct: 0 },
+{ swedish: "samt", english: ["and", "but", "or", "because"], correct: 0 },
+{ swedish: "Riksdagshuset", english: ["the Parliament building", "the castle", "the courthouse", "the office"], correct: 0 },
+{ swedish: "(ett) familjenöje", english: ["family entertainment", "library", "hospital", "playground"], correct: 0 },
+{ swedish: "huvudsakligen", english: ["mainly", "rarely", "occasionally", "never"], correct: 0 },
+{ swedish: "(ett) djur", english: ["animal", "plant", "mineral", "fungi"], correct: 0 },
+{ swedish: "(en) lo", english: ["lynx", "tiger", "wolf", "bear"], correct: 0 },
+{ swedish: "inte långt", english: ["not far", "very close", "extremely far", "nearby"], correct: 0 },
+{ swedish: "(ett) krigsskepp", english: ["warship", "cargo ship", "ferry", "cruise ship"], correct: 0 },
+{ swedish: "att bärga", english: ["salvage", "destroy", "abandon", "lose"], correct: 0 },
+{ swedish: "att ta igen sig", english: ["recover, rest", "exhaust", "hurry", "tire"], correct: 0 },
+{ swedish: "(ett) utekafé", english: ["pavement café", "nightclub", "restaurant", "cafeteria"], correct: 0 },
+
+        ];
+		
+        let isRetry = false;
+
+        // New Variables for Progress Tracking
+        let totalQuestions = 0;
+        let answeredQuestions = 0;
+        let currentCorrectIndex = 0;
+
+        // Function to shuffle an array (Fisher-Yates Shuffle)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Function to render the missed words list in the DOM
+        function renderMissedWordsList() {
+            const missedList = document.getElementById("missed-words-list");
+            missedList.innerHTML = ""; // Clear existing list
+
+            missedWords.forEach(word => {
+                const missedWordItem = document.createElement("li");
+                missedWordItem.innerText = word.swedish;
+                missedList.appendChild(missedWordItem);
+            });
+        }
+
+        // Start a new set of questions
+        function startNewSet() {
+            missedWords = []; // Reset missed words for the new round
+            renderMissedWordsList(); // Clear or update UI list based on missedWords
+
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+            totalQuestions = wordList.length;
+            answeredQuestions = 0;
+            document.getElementById("progress").style.width = "0%";
+
+            if (!isRetry) {
+                correctAnswers = 0;
+                mistakes = 0;
+                document.getElementById("correct-counter").innerText = "0";
+                document.getElementById("mistake-counter").innerText = "0";
+            }
+        }
+
+        // Load a question
+        function loadQuestion() {
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+
+            if (currentQuestion >= wordList.length) {
+                if (missedWords.length === 0) {
+                    document.getElementById("feedback").innerText = "You've completed the quiz!";
+                    isRetry = false;
+                    document.getElementById("missedModal").style.display = "none";
+                } else {
+                    showModal();
+                }
+                return;
+            }
+
+            const currentWord = wordList[currentQuestion];
+            document.getElementById("swedish-word").innerText = currentWord.swedish;
+
+            let shuffledChoices = [...currentWord.english];
+            shuffledChoices = shuffleArray(shuffledChoices);
+
+            const correctAnswerText = currentWord.english[currentWord.correct];
+            currentCorrectIndex = shuffledChoices.indexOf(correctAnswerText);
+
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`choice${i}`).innerText = shuffledChoices[i];
+            }
+
+            document.getElementById("feedback").innerText = "";
+        }
+
+        // Speak the Swedish word
+        function speakSwedish() {
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+            if (currentQuestion >= wordList.length) {
+                return;
+            }
+            const swedishWord = wordList[currentQuestion].swedish;
+            responsiveVoice.speak(swedishWord, 'Swedish Female');
+        }
+
+        // Update the progress bar
+        function updateProgressBar() {
+            if (totalQuestions === 0) return;
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById("progress").style.width = `${progress}%`;
+        }
+
+        // Check the user's answer
+        function checkAnswer(choice) {
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+
+            if (currentQuestion >= wordList.length) {
+                return;
+            }
+
+            const currentWord = wordList[currentQuestion];
+            const isCorrect = choice === currentCorrectIndex;
+
+            if (isCorrect) {
+                document.getElementById("feedback").innerText = "Correct!";
+                correctAnswers++;
+                document.getElementById("correct-counter").innerText = correctAnswers;
+
+                // Remove word from missedWords if answered correctly in retry
+                if (isRetry) {
+                    missedWords = missedWords.filter(word => word.swedish !== currentWord.swedish);
+                    renderMissedWordsList();
+                }
+
+                answeredQuestions++;
+                updateProgressBar();
+            } else {
+                document.getElementById("feedback").innerText = "Wrong answer!";
+                mistakes++;
+                document.getElementById("mistake-counter").innerText = mistakes;
+
+                // Add to missedWords for the current round
+                if (!missedWords.some(word => word.swedish === currentWord.swedish)) {
+                    missedWords.push(currentWord);
+                    renderMissedWordsList();
+                }
+
+                answeredQuestions++;
+                updateProgressBar();
+            }
+
+            currentQuestion++;
+            setTimeout(() => {
+                loadQuestion();
+            }, 500);
+        }
+
+        // Show the modal if there are missed words
+        function showModal() {
+            const modalMessage = document.getElementById("modal-message");
+            if (missedWords.length === 1) {
+                modalMessage.innerHTML = `You got "${missedWords[0].swedish}" wrong. Do you want to try it again?`;
+            } else if (missedWords.length > 1) {
+                modalMessage.innerHTML = `You made ${mistakes} mistake${mistakes > 1 ? 's' : ''}. Do you want to try those words again?`;
+            }
+            document.getElementById("missedModal").style.display = "flex";
+        }
+
+// Close the modal
+function closeModal() {
+    document.getElementById("missedModal").style.display = "none";
+    
+    // Clear the missed words list when the modal closes
+    missedWords = [];
+    renderMissedWordsList(); // Update the UI to reflect the cleared list
+}
+
+        // Retry with missed words
+        function retryMissed() {
+            if (missedWords.length === 0) {
+                document.getElementById("feedback").innerText = "Great job! No words to retry.";
+                closeModal();
+                return;
+            }
+
+            previousRoundMissedWords = [...missedWords]; // Store missed words for this retry round
+            missedWords = []; // Clear missedWords for the new retry round
+
+            isRetry = true;
+
+            currentQuestion = 0;
+            correctAnswers = 0;
+            mistakes = 0;
+            document.getElementById("correct-counter").innerText = correctAnswers;
+            document.getElementById("mistake-counter").innerText = mistakes;
+
+            answeredQuestions = 0;
+            totalQuestions = previousRoundMissedWords.length;
+            document.getElementById("progress").style.width = "0%";
+
+            closeModal();
+            loadQuestion();
+        }
+
+        // Reset the quiz by refreshing the page
+        function resetPage() {
+            location.reload();
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            const modeLabel = document.getElementById("modeLabel");
+            modeLabel.innerText = document.body.classList.contains("dark-mode") ? "Dark mode" : "Dark mode";
+        }
+
+        // Initialize the quiz
+        window.onload = function() {
+            document.getElementById("missedModal").style.display = "none";
+            startNewSet();
+            loadQuestion();
+        };
+    </script>
+</body>
+</html>
