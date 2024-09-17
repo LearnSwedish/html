@@ -1,0 +1,888 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Wörter in "Doktor Glas"</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+    <style>
+/* Base Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    max-width: 700px;
+    margin: 10px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+h1 {
+    color: #5c67f2;
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+}
+
+/* Toggle Switch Styles */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: background-color 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: transform 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #5c67f2;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #1e1e2f;
+    color: #d1d1e0;
+}
+
+.dark-mode .container {
+    background-color: #2a2a3b;
+}
+
+.dark-mode h1 {
+    color: #ffffff; /* Change <h1> color to white in dark mode */
+    font-size: 2.8rem; /* Optional: Adjust font size */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Optional: Add text shadow */
+}
+
+.dark-mode .clickable-word {
+    color: #87baf3;
+}
+
+.dark-mode .answer-btn {
+    background-color: #5e6bff; /* Solid color for dark mode */
+    border: none; /* Removed border for consistency */
+}
+
+.dark-mode .answer-btn:hover {
+    background-color: #1a23ff; /* Bigger color change on hover in dark mode */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover in dark mode */
+}
+
+.dark-mode .feedback {
+    color: #87baf3;
+}
+
+.dark-mode .modal-btn {
+    background-color: #87baf3;
+}
+
+.dark-mode .modal-content {
+    color: #000; /* Set the text color to black */
+}
+
+/* Question Box Styles */
+.question-box {
+    margin: 30px 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.clickable-word {
+    color: #5c67f2;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.clickable-word:hover {
+    color: #4a54e1;
+}
+
+/* Choices (Answer Buttons) Styles */
+.choices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.answer-btn {
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #6b73ff; /* Solid color */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.answer-btn:hover {
+    background-color: #2e3bff; /* Bigger color change on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Dark Mode Hover Effect */
+.dark-mode .answer-btn:hover {
+    background-color: #1a23ff; /* Bigger color change on hover in dark mode */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover in dark mode */
+}
+
+/* Feedback Styles */
+.feedback {
+    font-size: 1.3rem;
+    margin-top: 30px;
+    color: #5c67f2;
+    height: 40px; /* Fixed height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+/* Progress Bar Styles */
+.progress-bar {
+    width: 100%;
+    background-color: #ddd;
+    height: 20px;
+    border-radius: 10px;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.progress {
+    background-color: #5c67f2;
+    height: 100%;
+    border-radius: 10px;
+    width: 0%; /* Start at 0% */
+    transition: width 0.4s ease;
+}
+
+/* Counters and Protocol Styles */
+.protocol, .counters {
+    margin-top: 30px;
+    font-size: 1.2rem;
+    text-align: left;
+}
+
+.protocol p, .counters p {
+    margin-bottom: 10px;
+}
+
+/* Fixed height for Missed Words List */
+#missed-words-list {
+    height: 60px; /* Adjust as needed */
+    overflow-y: auto;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 0.8rem; /* Adjust the font size to make words smaller */
+}
+.protocol ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.protocol ul li {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.modal-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.modal-btn {
+    padding: 12px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #5c67f2;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.modal-btn:hover {
+    background-color: #4557f0;
+}
+
+/* Reset Button Styles */
+.reset-btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff4d4d;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.reset-btn:hover {
+    background-color: #e04343;
+}
+
+/* Mode Label Styles */
+#modeLabel {
+    font-size: 1rem;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.dark-mode #modeLabel {
+    color: #d1d1e0;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .choices {
+        grid-template-columns: 1fr;
+    }
+
+    .protocol, .counters {
+        font-size: 1rem;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-btn, .reset-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    #modeLabel {
+        font-size: 0.9rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dunkler Modus</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Die Wörter in "Doktor Glas"</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+            <p id="swedish-word" class="clickable-word" onclick="speakSwedish()"></p>
+        </div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Richtige Antworten: <span id="correct-counter">0</span></p>
+            <p>Fehler: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Wörter, die du beim ersten Versuch falsch beantwortet hast:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Zurücksetzen</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">Du hast beim ersten Versuch einige Wörter verpasst. Möchtest du es noch einmal versuchen?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Ja</button>
+                <button class="modal-btn" onclick="closeModal()">Nein</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let mistakes = 0;
+        let missedWords = [];
+        let previousRoundMissedWords = []; // New variable to track missed words across rounds
+        const vocabulary = [
+{ swedish: "(en) kvällspromenad", english: ["Abendspaziergang", "Abendrunde", "Abendwanderung", "Nachtspaziergang"], correct: 0 },
+{ swedish: "(en) bekant", english: ["Bekannte", "Freund", "Nachbar", "Kollege"], correct: 0 },
+{ swedish: "(att) stanna till", english: ["anhalten", "stehenbleiben", "pausieren", "stoppen"], correct: 0 },
+{ swedish: "(en) stund", english: ["Weile", "Minute", "Sekunde", "Stunde"], correct: 0 },
+{ swedish: "förskräcklig", english: ["schrecklich", "entsetzlich", "furchtbar", "grausam"], correct: 0 },
+{ swedish: "(en) predikstol", english: ["Kanzel", "Altar", "Kapelle", "Kirche"], correct: 0 },
+{ swedish: "otäck", english: ["unheimlich", "gruselig", "furchterregend", "scheußlich"], correct: 0 },
+{ swedish: "(en) svamp", english: ["Pilz", "Baum", "Strauch", "Blume"], correct: 0 },
+{ swedish: "undan", english: ["weg", "fliehen", "vermeiden", "umgehen"], correct: 0 },
+{ swedish: "(att) slå ojämnt", english: ["unregelmäßig schlagen", "gleichmäßig schlagen", "hart schlagen", "sanft schlagen"], correct: 0 },
+{ swedish: "(att) plåga", english: ["quälen", "belästigen", "stören", "bedrängen"], correct: 0 },
+{ swedish: "(att) rodna", english: ["erröten", "blassen", "färben", "leuchten"], correct: 0 },
+{ swedish: "(att) stamma", english: ["stottern", "sprechen", "schreien", "flüstern"], correct: 0 },
+{ swedish: "(ett) ärende", english: ["Angelegenheit", "Problem", "Aufgabe", "Thema"], correct: 0 },
+{ swedish: "sömnlös", english: ["schlaflos", "müde", "ausgeruht", "erholt"], correct: 0 },
+{ swedish: "(att) begå", english: ["begehen, verpflichten", "machen", "tun", "herstellen"], correct: 0 },
+{ swedish: "(ett) brott", english: ["Verbrechen", "Gesetz", "Ordnung", "Regel"], correct: 0 },
+{ swedish: "(att) göra gott", english: ["Gutes tun", "Böses tun", "Neutral handeln", "Ignorieren"], correct: 0 },
+{ swedish: "(att) göra karriär", english: ["Karriere machen", "Freizeit genießen", "Karriere abbrechen", "Karriere ignorieren"], correct: 0 },
+{ swedish: "gravid", english: ["schwanger", "ledig", "unverheiratet", "alleinstehend"], correct: 0 },
+{ swedish: "(att) be om hjälp", english: ["um Hilfe bitten", "Hilfe leisten", "Hilfe ablehnen", "Hilfe ignorieren"], correct: 0 },
+{ swedish: "(att) ta bort", english: ["entfernen", "hinzufügen", "behalten", "verstärken"], correct: 0 },
+{ swedish: "(en) plikt", english: ["Pflicht", "Wahl", "Freiheit", "Option"], correct: 0 },
+{ swedish: "skamsen", english: ["beschämt", "stolz", "glücklich", "zufrieden"], correct: 0 },
+{ swedish: "hjälplös", english: ["hilflos", "stark", "unabhängig", "selbstständig"], correct: 0 },
+{ swedish: "(att) anteckna", english: ["notieren", "ignorieren", "vergessen", "übersehen"], correct: 0 },
+{ swedish: "(ett) fall", english: ["Fall", "Aufstieg", "Erfolg", "Sieg"], correct: 0 },
+{ swedish: "(att) tycka synd om", english: ["Mitleid haben, bedauern", "Freude haben", "Gleichgültigkeit zeigen", "Ignoranz zeigen"], correct: 0 },
+{ swedish: "(ett) lidande", english: ["Leiden", "Freude", "Glück", "Erfolg"], correct: 0 },
+{ swedish: "(ett) nöje", english: ["Vergnügen", "Arbeit", "Pflicht", "Verpflichtung"], correct: 0 },
+{ swedish: "(ett) hyckleri", english: ["Heuchelei", "Aufrichtigkeit", "Ehrlichkeit", "Offenheit"], correct: 0 },
+{ swedish: "(att) vimla", english: ["wimmeln", "leeren", "stillstehen", "verschwinden"], correct: 0 },
+{ swedish: "(ett) människoliv", english: ["Menschenleben", "Tierleben", "Pflanzenleben", "Maschinenleben"], correct: 0 },
+{ swedish: "(att) bry sig om", english: ["sich kümmern um", "ignorieren", "ablehnen", "vernachlässigen"], correct: 0 },
+{ swedish: "(en) ursäkt", english: ["Entschuldigung", "Wahrheit", "Entschuldigung", "Begründung"], correct: 0 },
+{ swedish: "(att) slippa", english: ["vermeiden", "machen", "verursachen", "verschlimmern"], correct: 0 },
+{ swedish: "(en) mottagning", english: ["Empfang", "Behandlung", "Operation", "Untersuchung"], correct: 0 },
+{ swedish: "ovanlig", english: ["ungewöhnlich", "häufig", "normal", "gewöhnlich"], correct: 0 },
+{ swedish: "förfärlig", english: ["schrecklich", "wunderbar", "fantastisch", "großartig"], correct: 0 },
+{ swedish: "(en) avsky", english: ["Abscheu, Ekel", "Liebe", "Zuneigung", "Bewunderung"], correct: 0 },
+{ swedish: "(att) handla om", english: ["handeln von", "ignorieren", "vermeiden", "vernachlässigen"], correct: 0 },
+{ swedish: "(att) begära", english: ["verlangen", "geben", "nehmen", "teilen"], correct: 0 },
+{ swedish: "(ett) förtroende", english: ["Vertrauen", "Zweifel", "Misstrauen", "Unsicherheit"], correct: 0 },
+{ swedish: "(att) darra", english: ["zittern", "stehen", "sitzen", "gehen"], correct: 0 },
+{ swedish: "(att) lida", english: ["leiden", "freuen", "genießen", "lachen"], correct: 0 },
+{ swedish: "(ett) underliv", english: ["Unterleib", "Oberkörper", "Kopf", "Fuß"], correct: 0 },
+{ swedish: "(att) avstå", english: ["unterlassen", "behalten", "nehmen", "sammeln"], correct: 0 },
+{ swedish: "(en) rättighet", english: ["Recht", "Pflicht", "Verantwortung", "Freiheit"], correct: 0 },
+{ swedish: "(att) stå ut", english: ["aushalten", "aufgeben", "vermeiden", "abbrechen"], correct: 0 },
+{ swedish: "(att) tala med", english: ["sprechen mit", "ignorieren", "zuhören", "schweigen"], correct: 0 },
+{ swedish: "(att) skänka", english: ["schenken", "nehmen", "behalten", "stehlen"], correct: 0 },
+{ swedish: "(en) synd", english: ["Sünde", "Tugend", "Pflicht", "Freiheit"], correct: 0 },
+{ swedish: "(en) skojare", english: ["Betrüger", "Freund", "Helfer", "Kollege"], correct: 0 },
+{ swedish: "(en) otrohet", english: ["Untreue", "Treue", "Loyalität", "Aufrichtigkeit"], correct: 0 },
+{ swedish: "(att) sjunka", english: ["sinken", "steigen", "bleiben", "schweben"], correct: 0 },
+{ swedish: "(att) skaka", english: ["schütteln", "stehen", "sitzen", "gehen"], correct: 0 },
+{ swedish: "(en) gråt", english: ["Weinen", "Lachen", "Singen", "Tanzen"], correct: 0 },
+{ swedish: "(att) värdera", english: ["schätzen", "ignorieren", "verachten", "ablehnen"], correct: 0 },
+{ swedish: "(att) förakta", english: ["verachten", "schätzen", "bewundern", "lieben"], correct: 0 },
+{ swedish: "(ett) enrum", english: ["unter vier Augen", "Öffentlich", "Publikum", "Alle"], correct: 0 },
+{ swedish: "skilda", english: ["geschieden", "zusammen", "vereint", "verbunden"], correct: 0 },
+{ swedish: "förskräckt", english: ["erschrocken", "beruhigt", "gelassen", "ruhig"], correct: 0 },
+{ swedish: "kär", english: ["verliebt", "gleichgültig", "distanziert", "indifferent"], correct: 0 },
+{ swedish: "märklig", english: ["seltsam", "normal", "gewöhnlich", "alltäglich"], correct: 0 },
+{ swedish: "(en) lycka", english: ["Glück", "Traurigkeit", "Ärger", "Kummer"], correct: 0 },
+{ swedish: "(en) drift", english: ["Betrieb", "Ruhe", "Stille", "Frieden"], correct: 0 },
+{ swedish: "(en) galenskap", english: ["Wahnsinn", "Vernunft", "Rationalität", "Logik"], correct: 0 },
+{ swedish: "(att) behärska", english: ["beherrschen", "verlieren", "aufgeben", "vernachlässigen"], correct: 0 },
+{ swedish: "(att) sakna", english: ["fehlen", "haben", "besitzen", "erhalten"], correct: 0 },
+{ swedish: "(en) vilja", english: ["Wille", "Zwang", "Pflicht", "Notwendigkeit"], correct: 0 },
+{ swedish: "(ett) begär", english: ["Wunsch", "Bedürfnis", "Bitte", "Bedarf"], correct: 0 },
+{ swedish: "motbjudande", english: ["unausstehlich", "anziehend", "attraktiv", "ansprechend"], correct: 0 },
+{ swedish: "(att) smutsa ner", english: ["beschmutzen", "reinigen", "putzen", "säubern"], correct: 0 },
+{ swedish: "(ett) lantställe", english: ["Landhaus", "Stadtwohnung", "Büro", "Fabrik"], correct: 0 },
+{ swedish: "(att) smeka", english: ["streicheln", "schlagen", "treten", "schubsen"], correct: 0 },
+{ swedish: "(att) drunkna", english: ["ertrinken", "schwimmen", "laufen", "fliegen"], correct: 0 },
+{ swedish: "(att) dra förbi", english: ["vorbeiziehen", "anhalten", "stoppen", "bleiben"], correct: 0 },
+{ swedish: "(att) släpa sig", english: ["sich schleppen", "schnell laufen", "springen", "tanzen"], correct: 0 },
+{ swedish: "(ett) besvär", english: ["Unannehmlichkeit", "Freude", "Glück", "Erfolg"], correct: 0 },
+{ swedish: "(en) ångest", english: ["Angst", "Freude", "Glück", "Zufriedenheit"], correct: 0 },
+{ swedish: "(att) slå sig ner", english: ["sich setzen", "aufstehen", "laufen", "springen"], correct: 0 },
+{ swedish: "(ett) ansikte", english: ["Gesicht", "Kopf", "Körper", "Hand"], correct: 0 },
+{ swedish: "(att) göra om", english: ["umgestalten", "ignorieren", "vermeiden", "vernachlässigen"], correct: 0 },
+{ swedish: "begåvad", english: ["begabt", "untalentiert", "unfähig", "inkompetent"], correct: 0 },
+{ swedish: "ljuvlig", english: ["lieblich", "hässlich", "furchtbar", "schrecklich"], correct: 0 },
+{ swedish: "(att) lysa upp", english: ["leuchten", "verdunkeln", "löschen", "schwächen"], correct: 0 },
+{ swedish: "eländig", english: ["elend", "glücklich", "zufrieden", "fröhlich"], correct: 0 },
+{ swedish: "(en) avund", english: ["Neid", "Liebe", "Zuneigung", "Bewunderung"], correct: 0 },
+{ swedish: "(ett) urval", english: ["Auswahl", "Sammlung", "Gruppe", "Menge"], correct: 0 },
+{ swedish: "meningslös", english: ["bedeutungslos", "bedeutungsvoll", "wichtig", "relevant"], correct: 0 },
+{ swedish: "blek", english: ["blass", "dunkel", "farbenfroh", "bunt"], correct: 0 },
+{ swedish: "(att) ta med våld", english: ["mit Gewalt nehmen", "freiwillig nehmen", "behutsam nehmen", "sanft nehmen"], correct: 0 },
+{ swedish: "stackars", english: ["arm", "reich", "wohlhabend", "vermögend"], correct: 0 },
+{ swedish: "liksom", english: ["sowie", "hingegen", "jedoch", "trotzdem"], correct: 0 },
+{ swedish: "(att) tigga", english: ["betteln", "geben", "nehmen", "behalten"], correct: 0 },
+{ swedish: "(att) hålla fast", english: ["festhalten", "loslassen", "ignorieren", "fallen lassen"], correct: 0 },
+{ swedish: "(en) hycklare", english: ["Heuchler", "Freund", "Helfer", "Kollege"], correct: 0 },
+{ swedish: "(att) vänja sig", english: ["sich gewöhnen", "ignorieren", "ablehnen", "vermeiden"], correct: 0 },
+{ swedish: "(att) smitta", english: ["infizieren", "heilen", "behandeln", "kurieren"], correct: 0 },
+{ swedish: "(ett) samvete", english: ["Gewissen", "Unschuld", "Schuld", "Verantwortung"], correct: 0 },
+{ swedish: "(en) domare", english: ["Richter", "Anwalt", "Arzt", "Lehrer"], correct: 0 },
+{ swedish: "(att) tillhöra", english: ["gehören", "ignorieren", "ablehnen", "vermeiden"], correct: 0 },
+{ swedish: "(att) mörda", english: ["morden", "heilen", "retten", "beschützen"], correct: 0 },
+{ swedish: "(att) gifta sig", english: ["heiraten", "scheiden", "verloben", "getrennt leben"], correct: 0 },
+{ swedish: "förälskad", english: ["verliebt", "gleichgültig", "distanziert", "indifferent"], correct: 0 },
+{ swedish: "(att) förföra", english: ["verführen", "ignorieren", "ablehnen", "abstoßen"], correct: 0 },
+{ swedish: "(ett) minne", english: ["Erinnerung", "Vergessen", "Ignoranz", "Gleichgültigkeit"], correct: 0 },
+{ swedish: "(att) lyckas", english: ["erfolgen", "scheitern", "versagen", "aufgeben"], correct: 0 },
+{ swedish: "(att) springa", english: ["laufen", "gehen", "sitzen", "bleiben"], correct: 0 },
+{ swedish: "annorlunda", english: ["anders", "gleich", "identisch", "ähnlich"], correct: 0 },
+{ swedish: "(att) sända", english: ["senden", "empfangen", "ignorieren", "ablehnen"], correct: 0 },
+{ swedish: "(att) förlåta", english: ["vergeben", "bestrafen", "verurteilen", "ablehnen"], correct: 0 },
+{ swedish: "(att) tröttna", english: ["müde werden", "energiegeladen sein", "wach bleiben", "aktiv bleiben"], correct: 0 },
+{ swedish: "strängt", english: ["streng", "locker", "nachsichtig", "flexibel"], correct: 0 },
+{ swedish: "(att) befria", english: ["befreien", "festhalten", "einsperren", "verhaften"], correct: 0 },
+{ swedish: "(en) längtan", english: ["Sehnsucht", "Gleichgültigkeit", "Zufriedenheit", "Zuflucht"], correct: 0 },
+{ swedish: "förvånad", english: ["überrascht", "erwartungsgemäß", "geplant", "berechnet"], correct: 0 },
+{ swedish: "(att) beundra", english: ["bewundern", "ignorieren", "verachten", "ablehnen"], correct: 0 },
+{ swedish: "sorgsen", english: ["traurig", "fröhlich", "glücklich", "zufrieden"], correct: 0 },
+{ swedish: "(att) tystna", english: ["verstummen", "sprechen", "schreien", "singen"], correct: 0 },
+{ swedish: "(en) gudstro", english: ["Gottesglaube", "Atheismus", "Agnostizismus", "Skeptizismus"], correct: 0 },
+{ swedish: "(att) längta", english: ["sehnen", "vergessen", "ignorieren", "abstoßen"], correct: 0 },
+{ swedish: "värdefull", english: ["wertvoll", "wertlos", "bedeutungslos", "nutzlos"], correct: 0 },
+{ swedish: "(att) njuta", english: ["genießen", "ignorieren", "ablehnen", "vermeiden"], correct: 0 },
+{ swedish: "(en) skilsmässa", english: ["Scheidung", "Heirat", "Verlobung", "Hochzeit"], correct: 0 },
+{ swedish: "(att) gå med på", english: ["zustimmen", "ablehnen", "ignorieren", "verweigern"], correct: 0 },
+{ swedish: "konstig", english: ["seltsam", "normal", "gewöhnlich", "alltäglich"], correct: 0 },
+{ swedish: "(ett) recept", english: ["Rezept", "Diagnose", "Therapie", "Operation"], correct: 0 },
+{ swedish: "(att) upplysa", english: ["informieren", "ignorieren", "verbergen", "vernachlässigen"], correct: 0 },
+{ swedish: "(att) varna", english: ["warnen", "beruhigen", "erfreuen", "ignorieren"], correct: 0 },
+{ swedish: "(att) lyda", english: ["gehorchen", "widersprechen", "ignorieren", "ablehnen"], correct: 0 },
+{ swedish: "olustig", english: ["unangenehm", "angenehm", "bequem", "komfortabel"], correct: 0 },
+{ swedish: "(att) ångra", english: ["bereuen", "genießen", "feiern", "freuen"], correct: 0 },
+{ swedish: "(ett) brott", english: ["Verbrechen", "Gesetz", "Ordnung", "Regel"], correct: 0 },
+{ swedish: "(ett) slaganfall", english: ["Schlaganfall", "Herzinfarkt", "Diabetes", "Arthritis"], correct: 0 },
+{ swedish: "(att) upptäcka", english: ["entdecken", "ignorieren", "verbergen", "vernachlässigen"], correct: 0 },
+{ swedish: "(att) misstänka", english: ["verdächtigen", "wissen", "bestätigen", "sicher sein"], correct: 0 },
+{ swedish: "(ett) självmord", english: ["Selbstmord", "Überleben", "Fortbestehen", "Leben"], correct: 0 },
+{ swedish: "vis", english: ["weise", "dumm", "töricht", "unklug"], correct: 0 },
+{ swedish: "beredd", english: ["bereit", "unvorbereitet", "überrascht", "ahnungslos"], correct: 0 },
+{ swedish: "olycklig", english: ["unglücklich", "glücklich", "zufrieden", "fröhlich"], correct: 0 },
+{ swedish: "(en) fattigdom", english: ["Armut", "Reichtum", "Wohlstand", "Vermögen"], correct: 0 },
+{ swedish: "rädd", english: ["Angst", "Mut", "Tapferkeit", "Furchtlosigkeit"], correct: 0 },
+{ swedish: "obotlig", english: ["unheilbar", "heilbar", "behandelbar", "kurierbar"], correct: 0 },
+{ swedish: "vidrig", english: ["abscheulich", "schön", "attraktiv", "ansprechend"], correct: 0 },
+{ swedish: "(en) vetskap", english: ["Wissen", "Unwissenheit", "Ignoranz", "Unkenntnis"], correct: 0 },
+{ swedish: "älskad", english: ["geliebt", "gehasst", "verachtet", "missachtet"], correct: 0 },
+{ swedish: "(ett) citat", english: ["Zitat", "Geschichte", "Roman", "Gedicht"], correct: 0 },
+{ swedish: "(en) brist", english: ["Mangel", "Überfluss", "Fülle", "Reichtum"], correct: 0 },
+{ swedish: "beundrad", english: ["bewundert", "ignoriert", "verachtet", "abgelehnt"], correct: 0 },
+{ swedish: "fruktad", english: ["gefürchtet", "geliebt", "verehrt", "bewundert"], correct: 0 },
+{ swedish: "hatad", english: ["gehasst", "geliebt", "verehrt", "bewundert"], correct: 0 },
+{ swedish: "föraktad", english: ["verachtet", "geliebt", "verehrt", "bewundert"], correct: 0 },
+{ swedish: "värsta", english: ["schlimmste", "beste", "guteste", "schönste"], correct: 0 },
+{ swedish: "(en) tomhet", english: ["Leere", "Fülle", "Überfluss", "Reichtum"], correct: 0 },
+{ swedish: "tung", english: ["schwer", "leicht", "einfach", "locker"], correct: 0 },
+{ swedish: "(en) ungdom", english: ["Jugend", "Alter", "Senioren", "Erwachsene"], correct: 0 },
+{ swedish: "(ett) inre", english: ["Inneres", "Äußeres", "Außenbereich", "Außenwelt"], correct: 0 },
+{ swedish: "(att) fortsätta", english: ["fortzufahren", "abbrechen", "stoppen", "aufhören"], correct: 0 },
+{ swedish: "(att) tilltala", english: ["ansprechen", "ignorieren", "ablehnen", "vermeiden"], correct: 0 },
+{ swedish: "(att) förklara", english: ["erklären", "verschweigen", "verbergen", "ignorieren"], correct: 0 },
+{ swedish: "(en) bjudning", english: ["Einladung", "Abweisung", "Ablehnung", "Ignoranz"], correct: 0 },
+{ swedish: "(att) känna igen", english: ["wiedererkennen", "ignorieren", "vergessen", "übersehen"], correct: 0 },
+{ swedish: "(en) hetta", english: ["Hitze", "Kälte", "Frische", "Kühlung"], correct: 0 },
+{ swedish: "(att) le", english: ["lächeln", "weinen", "schreien", "stöhnen"], correct: 0 },
+{ swedish: "(att) förvåna", english: ["überraschen", "erwarten", "planen", "berechnen"], correct: 0 },
+{ swedish: "(att) angå", english: ["betreffen", "ignorieren", "ablehnen", "vermeiden"], correct: 0 },
+{ swedish: "(att) uppvakta", english: ["umwerben", "ignorieren", "ablehnen", "ablecken"], correct: 0 },
+{ swedish: "(en) skuld", english: ["Schuld", "Unschuld", "Reinheit", "Freiheit"], correct: 0 },
+{ swedish: "(att) sträva", english: ["streben", "ruhen", "entspannen", "verweilen"], correct: 0 },
+{ swedish: "(en) njutning", english: ["Genuss", "Qual", "Schmerz", "Leiden"], correct: 0 },
+{ swedish: "(att) uppnå", english: ["erreichen", "verlieren", "scheitern", "versagen"], correct: 0 },
+{ swedish: "(att) glittra", english: ["glitzern", "verblassen", "verdunkeln", "dimmen"], correct: 0 },
+{ swedish: "(att) räcka fram", english: ["ausstrecken", "zurückhalten", "wegnehmen", "ignorieren"], correct: 0 },
+{ swedish: "(att) förfölja", english: ["verfolgen", "unterstützen", "ignorieren", "ablehnen"], correct: 0 },
+{ swedish: "(ett) uttryck", english: ["Ausdruck", "Stille", "Schweigen", "Ruhe"], correct: 0 },
+{ swedish: "(att) lukta", english: ["riechen", "schmecken", "fühlen", "sehen"], correct: 0 },
+{ swedish: "rutten", english: ["faul", "frisch", "neu", "sauber"], correct: 0 },
+{ swedish: "(ett) månsken", english: ["Mondschein", "Sonnenlicht", "Tageslicht", "Dämmerung"], correct: 0 },
+{ swedish: "(en) hälsning", english: ["Begrüßung", "Abschied", "Begrüßung", "Einladung"], correct: 0 },
+{ swedish: "(att) fly", english: ["fliehen", "bleiben", "stehenbleiben", "sitzenbleiben"], correct: 0 },
+{ swedish: "ärlig", english: ["ehrlich", "lügen", "betrügen", "täuschen"], correct: 0 },
+{ swedish: "(en) julgris", english: ["Weihnachtsschwein", "Osterhase", "Herbstfuchs", "Frühlingsvogel"], correct: 0 },
+{ swedish: "svettig", english: ["verschwitzt", "trocken", "kalt", "frisch"], correct: 0 },
+{ swedish: "(ett) lik", english: ["Leiche", "Geist", "Seele", "Körper"], correct: 0 },
+{ swedish: "(att) roa", english: ["amüsieren", "langweilen", "ignorieren", "abstoßen"], correct: 0 },
+{ swedish: "förgäves", english: ["vergeblich", "erfolgreich", "erfolgreich", "gewinnbringend"], correct: 0 },
+{ swedish: "(att) inse", english: ["einsehen", "ignorieren", "übersehen", "ablehnen"], correct: 0 },
+{ swedish: "(ett) nonsens", english: ["Unsinn", "Sinn", "Logik", "Wahrheit"], correct: 0 },
+{ swedish: "(att) uppröra", english: ["aufregen", "beruhigen", "erfreuen", "trösten"], correct: 0 },
+{ swedish: "(att) gripa in", english: ["eingreifen", "ignorieren", "ablehnen", "zurückziehen"], correct: 0 },
+{ swedish: "nödvändig", english: ["notwendig", "unnötig", "überflüssig", "optional"], correct: 0 },
+{ swedish: "(att) styra", english: ["steuern", "ignorieren", "folgen", "ablehnen"], correct: 0 },
+{ swedish: "upprepad", english: ["wiederholt", "selten", "einmalig", "einzigartig"], correct: 0 },
+{ swedish: "(en) våldtäkt", english: ["Vergewaltigung", "Belästigung", "Missbrauch", "Bedrohung"], correct: 0 },
+{ swedish: "(en) upptäckt", english: ["Entdeckung", "Erfindung", "Beobachtung", "Untersuchung"], correct: 0 },
+{ swedish: "straffad", english: ["bestraft", "belohnt", "gelobt", "anerkannt"], correct: 0 },
+{ swedish: "(att) dölja", english: ["verbergen", "zeigen", "offenbaren", "enthüllen"], correct: 0 },
+{ swedish: "(en) mardröm", english: ["Albtraum", "Traum", "Vision", "Illusion"], correct: 0 },
+{ swedish: "(att) se på", english: ["anshauen", "teilnehmen", "mitmachen", "ignorieren"], correct: 0 },
+{ swedish: "(att) dröja", english: ["verweilen", "eilen", "hasten", "beeilen"], correct: 0 },
+{ swedish: "pigg", english: ["munter", "müde", "schläfrig", "träge"], correct: 0 },
+{ swedish: "(att) erbjuda", english: ["anbieten", "nehmen", "ablehnen", "ignorieren"], correct: 0 },
+{ swedish: "(att) vilja", english: ["wollen", "brauchen", "möchten", "benötigen"], correct: 0 },
+{ swedish: "(att) slå ihjäl", english: ["totschlagen", "heilen", "retten", "beschützen"], correct: 0 },
+{ swedish: "(en) dödsattest", english: ["Sterbeurkunde", "Geburtsurkunde", "Heiratsurkunde", "Führerschein"], correct: 0 },
+{ swedish: "(en) risk", english: ["Risiko", "Sicherheit", "Garantie", "Gewissheit"], correct: 0 },
+{ swedish: "(en) egenskap", english: ["Eigenschaft", "Zustand", "Qualität", "Attribut"], correct: 0 },
+{ swedish: "(att) skynda sig", english: ["sich beeilen", "schlendern", "spazieren", "verweilen"], correct: 0 },
+{ swedish: "(en) sängkammare", english: ["Schlafzimmer", "Wohnzimmer", "Badezimmer", "Küche"], correct: 0 },
+{ swedish: "(att) kräkas", english: ["sich übergeben", "essen", "trinken", "kauen"], correct: 0 },
+{ swedish: "(ett) tillfälle", english: ["Gelegenheit", "Problem", "Schwierigkeit", "Herausforderung"], correct: 0 },
+{ swedish: "(att) dyka upp", english: ["erscheinen", "verschwinden", "bleiben", "verstecken"], correct: 0 },
+{ swedish: "(en) höjd", english: ["Höhe", "Tiefe", "Breite", "Länge"], correct: 0 },
+{ swedish: "(att) gråta", english: ["weinen", "lachen", "singen", "tanzen"], correct: 0 },
+{ swedish: "(att) tränga sig", english: ["sich drängen", "zurückziehen", "ignorieren", "ablehnen"], correct: 0 },
+{ swedish: "(en) ömhet", english: ["Zärtlichkeit", "Härte", "Kälte", "Distanz"], correct: 0 },
+{ swedish: "främmande", english: ["fremd", "bekannt", "vertraut", "heimisch"], correct: 0 },
+{ swedish: "(en) framtid", english: ["Zukunft", "Vergangenheit", "Gegenwart", "Historie"], correct: 0 },
+{ swedish: "(att) tycka om", english: ["mögen", "hassen", "ignorieren", "ablehnen"], correct: 0 },
+{ swedish: "(att) oroa sig", english: ["sich Sorgen machen", "beruhigen", "erfreuen", "trösten"], correct: 0 },
+{ swedish: "(att) böja", english: ["beugen", "strecken", "brechen", "falten"], correct: 0 },
+{ swedish: "högtidlig", english: ["feierlich", "lässig", "informell", "locker"], correct: 0 },
+{ swedish: "(en) ceremoni", english: ["Zeremonie", "Alltag", "Routine", "Normalität"], correct: 0 },
+{ swedish: "(en) känsla", english: ["Gefühl", "Logik", "Rationalität", "Verstand"], correct: 0 },
+{ swedish: "(att) gå under", english: ["zugrunde gehen", "aufsteigen", "bestehen", "überleben"], correct: 0 },
+{ swedish: "(att) lova", english: ["versprechen", "verschweigen", "verbergen", "ignorieren"], correct: 0 },
+{ swedish: "(en) kyrkogård", english: ["Friedhof", "Park", "Spielplatz", "Garten"], correct: 0 },
+{ swedish: "(att) låtsas", english: ["vortäuschen", "zeigen", "offenbaren", "enthüllen"], correct: 0 },
+{ swedish: "(en) nytta", english: ["Nutzen", "Schaden", "Verlust", "Nachteil"], correct: 0 },
+{ swedish: "(att) bjuda", english: ["anbieten", "nehmen", "ablehnen", "ignorieren"], correct: 0 },
+{ swedish: "(en) klunk", english: ["Schluck", "Bissen", "Happen", "Stück"], correct: 0 },
+{ swedish: "(att) stirra", english: ["starren", "blinzeln", "lächeln", "winken"], correct: 0 },
+{ swedish: "andfådd", english: ["außer Atem", "entspannt", "ruhig", "gelöst"], correct: 0 },
+{ swedish: "(att) gömma", english: ["verstecken", "zeigen", "offenbaren", "enthüllen"], correct: 0 },
+{ swedish: "(att) konstatera", english: ["feststellen", "ignorieren", "ablehnen", "übersehen"], correct: 0 },
+{ swedish: "sörjd", english: ["betrauert", "freut sich", "lacht", "tanzt"], correct: 0 },
+{ swedish: "(en) maka", english: ["Gattin", "Ehemann", "Freund", "Partner"], correct: 0 },
+{ swedish: "(en) bukett", english: ["Blumenstrauß", "Strauß", "Kranz", "Girlande"], correct: 0 },
+{ swedish: "(en) sympati", english: ["Sympathie", "Antipathie", "Gleichgültigkeit", "Ablehnung"], correct: 0 },
+{ swedish: "(att) tänka sig", english: ["sich vorstellen", "vergessen", "ignorieren", "ablehnen"], correct: 0 },
+{ swedish: "(en) midsommarnatt", english: ["Mittsommernacht", "Winternacht", "Frühlingstag", "Herbstabend"], correct: 0 },
+{ swedish: "(en) begravning", english: ["Beerdigung", "Hochzeit", "Geburtstag", "Jubiläum"], correct: 0 },
+{ swedish: "(ett) humör", english: ["Laune", "Stimmung", "Atmosphäre", "Umwelt"], correct: 0 },
+{ swedish: "(en) syn", english: ["Sicht", "Geräusch", "Geschmack", "Geruch"], correct: 0 },
+{ swedish: "(en) släkting", english: ["Relativ", "Freund", "Kollege", "Nachbar"], correct: 0 },
+{ swedish: "(en) slutsats", english: ["Schlussfolgerung", "Anfang", "Mitte", "Ende"], correct: 0 },
+{ swedish: "(en) fondmäklare", english: ["Börsenmakler", "Bäcker", "Lehrer", "Arzt"], correct: 0 },
+{ swedish: "(en) halv miljon", english: ["halbe Million", "Zehntausend", "Hunderttausend", "Tausend"], correct: 0 },
+{ swedish: "(en) överraskning", english: ["Überraschung", "Routine", "Alltag", "Gewohnheit"], correct: 0 },
+{ swedish: "(att) bedra", english: ["betrügen", "unterstützen", "helfen", "fördern"], correct: 0 },
+{ swedish: "(att) vrida", english: ["drehen", "schieben", "ziehen", "heben"], correct: 0 },
+{ swedish: "(att) lura", english: ["täuschen", "informieren", "erklären", "enthüllen"], correct: 0 },
+{ swedish: "(att) ana", english: ["ahnen", "wissen", "sicher sein", "bestätigen"], correct: 0 },
+{ swedish: "(att) komma över", english: ["überwinden", "verlieren", "scheitern", "versagen"], correct: 0 },
+{ swedish: "(en) möda", english: ["Mühe", "Freude", "Vergnügen", "Spaß"], correct: 0 },
+{ swedish: "lönlös", english: ["vergeblich", "erfolgreich", "nützlich", "gewinnbringend"], correct: 0 },
+{ swedish: "glatt", english: ["fröhlich", "traurig", "müde", "traurig"], correct: 0 },
+{ swedish: "(att) yra", english: ["taumeln", "stabil", "fest", "unbewegt"], correct: 0 },
+{ swedish: "(att) gå runt", english: ["herumgehen", "stillstehen", "sitzenbleiben", "stehenbleiben"], correct: 0 },
+{ swedish: "(en) förlovning", english: ["Engagement", "Hochzeit", "Scheidung", "Trennung"], correct: 0 },
+{ swedish: "allmänt känd", english: ["allgemein bekannt", "unbekannt", "geheim", "verborgen"], correct: 0 },
+{ swedish: "(en) hemlighet", english: ["Geheimnis", "Offenbarung", "Veröffentlichung", "Bekanntgabe"], correct: 0 },
+{ swedish: "(en) nöd", english: ["Not", "Luxus", "Überfluss", "Reichtum"], correct: 0 },
+{ swedish: "vansinnig", english: ["verrückt", "vernünftig", "logisch", "rational"], correct: 0 },
+{ swedish: "(ett) mörker", english: ["Dunkelheit", "Licht", "Helligkeit", "Strahlung"], correct: 0 },
+{ swedish: "(en) port", english: ["Tor", "Fenster", "Dach", "Boden"], correct: 0 },
+{ swedish: "(att) följa", english: ["folgen", "führen", "leiten", "anführen"], correct: 0 },
+{ swedish: "(en) brevlåda", english: ["Briefkasten", "Tür", "Fenster", "Garten"], correct: 0 },
+{ swedish: "(en) gatlykta", english: ["Straßenlaterne", "Hausleuchte", "Kerze", "Lampe"], correct: 0 },
+
+
+        ];
+		
+        let isRetry = false;
+
+        // New Variables for Progress Tracking
+        let totalQuestions = 0;
+        let answeredQuestions = 0;
+        let currentCorrectIndex = 0;
+
+        // Function to shuffle an array (Fisher-Yates Shuffle)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Function to render the missed words list in the DOM
+        function renderMissedWordsList() {
+            const missedList = document.getElementById("missed-words-list");
+            missedList.innerHTML = ""; // Clear existing list
+
+            missedWords.forEach(word => {
+                const missedWordItem = document.createElement("li");
+                missedWordItem.innerText = word.swedish;
+                missedList.appendChild(missedWordItem);
+            });
+        }
+
+        // Start a new set of questions
+        function startNewSet() {
+            missedWords = []; // Reset missed words for the new round
+            renderMissedWordsList(); // Clear or update UI list based on missedWords
+
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+            totalQuestions = wordList.length;
+            answeredQuestions = 0;
+            document.getElementById("progress").style.width = "0%";
+
+            if (!isRetry) {
+                correctAnswers = 0;
+                mistakes = 0;
+                document.getElementById("correct-counter").innerText = "0";
+                document.getElementById("mistake-counter").innerText = "0";
+            }
+        }
+
+        // Load a question
+        function loadQuestion() {
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+
+            if (currentQuestion >= wordList.length) {
+                if (missedWords.length === 0) {
+                    document.getElementById("feedback").innerText = "Du hast das Quiz abgeschlossen!";
+                    isRetry = false;
+                    document.getElementById("missedModal").style.display = "none";
+                } else {
+                    showModal();
+                }
+                return;
+            }
+
+            const currentWord = wordList[currentQuestion];
+            document.getElementById("swedish-word").innerText = currentWord.swedish;
+
+            let shuffledChoices = [...currentWord.english];
+            shuffledChoices = shuffleArray(shuffledChoices);
+
+            const correctAnswerText = currentWord.english[currentWord.correct];
+            currentCorrectIndex = shuffledChoices.indexOf(correctAnswerText);
+
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`choice${i}`).innerText = shuffledChoices[i];
+            }
+
+            document.getElementById("feedback").innerText = "";
+        }
+
+        // Speak the Swedish word
+        function speakSwedish() {
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+            if (currentQuestion >= wordList.length) {
+                return;
+            }
+            const swedishWord = wordList[currentQuestion].swedish;
+            responsiveVoice.speak(swedishWord, 'Swedish Female');
+        }
+
+        // Update the progress bar
+        function updateProgressBar() {
+            if (totalQuestions === 0) return;
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById("progress").style.width = `${progress}%`;
+        }
+
+        // Check the user's answer
+        function checkAnswer(choice) {
+            const wordList = isRetry ? previousRoundMissedWords : vocabulary;
+
+            if (currentQuestion >= wordList.length) {
+                return;
+            }
+
+            const currentWord = wordList[currentQuestion];
+            const isCorrect = choice === currentCorrectIndex;
+
+            if (isCorrect) {
+                document.getElementById("feedback").innerText = "Richtig!";
+                correctAnswers++;
+                document.getElementById("correct-counter").innerText = correctAnswers;
+
+                // Remove word from missedWords if answered correctly in retry
+                if (isRetry) {
+                    missedWords = missedWords.filter(word => word.swedish !== currentWord.swedish);
+                    renderMissedWordsList();
+                }
+
+                answeredQuestions++;
+                updateProgressBar();
+            } else {
+                document.getElementById("feedback").innerText = "Falsche Antwort!";
+                mistakes++;
+                document.getElementById("mistake-counter").innerText = mistakes;
+
+                // Add to missedWords for the current round
+                if (!missedWords.some(word => word.swedish === currentWord.swedish)) {
+                    missedWords.push(currentWord);
+                    renderMissedWordsList();
+                }
+
+                answeredQuestions++;
+                updateProgressBar();
+            }
+
+            currentQuestion++;
+            setTimeout(() => {
+                loadQuestion();
+            }, 500);
+        }
+
+        // Show the modal if there are missed words
+        function showModal() {
+            const modalMessage = document.getElementById("modal-message");
+            if (missedWords.length === 1) {
+                modalMessage.innerHTML = `You got "${missedWords[0].swedish}" wrong. Do you want to try it again?`;
+            } else if (missedWords.length > 1) {
+                modalMessage.innerHTML = `You made ${mistakes} mistake${mistakes > 1 ? 's' : ''}. Do you want to try those words again?`;
+            }
+            document.getElementById("missedModal").style.display = "flex";
+        }
+
+// Close the modal
+function closeModal() {
+    document.getElementById("missedModal").style.display = "none";
+    
+    // Clear the missed words list when the modal closes
+    missedWords = [];
+    renderMissedWordsList(); // Update the UI to reflect the cleared list
+}
+
+        // Retry with missed words
+        function retryMissed() {
+            if (missedWords.length === 0) {
+                document.getElementById("feedback").innerText = "Tolle Arbeit! Keine Wörter zum Wiederholen.";
+                closeModal();
+                return;
+            }
+
+            previousRoundMissedWords = [...missedWords]; // Store missed words for this retry round
+            missedWords = []; // Clear missedWords for the new retry round
+
+            isRetry = true;
+
+            currentQuestion = 0;
+            correctAnswers = 0;
+            mistakes = 0;
+            document.getElementById("correct-counter").innerText = correctAnswers;
+            document.getElementById("mistake-counter").innerText = mistakes;
+
+            answeredQuestions = 0;
+            totalQuestions = previousRoundMissedWords.length;
+            document.getElementById("progress").style.width = "0%";
+
+            closeModal();
+            loadQuestion();
+        }
+
+        // Reset the quiz by refreshing the page
+        function resetPage() {
+            location.reload();
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            const modeLabel = document.getElementById("modeLabel");
+            modeLabel.innerText = document.body.classList.contains("dark-mode") ? "Dunkler Modus" : "Dunkler Modus";
+        }
+
+        // Initialize the quiz
+        window.onload = function() {
+            document.getElementById("missedModal").style.display = "none";
+            startNewSet();
+            loadQuestion();
+        };
+    </script>
+</body>
+</html>
