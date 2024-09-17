@@ -97,7 +97,7 @@ input:checked + .slider:before {
 }
 
 .dark-mode h1 {
-    color: #ffffff; /* Change <h1> color to white in dark mode */
+    color: #ffffff; /* Change <h1> color white in dark mode */
     font-size: 2.8rem; /* Optional: Adjust font size */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Optional: Add text shadow */
 }
@@ -125,7 +125,7 @@ input:checked + .slider:before {
 }
 
 .dark-mode .modal-content {
-    color: #000; /* Set the text color to black */
+    color: #000; /* Set the text color black */
 }
 
 /* Question Box Styles */
@@ -228,7 +228,7 @@ input:checked + .slider:before {
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
-    font-size: 0.8rem; /* Adjust the font size to make words smaller */
+    font-size: 0.8rem; /* Adjust the font size make words smaller */
 }
 .protocol ul {
     list-style-type: none;
@@ -389,7 +389,7 @@ input:checked + .slider:before {
     <!-- Modal for Missed Words -->
     <div id="missedModal" class="modal">
         <div class="modal-content">
-            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <p id="modal-message">You missed some words on the first try. Do you want have another go?</p>
             <div class="modal-buttons">
                 <button class="modal-btn" onclick="retryMissed()">Yes</button>
                 <button class="modal-btn" onclick="closeModal()">No</button>
@@ -403,19 +403,19 @@ input:checked + .slider:before {
         let correctAnswers = 0;
         let mistakes = 0;
         let missedWords = [];
-        let previousRoundMissedWords = []; // New variable to track missed words across rounds
+        let previousRoundMissedWords = []; // New variable track missed words across rounds
         const vocabulary = [
 { swedish: "(en) torsdag", english: ["Thursday", "Friday", "Wednesday", "Tuesday"], correct: 0 },
 { swedish: "(en) morgon", english: ["morning", "evening", "night", "noon"], correct: 0 },
-{ swedish: "att vakna", english: ["to wake up", "to sleep", "to rest", "to relax"], correct: 0 },
+{ swedish: "att vakna", english: ["wake up", "sleep", "rest", "relax"], correct: 0 },
 { swedish: "mycket", english: ["very", "little", "slightly", "a bit"], correct: 0 },
 { swedish: "tidig, tidigt", english: ["early", "late", "delayed", "postponed"], correct: 0 },
-{ swedish: "att resa", english: ["to travel", "to stay", "to sleep", "to sit"], correct: 0 },
+{ swedish: "att resa", english: ["travel", "stay", "sleep", "sit"], correct: 0 },
 { swedish: "(en) förmiddag", english: ["before noon, AM", "afternoon", "evening", "night"], correct: 0 },
-{ swedish: "att åka", english: ["to travel (as passenger)", "to walk", "to run", "to stand"], correct: 0 },
+{ swedish: "att åka", english: ["travel (as passenger)", "walk", "run", "stand"], correct: 0 },
 { swedish: "ofta", english: ["often", "rarely", "never", "occasionally"], correct: 0 },
 { swedish: "för att", english: ["(in order) to", "despite", "because of", "without"], correct: 0 },
-{ swedish: "att uppträda", english: ["to perform", "to watch", "to listen", "to study"], correct: 0 },
+{ swedish: "att uppträda", english: ["perform", "watch", "listen", "study"], correct: 0 },
 { swedish: "(en) buss", english: ["bus", "car", "train", "airplane"], correct: 0 },
 { swedish: "(en) tågstation", english: ["railway station", "bus stop", "airport", "ferry terminal"], correct: 0 },
 { swedish: "bara", english: ["only", "everything", "many", "several"], correct: 0 },
@@ -423,27 +423,27 @@ input:checked + .slider:before {
 { swedish: "(en) flygplats", english: ["airport", "bus station", "train station", "port"], correct: 0 },
 { swedish: "där", english: ["there", "here", "everywhere", "nowhere"], correct: 0 },
 { swedish: "försenad, försenat", english: ["delayed", "early", "on time", "ahead"], correct: 0 },
-{ swedish: "att vänta", english: ["to wait", "to leave", "to hurry", "to run"], correct: 0 },
+{ swedish: "att vänta", english: ["wait", "leave", "hurry", "run"], correct: 0 },
 { swedish: "nästan", english: ["almost", "exactly", "completely", "entirely"], correct: 0 },
 { swedish: "halv", english: ["half", "full", "quarter", "whole"], correct: 0 },
 { swedish: "(en) timme", english: ["hour", "minute", "second", "day"], correct: 0 },
 { swedish: "snabb, snabbt", english: ["quick, quickly", "slow", "gradual", "hesitant"], correct: 0 },
 { swedish: "orolig, oroligt", english: ["worried", "calm", "confident", "relaxed"], correct: 0 },
-{ swedish: "att hoppas", english: ["to hope", "to know", "to ignore", "to avoid"], correct: 0 },
-{ swedish: "att missa", english: ["to miss", "to catch", "to find", "to arrive"], correct: 0 },
+{ swedish: "att hoppas", english: ["hope", "know", "ignore", "avoid"], correct: 0 },
+{ swedish: "att missa", english: ["miss", "catch", "find", "arrive"], correct: 0 },
 { swedish: "ett flyg", english: ["flight, plane", "train", "car", "bus"], correct: 0 },
-{ swedish: "att ha tur", english: ["to be in luck", "to fail", "to miss", "to lose"], correct: 0 },
+{ swedish: "att ha tur", english: ["be in luck", "fail", "miss", "lose"], correct: 0 },
 { swedish: "hela", english: ["all, whole", "part", "section", "half"], correct: 0 },
 { swedish: "(en) flygresa", english: ["flight", "train journey", "bus ride", "road trip"], correct: 0 },
 { swedish: "ganska", english: ["rather", "not at all", "extremely", "barely"], correct: 0 },
-{ swedish: "att komma fram", english: ["to arrive", "to leave", "to stay", "to remain"], correct: 0 },
+{ swedish: "att komma fram", english: ["arrive", "leave", "stay", "remain"], correct: 0 },
 { swedish: "hans", english: ["his", "her", "my", "your"], correct: 0 },
 { swedish: "(en) fiol", english: ["violin", "piano", "guitar", "flute"], correct: 0 },
-{ swedish: "att andas ut", english: ["to relax, to breath freely", "to worry", "to hurry", "to panic"], correct: 0 },
+{ swedish: "att andas ut", english: ["relax, breath freely", "worry", "hurry", "panic"], correct: 0 },
 { swedish: "(en) dag", english: ["day", "night", "week", "month"], correct: 0 },
 { swedish: "sist", english: ["last", "first", "next", "previous"], correct: 0 },
 { swedish: "(ett) plan", english: ["plane", "train", "bus", "boat"], correct: 0 },
-{ swedish: "att somna", english: ["to fall asleep", "to wake up", "to get up", "to stay awake"], correct: 0 },
+{ swedish: "att somna", english: ["fall asleep", "wake up", "get up", "stay awake"], correct: 0 },
 { swedish: "direkt", english: ["immediately", "slowly", "eventually", "gradually"], correct: 0 },
 { swedish: "(ett) hotell", english: ["hotel", "restaurant", "house", "shop"], correct: 0 },
 { swedish: "skön, skönt", english: ["beautiful, comfortable", "ugly", "rough", "unpleasant"], correct: 0 },
