@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick the Main Clause</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        #toggle-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        #toggle-container label {
+            margin-right: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .sentence-container, .buttons-container {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+
+        #sentence {
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .translation {
+            font-size: 18px;
+            font-style: italic;
+            text-align: center;
+			margin-bottom: 30px;
+        }
+
+        .buttons-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+			max-width: 520px;
+        }
+
+        .button {
+            padding: 20px 40px;
+			margin-bottom: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            width: 250px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .disable-hover {
+            pointer-events: none;
+        }
+
+        .flash {
+            animation: flash 1s ease-out;
+        }
+
+        @keyframes flash {
+            0%, 100% { background-color: #32CD32; }
+            50% { background-color: #66ff66; }
+        }
+
+        .incorrect-flash {
+            background-color: #ff6666;
+        }
+
+        .correct-answer {
+            background-color: #32CD32;
+        }
+
+        .counters {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 80%;
+        }
+
+        .modal-content.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .modal-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Reset button */
+        #resetButton {
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            background-color: #ff4c4c;
+            color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #resetButton:hover {
+            background-color: #ff1a1a;
+        }
+		
+		@media (max-width: 600px) {
+    .buttons-container {
+        grid-template-columns: 1fr; /* Change to a single column */
+        gap: 10px; /* Adjust gap if needed */
+    }
+    
+    .sentence-container, .buttons-container {
+        width: 90%; /* Make containers responsive */
+    }
+
+    #sentence, .translation {
+        font-size: 1.2em; /* Adjust font size for readability */
+    }
+    
+    #resetButton {
+        width: 90%; /* Adjust reset button width */
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div id="toggle-container">
+        <label for="darkModeToggle">Dark mode</label>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <h1>Pick the Main Clause</h1>
+
+    <div class="sentence-container">
+        <p id="sentence">Detta är bara en platshållarmening, låt stå.</p>
+        <p id="translation" class="translation">*This is just a placeholder sentence, don't remove it.*</p>
+    </div>
+
+    <div class="buttons-container">
+        <button class="button" id="option1"></button>
+        <button class="button" id="option2"></button>
+        <button class="button" id="option3"></button>
+        <button class="button" id="option4"></button>
+    </div>
+
+    <div class="counters">
+        <p>Correct answers: <span id="correctCount">0</span></p>
+        <p>Incorrect answers: <span id="incorrectCount">0</span></p>
+    </div>
+
+    <!-- Reset button -->
+    <button id="resetButton">Reset</button>
+
+    <!-- Modal -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h2>The exercise is complete!</h2>
+            <p id="correctAnswers"></p>
+            <p id="incorrectAnswers"></p>
+            <p id="finalMessage"></p>
+            <button class="modal-button" id="tryAgainButton">Try again!</button>
+            <button class="modal-button" id="doneButton">I’m done!</button>
+        </div>
+    </div>
+
+    <script>
+        const sentences = [
+            { sentence: "Jag måste sova lite eftersom jag sov så dåligt inatt.", translation: "*I need to sleep a little because I slept so poorly last night.*", options: ["jag sov så dåligt inatt", "Jag måste sova", "Jag måste sova lite", "eftersom jag sov så dåligt inatt"], correct: "Jag måste sova lite" },
+            { sentence: "Han stannade hemma eftersom han var sjuk.", translation: "*He stayed at home because he was sick.*", options: ["Han stannade hemma", "eftersom han var sjuk", "han var sjuk", "stannade hemma"], correct: "Han stannade hemma" },
+			{ sentence: "Hon sålde sitt hus i Sverige innan hon flyttade till Spanien.", translation: "*She sold her house in Sweden before she moved to Spain.*", options: ["Hon sålde sitt hus i Sverige", "innan hon flyttade till Spanien", "hon flyttade till Spanien", "sitt hus i Sverige innan hon flyttade"], correct: "Hon sålde sitt hus i Sverige" },
+			{ sentence: "Eftersom han är helt ensam kan han göra precis som han vill.", translation: "*Because he is completely alone he can do exactly as he wants.*", options: ["kan han göra precis som han vill", "Eftersom han är helt ensam", "han är helt ensam", "helt ensam kan han göra"], correct: "kan han göra precis som han vill" },
+			{ sentence: "När hon har ätit sin frukost brukar hon ta en promenad.", translation: "*When she has eaten her breakfast she usually goes for a walk.*", options: ["brukar hon ta en promenad", "När hon har ätit sin frukost", "hon har ätit sin frukost", "sin frukost brukar hon ta"], correct: "brukar hon ta en promenad" },
+			{ sentence: "Även om hon saknar sina barnbarn är hon väldigt nöjd.", translation: "*Although she misses her grandchildren she is very content.*", options: ["är hon väldigt nöjd", "Även om hon saknar sina barnbarn", "hon saknar sina barnbarn", "sina barnbarn är hon"], correct: "är hon väldigt nöjd" },
+			{ sentence: "Eftersom hon var trött gick hon till sängs tidigt.", translation: "*Since she was tired she went to bed early.*", options: ["gick hon till sängs tidigt", "Eftersom hon var trött", "hon var trött", "var trött gick hon till"], correct: "gick hon till sängs tidigt" },
+			{ sentence: "Om du älskar musik borde du gå på en konsert.", translation: "*If you love music you should go to a concert.*", options: ["borde du gå på en konsert", "Om du älskar musik", "du älskar musik", "älskar musik borde du gå"], correct: "borde du gå på en konsert" },
+			{ sentence: "Klockan var redan åtta när jag vaknade.", translation: "*It was already eight o'clock when I woke up.*", options: ["Klockan var redan åtta", "när jag vaknade", "jag vaknade", "var redan åtta när jag"], correct: "Klockan var redan åtta" },
+			{ sentence: "Du måste stänga alla fönster innan du går hemifrån.", translation: "*You must close all the windows before you leave the house.*", options: ["Du måste stänga alla fönster", "innan du går hemifrån", "du går hemifrån", "stänga alla fönster innan du"], correct: "Du måste stänga alla fönster" },
+			{ sentence: "Om han inte svarar får vi försöka igen senare.", translation: "*If he doesn't answer we will try again later.*", options: ["får vi försöka igen senare", "Om han inte svarar", "han inte svarar", "inte svarar får vi försöka"], correct: "får vi försöka igen senare" },
+			{ sentence: "Jag kommer att gå till parken om det slutar regna.", translation: "*I will go to the park if it stops raining.*", options: ["Jag kommer att gå till parken", "om det slutar regna", "det slutar regna", "att gå till parken om det"], correct: "Jag kommer att gå till parken" },
+			{ sentence: "Hon sjunger vackert när hon är glad.", translation: "*She sings beautifully when she is happy.*", options: ["Hon sjunger vackert", "när hon är glad", "hon är glad", "sjunger vackert när hon är"], correct: "Hon sjunger vackert" },
+			{ sentence: "De ska titta på en film efter att de har ätit middag.", translation: "*They will watch a film after they have eaten dinner.*", options: ["De ska titta på en film", "efter att de har ätit middag", "de har ätit middag", "titta på en film efter att"], correct: "De ska titta på en film" },
+			{ sentence: "Han läser alltid innan han går och lägger sig.", translation: "*He always reads before he goes to bed.*", options: ["Han läser alltid", "innan han går och lägger sig", "han går och lägger sig", "läser alltid innan han går"], correct: "Han läser alltid" },
+			{ sentence: "Vi kan gå en promenad om det inte börjar snöa.", translation: "*We can go for a walk if it doesn't start snowing.*", options: ["Vi kan gå en promenad", "om det inte börjar snöa", "det inte börjar snöa", "gå en promenad om det inte"], correct: "Vi kan gå en promenad" },
+			{ sentence: "Hon kommer att köpa en ny bil när hon får sin bonus.", translation: "*She will buy a new car when she gets her bonus.*", options: ["Hon kommer att köpa en ny bil", "när hon får sin bonus", "hon får sin bonus", "köpa en ny bil när hon"], correct: "Hon kommer att köpa en ny bil" },
+			{ sentence: "De ska besöka sina morföräldrar om de har tid.", translation: "*They will visit their grandparents if they have time.*", options: ["De ska besöka sina morföräldrar", "om de har tid", "de har tid", "besöka sina morföräldrar om de"], correct: "De ska besöka sina morföräldrar" },
+			{ sentence: "Jag gillar att lyssna på musik medan jag arbetar.", translation: "*I like to listen to music while I work.*", options: ["Jag gillar att lyssna på musik", "medan jag arbetar", "jag arbetar", "att lyssna på musik medan"], correct: "Jag gillar att lyssna på musik" },
+			{ sentence: "Han äter frukost innan han går till skolan.", translation: "*He eats breakfast before he goes to school.*", options: ["Han äter frukost", "innan han går till skolan", "han går till skolan", "äter frukost innan han går"], correct: "Han äter frukost" },
+			{ sentence: "Vi borde ta med oss ett paraply ifall det regnar.", translation: "*We should take an umbrella in case it rains.*", options: ["Vi borde ta med oss ett paraply", "ifall det regnar", "det regnar", "ta med oss ett paraply ifall det"], correct: "Vi borde ta med oss ett paraply" },
+			{ sentence: "Vi dansar eftersom vi är lediga.", translation: "*We dance because we are free.*", options: ["Vi dansar", "eftersom vi är lediga", "vi är lediga", "dansar eftersom vi är"], correct: "Vi dansar" },
+			{ sentence: "Hon sjunger när hon arbetar. ", translation: "*She sings when she works.*", options: ["Hon sjunger", "när hon arbetar", "hon arbetar", "sjunger när hon arbetar"], correct: "Hon sjunger" },
+			{ sentence: "Han springer fastän han har ont.", translation: "*He runs even though he is in pain.*", options: ["Han springer", "fastän han har ont", "han har ont", "springer fastän han har"], correct: "Han springer" },
+			{ sentence: "Musik är tråkig när den inte berör själen.", translation: "*Music is boring when it does not touch the soul.*", options: ["Musik är tråkig", "när den inte berör själen", "den inte berör själen", "är tråkig när den berör"], correct: "Musik är tråkig" },
+			{ sentence: "Fastän de inte gillar kylan leker de utomhus.", translation: "*Even though they don't like the cold they play outside.*", options: ["leker de utomhus", "Fastän de inte gillar kylan", "de inte gillar kylan", "gillar kylan leker de"], correct: "leker de utomhus" },
+			{ sentence: "Solen värmer när himlen är grå.", translation: "*The sun warms when the sky is grey.*", options: ["Solen värmer", "när himlen är grå", "himlen är grå", "värmer när himlen är"], correct: "Solen värmer" },
+			{ sentence: "När det inte regnar tar jag en promenad.", translation: "*When it doesn't rain I take a walk.*", options: ["tar jag en promenad", "När det inte regnar", "det inte regnar", "inte regnar tar jag en"], correct: "tar jag en promenad" },
+			{ sentence: "Även när jag inte borde dricka kaffe dricker jag kaffe.", translation: "*Even when I shouldn't drink coffee I drink coffee.*", options: ["dricker jag kaffe", "Även när jag inte borde dricka kaffe", "jag inte borde dricka kaffe", "borde dricka kaffe dricker jag"], correct: "dricker jag kaffe" },
+			{ sentence: "Jag skriver dagligen några sidor även om jag inte orkar.", translation: "*I write a few pages daily even if I don't have the energy.*", options: ["Jag skriver dagligen några sidor", "även om jag inte orkar", "jag inte orkar", "några sidor även om jag"], correct: "Jag skriver dagligen några sidor" },
+			{ sentence: "Om min klocka inte fungerar kommer jag att försova mig.", translation: "*If my watch doesn't work I will oversleep.*", options: ["kommer jag att försova mig", "Om min klocka inte fungerar", "min klocka inte fungerar", "klocka inte fungerar kommer jag"], correct: "kommer jag att försova mig" },
+			{ sentence: "Livet känns bra när jag har allt under kontroll.", translation: "*Life feels good when I have everything under control.*", options: ["Livet känns bra", "när jag har allt under kontroll", "jag har allt under kontroll", "känns bra när jag har"], correct: "Livet känns bra" },
+			{ sentence: "När jag inte får dansa mår jag dåligt.", translation: "*When I can't dance I feel bad.*", options: ["mår jag dåligt", "När jag inte får dansa", "jag inte får dansa", "inte får dansa mår jag"], correct: "mår jag dåligt" },
+			{ sentence: "Om det inte blir varmt snart kommer jag gå hem.", translation: "*If it doesn't get warm soon I will go home.*", options: ["kommer jag gå hem", "Om det inte blir varmt snart", "det inte blir varmt snart", "inte blir varmt snart kommer jag"], correct: "kommer jag gå hem" },
+			{ sentence: "De gick på en promenad efter att de hade ätit middag.", translation: "*They went for a walk after they had eaten dinner.*", options: ["De gick på en promenad", "efter att de hade ätit middag", "de hade ätit middag", "gick på en promenad efter att"], correct: "De gick på en promenad" },
+			{ sentence: "När han hörde nyheterna kunde han inte tro sina öron.", translation: "*When he heard the news he couldn't believe his ears.*", options: ["kunde han inte tro sina öron", "När han hörde nyheterna", "han hörde nyheterna", "hörde nyheterna kunde han inte"], correct: "kunde han inte tro sina öron" },
+			{ sentence: "Om hon inte får tillräckligt med sömn känner hon sig trött på morgonen.", translation: "*If she doesn't get enough sleep she feels groggy in the morning.*", options: ["känner hon sig trött på morgongen", "Om hon inte får tillräckligt med sömn", "hon inte får tillräckligt med sömn", "inte får tillräckligt med sömn känner hon"], correct: "känner hon sig trött på morgonen" },
+			{ sentence: "Efter att de hade ätit klart gick de på bio.", translation: "*After they had finished eating they went to the cinema.*", options: ["gick de på bio", "Efter att de hade ätit klart", "de hade ätit klart", "hade ätit klart gick de"], correct: "gick de på bio" },
+			{ sentence: "Medan hon studerade fortsatte hennes telefon att störa henne.", translation: "*While she was studying her phone kept distracting her.*", options: ["fortsatte hennes telefon att störa henne", "Medan hon studerade", "hon studerade", "studerade fortsatte hennes telefon"], correct: "fortsatte hennes telefon att störa henne" },
+			{ sentence: "Även om det var sent bestämde hon sig för att gå ut och springa.", translation: "*Although it was late she decided to go for a run.*", options: ["bestämde hon sig för att gå ut och springa", "Även om det var sent", "det var sent", "var sent bestämde hon sig"], correct: "bestämde hon sig för att gå ut och springa" },
+
+        ];
+
+        let currentSentenceIndex = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let shuffledSentences = [];
+
+        const sentenceElement = document.getElementById('sentence');
+        const translationElement = document.getElementById('translation');
+        const buttons = document.querySelectorAll('.button');
+        const correctCountElement = document.getElementById('correctCount');
+        const incorrectCountElement = document.getElementById('incorrectCount');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const resultModal = document.getElementById('resultModal');
+        const correctAnswersElement = document.getElementById('correctAnswers');
+        const incorrectAnswersElement = document.getElementById('incorrectAnswers');
+        const finalMessageElement = document.getElementById('finalMessage');
+        const tryAgainButton = document.getElementById('tryAgainButton');
+        const doneButton = document.getElementById('doneButton');
+        const resetButton = document.getElementById('resetButton');
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function shuffleSentences() {
+            shuffledSentences = [...sentences];
+            shuffle(shuffledSentences);
+        }
+
+        function loadSentence() {
+            const currentSentence = shuffledSentences[currentSentenceIndex];
+            sentenceElement.textContent = currentSentence.sentence;
+            translationElement.textContent = currentSentence.translation;
+
+            let options = [...currentSentence.options];
+            shuffle(options);
+
+            buttons.forEach((button, index) => {
+                button.textContent = options[index];
+                button.classList.remove('flash', 'incorrect-flash', 'correct-answer', 'disable-hover');
+                button.onclick = () => checkAnswer(button, options[index]);
+            });
+
+            document.querySelector('.sentence-container').classList.remove('fade-out');
+            document.querySelector('.buttons-container').classList.remove('fade-out');
+        }
+
+        function checkAnswer(button, selectedOption) {
+            buttons.forEach(btn => btn.classList.add('disable-hover'));
+
+            const correctAnswer = shuffledSentences[currentSentenceIndex].correct;
+            if (selectedOption === correctAnswer) {
+                button.classList.add('flash', 'correct-answer');
+                correctCount++;
+                correctCountElement.textContent = correctCount;
+            } else {
+                button.classList.add('incorrect-flash');
+                incorrectCount++;
+                incorrectCountElement.textContent = incorrectCount;
+
+                buttons.forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add('flash', 'correct-answer');
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                // Apply fade-out if not the last sentence
+                if (currentSentenceIndex < shuffledSentences.length - 1) {
+                    document.querySelector('.sentence-container').classList.add('fade-out');
+                    document.querySelector('.buttons-container').classList.add('fade-out');
+                }
+
+                if (currentSentenceIndex === shuffledSentences.length - 1) {
+                    setTimeout(showResultModal, 500);
+                } else {
+                    setTimeout(loadNextSentence, 500);
+                }
+            }, 2000); // Wait 1 second for the flash animation to finish
+        }
+
+        function loadNextSentence() {
+            currentSentenceIndex++;
+            loadSentence();
+        }
+
+        function showResultModal() {
+            correctAnswersElement.textContent = `Correct answers: ${correctCount}`;
+            incorrectAnswersElement.textContent = `Incorrect answers: ${incorrectCount}`;
+
+            if (incorrectCount === 0) {
+                finalMessageElement.innerHTML = "All correct! Congratulations!<br>Try again to see if you can do it again!";
+            } else {
+                finalMessageElement.textContent = "Try again to see if you can complete the exercise without mistakes!";
+            }
+
+            resultModal.style.display = 'flex';
+            if (darkModeToggle.checked) {
+                resultModal.querySelector('.modal-content').classList.add('dark-mode');
+            }
+        }
+
+        tryAgainButton.onclick = () => {
+            location.reload();
+        };
+
+        doneButton.onclick = () => {
+            resultModal.style.display = 'none';
+        };
+
+        resetButton.onclick = () => {
+            location.reload();
+        };
+
+        function resetExercise() {
+            currentSentenceIndex = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            correctCountElement.textContent = 0;
+            incorrectCountElement.textContent = 0;
+            shuffleSentences();
+            loadSentence();
+        }
+
+        darkModeToggle.onchange = () => {
+            document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+        };
+
+        shuffleSentences();
+        loadSentence();
+    </script>
+
+</body>
+</html>
