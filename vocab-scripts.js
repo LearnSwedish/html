@@ -64,7 +64,7 @@ function loadQuestion() {
     }
 
     const currentWord = wordList[currentQuestion];
-    document.getElementById("swedish-word").innerText = currentWord.swedish;
+    document.getElementById("word-text").innerText = currentWord.swedish;
 
     let shuffledChoices = [...currentWord.english];
     shuffledChoices = shuffleArray(shuffledChoices);
