@@ -10,7 +10,7 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
             background-color: #f4f4f9;
-			color: #333;
+            color: #333;
             display: flex;
             justify-content: center;
         }
@@ -25,7 +25,8 @@
             width: 500px;
             max-width: 90%;
             padding: 10px;
-            margin-top: 20px; /* Flyttar innehållet 40px från toppen */
+            margin-top: 20px;
+            position: relative;
         }
 
         /* Kapitelcontainer */
@@ -34,7 +35,7 @@
             margin: 10px 0;
             border-radius: 5px;
             background-color: #fff;
-            overflow: hidden;
+            overflow: visible;
             transition: background-color 0.3s;
         }
 
@@ -42,24 +43,24 @@
         .kapitel-header {
             padding: 15px;
             cursor: pointer;
-            background-color: #333; /* Tydligare bakgrundsfärg */
-            color: white; /* Vit textfärg */
-            font-size: 18px; /* Större textstorlek */
-            font-weight: bold; /* Fetstil */
-            text-align: center; /* Centrera texten */
-            border-radius: 5px; /* Rundade hörn */
-            transition: background-color 0.3s, transform 0.2s; /* Lägg till övergång för hover-effekt */
+            background-color: #333;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
         }
 
         /* Hover-effekt för kapitelrubrik */
         .kapitel-header:hover {
-            background-color: #333; /* Mörkare grönt vid hover */
+            background-color: #333;
         }
 
         /* Aktivt kapitel */
         .kapitel.active .kapitel-header {
-            background-color: #4CAF50; /* Annan färg för aktivt kapitel */
-            color: white; /* Ändra textfärg */
+            background-color: #4CAF50;
+            color: white;
         }
 
         /* Göra kapitelinnehåll dolt som standard */
@@ -74,12 +75,62 @@
             display: block;
         }
 
-        /* Dropdown-lista */
-        select {
+        /* Custom Dropdown Container */
+        .custom-select {
+            position: relative;
+            display: inline-block;
             width: 100%;
-            padding: 5px;
             margin-top: 10px;
         }
+
+        .custom-select .select-selected {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            text-align: left;
+            width: 450px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .custom-select .select-items {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            width: 470px;
+            z-index: 999;
+            border-radius: 5px;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .custom-select .select-items div {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-left: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            height: 35px;
+        }
+
+        .custom-select .select-items div:hover {
+            background-color: #f4f4f9;
+        }
+
+        .custom-select .select-items .img-option {
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-select .select-items .img-option img {
+            width: 24px;
+            height: 24px;
+            margin-right: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -93,14 +144,24 @@
             <div class="kapitel-header">Unit One</div>
             <div class="kapitel-content">
                 <p>Vocabulary lists</p>
-                <select onchange="openGloslista(this)">
-                    <option value="">Choose vocabulary list</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-1-01.html">Vocabulary 1</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-1-02.html">Vocabulary  2</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-1-03.html">Vocabulary  3</option>
-		    <option value="https://learnswedish.github.io/html/vocabulary-unit-1.html">All together</option>
-		    <option value="https://learnswedish.github.io/html/vocabulary-unit-1-ENG.html">All together, but the other way around</option>
-		</select>
+                <div class="custom-select">
+                    <div class="select-selected">Choose vocabulary list</div>
+                    <div class="select-items">
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-1-01.html')">Vocabulary 1</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-1-02.html')">Vocabulary 2</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-1-03.html')">Vocabulary 3</div>
+                        <div class="img-option" onclick="openGloslista('https://learnswedish.github.io/html/vocabulary-unit-1.html')">All&nbsp;&nbsp;
+						    <img src="https://learnswedish.github.io/html/SWE.png" alt="Img 1">
+                            <img src="https://learnswedish.github.io/html/right-arrow.png" alt="Img 2">
+                            <img src="https://learnswedish.github.io/html/ENG.png" alt="Img 3">
+                        </div>
+                        <div class="img-option" onclick="openGloslista('https://learnswedish.github.io/html/vocabulary-unit-1-ENG.html')">All&nbsp;&nbsp;
+                            <img src="https://learnswedish.github.io/html/ENG.png" alt="Img 1">
+                            <img src="https://learnswedish.github.io/html/right-arrow.png" alt="Img 2">
+                            <img src="https://learnswedish.github.io/html/SWE.png" alt="Img 3">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -109,115 +170,167 @@
             <div class="kapitel-header">Unit Two</div>
             <div class="kapitel-content">
                 <p>Vocabulary lists</p>
-                 <select onchange="openGloslista(this)">
-                    <option value="">Choose vocabulary list</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-2-01.html">Vocabulary 1</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-2-02.html">Vocabulary  2</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-2-03.html">Vocabulary  3</option>
-		    <option value="https://learnswedish.github.io/html/vocabulary-unit-2.html">All together</option>
-                </select>
+                <div class="custom-select">
+                    <div class="select-selected">Choose vocabulary list</div>
+                    <div class="select-items">
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-2-01.html')">Vocabulary 1</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-2-02.html')">Vocabulary 2</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-2-03.html')">Vocabulary 3</div>
+                        <div class="img-option" onclick="openGloslista('https://learnswedish.github.io/html/vocabulary-unit-2.html')">All&nbsp;&nbsp;
+						    <img src="https://learnswedish.github.io/html/SWE.png" alt="Img 1">
+                            <img src="https://learnswedish.github.io/html/right-arrow.png" alt="Img 2">
+                            <img src="https://learnswedish.github.io/html/ENG.png" alt="Img 3">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Kapitel 3 -->
+		
+		        <!-- Kapitel 3 -->
         <div class="kapitel">
             <div class="kapitel-header">Unit Three</div>
             <div class="kapitel-content">
                 <p>Vocabulary lists</p>
-                 <select onchange="openGloslista(this)">
-                    <option value="">Choose vocabulary list</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-3-01.html">Vocabulary 1</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-3-02.html">Vocabulary  2</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-3-03.html">Vocabulary  3</option>
-		    <option value="https://learnswedish.github.io/html/vocabulary-unit-3.html">All together</option>
-                </select>
+                <div class="custom-select">
+                    <div class="select-selected">Choose vocabulary list</div>
+                    <div class="select-items">
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-3-01.html')">Vocabulary 1</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-3-02.html')">Vocabulary 2</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-3-03.html')">Vocabulary 3</div>
+                        <div class="img-option" onclick="openGloslista('https://learnswedish.github.io/html/vocabulary-unit-3.html')">All&nbsp;&nbsp;
+						    <img src="https://learnswedish.github.io/html/SWE.png" alt="Img 1">
+                            <img src="https://learnswedish.github.io/html/right-arrow.png" alt="Img 2">
+                            <img src="https://learnswedish.github.io/html/ENG.png" alt="Img 3">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-	<!-- Kapitel 4 -->
+
+        <!-- Kapitel 4 -->
         <div class="kapitel">
             <div class="kapitel-header">Unit Four</div>
             <div class="kapitel-content">
                 <p>Vocabulary lists</p>
-                 <select onchange="openGloslista(this)">
-                    <option value="">Choose vocabulary list</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-4-01.html">Vocabulary 1</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-4-02.html">Vocabulary  2</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-4-03.html">Vocabulary  3</option>
-		    <option value="https://learnswedish.github.io/html/vocabulary-unit-4.html">All together</option>
-                </select>
+                <div class="custom-select">
+                    <div class="select-selected">Choose vocabulary list</div>
+                    <div class="select-items">
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-4-01.html')">Vocabulary 1</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-4-02.html')">Vocabulary 2</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-4-03.html')">Vocabulary 3</div>
+                        <div class="img-option" onclick="openGloslista('https://learnswedish.github.io/html/vocabulary-unit-4.html')">All&nbsp;&nbsp;
+						    <img src="https://learnswedish.github.io/html/SWE.png" alt="Img 1">
+                            <img src="https://learnswedish.github.io/html/right-arrow.png" alt="Img 2">
+                            <img src="https://learnswedish.github.io/html/ENG.png" alt="Img 3">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-	<!-- Kapitel 5 -->
+        <!-- Kapitel 5 -->
         <div class="kapitel">
             <div class="kapitel-header">Unit Five</div>
             <div class="kapitel-content">
                 <p>Vocabulary lists</p>
-                 <select onchange="openGloslista(this)">
-                    <option value="">Choose vocabulary list</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-5-01.html">Vocabulary 1</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-5-02.html">Vocabulary  2</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-5-03.html">Vocabulary  3</option>
-		    <option value="https://learnswedish.github.io/html/vocabulary-unit-5.html">All together</option>
-                </select>
+                <div class="custom-select">
+                    <div class="select-selected">Choose vocabulary list</div>
+                    <div class="select-items">
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-5-01.html')">Vocabulary 1</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-5-02.html')">Vocabulary 2</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-5-03.html')">Vocabulary 3</div>
+                        <div class="img-option" onclick="openGloslista('https://learnswedish.github.io/html/vocabulary-unit-5.html')">All&nbsp;&nbsp;
+						    <img src="https://learnswedish.github.io/html/SWE.png" alt="Img 1">
+                            <img src="https://learnswedish.github.io/html/right-arrow.png" alt="Img 2">
+                            <img src="https://learnswedish.github.io/html/ENG.png" alt="Img 3">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-	<!-- Kapitel 6 -->
+		
+		        <!-- Kapitel 6 -->
         <div class="kapitel">
             <div class="kapitel-header">Unit Six</div>
             <div class="kapitel-content">
                 <p>Vocabulary lists</p>
-                 <select onchange="openGloslista(this)">
-                    <option value="">Choose vocabulary list</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-6-01.html">Vocabulary 1</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-6-02.html">Vocabulary  2</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-6-03.html">Vocabulary  3</option>
-		    <option value="https://learnswedish.github.io/html/vocabulary-unit-6.html">All together</option>
-                </select>
+                <div class="custom-select">
+                    <div class="select-selected">Choose vocabulary list</div>
+                    <div class="select-items">
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-6-01.html')">Vocabulary 1</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-6-02.html')">Vocabulary 2</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-6-03.html')">Vocabulary 3</div>
+                        <div class="img-option" onclick="openGloslista('https://learnswedish.github.io/html/vocabulary-unit-6.html')">All&nbsp;&nbsp;
+						    <img src="https://learnswedish.github.io/html/SWE.png" alt="Img 1">
+                            <img src="https://learnswedish.github.io/html/right-arrow.png" alt="Img 2">
+                            <img src="https://learnswedish.github.io/html/ENG.png" alt="Img 3">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-	<!-- Kapitel 7 -->
+		
+				        <!-- Kapitel 7 -->
         <div class="kapitel">
             <div class="kapitel-header">Unit Seven</div>
             <div class="kapitel-content">
                 <p>Vocabulary lists</p>
-                 <select onchange="openGloslista(this)">
-                    <option value="">Choose vocabulary list</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-7-01.html">Vocabulary 1</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-7-02.html">Vocabulary  2</option>
-                    <option value="https://learnswedish.github.io/html/vocab-unit-7-03.html">Vocabulary  3</option>
-					<option value="https://learnswedish.github.io/html/vocabulary-unit-7.html">All together</option>
-                </select>
+                <div class="custom-select">
+                    <div class="select-selected">Choose vocabulary list</div>
+                    <div class="select-items">
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-7-01.html')">Vocabulary 1</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-7-02.html')">Vocabulary 2</div>
+                        <div onclick="openGloslista('https://learnswedish.github.io/html/vocab-unit-7-03.html')">Vocabulary 3</div>
+                        <div class="img-option" onclick="openGloslista('https://learnswedish.github.io/html/vocabulary-unit-7.html')">All&nbsp;&nbsp;
+						    <img src="https://learnswedish.github.io/html/SWE.png" alt="Img 1">
+                            <img src="https://learnswedish.github.io/html/right-arrow.png" alt="Img 2">
+                            <img src="https://learnswedish.github.io/html/ENG.png" alt="Img 3">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Fler kapitel kan läggas till här -->
     </div>
 
     <script>
-        // JavaScript för att hantera expandering och kollaps
-        document.querySelectorAll('.kapitel-header').forEach(header => {
-            header.addEventListener('click', () => {
-                // Stäng alla öppna kapitel
-                document.querySelectorAll('.kapitel').forEach(kapitel => {
-                    kapitel.classList.remove('active');
-                });
-                // Öppna det klickade kapitlet
-                header.parentElement.classList.add('active');
+        // Handle dropdown display and functionality
+        document.querySelectorAll('.select-selected').forEach(selected => {
+            selected.addEventListener('click', function () {
+                const items = this.nextElementSibling;
+                items.style.display = items.style.display === 'block' ? 'none' : 'block';
             });
         });
 
-        // Funktion för att öppna gloslista i ett nytt fönster
-        function openGloslista(select) {
-            const url = select.value;
+        // Hide dropdown if clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdowns = document.querySelectorAll('.select-items');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.previousElementSibling.contains(event.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        });
+
+        // Function to open the selected vocabulary list
+        function openGloslista(url) {
             if (url) {
-                window.open(url, '_blank'); // Öppnar i nytt fönster/flik
-                select.selectedIndex = 0; // Återställ dropdown till första valet
+                window.open(url, '_blank');
             }
         }
+
+        // JavaScript for kapitel expand and collapse
+        document.querySelectorAll('.kapitel-header').forEach(header => {
+            header.addEventListener('click', () => {
+                // Close all open chapters
+                document.querySelectorAll('.kapitel').forEach(kapitel => {
+                    kapitel.classList.remove('active');
+                });
+                // Open the clicked chapter
+                header.parentElement.classList.add('active');
+            });
+        });
     </script>
 
 </body>
