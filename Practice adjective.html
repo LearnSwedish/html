@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick the correct adjective form</title>
+    <style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 30px;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .info-text {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .progress-container {
+            width: 500px;
+            height: 20px;
+            margin: 0 auto;
+            background-color: #ddd;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow: hidden;
+        }
+        .progress-bar-segment {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        .progress-bar-green {
+            background-color: #4CAF50;
+        }
+        .progress-bar-red {
+            background-color: #f44336;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 5px;
+            font-size: 16px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        #feedback {
+            font-size: 20px;
+            margin-top: 10px;
+            display: none;
+        }
+        #next-btn {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+        #next-btn:hover {
+            background-color: #45a049;
+        }
+        .feedback-row {
+            margin-top: 20px;
+        }
+        /* Modal Styles */
+        #myModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 50px;
+            padding-top: 40px; /* Adjust this value to move the content lower */
+            border-radius: 10px;
+            width: 80%;
+            height: 140px;
+            max-width: 500px;
+            text-align: center;
+            position: relative; /* Added to position the close button */
+        }
+        /* Updated Close Button Styles */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.2s ease-in-out;
+        }
+        .close:hover,
+        .close:focus {
+            color: black; /* Darker on hover */
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #restart-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+        #restart-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Pick the correct adjective form</h1>
+    <p class="info-text">Remember: For N-gender words, use the basic form of the adjective. For T-gender words, use the basic form + t. For plural, use the basic form + a. And one more thing: Of course, there are exceptions. Good luck!</p>
+    <div class="progress-container" id="progress-container">
+        <!-- Progress bar segments will be dynamically created here -->
+    </div>
+    <div class="question">
+        <p id="translation" style="font-style: italic;"></p> <!-- New translation paragraph -->
+        <p id="sentence">Laddar mening...</p>
+    </div>
+    <div class="feedback-row">
+        <div id="feedback"></div>
+        <button id="next-btn" onclick="loadNextSentence()">Nästa</button>
+    </div>
+    <div id="final-message"></div>
+</div>
+
+<!-- Modal for Congratulations/Good work message -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p id="modal-message"></p>
+        <!-- Start Over button -->
+        <button id="restart-btn" onclick="restartQuiz()">Start over</button>
+    </div>
+</div>
+
+<script>
+    // Array of sentences with placeholders for the dropdown
+    const sentences = [
+{ text: "Bordet i vardagsrummet är riktigt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='vacker'>vacker</option><option value='vackert'>vackert</option><option value='vackra'>vackra</option></select>.", correct: "vackert", translation: "The table in the living room is really beautiful." },
+{ text: "Min nya granne är alltid väldigt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='trevlig'>trevlig</option><option value='trevligt'>trevligt</option><option value='trevliga'>trevliga</option></select> när vi ses.", correct: "trevlig", translation: "My new neighbour is always very friendly when we meet." },
+{ text: "Byxorna jag köpte igår var ganska <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='dyr'>dyr</option><option value='dyrt'>dyrt</option><option value='dyra'>dyra</option></select>.", correct: "dyra", translation: "The trousers I bought yesterday were quite expensive." },
+{ text: "Hunden som min bror har är väldigt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='snäll'>snäll</option><option value='snällt'>snällt</option><option value='snälla'>snälla</option></select> mot barn.", correct: "snäll", translation: "The dog my brother has is very kind to children." },
+{ text: "Huset vi såg på vägen hit ser lite <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sliten'>sliten</option><option value='slitet'>slitet</option><option value='slitna'>slitna</option></select> ut.", correct: "slitet", translation: "The house we saw on the way here looks a bit worn out." },
+{ text: "Den svarta boken på hyllan är faktiskt ganska <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='tjock'>tjock</option><option value='tjockt'>tjockt</option><option value='tjocka'>tjocka</option></select>.", correct: "tjock", translation: "The black book on the shelf is actually quite thick." },
+{ text: "Äpplet jag åt till lunch var ganska <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='söt'>söt</option><option value='sött'>sött</option><option value='söta'>söta</option></select>.", correct: "sött", translation: "The apple I ate for lunch was quite sweet." },
+{ text: "Mina gamla vänner är både <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='vis'>vis</option><option value='vist'>vist</option><option value='visa'>visa</option></select> och kloka.", correct: "visa", translation: "My old friends were both wise and smart." },
+{ text: "Katten vi har är så <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='knasig'>knasig</option><option value='knasigt'>knasigt</option><option value='knasiga'>knasiga</option></select> när den leker.", correct: "knasig", translation: "The cat we have is so silly when it plays." },
+{ text: "Pianot som pappa äger är väldigt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='gammal'>gammal</option><option value='gammalt'>gammalt</option><option value='gamla'>gamla</option></select>.", correct: "gammalt", translation: "The piano that Dad owns is very old." },
+{ text: "Arbetsdagen blev verkligen <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='lång'>lång</option><option value='långt'>långt</option><option value='långa'>långa</option></select> idag.", correct: "lång", translation: "The workday really was long today." },
+{ text: "De här utmaningarna känns verkligen <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='tuff'>tuff</option><option value='tufft'>tufft</option><option value='tuffa'>tuffa</option></select> ibland.", correct: "tuffa", translation: "These challenges really feel tough sometimes." },
+{ text: "Skorna som jag köpte på rean är <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='blå'>blå</option><option value='blått'>blått</option><option value='blåa'>blåa</option></select>.", correct: "blåa", translation: "The shoes I bought in the sale are blue." },
+{ text: "Grannens dotter är verkligen <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='sprallig'>sprallig</option><option value='spralligt'>spralligt</option><option value='spralliga'>spralliga</option></select> och energisk idag.", correct: "sprallig", translation: "The neighbour’s daughter is really lively and energetic today." },
+{ text: "Äppelskörden i år är mycket <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='riklig'>riklig</option><option value='rikligt'>rikligt</option><option value='rikliga'>rikliga</option></select>.", correct: "riklig", translation: "The apple harvest this year is very abundant." },
+{ text: "Presenten jag fick på min födelsedag var verkligen <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='fin'>fin</option><option value='fint'>fint</option><option value='fina'>fina</option></select>.", correct: "fin", translation: "The gift I received on my birthday was really lovely." },
+{ text: "Upplevelserna vi var med om under semestern var riktigt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='minnesvärd'>minnesvärd</option><option value='minnesvärt'>minnesvärt</option><option value='minnesvärda'>minnesvärda</option></select>.", correct: "minnesvärda", translation: "The experience we had during the holiday was truly memorable." },
+{ text: "Kusinerna vi träffade i somras är fortfarande ganska <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ung'>ung</option><option value='ungt'>ungt</option><option value='unga'>unga</option></select>.", correct: "unga", translation: "The cousins we met this summer are still quite young." },
+{ text: "Bilarna som min farbror kör är otroligt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='snabb'>snabb</option><option value='snabbt'>snabbt</option><option value='snabba'>snabba</option></select>.", correct: "snabba", translation: "The cars my uncle drives are incredibly fast." },
+{ text: "Hemmet där min mormor bor känns alltid <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='ren'>ren</option><option value='rent'>rent</option><option value='rena'>rena</option></select>.", correct: "rent", translation: "The home where my grandmother lives always feels clean." },
+{ text: "Soffan som vi har haft i flera år är nu riktigt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='nedsliten'>nedsliten</option><option value='nedslitet'>nedslitet</option><option value='nedslitna'>nedslitna</option></select>.", correct: "nedsliten", translation: "The sofa we've had for many years is now really worn out." },
+{ text: "Täcket jag köpte är så <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='fluffig'>fluffig</option><option value='fluffigt'>fluffigt</option><option value='fluffiga'>fluffiga</option></select> och skönt att sova under.", correct: "fluffigt", translation: "The duvet I bought is so fluffy and cosy to sleep under." },
+{ text: "Kläderna jag hade på mig igår var helt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='röd'>röd</option><option value='rött'>rött</option><option value='röda'>röda</option></select>.", correct: "röda", translation: "The clothes I wore yesterday were completely red." },
+{ text: "Historien som min syster berättade var <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='konstig'>konstig</option><option value='konstigt'>konstigt</option><option value='konstiga'>konstiga</option></select>.", correct: "konstig", translation: "The story my sister told was strange." },
+{ text: "Skåpet som står i vardagsrummet är fortfarande väldigt <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='praktisk'>praktisk</option><option value='praktiskt'>praktiskt</option><option value='praktiska'>praktiska</option></select>.", correct: "praktiskt", translation: "The cupboard in the living room is still very practical." },
+{ text: "Min bror har ett <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='rymlig'>rymlig</option><option value='rymligt'>rymligt</option><option value='rymliga'>rymliga</option></select> hus som ligger vid sjön.", correct: "rymligt", translation: "My brother has a spacious house by the lake." },
+{ text: "Vi åt frukost på en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mysig'>mysig</option><option value='mysigt'>mysigt</option><option value='mysiga'>mysiga</option></select> restaurang nära torget.", correct: "mysig", translation: "We had breakfast at a cosy restaurant near the square." },
+{ text: "Min vän köpte en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='silvrig'>silvrig</option><option value='silvrigt'>silvrigt</option><option value='silvriga'>silvriga</option></select> cykel.", correct: "silvrig", translation: "My friend bought a silver bike." },
+{ text: "På semestern hyrde vi ett <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='gammal'>gammal</option><option value='gammalt'>gammalt</option><option value='gamla'>gamla</option></select> torp ute på landet.", correct: "gammalt", translation: "On holiday, we rented an old cottage in the countryside." },
+{ text: "Hunden sprang efter en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='gul'>gul</option><option value='gult'>gult</option><option value='gula'>gula</option></select> boll på gräsmattan.", correct: "gul", translation: "The dog ran after a yellow ball on the lawn." },
+{ text: "Min pappa har en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='fräck'>fräck</option><option value='fräckt'>fräckt</option><option value='fräcka'>fräcka</option></select> båt som vi ofta använder på helgerna.", correct: "fräck", translation: "My dad has a cool boat that we often use on the weekends." },
+{ text: "Vi såg ett <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='mäktig'>mäktig</option><option value='mäktigt'>mäktigt</option><option value='mäktiga'>mäktiga</option></select> träd i parken när vi var ute och promenerade.", correct: "mäktigt", translation: "We saw a majestic tree in the park when we went for a walk." },
+{ text: "Jag har alltid velat köpa en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='tysk'>tysk</option><option value='tyskt'>tyskt</option><option value='tyska'>tyska</option></select> bil, men det har inte blivit av än.", correct: "tysk", translation: "I’ve always wanted to buy a German car, but it hasn’t happened yet." },
+{ text: "Mina föräldrar bor i en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='fridfull'>fridfull</option><option value='fridfullt'>fridfullt</option><option value='fridfulla'>fridfulla</option></select> by där alla känner varandra.", correct: "fridfull", translation: "My parents live in a peaceful village where everyone knows each other." },
+{ text: "Vi har en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='liten'>liten</option><option value='litet'>litet</option><option value='små'>små</option></select> katt som älskar att jaga fjärilar.", correct: "liten", translation: "We have a small cat that loves to chase butterflies." },
+{ text: "På vinden hittade jag ett <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='dammig'>dammig</option><option value='dammigt'>dammigt</option><option value='dammiga'>dammiga</option></select> foto från 1800-talet.", correct: "dammigt", translation: "In the attic, I found a dusty photo from the 1800s." },
+{ text: "Huset har en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='kraftig'>kraftig</option><option value='kraftigt'>kraftigt</option><option value='kraftiga'>kraftiga</option></select> dörr som knarrar varje gång den öppnas.", correct: "kraftig", translation: "The house has a sturdy door that creaks every time it opens." },
+{ text: "Min kollega har ett <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='intensiv'>intensiv</option><option value='intensivt'>intensivt</option><option value='intensiva'>intensiva</option></select> jobb som kräver mycket tid och energi.", correct: "intensivt", translation: "My colleague has an intense job that requires a lot of time and energy." },
+{ text: "Min bror har en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='kraftfull'>kraftfull</option><option value='kraftfullt'>kraftfullt</option><option value='kraftfulla'>kraftfulla</option></select> dator som han använder för att spela spel.", correct: "kraftfull", translation: "My brother has a powerful computer that he uses to play games." },
+{ text: "I skogen hittade vi en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='enorm'>enorm</option><option value='enormt'>enormt</option><option value='enorma'>enorma</option></select> svamp som vi tog med oss hem.", correct: "enorm", translation: "In the forest, we found a huge mushroom that we took home." },
+{ text: "Vi bodde på ett <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='billig'>billig</option><option value='billigt'>billigt</option><option value='billiga'>billiga</option></select> hotell när vi besökte huvudstaden.", correct: "billigt", translation: "We stayed at a cheap hotel when we visited the capital." },
+{ text: "Min syster har en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='livlig'>livlig</option><option value='livligt'>livligt</option><option value='livliga'>livliga</option></select> hund som alltid vill leka.", correct: "livlig", translation: "My sister has a lively dog that always wants to play." },
+{ text: "Vi bakade en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='saftig'>saftig</option><option value='saftigt'>saftigt</option><option value='saftiga'>saftiga</option></select> kaka till födelsedagsfesten.", correct: "saftig", translation: "We baked a moist cake for the birthday party." },
+{ text: "Det står en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='italiensk'>italiensk</option><option value='italienskt'>italienskt</option><option value='italienska'>italienska</option></select> bil parkerad utanför huset.", correct: "italiensk", translation: "There’s an Italian car parked outside the house." },
+{ text: "Vår granne har en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='frodig'>frodig</option><option value='frodigt'>frodigt</option><option value='frodiga'>frodiga</option></select> trädgård med många blommor.", correct: "frodig", translation: "Our neighbour has a lush garden with many flowers." },
+{ text: "Vi åkte förbi ett <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='hög'>hög</option><option value='högt'>högt</option><option value='höga'>höga</option></select> berg när vi körde genom Norge.", correct: "högt", translation: "We drove past a high mountain when we travelled through Norway." },
+{ text: "Mina kusiner bor i en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='liten'>liten</option><option value='litet'>litet</option><option value='små'>små</option></select> by långt utanför staden.", correct: "liten", translation: "My cousins live in a small village far outside the city." },
+{ text: "Jag har en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='engagerad'>engagerad</option><option value='engagerat'>engagerat</option><option value='engagerade'>engagerade</option></select> lärare som alltid förklarar saker tydligt.", correct: "engagerad", translation: "I have a dedicated teacher who always explains things clearly." },
+{ text: "På marknaden köpte jag en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='grå'>grå</option><option value='grått'>grått</option><option value='gråa'>gråa</option></select> jacka som passar perfekt.", correct: "grå", translation: "At the market, I bought a grey jacket that fits perfectly." },
+{ text: "Min farfar har en <select id='preposition' onchange='checkAnswer()'><option value=''>--Välj--</option><option value='lång'>lång</option><option value='långt'>långt</option><option value='långa'>långa</option></select> historia om sin tid i armén.", correct: "lång", translation: "My grandfather has a long story about his time in the army." },
+
+    ];
+
+    let sentenceOrder = [];
+    let currentSentenceIndex = 0;
+    let progressPerStep = 0;
+    let firstAttempt = true;
+    let madeMistakes = false; // Track whether the user made any mistakes
+
+    // Initialize and shuffle the sentences when the page loads
+    window.onload = function() {
+        sentenceOrder = Array.from({ length: sentences.length }, (_, i) => i);
+        shuffle(sentenceOrder);
+        progressPerStep = 100 / sentences.length;  // Calculate progress per sentence
+        setupProgressBar();
+        loadNextSentence();
+    };
+
+    // Function to shuffle the sentence order
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Function to create progress bar segments dynamically
+    function setupProgressBar() {
+        const progressContainer = document.getElementById("progress-container");
+        for (let i = 0; i < sentences.length; i++) {
+            const progressSegment = document.createElement("div");
+            progressSegment.classList.add("progress-bar-segment");
+            progressSegment.style.width = progressPerStep + "%"; // Each segment takes equal width
+            progressContainer.appendChild(progressSegment);
+        }
+    }
+
+    // Function to load the next sentence
+    function loadNextSentence() {
+        document.getElementById('feedback').style.display = "none";  // Hide feedback
+        document.getElementById('next-btn').style.display = "none";  // Hide next button
+        firstAttempt = true;  // Reset for next question
+
+        if (currentSentenceIndex < sentenceOrder.length) {
+            const sentence = sentences[sentenceOrder[currentSentenceIndex]];
+            document.getElementById('sentence').innerHTML = sentence.text;
+            document.getElementById('translation').innerHTML = sentence.translation; // Set translation
+            currentSentenceIndex++;
+        } else {
+            endQuiz();
+        }
+    }
+
+    // Function to check the answer
+    function checkAnswer() {
+        const selectedPreposition = document.getElementById('preposition').value;
+        const feedback = document.getElementById('feedback');
+        const sentence = sentences[sentenceOrder[currentSentenceIndex - 1]];
+        const progressSegments = document.getElementsByClassName("progress-bar-segment");
+
+        if (selectedPreposition === sentence.correct) {
+            feedback.innerHTML = "Rätt!";
+            feedback.style.color = "green";
+            feedback.style.display = "block";  // Show feedback
+
+            // If it's the last sentence, show modal instead of "Nästa" button
+            if (currentSentenceIndex === sentences.length) {
+                document.getElementById('next-btn').style.display = "none";  // Don't show the "Nästa" button
+                showModal();  // Show modal message
+            } else {
+                document.getElementById('next-btn').style.display = "inline-block";  // Show next button
+            }
+
+            // Fill the progress bar with green if it's the first attempt
+            if (firstAttempt) {
+                progressSegments[currentSentenceIndex - 1].classList.add("progress-bar-green");
+            }
+        } else {
+            feedback.innerHTML = "Fel, försök igen.";
+            feedback.style.color = "red";
+            feedback.style.display = "block";
+            madeMistakes = true;  // Track that the user made a mistake
+
+            // Fill the progress bar with red if it's the first attempt
+            if (firstAttempt) {
+                progressSegments[currentSentenceIndex - 1].classList.add("progress-bar-red");
+            }
+            firstAttempt = false;  // After first wrong attempt, it remains false
+        }
+    }
+
+    // Function to show modal with congratulations message
+    function showModal() {
+        const modal = document.getElementById("myModal");
+        const modalMessage = document.getElementById("modal-message");
+
+        if (madeMistakes) {
+            modalMessage.innerHTML = "<strong>Good work!</strong><br /><br />Now, can you do it without making any mistakes?<br />Try again!";
+        } else {
+            modalMessage.innerHTML = "<strong>Congratulations!</strong><br /><br />You got every answer correct on the first try!<br />Can you do it again?";
+        }
+
+        modal.style.display = "block";  // Show the modal
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+    }
+
+    // Function to restart the quiz by refreshing the page
+    function restartQuiz() {
+        window.location.reload();
+    }
+</script>
+
+</body>
+</html>
