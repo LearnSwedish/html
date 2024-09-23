@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="vocab-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Two: all (ENG –» SWE)</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dark mode</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Unit Two: all (ENG –» SWE)</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+<p id="english-word">
+    <span id="word-text"></span>
+</p>
+</div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Correct Answers: <span id="correct-counter">0</span></p>
+            <p>Mistakes: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Words missed on first try:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Reset</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Yes</button>
+                <button class="modal-btn" onclick="closeModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        const vocabulary = [
+             { english: "student", swedish: ["(en) student", "(en) lärare", "(en) professor", "(en) utexaminerad"], correct: 0 },
+            { english: "she", swedish: ["hon", "han", "det", "de"], correct: 0 },
+            { english: "live", swedish: ["att bo", "att dö", "att besöka", "att sova"], correct: 0 },
+            { english: "student flat", swedish: ["(en) studentlägenhet", "(en) studentkorridor", "(en) professorskontor", "(ett) bibliotek"], correct: 0 },
+            { english: "close (to)", swedish: ["nära", "avlägsen", "långt bort", "separerad"], correct: 0 },
+            { english: "it", swedish: ["den", "de", "de där", "detta"], correct: 0 },
+            { english: "small", swedish: ["liten", "stor", "jättestor", "enorm"], correct: 0 },
+            { english: "but", swedish: ["men", "och", "eller", "så"], correct: 0 },
+            { english: "nice", swedish: ["fin", "ful", "dålig", "grov"], correct: 0 },
+            { english: "cycle", swedish: ["att cykla", "att köra", "att gå", "att springa"], correct: 0 },
+            { english: "to", swedish: ["till", "från", "med", "vid"], correct: 0 },
+            { english: "there", swedish: ["där", "här", "överallt", "ingenstans"], correct: 0 },
+            { english: "go to", swedish: ["att gå på", "att stanna", "att undvika", "att lämna"], correct: 0 },
+            { english: "lecture", swedish: ["(en) föreläsning", "(ett) samtal", "(ett) möte", "(ett) seminarium"], correct: 0 },
+            { english: "library", swedish: ["(ett) bibliotek", "(en) bokhandel", "(ett) klassrum", "(ett) kontor"], correct: 0 },
+            { english: "afternoon", swedish: ["(en) eftermiddag", "(en) morgon", "(en) kväll", "(en) midnatt"], correct: 0 },
+            { english: "write", swedish: ["att skriva", "att läsa", "att tala", "att rita"], correct: 0 },
+            { english: "often, frequently", swedish: ["ofta", "aldrig", "sällan", "ibland"], correct: 0 },
+            { english: "essay", swedish: ["(en) uppsats", "(en) bok", "(en) dikt", "(en) roman"], correct: 0 },
+            { english: "read, study", swedish: ["att läsa", "att skriva", "att prata", "att rita"], correct: 0 },
+            { english: "book", swedish: ["(en) bok", "(en) tidskrift", "(ett) brev", "(en) tidning"], correct: 0 },
+            { english: "certain, some", swedish: ["viss, visst", "ingen", "alla", "varje"], correct: 0 },
+            { english: "day", swedish: ["(en) dag", "(en) natt", "(en) vecka", "(en) timme"], correct: 0 },
+            { english: "start, begin", swedish: ["att börja", "att sluta", "att stanna", "att avsluta"], correct: 0 },
+            { english: "as early as", swedish: ["redan", "så sent som", "nästan", "knappt"], correct: 0 },
+            { english: "at eight o'clock", swedish: ["klockan åtta", "klockan nio", "klockan sju", "klockan tio"], correct: 0 },
+            { english: "then", swedish: ["då", "nu", "snart", "senare"], correct: 0 },
+            { english: "must, have to", swedish: ["måste", "vill", "gillar", "undvika"], correct: 0 },
+            { english: "get up", swedish: ["gå upp", "sätta sig", "lägga sig", "somna"], correct: 0 },
+            { english: "half past six", swedish: ["halv sju", "kvart i sju", "kvart över sex", "klockan sex"], correct: 0 },
+            { english: "for breakfast", swedish: ["till frukost", "till middag", "till lunch", "till dessert"], correct: 0 },
+            { english: "eat", swedish: ["att äta", "att dricka", "att laga mat", "att baka"], correct: 0 },
+            { english: "not", swedish: ["inte", "alltid", "ofta", "säkert"], correct: 0 },
+            { english: "early bird", swedish: ["morgonpigg", "nattuggla", "tröttmössa", "sömntuta"], correct: 0 },
+            { english: "sometimes", swedish: ["ibland", "alltid", "aldrig", "ständigt"], correct: 0 },
+            { english: "meet", swedish: ["att träffa", "att missa", "att lämna", "att ignorera"], correct: 0 },
+            { english: "evening", swedish: ["(en) kväll", "(en) morgon", "(en) natt", "(en) eftermiddag"], correct: 0 },
+            { english: "take", swedish: ["att ta", "att ge", "att förlora", "att släppa"], correct: 0 },
+            { english: "tube, underground", swedish: ["(en) tunnelbana", "(en) buss", "(en) taxi", "(en) spårvagn"], correct: 0 },
+            { english: "there", swedish: ["dit", "här", "överallt", "ingenstans"], correct: 0 },
+            { english: "cinema", swedish: ["(en) bio", "(en) teater", "(en) konsert", "(ett) stadion"], correct: 0 },
+            { english: "have a coffee (break)", swedish: ["att fika", "att dricka te", "att äta lunch", "att äta middag"], correct: 0 },
+            { english: "or", swedish: ["eller", "och", "men", "om"], correct: 0 },
+            { english: "watch something", swedish: ["att se på något", "att ignorera", "att lyssna", "att röra"], correct: 0 },
+            { english: "TV", swedish: ["(en) teve", "(en) radio", "(en) telefon", "(en) dator"], correct: 0 },
+            { english: "read (study)", swedish: ["att läsa (studera)", "att springa (snabbt)", "att gå (sakta)", "att sitta (ner)"], correct: 0 },
+            { english: "you", swedish: ["du", "jag", "han", "hon"], correct: 0 },
+            { english: "also, too", swedish: ["också", "aldrig", "endast", "ensam"], correct: 0 },
+            { english: "exchange student", swedish: ["(en) utbytesstudent", "(en) vanlig student", "(en) lärare", "(en) lokalinvånare"], correct: 0 },
+            { english: "yes", swedish: ["jo", "nej", "kanske", "aldrig"], correct: 0 },
+            { english: "sit down", swedish: ["att slå sig ner", "att stå upp", "att gå", "att hoppa"], correct: 0 },
+            { english: "of course", swedish: ["javisst", "aldrig", "kanske", "inte alls"], correct: 0 },
+            { english: "by all means", swedish: ["gärna", "motvilligt", "ovilligt", "aldrig"], correct: 0 },
+            { english: "by the way", swedish: ["förresten", "däremot", "därför", "dessutom"], correct: 0 },
+            { english: "the UK", swedish: ["England", "USA", "Kanada", "Australien"], correct: 0 },
+            { english: "no", swedish: ["nej", "ja", "kanske", "självklart"], correct: 0 },
+            { english: "where… from?", swedish: ["varifrån", "hur", "när", "vad"], correct: 0 },
+            { english: "Spain", swedish: ["Spanien", "Frankrike", "Italien", "Tyskland"], correct: 0 },
+            { english: "not at all", swedish: ["inte alls", "helt", "delvis", "något"], correct: 0 },
+            { english: "nice, pleasant", swedish: ["trevlig", "oförskämd", "otrevlig", "elak"], correct: 0 },
+            { english: "meet", swedish: ["att träffas", "att missa", "att undvika", "att förlora"], correct: 0 },
+            { english: "you", swedish: ["dig", "mig", "oss", "dem"], correct: 0 },
+            { english: "likewise", swedish: ["detsamma", "motsatsen", "annorlunda", "något annat"], correct: 0 },
+            { english: "shall, will", swedish: ["ska", "ska inte", "kan inte", "får"], correct: 0 },
+            { english: "coffee (break)", swedish: ["(en) fika", "(en) lunch", "(en) middag", "(en) frukost"], correct: 0 },
+            { english: "Sweden", swedish: ["Sverige", "Norge", "Danmark", "Finland"], correct: 0 },
+            { english: "be (lying), lie", swedish: ["att ligga", "att stå", "att gå", "att springa"], correct: 0 },
+            { english: "Scandinavia, Nordic", swedish: ["Norden", "Europa", "Asien", "Amerika"], correct: 0 },
+            { english: "the Faroes", swedish: ["Färöarna", "Island", "Grönland", "Shetland"], correct: 0 },
+            { english: "only", swedish: ["bara", "många", "alla", "få"], correct: 0 },
+            { english: "million", swedish: ["(en) miljon", "(ett) tusen", "(en) miljard", "(ett) hundra"], correct: 0 },
+            { english: "inhabitant", swedish: ["(en) invånare", "(en) turist", "(en) besökare", "(en) främling"], correct: 0 },
+            { english: "in area", swedish: ["till ytan", "till längden", "till bredden", "till höjden"], correct: 0 },
+            { english: "time (each time)", swedish: ["gång (varje gång)", "dag", "vecka", "månad"], correct: 0 },
+            { english: "big", swedish: ["stor", "liten", "pytteliten", "liten"], correct: 0 },
+            { english: "difference", swedish: ["skillnad", "likhet", "jämlikhet", "liknelse"], correct: 0 },
+            { english: "between", swedish: ["mellan", "bredvid", "bakom", "under"], correct: 0 },
+            { english: "south", swedish: ["söder", "norr", "öster", "väster"], correct: 0 },
+            { english: "which, that", swedish: ["som", "vem", "vad", "vars"], correct: 0 },
+            { english: "part", swedish: ["del", "helhet", "summa", "total"], correct: 0 },
+            { english: "few", swedish: ["få", "många", "alla", "massor"], correct: 0 },
+            { english: "person", swedish: ["(en) människa", "(ett) djur", "(en) växt", "(ett) föremål"], correct: 0 },
+            { english: "among", swedish: ["bland", "utanför", "bredvid", "bortom"], correct: 0 },
+            { english: "Sami", swedish: ["(en) same", "(en) svensk", "(en) norrman", "(en) finne"], correct: 0 },
+            { english: "village", swedish: ["by", "stad", "småstad", "land"], correct: 0 },
+            { english: "central", swedish: ["mellersta", "norra", "södra", "östra"], correct: 0 },
+            { english: "narrow", swedish: ["smal", "bred", "vid", "stor"], correct: 0 },
+            { english: "midnight sun", swedish: ["(en) midnattssol", "(en) solnedgång", "(en) soluppgång", "(ett) månsken"], correct: 0 },
+            { english: "every", swedish: ["varje", "ingen", "några", "få"], correct: 0 },
+            { english: "dark", swedish: ["mörk", "ljus", "klar", "tydlig"], correct: 0 },
+            { english: "almost all day", swedish: ["nästan hela dagen", "hela natten", "några timmar", "bara morgnar"], correct: 0 },
+            { english: "wolverine", swedish: ["(en) järv", "(en) räv", "(en) kanin", "(ett) rådjur"], correct: 0 },
+            { english: "bear", swedish: ["(en) björn", "(en) varg", "(ett) lejon", "(en) tiger"], correct: 0 },
+            { english: "wolf", swedish: ["(en) varg", "(en) hund", "(en) räv", "(en) prärievarg"], correct: 0 },
+            { english: "milder", swedish: ["mildare", "hårdare", "kallare", "hetare"], correct: 0 },
+            { english: "richer", swedish: ["rikare", "fattigare", "tomare", "mindre"], correct: 0 },
+            { english: "mountain, fell", swedish: ["(ett) fjäll", "(en) kulle", "(en) dal", "(en) slätt"], correct: 0 },
+            { english: "highest", swedish: ["högst", "lägst", "minst", "kortast"], correct: 0 },
+            { english: "mountain", swedish: ["(ett) berg", "(en) kulle", "(en) älv", "(en) dal"], correct: 0 },
+            { english: "river", swedish: ["(en) älv", "(en) sjö", "(ett) hav", "(en) ocean"], correct: 0 },
+            { english: "lake", swedish: ["(en) sjö", "(en) flod", "(en) å", "(ett) vattendrag"], correct: 0 },
+            { english: "biggest", swedish: ["största", "minsta", "pytteliten", "smalast"], correct: 0 },
+            { english: "covered with", swedish: ["täckt av", "omgiven av", "tom på", "utan"], correct: 0 },
+            { english: "think, consider", swedish: ["att tycka", "att ignorera", "att glömma", "att missa"], correct: 0 },
+            { english: "beautiful", swedish: ["vacker", "ful", "vanlig", "ordinär"], correct: 0 }
+ 
+    ];
+   </script>
+<script src="vocab-scripts-eng.js"></script>
+</body>
+</html>
