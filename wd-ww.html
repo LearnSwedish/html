@@ -230,11 +230,8 @@ body, html {
       <h2>Vilken vecka är ett visst datum?</h2>
 <div class="input-container">
    <input type="date" id="dateInput">
-   <button class="button-large" onclick="showWeekNumber()">Beräkna veckonummer</button>
-   <div class="button-row">
-      <button class="button-small" onclick="adjustWeek(-7)">-7</button>
-      <button class="button-small" onclick="adjustWeek(7)">+7</button>
-   </div>
+   <div id="result"></div>
+   <div id="weekdays"></div>
 </div>
       <div id="result"></div>
       <div id="weekdays"></div>
@@ -246,84 +243,81 @@ body, html {
 <div class="input-container-lower">
    <input type="number" id="weekNumberInput" placeholder="Ange veckonummer" min="1" max="53">
    <input type="number" id="yearInput" placeholder="Ange år" min="1900" max="2100">
-   <button class="button-large" id="week-button" onclick="showDatesForWeek()">Visa datum</button>
-   <div class="button-row">
-      <button class="button-small" id="minus-week-button" onclick="adjustWeekByNumber(-7)">-7</button>
-      <button class="button-small" id="plus-week-button" onclick="adjustWeekByNumber(7)">+7</button>
-   </div>
+   <div id="week-result"></div>
+   <div id="weekdays-output"></div>
 </div>
       <div id="week-result"></div>
       <div id="weekdays-output"></div>
    </div>
 
 <script>
-   // ISO 8601 Week Number Calculation Function
-   function getISOWeekNumber(date) {
-      const tempDate = new Date(date);
-      tempDate.setHours(0, 0, 0, 0);
-      // Thursday in current week decides the year.
-      tempDate.setDate(tempDate.getDate() + 3 - (tempDate.getDay() + 6) % 7);
-      // January 4 is always in week 1.
-      const week1 = new Date(tempDate.getFullYear(), 0, 4);
-      // Adjust to Thursday of week 1.
-      return (
-         1 +
-         Math.round(
-            ((tempDate.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7
-         )
-      );
-   }
+// ISO 8601 Week Number Calculation Function
+function getISOWeekNumber(date) {
+   const tempDate = new Date(date);
+   tempDate.setHours(0, 0, 0, 0);
+   // Thursday in current week decides the year.
+   tempDate.setDate(tempDate.getDate() + 3 - (tempDate.getDay() + 6) % 7);
+   // January 4 is always in week 1.
+   const week1 = new Date(tempDate.getFullYear(), 0, 4);
+   // Adjust to Thursday of week 1.
+   return (
+      1 +
+      Math.round(
+         ((tempDate.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7
+      )
+   );
+}
 
-   // Check if a given year has 53 weeks according to ISO 8601 rules
-   function has53Weeks(year) {
-      const date = new Date(year, 11, 31); // December 31st of the year
-      const weekNumber = getISOWeekNumber(date);
-      return weekNumber === 53; // If the last day of the year is in week 53
-   }
+// Check if a given year has 53 weeks according to ISO 8601 rules
+function has53Weeks(year) {
+   const date = new Date(year, 11, 31); // December 31st of the year
+   const weekNumber = getISOWeekNumber(date);
+   return weekNumber === 53; // If the last day of the year is in week 53
+}
 
-   // Get the maximum number of weeks for a given year
-   function getMaxWeekNumber(year) {
-      return has53Weeks(year) ? 53 : 52; // If the year has 53 weeks, return 53, otherwise return 52
-   }
+// Get the maximum number of weeks for a given year
+function getMaxWeekNumber(year) {
+   return has53Weeks(year) ? 53 : 52; // If the year has 53 weeks, return 53, otherwise return 52
+}
 
-   // List of common Swedish bank holidays (fixed dates)
-   const bankHolidays = {
-      "01-01": "Nyårsdagen",
-      "01-06": "Trettondedag jul",
-	  "01-13": "Tjugondedag jul (Tjugondag Knut)",
-	  "01-27": "Förintelsens minnesdag",
-	  "02-14": "Alla hjärtans dag",
-	  "03-08": "Internationella kvinnodagen",
-	  "03-25": "Våffeldagen",
-	  "04-07": "Världshälsodagen",
-	  "04-30": "Valborgsmässoafton",
-      "05-01": "Första maj",
-      "06-06": "Nationaldagen",
-	  "10-04": "Kanelbullens dag",
-	  "10-24": "FN-dagen",
-	  "10-31": "Halloween",
-	  "11-06": "Gustav Adolfsdagen",
-	  "11-11": "Chokladens dag",
-	  "12-10": "Nobeldagen",
-	  "12-13": "Luciadagen",
-	  "12-24": "Julafton",
-      "12-25": "Juldagen",
-      "12-26": "Annandag jul",
-	  "12-31": "Nyårsafton"
-   };
+// List of common Swedish bank holidays (fixed dates)
+const bankHolidays = {
+   "01-01": "Nyårsdagen",
+   "01-06": "Trettondedag jul",
+   "01-13": "Tjugondedag jul (Tjugondag Knut)",
+   "01-27": "Förintelsens minnesdag",
+   "02-14": "Alla hjärtans dag",
+   "03-08": "Internationella kvinnodagen",
+   "03-25": "Våffeldagen",
+   "04-07": "Världshälsodagen",
+   "04-30": "Valborgsmässoafton",
+   "05-01": "Första maj",
+   "06-06": "Nationaldagen",
+   "10-04": "Kanelbullens dag",
+   "10-24": "FN-dagen",
+   "10-31": "Halloween",
+   "11-06": "Gustav Adolfsdagen",
+   "11-11": "Chokladens dag",
+   "12-10": "Nobeldagen",
+   "12-13": "Luciadagen",
+   "12-24": "Julafton",
+   "12-25": "Juldagen",
+   "12-26": "Annandag jul",
+   "12-31": "Nyårsafton"
+};
 
-   // Function to check if a specific date is a bank holiday
-   function getHoliday(date, year) {
-      const monthDay = date.toISOString().slice(5, 10); // Format MM-DD
-      const fixedHoliday = bankHolidays[monthDay]; // Check fixed holidays
+// Function to check if a specific date is a bank holiday
+function getHoliday(date, year) {
+   const monthDay = date.toISOString().slice(5, 10); // Format MM-DD
+   const fixedHoliday = bankHolidays[monthDay]; // Check fixed holidays
 
-      // Check moveable holidays for the year
-      const moveableHolidays = calculateMoveableHolidays(year);
-      const moveableHoliday = moveableHolidays[monthDay];
+   // Check moveable holidays for the year
+   const moveableHolidays = calculateMoveableHolidays(year);
+   const moveableHoliday = moveableHolidays[monthDay];
 
-      // Return holiday if found, either fixed or moveable
-      return fixedHoliday || moveableHoliday || "";
-   }
+   // Return holiday if found, either fixed or moveable
+   return fixedHoliday || moveableHoliday || "";
+}
 
 // Function to calculate Påskdagen (Easter Sunday) based on Gauss's algorithm
 function calculateEaster(year) {
@@ -452,151 +446,139 @@ function formatDate(date) {
    return `${month}-${day}`;
 }
 
-   // Get all dates in the week for the given date (Monday to Sunday)
-   function getWeekDates(date) {
-      const daysOfWeek = ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"];
-      const selectedDate = new Date(date);
-      const year = selectedDate.getFullYear(); // Extract year from the selected date
-      let dayOfWeek = selectedDate.getDay();
+// Get all dates in the week for the given date (Monday to Sunday)
+function getWeekDates(date) {
+   const daysOfWeek = ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"];
+   const selectedDate = new Date(date);
+   const year = selectedDate.getFullYear(); // Extract year from the selected date
+   let dayOfWeek = selectedDate.getDay();
 
-      const weekStart = new Date(selectedDate);
-      if (dayOfWeek === 0) {
-         dayOfWeek = 7; // Treat Sunday as the 7th day
-      }
-      weekStart.setDate(selectedDate.getDate() - (dayOfWeek - 1)); // Adjust to Monday
-
-      const days = [];
-      for (let i = 0; i < 7; i++) {
-         const currentDay = new Date(weekStart);
-         currentDay.setDate(weekStart.getDate() + i);
-         const dayName = daysOfWeek[currentDay.getDay()];
-         const formattedDate = currentDay.toISOString().split("T")[0];
-         const holiday = getHoliday(currentDay, year); // Get holiday for the current day
-         days.push({
-            name: dayName,
-            date: formattedDate,
-            holiday: holiday,
-            isSelected: currentDay.toISOString().split("T")[0] === date
-         });
-      }
-      return days;
+   const weekStart = new Date(selectedDate);
+   if (dayOfWeek === 0) {
+      dayOfWeek = 7; // Treat Sunday as the 7th day
    }
+   weekStart.setDate(selectedDate.getDate() - (dayOfWeek - 1)); // Adjust to Monday
 
-   // Function to display the week number and days for a given date
-   function showWeekNumber(date) {
-      const dateInput = date || document.getElementById("dateInput").value;
-      const resultDiv = document.getElementById("result");
-      const weekdaysDiv = document.getElementById("weekdays");
-
-      if (dateInput) {
-         const weekNumber = getISOWeekNumber(dateInput);
-         resultDiv.innerHTML = "Vecka: " + weekNumber;
-
-         // Get all days in the week and display them
-         const days = getWeekDates(dateInput);
-         let listHtml = "<ul>";
-
-         days.forEach(day => {
-            listHtml += `<li class="${day.isSelected ? 'highlight' : ''}">${day.name}: ${day.date}`;
-            if (day.holiday) {
-               listHtml += `, ${day.holiday}`;
-            }
-            listHtml += "</li>";
-         });
-
-         listHtml += "</ul>";
-         weekdaysDiv.innerHTML = listHtml;
-      } else {
-         resultDiv.innerHTML = "Ange ett datum.";
-         weekdaysDiv.innerHTML = "";
-      }
+   const days = [];
+   for (let i = 0; i < 7; i++) {
+      const currentDay = new Date(weekStart);
+      currentDay.setDate(weekStart.getDate() + i);
+      const dayName = daysOfWeek[currentDay.getDay()];
+      const formattedDate = currentDay.toISOString().split("T")[0];
+      const holiday = getHoliday(currentDay, year); // Get holiday for the current day
+      days.push({
+         name: dayName,
+         date: formattedDate,
+         holiday: holiday,
+         isSelected: currentDay.toISOString().split("T")[0] === date
+      });
    }
-
-   // Get the date of the Monday in a given ISO week and year
-function getDateOfISOWeek(week, year) {
-    // Create a date set to January 1st of the year
-    const jan1 = new Date(year, 0, 1);
-    
-    // Find the day of the week for January 1st (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-    const jan1Day = jan1.getDay();
-    
-    // ISO 8601 defines week 1 as the week with the first Thursday in the year.
-    // Adjust to the Monday of the week containing January 4th (which is always in week 1)
-    const daysToMonday = (jan1Day <= 4 ? jan1Day - 1 : jan1Day - 8);
-    const firstMonday = new Date(year, 0, 1 - daysToMonday + 3); // Monday closest to Jan 4th
-    
-    // Add (week - 1) * 7 days to get to the Monday of the correct week
-    const mondayOfWeek = new Date(firstMonday.setDate(firstMonday.getDate() + (week - 1) * 7));
-    
-    return mondayOfWeek;
+   return days;
 }
 
-   // Function to display the dates for the given week number and year in the second section
-   function showDatesForWeek(weekNumber, year) {
-      const weekNumberInput = weekNumber || parseInt(document.getElementById("weekNumberInput").value);
-      const yearInput = year || parseInt(document.getElementById("yearInput").value);
-      const resultDiv = document.getElementById("week-result");
-      const weekdaysDiv = document.getElementById("weekdays-output");
+// Function to display the week number and days for a given date
+function showWeekNumber(date) {
+   const dateInput = date || document.getElementById("dateInput").value;
+   const resultDiv = document.getElementById("result");
+   const weekdaysDiv = document.getElementById("weekdays");
 
-      // Get the maximum number of weeks for the selected year
-      const maxWeekNumber = getMaxWeekNumber(yearInput);
+   if (dateInput) {
+      const weekNumber = getISOWeekNumber(dateInput);
+      resultDiv.innerHTML = "Vecka: " + weekNumber;
 
-      // Validate the week number input
-      if (weekNumberInput && yearInput && weekNumberInput <= maxWeekNumber) {
-         const mondayDate = getDateOfISOWeek(weekNumberInput, yearInput);
-         resultDiv.innerHTML = `Vecka ${weekNumberInput} (${yearInput})`;
+      // Get all days in the week and display them
+      const days = getWeekDates(dateInput);
+      let listHtml = "<ul>";
 
-         // Get all days in the selected week
-         const days = getWeekDates(mondayDate.toISOString().split('T')[0]);
-         let listHtml = "<ul>";
+      days.forEach(day => {
+         listHtml += `<li class="${day.isSelected ? 'highlight' : ''}">${day.name}: ${day.date}`;
+         if (day.holiday) {
+            listHtml += `, ${day.holiday}`;
+         }
+         listHtml += "</li>";
+      });
 
-         days.forEach(day => {
-            listHtml += `<li>${day.name}: ${day.date}`;
-            if (day.holiday) {
-               listHtml += `, ${day.holiday}`;
-            }
-            listHtml += "</li>";
-         });
-
-         listHtml += "</ul>";
-         weekdaysDiv.innerHTML = listHtml;
-      } else {
-         resultDiv.innerHTML = `Ange ett giltigt veckonummer. Max vecka för ${yearInput} är ${maxWeekNumber}.`;
-         weekdaysDiv.innerHTML = "";
-      }
+      listHtml += "</ul>";
+      weekdaysDiv.innerHTML = listHtml;
+   } else {
+      resultDiv.innerHTML = "Ange ett datum.";
+      weekdaysDiv.innerHTML = "";
    }
+}
 
-   // Function to set default values for the week and year pickers
-   function setDefaultWeekAndYear() {
-      const today = new Date();
-      const currentYear = today.getFullYear();
-      const currentWeek = getISOWeekNumber(today);
+// Get the date of the Monday in a given ISO week and year
+function getDateOfISOWeek(week, year) {
+   const jan1 = new Date(year, 0, 1);
+   const jan1Day = jan1.getDay();
+   const daysToMonday = (jan1Day <= 4 ? jan1Day - 1 : jan1Day - 8);
+   const firstMonday = new Date(year, 0, 1 - daysToMonday + 3);
+   const mondayOfWeek = new Date(firstMonday.setDate(firstMonday.getDate() + (week - 1) * 7));
+   return mondayOfWeek;
+}
 
-      document.getElementById("weekNumberInput").value = currentWeek;
-      document.getElementById("yearInput").value = currentYear;
+// Function to display the dates for the given week number and year in the second section
+function showDatesForWeek(weekNumber, year) {
+   const weekNumberInput = weekNumber || parseInt(document.getElementById("weekNumberInput").value);
+   const yearInput = year || parseInt(document.getElementById("yearInput").value);
+   const resultDiv = document.getElementById("week-result");
+   const weekdaysDiv = document.getElementById("weekdays-output");
 
-      // Set default date for date input
-      const formattedDate = today.toISOString().split('T')[0];
-      document.getElementById("dateInput").value = formattedDate;
+   const maxWeekNumber = getMaxWeekNumber(yearInput);
 
-      // Automatically show results for current week and date on load
-      showWeekNumber(formattedDate);
-      showDatesForWeek(currentWeek, currentYear);
+   if (weekNumberInput && yearInput && weekNumberInput <= maxWeekNumber) {
+      const mondayDate = getDateOfISOWeek(weekNumberInput, yearInput);
+      resultDiv.innerHTML = `Vecka ${weekNumberInput} (${yearInput})`;
+
+      const days = getWeekDates(mondayDate.toISOString().split('T')[0]);
+      let listHtml = "<ul>";
+
+      days.forEach(day => {
+         listHtml += `<li>${day.name}: ${day.date}`;
+         if (day.holiday) {
+            listHtml += `, ${day.holiday}`;
+         }
+         listHtml += "</li>";
+      });
+
+      listHtml += "</ul>";
+      weekdaysDiv.innerHTML = listHtml;
+   } else {
+      resultDiv.innerHTML = `Ange ett giltigt veckonummer. Max vecka för ${yearInput} är ${maxWeekNumber}.`;
+      weekdaysDiv.innerHTML = "";
    }
+}
 
-   // Set default week, year, and date on page load
-   window.onload = function() {
-      setDefaultWeekAndYear();
-   }
-   
+// Function to set default values for the week and year pickers
+function setDefaultWeekAndYear() {
+   const today = new Date();
+   const currentYear = today.getFullYear();
+   const currentWeek = getISOWeekNumber(today);
+
+   document.getElementById("weekNumberInput").value = currentWeek;
+   document.getElementById("yearInput").value = currentYear;
+
+   const formattedDate = today.toISOString().split('T')[0];
+   document.getElementById("dateInput").value = formattedDate;
+
+   showWeekNumber(formattedDate);
+   showDatesForWeek(currentWeek, currentYear);
+}
+
+// Set default week, year, and date on page load
+window.onload = function() {
+   setDefaultWeekAndYear();
+}
+
+// Adjust week by 7 days
 function adjustWeek(days) {
    const dateInput = document.getElementById("dateInput");
    let selectedDate = new Date(dateInput.value);
-   selectedDate.setDate(selectedDate.getDate() + days); // Move the date by 7 days forward or backward
-   dateInput.value = selectedDate.toISOString().split('T')[0]; // Update the date input field
-   showWeekNumber(); // Recalculate and display the new week
+   selectedDate.setDate(selectedDate.getDate() + days);
+   dateInput.value = selectedDate.toISOString().split('T')[0];
+   showWeekNumber();
 }
 
+// Adjust week by week number
 function adjustWeekByNumber(weekChange) {
    const weekInput = document.getElementById("weekNumberInput");
    const yearInput = document.getElementById("yearInput");
@@ -606,23 +588,28 @@ function adjustWeekByNumber(weekChange) {
 
    const maxWeeks = getMaxWeekNumber(currentYear);
 
-   currentWeek += weekChange / 7; // Adjust by 1 week forward or backward
+   currentWeek += weekChange / 7;
 
    if (currentWeek < 1) {
-      currentYear -= 1; // Go to the previous year if week number is below 1
+      currentYear -= 1;
       currentWeek = getMaxWeekNumber(currentYear);
    } else if (currentWeek > maxWeeks) {
-      currentYear += 1; // Go to the next year if week number exceeds max weeks
+      currentYear += 1;
       currentWeek = 1;
    }
 
    weekInput.value = currentWeek;
    yearInput.value = currentYear;
 
-   showDatesForWeek(); // Recalculate and display the new week
+   showDatesForWeek();
 }
-</script>
 
+// Automatically calculate on picking for both sections
+document.getElementById("dateInput").addEventListener("change", showWeekNumber);
+document.getElementById("weekNumberInput").addEventListener("input", showDatesForWeek);
+document.getElementById("yearInput").addEventListener("input", showDatesForWeek);
+
+</script>
 
 </body>
 </html>
