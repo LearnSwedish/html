@@ -135,16 +135,18 @@ body, html {
       gap: 10px; /* Space between elements */
    }
 
-   input[type="date"], input[type="number"] {
-      width: 45%; /* Keep inputs compact but not full width */
+   /* Upper date input */
+   input[type="date"] {
+      width: 65%; /* Ensure this matches the button width */
       padding: 8px;
       font-size: 1rem;
       border-radius: 6px;
       border: 1px solid #ccc;
    }
 
+   /* Upper "Beräkna veckonummer" button */
    button {
-      padding: 8px 15px; /* Keep buttons compact */
+      padding: 8px 15px;
       font-size: 1rem;
       border-radius: 6px;
       background-color: #28a745;
@@ -152,6 +154,7 @@ body, html {
       border: none;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      width: 30%; /* Match button width */
    }
 
    button:hover {
@@ -186,23 +189,53 @@ body, html {
       border-radius: 5px;
    }
 
-   /* Make sure lists are fully visible and don't get cut off */
+   /* Remove scrolling from the lists */
    #weekdays, #weekdays-output {
-      max-height: 150px;
-      overflow-y: auto; /* Allow scrolling for long lists */
+      max-height: none; /* No limit on height */
    }
 
-   /* Ensure button layout stays clean */
-   .input-container button {
-      width: auto; /* Prevent buttons from being too wide */
+   /* Lower div: week input and year input */
+   #weekNumberInput, #yearInput {
+      width: 25%; /* Each input takes up 25% width */
+      padding: 8px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      text-align: center;
+   }
+
+   /* Lower div: align buttons on the same row */
+   .input-container-lower {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 5px; /* Ensure spacing between buttons */
+   }
+
+   /* Lower div: ensure button alignment */
+   #week-button, #plus-week-button, #minus-week-button {
+      width: 30%; /* Match button widths to the upper section */
+      padding: 8px;
+      font-size: 1rem;
+      border-radius: 6px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+   }
+
+   #week-button:hover, #plus-week-button:hover, #minus-week-button:hover {
+      background-color: #218838;
    }
 }
    </style>
 </head>
 <body>
-   <!-- First Section: Vilken vecka infaller ett visst datum? -->
+   <!-- First Section: Vilken vecka är ett visst datum? -->
    <div class="container">
-      <h2>Vilken vecka infaller ett visst datum?</h2>
+      <h2>Vilken vecka är ett visst datum?</h2>
 <div class="input-container">
    <input type="date" id="dateInput">
    <button onclick="showWeekNumber()">Beräkna veckonummer</button>
