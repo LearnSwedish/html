@@ -112,7 +112,7 @@ body, html {
    }
 
    .container {
-      width: 95%; /* Make it almost full width but leave some margin */
+      width: 90%; /* Use only 90% of the total width */
       max-width: 400px; /* Ensure it doesn't go wider than needed */
       padding: 10px;
       background-color: white;
@@ -127,31 +127,28 @@ body, html {
       margin-bottom: 10px;
    }
 
-   .input-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-   }
-
-   /* Date input remains same width */
+   /* Date input styling remains the same */
    input[type="date"], input[type="number"] {
+      width: 100%; /* Full width for the inputs */
       padding: 10px;
       font-size: 1rem;
       border-radius: 6px;
       border: 1px solid #ccc;
+      box-sizing: border-box; /* Ensure padding doesn't overflow */
+      margin-bottom: 10px; /* Add some space below the input */
    }
 
-   /* First button type for "Beräkna veckonummer" and "Visa datum" (60% width) */
+   /* First button type for "Beräkna veckonummer" and "Visa datum" (stacked) */
    .button-large {
-      width: 60%;
-      padding: 10px 15px;
+      width: 100%; /* Full width of the container */
+      padding: 10px;
       font-size: 1rem;
       border-radius: 6px;
       background-color: #28a745;
       color: white;
       border: none;
       cursor: pointer;
+      margin-bottom: 10px; /* Space below the button */
       transition: background-color 0.3s ease;
    }
 
@@ -159,9 +156,9 @@ body, html {
       background-color: #218838;
    }
 
-   /* Second button type for "-7" and "+7" buttons (15% width) */
+   /* Second button type for "-7" and "+7" buttons (stacked) */
    .button-small {
-      width: 15%;
+      width: 48%; /* Half width to align them on one row */
       padding: 10px;
       font-size: 1rem;
       border-radius: 6px;
@@ -169,6 +166,7 @@ body, html {
       color: white;
       border: none;
       cursor: pointer;
+      margin-bottom: 10px; /* Space below the button */
       transition: background-color 0.3s ease;
    }
 
@@ -176,17 +174,53 @@ body, html {
       background-color: #0056b3;
    }
 
-   /* Ensure buttons stay in one line on mobile */
-   .input-container-lower, .input-container {
+   /* Ensure buttons are stacked in a row on their own */
+   .input-container, .input-container-lower {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column; /* Stack items vertically */
+      justify-content: center;
       align-items: center;
       width: 100%;
    }
 
-   /* Make sure no scrolling on the lists */
+   /* Align the "-7" and "+7" buttons side by side */
+   .button-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%; /* Ensure they span the width of the container */
+   }
+
+   #result, #week-result {
+      margin-top: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+   }
+
+   ul {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0; /* Add spacing above and below the list */
+      text-align: left;
+      font-size: 0.95rem;
+   }
+
+   li {
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+   }
+
+   .highlight {
+      background-color: #ffd700;
+      font-weight: bold;
+      padding: 6px 0;
+      border-radius: 5px;
+   }
+
+   /* Ensure no scrolling for the lists */
    #weekdays, #weekdays-output {
-      max-height: none; /* Ensure lists are fully visible */
+      max-height: none; /* No limit on height */
    }
 }
    </style>
