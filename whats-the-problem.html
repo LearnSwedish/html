@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swedish Language Exercise</title>
+  <!-- Google Fonts: Work Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+/* Custom Styles */
+
+/* ===========================
+   Font Integration
+   =========================== */
+
+/* Set Work Sans as the default font with heavier weights */
+body {
+  font-family: 'Work Sans', sans-serif;
+  line-height: 1.6; /* Improve readability */
+  letter-spacing: 0.5px; /* Slightly increase letter spacing */
+  color: #333; /* Ensure good contrast */
+  background-color: #f9f9f9; /* Light background for reduced eye strain */
+  font-weight: 500; /* Increased from default to make text heavier */
+}
+
+/* Differentiate headings with heavier weights */
+h1, h2, h5 {
+  font-weight: 700; /* Increased from 600 to 700 for bolder headings */
+}
+
+/* Ensure buttons inherit Work Sans font and have heavier text */
+.btn {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 600; /* Added to make button text bolder */
+}
+
+/* ===========================
+   Layout and Structure
+   =========================== */
+
+/* Center the container and set a max width */
+.container {
+  max-width: 1000px; /* Ensures desktop version doesn't exceed 1000px */
+  width: fit-content;
+  margin: 0 auto; /* Center the container */
+  box-sizing: border-box; /* Include padding and border in width */
+}
+
+/* ===========================
+   Quiz Elements Styling
+   =========================== */
+
+/* Style for the options */
+.list-group-item {
+  cursor: pointer;
+  padding: 12px 20px; /* Adjust padding to fit without changing width */
+  font-size: 1rem;
+  border: 1px solid #ddd; /* Default border */
+  border-left: 5px solid transparent; /* Reserve space for the green/red border */
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s, border-color 0.3s, border-left-color 0.3s; /* Smooth transitions */
+  box-sizing: border-box; /* Include borders in the element's width */
+}
+
+.list-group-item:hover {
+  background-color: #f0f0f0;
+  border-color: #ccc;
+  transform: scale(1.02); /* Slight scaling */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Correct and Incorrect feedback */
+.correct {
+  border-left: 5px solid #28a745; /* Green border for correct answers */
+  background-color: #d4edda; /* Light green background */
+}
+
+.incorrect {
+  border-left: 5px solid #dc3545; /* Red border for incorrect answers */
+  background-color: #f8d7da; /* Light red background */
+}
+
+/* Progress Bar Container */
+.progress {
+  position: relative; /* This is important for absolute positioning of the progress bar */
+  height: 20px;
+  background-color: #e9ecef; /* Light grey background */
+  border-radius: 10px;
+  width: 700px; /* Set a fixed width for the container */
+  margin: 0 auto; /* Center the container */
+}
+
+/* Progress Bar */
+.progress-bar {
+  position: absolute; /* Set to absolute positioning */
+  background-color: #28a745; /* Green color for progress */
+  height: 20px;
+  border-radius: 10px;
+  transition: width 0.5s;
+  width: 0; /* Start at 0 width */
+}
+
+/* Make the Swedish sentence larger and more prominent */
+#swedish-sentence {
+  font-size: 1.2rem;      /* Maintained font size */
+  font-weight: 700;       /* Increased from 600 to 700 for emphasis */
+  margin-bottom: 20px;    /* Space below the sentence */
+  text-align: left;     /* Centered text */
+}
+
+/* Add this to your existing CSS */
+#quiz-container {
+  transition: opacity 0.5s ease-in-out; /* Smooth transition for the entire container */
+  opacity: 1; /* Default opacity */
+}
+
+#quiz-container.fade-out {
+  opacity: 0; /* Hidden state */
+}
+
+/* Prevent page jump by setting a minimum height for feedback */
+#feedback {
+  min-height: 50px; /* Adjust as needed */
+}
+
+/* ===========================
+   Modal Styling
+   =========================== */
+
+/* Modal Customization */
+.modal-content {
+  text-align: center;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 10px; /* Rounded corners for a modern look */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Custom narrow modal style for specific modals */
+.modal-dialog.custom-narrow-modal {
+  max-width: 400px; /* Set the max width of the modal */
+  margin: 0 auto;   /* Center the modal */
+}
+
+.modal-body {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.modal-footer {
+  justify-content: center;
+}
+
+.fade {
+  transition: opacity 0.5s ease;
+}
+
+/* Responsive Modal Design */
+@media (max-width: 576px) {
+  .modal-content {
+    padding: 20px;
+  }
+
+  .modal-title {
+    font-size: 1.4rem; /* Ensure readability */
+  }
+
+  .modal-body {
+    font-size: 1rem;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+/* ===========================
+   Incorrect Sentences List
+   =========================== */
+
+/* Style the list of incorrect sentences */
+#incorrect-list {
+  list-style-type: disc;
+  padding-left: 40px; /* Increased from 20px to push the dots a little further from the left */
+  padding-right: 40px; 
+  text-align: left; /* Keep the text left-aligned */
+  display: inline-block; 
+  margin: 20px auto;
+  width: auto; /* Adjust the width dynamically */
+  max-width: 100%; /* Ensure full width on mobile if necessary */
+}
+
+/* Optional: Style for the incorrect sentences list items */
+#incorrect-list li {
+  margin-bottom: 5px;
+  font-size: 1rem; /* Maintain consistency */
+}
+
+/* Scrollable container for incorrect sentences */
+.scrollable-list {
+  max-height: 300px; /* Adjust as needed */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #fff;
+}
+
+/* ===========================
+   Action Buttons Styling
+   =========================== */
+
+/* Style the copy and download buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+#copy-btn, #download-btn, #restart-btn {
+  padding: 12px 20px;
+  font-size: 1rem;
+  flex: 1 1 45%; /* Allow buttons to take up equal space and wrap as needed */
+  max-width: 200px; /* Prevent buttons from becoming too wide on larger screens */
+  border: none; /* Remove default borders */
+  border-radius: 5px; /* Rounded corners for a modern look */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+  font-weight: 600; /* Heavier text for consistency */
+}
+
+#copy-btn {
+  background-color: #17a2b8; /* Info color */
+  color: #fff;
+}
+
+#copy-btn:hover {
+  background-color: #138496;
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+#download-btn {
+  background-color: #6c757d; /* Secondary color */
+  color: #fff;
+}
+
+#download-btn:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+}
+
+#restart-btn {
+  background-color: #28a745; /* Green color to stand out */
+  color: #fff;
+}
+
+#restart-btn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design for Action Buttons */
+@media (max-width: 576px) {
+  /* Stack action buttons vertically on mobile */
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  /* Ensure buttons are easily tappable */
+  .action-buttons .btn {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+}
+
+/* ===========================
+   Accessibility Enhancements
+   =========================== */
+
+/* Focus states for better accessibility */
+.btn:focus, .list-group-item:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Ensure list items are accessible */
+.list-group-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ===========================
+   Media Responsiveness
+   =========================== */
+
+/* Ensure images and media are responsive */
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===========================
+   Additional Aesthetic Enhancements
+   =========================== */
+
+/* Add subtle shadows to cards for depth */
+.card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none; /* Remove default border */
+  border-radius: 10px; /* Rounded corners */
+}
+
+/* Enhance the result container */
+#result h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #28a745; /* Green color for emphasis */
+}
+
+/* Add a fade-in effect to the result container */
+#result.fade-in {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+#result.show {
+  opacity: 1;
+}
+
+/* Style the performance message */
+#performance-message {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+/* Style the suggestion text */
+#suggestion {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Ensure buttons have consistent hover effects */
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Smooth transition for list items */
+.list-group-item {
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* ===========================
+   Title Positioning Adjustment
+   =========================== */
+
+/* Reduce the top margin of the main title */
+h1 {
+  margin-top: 0.5rem; /* Adjust this value as needed */
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Swedish Language Exercise</h1>
+
+    <!-- Progress Bar -->
+    <div class="progress mb-4">
+      <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <!-- Quiz Container -->
+    <div id="quiz-container" class="card">
+      <div class="card-body">
+        <div id="question-number" class="mb-2"></div>
+        <div id="swedish-sentence" class="mb-3"></div>
+        <div id="english-translation" class="mb-4 text-muted"></div>
+        <div id="options" class="list-group"></div>
+        <div id="feedback" class="mt-4"></div>
+        <button id="next-btn" class="btn btn-primary mt-3" disabled>Next</button>
+      </div>
+    </div>
+
+    <!-- Result Container -->
+    <div id="result" class="text-center mt-5 d-none">
+      <h2>Exercise Completed!</h2>
+      
+      <!-- Performance Message -->
+      <div id="performance-message" class="mt-3"></div>
+      
+      <!-- Suggestion Text -->
+      <div id="suggestion" class="mt-3 d-none">
+        <!-- Content will be injected via JavaScript -->
+      </div>
+      
+      <!-- List of Incorrect Sentences -->
+      <ul id="incorrect-list" class="list-group mt-3 d-none"></ul>
+      
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button id="copy-btn" class="btn btn-info d-none">Copy Sentences</button>
+        <button id="download-btn" class="btn btn-secondary d-none">Download Sentences</button>
+        <button id="restart-btn" class="btn btn-success">Restart the Exercise</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Structure -->
+  <div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center">
+          <h5 class="modal-title" id="welcomeModalLabel">Welcome to the insanely tricky<br />Swedish Language Challenge!</h5>
+        </div>
+        <div class="modal-body">
+          <strong>"She sings beautiful"</strong><br /><br />
+          Whoops! Mistakes aren't just for language newbies — native speakers slip up too. Ready to flex your Swedish skills? You'll tackle 25 frequently occurring but hilariously wrong example sentences. Your mission? Not to fix them, but to explain the goofs.<br /><br />Are you ready to test your Swedish skills?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="notReadyBtn">Not yet</button>
+          <button type="button" class="btn btn-primary" id="readyBtn">Bring it on!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copy Confirmation Modal -->
+  <div class="modal fade" id="copyModal" tabindex="-1" aria-labelledby="copyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="copyModalLabel">Copied!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          The incorrect sentences have been copied to your clipboard.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS (Includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script>
+    // JavaScript Code
+
+    let currentQuestion = 0;
+    let score = 0;
+    let incorrectSentences = []; // Array to store incorrect sentences
+
+    const questions = [
+      {
+        "swedish": "Han lyssnar på sin favorit musik.",
+        "english": "He listens to his favourite music.",
+        "options": [
+          {
+            "text": "\"Favorit musik\" should be written as one word: \"favoritmusik\".",
+            "isCorrect": true,
+            "explanation": "\"Favorit musik\" should be written as one word: \"favoritmusik\"."
+          },
+          {
+            "text": "\"Sin\" should be replaced with \"hans\" because \"sin\" can't refer to possessions.",
+            "isCorrect": false,
+            "explanation": "That would likewise have been improper Swedish."
+          },
+          {
+            "text": "The sentence needs to end with an exclamation mark for emphasis.",
+            "isCorrect": false,
+            "explanation": "That would have been incorrect Swedish as well."
+          },
+          {
+            "text": "\"Lyssnar på\" should be just \"lyssnar\", as the preposition \"på\" is unnecessary here.",
+            "isCorrect": false,
+            "explanation": "That would similarly have been incorrect Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Mitt katt är så rolig att leka med.",
+        "english": "My cat is so fun to play with.",
+        "options": [
+          {
+            "text": "\"Katt\" is an en-word, so the possessive pronoun should be \"min\", not \"mitt\".",
+            "isCorrect": true,
+            "explanation": "\"Katt\" is an en-word, so use \"min\"."
+          },
+          {
+            "text": "\"Rolig\" should be changed to \"roligt\" to match the neuter form of \"katt\".",
+            "isCorrect": false,
+            "explanation": "That too would signify improper Swedish."
+          },
+          {
+            "text": "\"Att leka med\" should be \"att leka\". The preposition \"med\" is unnecessary.",
+            "isCorrect": false,
+            "explanation": "That too would constitute incorrect Swedish."
+          },
+          {
+            "text": "\"Så\" should be replaced with \"väldigt\" to intensify the meaning of \"rolig\".",
+            "isCorrect": false,
+            "explanation": "That would still have been incorrect Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Henne är på jobbet hela dagen.",
+        "english": "She is at work all day.",
+        "options": [
+          {
+            "text": "\"Henne\" is an object pronoun and cannot be used as the subject of a sentence.",
+            "isCorrect": true,
+            "explanation": "Use subject pronoun \"hon\" instead of object pronoun \"henne\"."
+          },
+          {
+            "text": "The sentence needs to include a time marker like \"nu\".",
+            "isCorrect": false,
+            "explanation": "That would also qualify as incorrect Swedish."
+          },
+          {
+            "text": "\"På jobbet\" should be changed to \"i jobbet\" to indicate that she's working.",
+            "isCorrect": false,
+            "explanation": "That would equally have been incorrect Swedish."
+          },
+          {
+            "text": "\"Hela dagen\" should be placed at the beginning for better flow.",
+            "isCorrect": false,
+            "explanation": "That, as well, would have been incorrect Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "På sommaren hon älskar att plocka jordgubbar.",
+        "english": "In the summer, she loves to pick strawberries.",
+        "options": [
+          {
+            "text": "The verb should come before the subject after an introductory phrase like \"å sommaren\".",
+            "isCorrect": true,
+            "explanation": "Inversion (verb + subject) after introductory phrase."
+          },
+          {
+            "text": "\"Att plocka\" should be replaced with \"plockar\" to indicate present tense.",
+            "isCorrect": false,
+            "explanation": "That would also represent incorrect Swedish."
+          },
+          {
+            "text": "\"Jordgubbar\" should be singular because she picks only one at a time.",
+            "isCorrect": false,
+            "explanation": "That would have been Swedish incorrect as well."
+          },
+          {
+            "text": "\"Hon\" should be replaced with \"hennes\" because it is possessive.",
+            "isCorrect": false,
+            "explanation": "That would have been improper Swedish too."
+          }
+        ]
+      },
+      {
+        "swedish": "Idag han jobbar hemifrån.",
+        "english": "Today, he is working from home.",
+        "options": [
+          {
+            "text": "\"Jobbar\" should come before the subject after an introductory adverb like \"idag\".",
+            "isCorrect": true,
+            "explanation": "Inversion (verb + subject) after introductory adverb."
+          },
+          {
+            "text": "\"Han\" should be replaced with \"honom\" to reflect object pronoun use.",
+            "isCorrect": false,
+            "explanation": "That, too, would have been improper Swedish."
+          },
+          {
+            "text": "\"Hemifrån\" should be changed to \"hemma\" because he is at home.",
+            "isCorrect": false,
+            "explanation": "That would also amount to incorrect Swedish."
+          },
+          {
+            "text": "The verb \"jobbar\" should be in the past tense to match the time reference \"idag\".",
+            "isCorrect": false,
+            "explanation": "That would have been wrong Swedish too."
+          }
+        ]
+      },
+      {
+        "swedish": "Honom bor i Lund.",
+        "english": "He lives in Lund.",
+        "options": [
+          {
+            "text": "\"Honom\" is an object pronoun and cannot be used as the subject of a sentence.",
+            "isCorrect": true,
+            "explanation": "Use subject pronoun \"han\" instead of object pronoun \"honom\"."
+          },
+          {
+            "text": "\"Honom\" should be followed by a possessive pronoun.",
+            "isCorrect": false,
+            "explanation": "That would likewise be considered incorrect Swedish."
+          },
+          {
+            "text": "The sentence needs to include a verb like \"är\" before \"bor\".",
+            "isCorrect": false,
+            "explanation": "That would equally represent incorrect Swedish."
+          },
+          {
+            "text": "\"I Lund\" should be replaced with \"på Lund\" to indicate location.",
+            "isCorrect": false,
+            "explanation": "That would have been incorrect in Swedish as well."
+          }
+        ]
+      },
+      {
+        "swedish": "Hon gav den till vi.",
+        "english": "She gave it to us.",
+        "options": [
+          {
+            "text": "\"Vi\" is a subject pronoun and cannot be used as the object of a sentence.",
+            "isCorrect": true,
+            "explanation": "Use object pronoun \"oss\" instead of subject pronoun \"vi\"."
+          },
+          {
+            "text": "\"Den\" should be replaced with \"det\" because it refers to a neutral object.",
+            "isCorrect": false,
+            "explanation": "That, too, would qualify as improper Swedish."
+          },
+          {
+            "text": "\"Till\" should be replaced with \"för\" to properly express giving.",
+            "isCorrect": false,
+            "explanation": "That would also have constituted wrong Swedish."
+          },
+          {
+            "text": "The verb \"gav\" should be in the present tense to match the action.",
+            "isCorrect": false,
+            "explanation": "That would still represent incorrect Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Katten ska sover nu.",
+        "english": "The cat will be going to sleep now.",
+        "options": [
+          {
+            "text": "After \"ska\", the verb should be in its infinitive form.",
+            "isCorrect": true,
+            "explanation": "Use infinitive form \"sova\" after modal verb \"ska\"."
+          },
+          {
+            "text": "\"Nu\" should be replaced with \"snart\" because the action hasn't happened yet.",
+            "isCorrect": false,
+            "explanation": "That would have been incorrect Swedish likewise."
+          },
+          {
+            "text": "\"Ska\" should be replaced with \"kommer att\" for future tense.",
+            "isCorrect": false,
+            "explanation": "That would also denote incorrect Swedish."
+          },
+          {
+            "text": "\"Katten\" should be \"katter\" to match the plural form of \"sover\".",
+            "isCorrect": false,
+            "explanation": "That too would amount to improper Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Jag har vara i Spanien.",
+        "english": "I have been to Spain.",
+        "options": [
+          {
+            "text": "After \"har\", the verb should be in the supine form.",
+            "isCorrect": true,
+            "explanation": "After \"har\", use the supine form \"varit\"."
+          },
+          {
+            "text": "\"Vara\" should be changed to \"är\" because the action is ongoing.",
+            "isCorrect": false,
+            "explanation": "That would additionally have been incorrect Swedish."
+          },
+          {
+            "text": "\"Har\" should be replaced with \"kommer att\" to indicate a future event.",
+            "isCorrect": false,
+            "explanation": "That would have been wrong in Swedish as well."
+          },
+          {
+            "text": "\"I Spanien\" should be \"till Spanien\" to indicate motion.",
+            "isCorrect": false,
+            "explanation": "That would likewise qualify as improper Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Hon är en duktig sport journalist.",
+        "english": "She is a skilled sports journalist.",
+        "options": [
+          {
+            "text": "\"Sport journalist\" should be written as one compound word: \"sportjournalist\".",
+            "isCorrect": true,
+            "explanation": "Related words like \"sport\" and \"journalist\" are combined into one word."
+          },
+          {
+            "text": "\"Duktig\" should be replaced with \"duktiga\" to match the noun.",
+            "isCorrect": false,
+            "explanation": "That would also have been considered wrong Swedish."
+          },
+          {
+            "text": "\"En\" should be replaced with \"ett\" because \"journalist\" is neuter.",
+            "isCorrect": false,
+            "explanation": "That would still qualify as improper Swedish."
+          },
+          {
+            "text": "\"Är\" should be changed to \"var\" because it should be in the past tense.",
+            "isCorrect": false,
+            "explanation": "That would likewise amount to incorrect Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Sverige är ett avlång land.",
+        "english": "Sweden is a long, narrow country.",
+        "options": [
+          {
+            "text": "\"Land\" is an ett-word, so the adjective should be \"avlångt\".",
+            "isCorrect": true,
+            "explanation": "Use neuter form \"avlångt\" with \"land\"."
+          },
+          {
+            "text": "\"Sverige\" should be \"Sveriges\" because it is the subject.",
+            "isCorrect": false,
+            "explanation": "That would also have signified incorrect Swedish."
+          },
+          {
+            "text": "\"Avlång\" should be replaced with \"avlånga\" to match the plural form of \"land\".",
+            "isCorrect": false,
+            "explanation": "That too would have been classified as incorrect Swedish."
+          },
+          {
+            "text": "\"Ett\" should be changed to \"en\" because \"land\" refers to a country.",
+            "isCorrect": false,
+            "explanation": "That would also have been deemed improper Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "På fritiden studerar jag svenska grammatik.",
+        "english": "In my free time, I study Swedish grammar.",
+        "options": [
+          {
+            "text": "The adjective \"svenska\" do not agree with the noun \"grammatik\".",
+            "isCorrect": true,
+            "explanation": "The adjective form should be \"svensk\"."
+          },
+          {
+            "text": "\"Svenska\" should be plural to match \"grammatik\".",
+            "isCorrect": false,
+            "explanation": "That would still be regarded as incorrect Swedish."
+          },
+          {
+            "text": "\"Studerar\" should be in the past tense.",
+            "isCorrect": false,
+            "explanation": "That, too, would signify incorrect Swedish."
+          },
+          {
+            "text": "\"På fritiden\" should be \"i fritiden\" to indicate time spent.",
+            "isCorrect": false,
+            "explanation": "That would also have been identified as wrong Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Han undrade varifrån kommer du.",
+        "english": "He wondered where you are from.",
+        "options": [
+          {
+            "text": "Subclauses have straight word order, so \"kommer du\" should be \"du kommer\".",
+            "isCorrect": true,
+            "explanation": "Swedish subclauses follow SVO word order."
+          },
+          {
+            "text": "\"Varifrån\" should be replaced with \"vart\" because it is asking about a location.",
+            "isCorrect": false,
+            "explanation": "That would equally be seen as incorrect Swedish."
+          },
+          {
+            "text": "\"Kommer\" should be in the past tense to match the question.",
+            "isCorrect": false,
+            "explanation": "That too would have been viewed as improper Swedish."
+          },
+          {
+            "text": "\"Han\" should be replaced with \"honom\" because it is an indirect question.",
+            "isCorrect": false,
+            "explanation": "That would also have been labeled incorrect Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Om skolan är stängd jag stannar hemma.",
+        "english": "If the school is closed, I will stay home.",
+        "options": [
+          {
+            "text": "In Swedish, the subject and verb must switch places after a subclause.",
+            "isCorrect": true,
+            "explanation": "Inversion in main clause (V + S) when a subclause goes first."
+          },
+          {
+            "text": "\"Hemma\" should be removed because it's redundant in this sentence.",
+            "isCorrect": false,
+            "explanation": "That would similarly be considered wrong Swedish."
+          },
+          {
+            "text": "\"Om\" should be replaced with \"när\" to correctly indicate the condition.",
+            "isCorrect": false,
+            "explanation": "That too would denote incorrect Swedish."
+          },
+          {
+            "text": "\"Hemma\" should be changed to \"hem\" because it's a direction, not a location.",
+            "isCorrect": false,
+            "explanation": "That would additionally represent wrong Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "En gång jag var på jobbet en timme för tidigt.",
+        "english": "Once, I was at work an hour early.",
+        "options": [
+          {
+            "text": "In Swedish, after an introductory phrase like \"En gång\", the verb should come before the subject.",
+            "isCorrect": true,
+            "explanation": "Inversion after introductory phrase."
+          },
+          {
+            "text": "\"För tidigt\" should be changed to \"för tidiga\" to match the noun \"timme\".",
+            "isCorrect": false,
+            "explanation": "That would also have been interpreted as incorrect Swedish."
+          },
+          {
+            "text": "\"En timme\" should be pluralized to \"två timmar\" to make the sentence clearer.",
+            "isCorrect": false,
+            "explanation": "That, too, would have been recognized as improper Swedish."
+          },
+          {
+            "text": "\"På jobbet\" should be changed to \"i jobbet\" for proper location usage.",
+            "isCorrect": false,
+            "explanation": "That would also have been viewed as wrong Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Köper man billig mat man skadar miljön.",
+        "english": "If you buy cheap food, you harm the environment.",
+        "options": [
+          {
+            "text": "In Swedish, after a subclause, the verb comes before the subject.",
+            "isCorrect": true,
+            "explanation": "Inversion after subclause."
+          },
+          {
+            "text": "\"Man\" should be replaced with \"du\" in the second clause for direct address.",
+            "isCorrect": false,
+            "explanation": "That would likewise have been identified as improper Swedish."
+          },
+          {
+            "text": "\"Billig\" should be pluralized to \"billiga\" to agree with \"mat\".",
+            "isCorrect": false,
+            "explanation": "That would also imply incorrect Swedish."
+          },
+          {
+            "text": "\"Miljön\" should be \"miljö\" because definite articles are not needed here.",
+            "isCorrect": false,
+            "explanation": "That would similarly amount to wrong Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Han ofta kommer för sent till möten.",
+        "english": "He is often late to meetings.",
+        "options": [
+          {
+            "text": "In Swedish, the verb should come before the adverb in main clauses.",
+            "isCorrect": true,
+            "explanation": "Use proper verb-adverb order."
+          },
+          {
+            "text": "\"För sent\" should be changed to \"för sena\" to agree with \"möten\".",
+            "isCorrect": false,
+            "explanation": "That too would imply improper Swedish."
+          },
+          {
+            "text": "\"Till\" should be replaced with \"på\" because it better matches the context.",
+            "isCorrect": false,
+            "explanation": "That would additionally constitute wrong Swedish."
+          },
+          {
+            "text": "\"Ofta\" should come at the end of the sentence for emphasis.",
+            "isCorrect": false,
+            "explanation": "That would also be seen as improper Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Han inte kunde hjälpa mig idag.",
+        "english": "He couldn’t help me today.",
+        "options": [
+          {
+            "text": "In Swedish, the negation \"inte\" should come after the verb phrase.",
+            "isCorrect": true,
+            "explanation": "The sentence adverbial always goes third (after subject and verb)."
+          },
+          {
+            "text": "\"Kunde\" should be changed to \"kan\" because the sentence refers to the present.",
+            "isCorrect": false,
+            "explanation": "That would likewise signify wrong Swedish."
+          },
+          {
+            "text": "\"Hjälpa\" should be replaced with \"hjälpade\" to indicate past tense.",
+            "isCorrect": false,
+            "explanation": "That too would be considered incorrect Swedish."
+          },
+          {
+            "text": "\"Idag\" should come before \"mig\" to maintain proper word order.",
+            "isCorrect": false,
+            "explanation": "That would also have been seen as wrong Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Idag träffade jag Tom och sin fru.",
+        "english": "Today, I met Tom and his wife.",
+        "options": [
+          {
+            "text": "\"Sin\" is a reflexive pronoun and can only refer back to the subject of the sentence.",
+            "isCorrect": true,
+            "explanation": "Use \"hans\" to refer to Tom's wife."
+          },
+          {
+            "text": "\"Sin\" is correct because it refers to Tom's wife, so no change is needed.",
+            "isCorrect": false,
+            "explanation": "That would still imply incorrect Swedish."
+          },
+          {
+            "text": "\"Tom\" should be replaced with \"han\" to avoid repetition.",
+            "isCorrect": false,
+            "explanation": "That would also be interpreted as wrong Swedish."
+          },
+          {
+            "text": "\"Träffade\" should be in the present tense \"träffar\" to match the time context.",
+            "isCorrect": false,
+            "explanation": "That would similarly imply incorrect Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Idag träffade jag Tom och hans fru. Tom kysste hans fru.",
+        "english": "Today, I met Tom and his wife. Tom kissed his wife.",
+        "options": [
+          {
+            "text": "\"Hans\" in the last sentcence refers to someone else's wife, not Tom's own wife.",
+            "isCorrect": true,
+            "explanation": "Use reflexive pronoun \"sin\" when referring back to the subject \"Tom\"."
+          },
+          {
+            "text": "\"Hans\" should be replaced with \"hennes\" because \"fru\" is feminine.",
+            "isCorrect": false,
+            "explanation": "That too would indicate improper Swedish."
+          },
+          {
+            "text": "\"Kysste\" should be replaced with \"har kysst\" to make it present perfect.",
+            "isCorrect": false,
+            "explanation": "That would also suggest incorrect Swedish."
+          },
+          {
+            "text": "\"Tom\" should be replaced with \"han\" to avoid repetition.",
+            "isCorrect": false,
+            "explanation": "That would likewise indicate wrong Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Jag har köpt två bokar.",
+        "english": "I bought two books.",
+        "options": [
+          {
+            "text": "\"Bok\" has an irregular plural form. Instead of \"bokar\", it should be \"böcker\".",
+            "isCorrect": true,
+            "explanation": "\"Bok\" pluralizes to \"böcker\"."
+          },
+          {
+            "text": "\"Två\" should be replaced with \"två stycken\" to emphasize the number.",
+            "isCorrect": false,
+            "explanation": "That too would suggest improper Swedish."
+          },
+          {
+            "text": "\"Har\" should be replaced with \"hade\" to reflect past perfect tense.",
+            "isCorrect": false,
+            "explanation": "That would also denote wrong Swedish."
+          },
+          {
+            "text": "\"Köpt\" should be in the present tense, not past.",
+            "isCorrect": false,
+            "explanation": "That would similarly represent improper Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Mamma: När ska du städa ditt rum? Son: Jag vill städa imorgon, sluta!",
+        "english": "Mum: When are you going to clean your room? Son: I will clean tomorrow, stop!",
+        "options": [
+          {
+            "text": "\"Ska\" is more appropriate because the question asks about plans, not about a desire.",
+            "isCorrect": true,
+            "explanation": "Use \"ska\" to indicate intention. Swedish \"vill\" does not mean \"will\"."
+          },
+          {
+            "text": "\"Städa\" should be replaced with \"städat\" to reflect a past intention.",
+            "isCorrect": false,
+            "explanation": "That too would signify wrong Swedish."
+          },
+          {
+            "text": "\"Sluta\" should be replaced with \"stanna\" to make it sound more polite.",
+            "isCorrect": false,
+            "explanation": "That would also indicate wrong Swedish."
+          },
+          {
+            "text": "\"Imorgon\" should be replaced with \"nu\" because cleaning should be done immediately.",
+            "isCorrect": false,
+            "explanation": "That would similarly denote incorrect Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Vart ligger Stockholm?",
+        "english": "Where is Stockholm?",
+        "options": [
+          {
+            "text": "\"Vart\" is used for direction, asking where someone or something is going.",
+            "isCorrect": true,
+            "explanation": "Use \"var\" to ask about location."
+          },
+          {
+            "text": "\"Ligger\" should be replaced with \"är\" to sound more natural.",
+            "isCorrect": false,
+            "explanation": "That would additionally imply wrong Swedish."
+          },
+          {
+            "text": "\"Stockholm\" should be replaced with \"Stockholms\" because it indicates possession.",
+            "isCorrect": false,
+            "explanation": "That would also reflect incorrect Swedish."
+          },
+          {
+            "text": "\"Vart\" should be replaced with \"när\" because it's asking for a time-related event.",
+            "isCorrect": false,
+            "explanation": "That would likewise reflect wrong Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Har du glömt din plånbok i jobbet?",
+        "english": "Have you forgotten your wallet at work?",
+        "options": [
+          {
+            "text": "It should be \"på jobbet\", similar to \"at work\" in English.",
+            "isCorrect": true,
+            "explanation": "Use \"på jobbet\" for this specific location."
+          },
+          {
+            "text": "\"Din\" should be replaced with \"ditt\" to match \"plånbok\".",
+            "isCorrect": false,
+            "explanation": "That too would reflect improper Swedish."
+          },
+          {
+            "text": "\"Glömt\" should be in the present tense \"glömmer\" to indicate a current action.",
+            "isCorrect": false,
+            "explanation": "That would also convey incorrect Swedish."
+          },
+          {
+            "text": "\"Plånbok\" should be pluralized to \"plånböcker\" to imply more than one.",
+            "isCorrect": false,
+            "explanation": "That would similarly convey wrong Swedish."
+          }
+        ]
+      },
+      {
+        "swedish": "Här är äpplet. Den var jättegod.",
+        "english": "Here is the apple. It was really tasty.",
+        "options": [
+          {
+            "text": "Since \"äpplet\" is a neuter noun (ett-word), the pronoun should be \"det\", not \"den\".",
+            "isCorrect": true,
+            "explanation": "Use \"det\" for neuter nouns."
+          },
+          {
+            "text": "\"Jättegod\" should be pluralized to \"jättegoda\" to match the subject.",
+            "isCorrect": false,
+            "explanation": "That too would convey improper Swedish."
+          },
+          {
+            "text": "\"Var\" should be in the present tense \"är\" because the statement is about an ongoing quality.",
+            "isCorrect": false,
+            "explanation": "That would also portray incorrect Swedish."
+          },
+          {
+            "text": "\"Här\" should be replaced with \"där\" to indicate location.",
+            "isCorrect": false,
+            "explanation": "That would similarly portray wrong Swedish."
+          }
+        ]
+      }
+    ];
+
+    const questionNumber = document.getElementById('question-number');
+    const swedishSentence = document.getElementById('swedish-sentence');
+    const englishTranslation = document.getElementById('english-translation');
+    const optionsContainer = document.getElementById('options');
+    const feedbackContainer = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+    const resultContainer = document.getElementById('result');
+    const performanceMessage = document.getElementById('performance-message'); // Performance message
+    const suggestion = document.getElementById('suggestion'); // Suggestion text
+    const incorrectList = document.getElementById('incorrect-list'); // List of incorrect sentences
+    const restartBtn = document.getElementById('restart-btn');
+    const copyBtn = document.getElementById('copy-btn'); // Copy button
+    const downloadBtn = document.getElementById('download-btn'); // Download button
+    const progressBar = document.getElementById('progress-bar');
+
+    // Initialize Bootstrap Modal
+    const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'), {
+      backdrop: 'static',
+      keyboard: false
+    });
+
+    const copyModal = new bootstrap.Modal(document.getElementById('copyModal'), {
+      backdrop: 'static',
+      keyboard: false
+    });
+
+    // Display the modal when the page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      welcomeModal.show();
+    });
+
+    // Event listeners for modal buttons
+document.getElementById('notReadyBtn').addEventListener('click', () => {
+  const modalTitle = document.getElementById('welcomeModalLabel');
+  const modalBody = document.querySelector('#welcomeModal .modal-body');
+  const modalFooter = document.querySelector('#welcomeModal .modal-footer');
+  const modalDialog = document.querySelector('#welcomeModal .modal-dialog');
+
+  // Add the custom-narrow-modal class to the modal dialog
+  modalDialog.classList.add('custom-narrow-modal');
+
+  // Change modal content
+  modalTitle.textContent = 'Not Ready Yet!';
+  modalBody.textContent = "No rush, come back when you're feeling brave enough!";
+
+  // Remove existing buttons
+  modalFooter.innerHTML = '';
+
+  // After 2 seconds, redirect to the specified page
+  setTimeout(() => {
+    window.location.href = 'https://www.merriam-webster.com/dictionary/loser';
+  }, 2000);
+});
+
+
+document.getElementById('readyBtn').addEventListener('click', () => {
+  const modalTitle = document.getElementById('welcomeModalLabel');
+  const modalBody = document.querySelector('#welcomeModal .modal-body');
+  const modalFooter = document.querySelector('#welcomeModal .modal-footer');
+  const modalDialog = document.querySelector('#welcomeModal .modal-dialog');
+
+  // Add the custom-narrow-modal class to the modal dialog
+  modalDialog.classList.add('custom-narrow-modal');
+
+  // Change modal content with a line break
+  modalTitle.textContent = 'Good Luck!';
+  modalBody.innerHTML = "Hope isn’t for the weary.<br>It’s for the brave."; // Use innerHTML and <br> for line break
+
+  // Remove existing buttons
+  modalFooter.innerHTML = '';
+
+  // After 2 seconds, hide the modal
+  setTimeout(() => {
+    welcomeModal.hide();
+  }, 2000);
+});
+
+
+    // Shuffle questions at the start for random order
+    const shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+
+function displayQuestion() {
+  if (currentQuestion >= shuffledQuestions.length) {
+    showResult();
+    return;
+  }
+
+  const q = shuffledQuestions[currentQuestion];
+
+  // Get the quiz container
+  const quizContainer = document.getElementById('quiz-container');
+
+  if (currentQuestion > 0) {
+    // Fade out the entire quiz container only if it's not the first question
+    quizContainer.classList.add('fade-out');
+
+    // After the fade-out transition, update the text and options
+    setTimeout(() => {
+      // Update question number
+      questionNumber.textContent = `Question ${currentQuestion + 1} of ${shuffledQuestions.length}`;
+
+      // Display Swedish sentence and English translation
+      if (q.swedish === "Idag träffade jag Tom och hans fru. Tom kysste hans fru.") {
+        const underlinedSentence = q.swedish.replace("Tom kysste hans fru", "<u>Tom kysste hans fru</u>");
+        swedishSentence.innerHTML = underlinedSentence;
+      } else if (q.swedish === "Mamma: När ska du städa ditt rum? Son: Jag vill städa imorgon, sluta!") {
+        const underlinedSentence = q.swedish.replace("Jag vill städa imorgon, sluta!", "<u>Jag vill städa imorgon, sluta!</u>");
+        swedishSentence.innerHTML = underlinedSentence;
+      } else {
+        swedishSentence.textContent = q.swedish;
+      }
+
+      englishTranslation.innerHTML = `<strong>Intended</strong> meaning translated: ${q.english}`;
+
+      // Clear previous options and feedback
+      optionsContainer.innerHTML = '';
+      feedbackContainer.innerHTML = '';
+      nextBtn.disabled = true;
+
+      // Shuffle options to randomize their order
+      const shuffledOptions = q.options.sort(() => Math.random() - 0.5);
+
+      // Create option elements
+      shuffledOptions.forEach((option, index) => {
+        const optionBtn = document.createElement('button');
+        optionBtn.classList.add('list-group-item', 'list-group-item-action');
+        optionBtn.textContent = option.text;
+        optionBtn.dataset.index = index;
+
+        optionBtn.addEventListener('click', () => selectOption(option, optionBtn));
+
+        optionsContainer.appendChild(optionBtn);
+      });
+
+      // Fade in the new content
+      quizContainer.classList.remove('fade-out');
+
+      // Update progress bar
+      const progressPercent = ((currentQuestion) / shuffledQuestions.length) * 100;
+      progressBar.style.width = `${progressPercent}%`;
+      progressBar.setAttribute('aria-valuenow', progressPercent);
+    }, 400); // Match this timeout with the CSS transition duration (0.5s)
+  } else {
+    // For the first question, update directly without fading out
+    questionNumber.textContent = `Question ${currentQuestion + 1} of ${shuffledQuestions.length}`;
+    
+    swedishSentence.textContent = q.swedish;
+    englishTranslation.textContent = `Intended meaning translated: ${q.english}`;
+
+    // Clear previous options and feedback
+    optionsContainer.innerHTML = '';
+    feedbackContainer.innerHTML = '';
+    nextBtn.disabled = true;
+
+    // Shuffle options to randomize their order
+    const shuffledOptions = q.options.sort(() => Math.random() - 0.5);
+
+    // Create option elements
+    shuffledOptions.forEach((option, index) => {
+      const optionBtn = document.createElement('button');
+      optionBtn.classList.add('list-group-item', 'list-group-item-action');
+      optionBtn.textContent = option.text;
+      optionBtn.dataset.index = index;
+
+      optionBtn.addEventListener('click', () => selectOption(option, optionBtn));
+
+      optionsContainer.appendChild(optionBtn);
+    });
+
+    // Update progress bar
+    const progressPercent = ((currentQuestion) / shuffledQuestions.length) * 100;
+    progressBar.style.width = `${progressPercent}%`;
+    progressBar.setAttribute('aria-valuenow', progressPercent);
+  }
+}
+
+    function selectOption(option, button) {
+      // Disable all options
+      const allOptions = optionsContainer.querySelectorAll('button');
+      allOptions.forEach(btn => btn.disabled = true);
+
+      // Highlight selected option
+      if (option.isCorrect) {
+        button.classList.add('correct');
+        score++;
+      } else {
+        button.classList.add('incorrect');
+        // Store the incorrect Swedish sentence
+        incorrectSentences.push(shuffledQuestions[currentQuestion].swedish);
+
+        // Highlight the correct answer
+        allOptions.forEach(btn => {
+          const selectedOption = shuffledQuestions[currentQuestion].options.find(o => o.text === btn.textContent);
+          if (selectedOption.isCorrect) {
+            btn.classList.add('correct');
+          }
+        });
+      }
+
+      // Display explanation
+const explanation = document.createElement('div');
+explanation.classList.add('mt-3');
+
+// Check if the selected option is correct or incorrect and adjust the feedback message
+if (option.isCorrect) {
+  explanation.innerHTML = `<strong>Correct:</strong> ${option.explanation}`;
+} else {
+  explanation.innerHTML = `<strong>Incorrect:</strong> ${option.explanation}`;
+}
+
+feedbackContainer.appendChild(explanation);
+
+      // Enable next button
+      nextBtn.disabled = false;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      currentQuestion++;
+      displayQuestion();
+    });
+
+    restartBtn.addEventListener('click', () => {
+      currentQuestion = 0;
+      score = 0;
+      incorrectSentences = []; // Reset incorrect sentences
+      // Reshuffle questions for a new order
+      shuffledQuestions.sort(() => Math.random() - 0.5);
+      resultContainer.classList.add('d-none');
+      document.getElementById('quiz-container').classList.remove('d-none');
+      displayQuestion();
+    });
+
+    function showResult() {
+      // Update progress bar to 100%
+      progressBar.style.width = `100%`;
+      progressBar.setAttribute('aria-valuenow', 100);
+
+      document.getElementById('quiz-container').classList.add('d-none');
+resultContainer.classList.remove('d-none');
+resultContainer.classList.add('fade-in'); // Initial fade-in effect
+setTimeout(() => {
+  resultContainer.classList.add('show');  // Apply the show class after a small delay for the fade effect
+}, 50);
+
+      const incorrectCount = incorrectSentences.length;
+
+      // Display performance message
+      if (incorrectCount === 0) {
+        // All answers were correct
+        performanceMessage.innerHTML = `<strong>Excellent work!</strong> You answered all questions correctly!`;
+      } else if (incorrectCount === 1) {
+        // One mistake
+        performanceMessage.innerHTML = `<strong>You made one mistake</strong>`;
+        suggestion.innerHTML = `
+          Here's a suggestion:<br><br>Maybe it was just a slip, but if it wasn’t... then copy that sentence and send it in an email to your tutor.<br>This will be very helpful when planning future lessons.
+        `;
+      } else {
+        // Multiple mistakes
+        performanceMessage.innerHTML = `<strong>You made ${incorrectCount} mistakes</strong>`;
+        suggestion.innerHTML = `
+          Looks like there are a few things to brush up on – or just need a little more practice.<br><br>Here's a suggestion:<br>Copy these sentences and send them in an email to your tutor.<br>This will be very helpful when planning future lessons.
+        `;
+      }
+
+      // Show or hide suggestion and incorrect list based on mistakes
+      if (incorrectCount > 0) {
+        suggestion.classList.remove('d-none');
+
+        // Populate the incorrect sentences list
+        incorrectList.innerHTML = incorrectSentences.map(sentence => `<li>"${sentence}"</li>`).join('');
+        incorrectList.classList.remove('d-none');
+
+        // Add scrollable class if 6 or more errors
+        if (incorrectCount >= 6) {
+          incorrectList.classList.add('scrollable-list');
+        } else {
+          incorrectList.classList.remove('scrollable-list');
+        }
+
+        // Show the copy and download buttons
+        copyBtn.classList.remove('d-none');
+        downloadBtn.classList.remove('d-none');
+      } else {
+        suggestion.classList.add('d-none');
+        incorrectList.classList.add('d-none');
+        copyBtn.classList.add('d-none');
+        downloadBtn.classList.add('d-none');
+      }
+
+      // Handle copy button functionality
+      copyBtn.onclick = () => {
+        let textToCopy = '';
+        if (incorrectCount === 1) {
+          textToCopy = `"${incorrectSentences[0]}"`;
+        } else {
+          textToCopy = `I just did the insanely tricky Swedish Language Exercise, and I made ${incorrectCount} mistakes:\n\n`;
+          incorrectSentences.forEach(sentence => {
+            textToCopy += `- "${sentence}"\n`;
+          });
+        }
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          copyModal.show(); // Show the stylish modal instead of alert
+        }).catch(err => {
+          alert('Failed to copy text.');
+          console.error('Error copying text: ', err);
+        });
+      };
+
+      // Handle download button functionality
+      downloadBtn.onclick = () => {
+        let textToDownload = '';
+        if (incorrectCount === 1) {
+          textToDownload = `"${incorrectSentences[0]}"`;
+        } else {
+          textToDownload = `I just did the insanely tricky Swedish Language Exercise, and I made ${incorrectCount} mistakes:\n\n`;
+          incorrectSentences.forEach(sentence => {
+            textToDownload += `- "${sentence}"\n`;
+          });
+        }
+
+        // Create a blob and trigger download
+        const blob = new Blob([textToDownload], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'incorrect_sentences.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+    }
+
+    // Initialize the quiz
+    displayQuestion();
+  </script>
+</body>
+</html>
