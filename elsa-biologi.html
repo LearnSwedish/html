@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biologi Quiz - Ekosystem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        button {
+            padding: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            button {
+                padding: 12px;
+                font-size: 16px;
+            }
+            select {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Biologi Quiz - Ekosystem</h1>
+
+    <div id="questions"></div>
+
+    <button onclick="checkQuiz()">Skicka in</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Vad är en producent?",
+            options: [
+                "Välj svar",
+                "En organism som producerar sin egen energi genom fotosyntes.",
+                "Ett bekämpningsmedel som används för att döda ogräs.",
+                "Köttätare, djur som äter andra djur."
+            ]
+        },
+        {
+            question: "Vad är ett herbicid?",
+            options: [
+                "Välj svar",
+                "Ett bekämpningsmedel som används för att döda oönskade växter.",
+                "Ett symbiotiskt förhållande mellan svampar och växters rötter.",
+                "En levande varelse, t.ex. en växt eller ett djur."
+            ]
+        },
+        {
+            question: "Vad är ett insekticid?",
+            options: [
+                "Välj svar",
+                "Ett bekämpningsmedel som används för att döda insekter.",
+                "Växtätare, djur som äter växter.",
+                "Organismer som får sin energi genom att äta andra organismer."
+            ]
+        },
+        {
+            question: "Vad är en biotop?",
+            options: [
+                "Välj svar",
+                "En specifik naturtyp där vissa djur och växter trivs.",
+                "En cirkulär process där ämnen återanvänds i naturen.",
+                "Köttätare, djur som äter andra djur."
+            ]
+        },
+        {
+            question: "Vem är en ekolog?",
+            options: [
+                "Välj svar",
+                "En forskare som studerar samspelet mellan organismer och deras miljö.",
+                "En organism som lever på och skadar en annan organism.",
+                "En levande varelse, t.ex. en växt eller ett djur."
+            ]
+        },
+        {
+            question: "Vad är en destruent?",
+            options: [
+                "Välj svar",
+                "Organismer som bryter ner dött material.",
+                "En typ av växt som producerar sin egen energi.",
+                "En nära samarbete mellan två organismer."
+            ]
+        },
+        {
+            question: "Vad innebär ekologisk nisch?",
+            options: [
+                "Välj svar",
+                "Ett specifikt levnadsområde och funktion en organism har i sitt ekosystem.",
+                "Köttätare, djur som äter andra djur.",
+                "Ett bekämpningsmedel som används för att döda insekter."
+            ]
+        },
+        {
+            question: "Vad är förbränning?",
+            options: [
+                "Välj svar",
+                "Process där organismer bryter ner ämnen för att frigöra energi.",
+                "När mark och vatten blir surare.",
+                "Organismer som får sin energi genom att äta andra organismer."
+            ]
+        },
+        {
+            question: "Vad innebär försurning?",
+            options: [
+                "Välj svar",
+                "När mark och vatten blir surare, ofta på grund av föroreningar i luften.",
+                "En cirkulär process där ämnen återanvänds i naturen.",
+                "En levande varelse, t.ex. en växt eller ett djur."
+            ]
+        },
+        {
+            question: "Vad är ett ekosystem?",
+            options: [
+                "Välj svar",
+                "Ett område där organismer interagerar med varandra och sin omgivning.",
+                "Växtätare, djur som äter växter.",
+                "En organism som producerar sin egen energi."
+            ]
+        },
+        {
+            question: "Vad är förna?",
+            options: [
+                "Välj svar",
+                "Det översta lagret av marken där döda växt- och djurdelar samlas.",
+                "Ett bekämpningsmedel som används för att döda ogräs.",
+                "En cirkulär process där ämnen återanvänds i naturen."
+            ]
+        },
+        {
+            question: "Vad är herbivorer?",
+            options: [
+                "Välj svar",
+                "Växtätare, djur som äter växter.",
+                "Köttätare, djur som äter andra djur.",
+                "En organism som lever på och skadar en annan organism."
+            ]
+        },
+        {
+            question: "Vad är ekologisk mat?",
+            options: [
+                "Välj svar",
+                "Mat som produceras utan konstgödsel och bekämpningsmedel.",
+                "En typ av växt som producerar sin egen energi.",
+                "En levande varelse, t.ex. en växt eller ett djur."
+            ]
+        },
+        {
+            question: "Vad innebär övergödning?",
+            options: [
+                "Välj svar",
+                "När för mycket näring, t.ex. kväve och fosfor, tillförs ekosystem, vilket skadar miljön.",
+                "En enkel modell som visar vem som äter vem i ett ekosystem.",
+                "Organismer som bryter ner dött material."
+            ]
+        },
+        {
+            question: "Vad är karnivorer?",
+            options: [
+                "Välj svar",
+                "Köttätare, djur som äter andra djur.",
+                "En typ av växt som producerar sin egen energi.",
+                "Ett område där vissa djur och växter trivs."
+            ]
+        },
+        {
+            question: "Vad är en konsument?",
+            options: [
+                "Välj svar",
+                "Organismer som får sin energi genom att äta andra organismer.",
+                "Ett område där organismer interagerar.",
+                "Ett nära samarbete mellan två organismer."
+            ]
+        },
+        {
+            question: "Vad är kretslopp?",
+            options: [
+                "Välj svar",
+                "En cirkulär process där ämnen återanvänds i naturen.",
+                "En typ av växt som producerar sin egen energi.",
+                "En levande varelse, t.ex. en växt eller ett djur."
+            ]
+        },
+        {
+            question: "Vad är mykorrhiza?",
+            options: [
+                "Välj svar",
+                "Ett symbiotiskt förhållande mellan svampar och växters rötter.",
+                "En levande varelse, t.ex. en växt eller ett djur.",
+                "Köttätare, djur som äter andra djur."
+            ]
+        },
+        {
+            question: "Vad är en näringsväv?",
+            options: [
+                "Välj svar",
+                "En mer komplex modell av hur olika organismer äter varandra.",
+                "En enkel modell som visar vem som äter vem.",
+                "En organism som lever på och skadar en annan organism."
+            ]
+        },
+        {
+            question: "Vad är en näringskedja?",
+            options: [
+                "Välj svar",
+                "En enkel modell som visar vem som äter vem i ett ekosystem.",
+                "En typ av växt som producerar sin egen energi.",
+                "Ett bekämpningsmedel som används för att döda insekter."
+            ]
+        },
+        {
+            question: "Vad är en organism?",
+            options: [
+                "Välj svar",
+                "En levande varelse, t.ex. en växt, ett djur eller en bakterie.",
+                "Ett område där organismer interagerar.",
+                "En specifik naturtyp."
+            ]
+        },
+        {
+            question: "Vad är en parasit?",
+            options: [
+                "Välj svar",
+                "En organism som lever på och skadar en annan organism.",
+                "Köttätare, djur som äter andra djur.",
+                "En forskare som studerar organismer."
+            ]
+        },
+        {
+            question: "Vad är ett revir?",
+            options: [
+                "Välj svar",
+                "Ett område som ett djur försvarar mot andra djur av samma art.",
+                "En specifik naturtyp.",
+                "Ett symbiotiskt förhållande mellan svampar och växters rötter."
+            ]
+        },
+        {
+            question: "Vad är en population?",
+            options: [
+                "Välj svar",
+                "Alla individer av samma art inom ett visst område.",
+                "En levande varelse, t.ex. en växt eller ett djur.",
+                "Köttätare, djur som äter andra djur."
+            ]
+        },
+        {
+            question: "Vad innebär anrikning?",
+            options: [
+                "Välj svar",
+                "När giftiga ämnen samlas i allt högre koncentrationer högre upp i näringskedjan.",
+                "En cirkulär process där ämnen återanvänds i naturen.",
+                "Organismer som får sin energi genom att äta andra organismer."
+            ]
+        },
+        {
+            question: "Vad är symbios?",
+            options: [
+                "Välj svar",
+                "Ett nära samarbete mellan två organismer där båda tjänar på det.",
+                "En specifik naturtyp där vissa djur och växter trivs.",
+                "Ett bekämpningsmedel som används för att döda insekter."
+            ]
+        },
+        {
+            question: "Vad är fotosyntes?",
+            options: [
+                "Välj svar",
+                "Process där växter omvandlar koldioxid och vatten till syre och socker med hjälp av solljus.",
+                "Köttätare, djur som äter andra djur.",
+                "En levande varelse, t.ex. en växt eller ett djur."
+            ]
+        }
+    ];
+
+    // Funkar för att blanda arrayen
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Blandar frågorna
+    shuffle(questions);
+
+    // Renderar frågor på sidan
+    const questionsContainer = document.getElementById('questions');
+    questions.forEach((q, index) => {
+        questionsContainer.innerHTML += `
+        <div class="question">
+            <label>${index + 1}. ${q.question}</label>
+            <select id="q${index + 1}">
+                ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+            </select>
+        </div>
+        `;
+    });
+
+    function checkQuiz() {
+        let score = 0;
+        const correctAnswers = [
+            "En organism som producerar sin egen energi genom fotosyntes.",
+            "Ett bekämpningsmedel som används för att döda oönskade växter.",
+            "Ett bekämpningsmedel som används för att döda insekter.",
+            "En specifik naturtyp där vissa djur och växter trivs.",
+            "En forskare som studerar samspelet mellan organismer och deras miljö.",
+            "Organismer som bryter ner dött material.",
+            "Ett specifikt levnadsområde och funktion en organism har i sitt ekosystem.",
+            "Process där organismer bryter ner ämnen för att frigöra energi.",
+            "När mark och vatten blir surare, ofta på grund av föroreningar i luften.",
+            "Ett område där organismer interagerar med varandra och sin omgivning.",
+            "Det översta lagret av marken där döda växt- och djurdelar samlas.",
+            "Växtätare, djur som äter växter.",
+            "Mat som produceras utan konstgödsel och bekämpningsmedel.",
+            "När för mycket näring, t.ex. kväve och fosfor, tillförs ekosystem, vilket skadar miljön.",
+            "Köttätare, djur som äter andra djur.",
+            "Organismer som får sin energi genom att äta andra organismer.",
+            "En cirkulär process där ämnen återanvänds i naturen.",
+            "Ett symbiotiskt förhållande mellan svampar och växters rötter.",
+            "En mer komplex modell av hur olika organismer äter varandra.",
+            "En enkel modell som visar vem som äter vem i ett ekosystem.",
+            "En levande varelse, t.ex. en växt, ett djur eller en bakterie.",
+            "En organism som lever på och skadar en annan organism.",
+            "Ett område som ett djur försvarar mot andra djur av samma art.",
+            "Alla individer av samma art inom ett visst område.",
+            "När giftiga ämnen samlas i allt högre koncentrationer högre upp i näringskedjan.",
+            "Ett nära samarbete mellan två organismer där båda tjänar på det.",
+            "Process där växter omvandlar koldioxid och vatten till syre och socker med hjälp av solljus."
+        ];
+
+        // Kontrollera svaren
+        for (let i = 0; i < questions.length; i++) {
+            if (document.getElementById('q' + (i + 1)).value === correctAnswers[i]) {
+                score++;
+            }
+        }
+
+        // Visa resultat
+        const resultDiv = document.getElementById('result');
+        if (score === questions.length) {
+            resultDiv.innerHTML = '<span class="success">Grattis! Du fick alla rätt! 🏆</span>';
+        } else {
+            resultDiv.innerHTML = `<span class="error">Du fick ${score}/${questions.length} rätt. Försök igen!</span>`;
+        }
+    }
+</script>
+
+</body>
+</html>
