@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vecka? Dagar?</title>
+    
+    <!-- Import Google Font "Work Sans" -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Import Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" type='text/css'>
+    
+    <style>
+        /* Reset and Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body, html {
+            height: 100%;
+            font-family: 'Work Sans', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px; /* Optimal width for smartphones */
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Date Picker and Today Button Container */
+        .date-picker-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Date Picker */
+        #dateInput {
+			width: 45%;
+            flex: 1;
+            padding: 12px;
+            border: 1.5px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            appearance: none;
+            background-color: #fafafa;
+        }
+
+        /* Today Button */
+        #todayBtn {
+            flex: 1;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #todayBtn i {
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        #todayBtn:hover {
+            background-color: #1e7e34;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button-group .button {
+            flex: 1 1 45%; /* Two buttons per row */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-group .button i {
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        .button-group .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Week and Year Display */
+        .slider-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .slider-group label {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .slider-group span {
+            font-size: 1.2rem;
+            color: #555;
+            width: auto;
+            text-align: center;
+            min-width: 50px;
+        }
+
+        /* Weekdays List */
+        #weekdays {
+            list-style: none;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        #weekdays li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+        }
+
+        #weekdays li:nth-child(even) {
+            background-color: #e9ecef;
+        }
+
+        #weekdays li.highlight {
+            background-color: #ffd700;
+            font-weight: bold;
+        }
+
+        .holiday {
+            color: #b83532;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 400px) {
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .button-group .button {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+
+            .slider-group label,
+            .slider-group span {
+                font-size: 1rem;
+            }
+
+            #weekdays li {
+                padding: 8px 12px;
+            }
+
+            #weekdays {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Vecka? Dagar?</h2>
+        
+        <!-- Date Picker and Today Button -->
+        <div class="date-picker-container">
+            <input type="date" id="dateInput" aria-label="Välj datum">
+            <button class="button" id="todayBtn">
+                <i class="fa-solid fa-calendar-day"></i> Idag
+            </button>
+        </div>
+        
+        <!-- Buttons for date adjustment -->
+        <div class="button-group">
+            <button class="button" id="decreaseWeekBtn">
+                <i class="fa-solid fa-minus"></i> Vecka
+            </button>
+            <button class="button" id="increaseWeekBtn">
+                <i class="fa-solid fa-plus"></i> Vecka
+            </button>
+            <button class="button" id="decreaseYearBtn">
+                <i class="fa-solid fa-minus"></i> År
+            </button>
+            <button class="button" id="increaseYearBtn">
+                <i class="fa-solid fa-plus"></i> År
+            </button>
+        </div>
+
+        <!-- Week and Year Display -->
+        <div class="slider-group">
+            <label for="weekResult">Vecka:</label>
+            <span id="weekResult" style="text-align:right;margin-right:40px;">1</span>
+        </div>
+        <div class="slider-group">
+            <label for="yearResult">År:&nbsp;&nbsp;</label>
+            <span id="yearResult">1900</span>
+        </div>
+
+        <!-- Weekdays List -->
+        <ul id="weekdays"></ul>
+    </div>
+
+    <script>
+        // Objekt som mappar fasta datum till deras respektive etiketter
+        const fixedHolidays = {
+            "01-01": "Nyårsdagen", 
+            "01-06": "Trettondedag jul",
+            "01-13": "Tjugondag Knut",
+            "01-27": "Förint. minnesdag",
+            "02-06": "Samernas nat.dag",
+            "02-14": "Alla hjärtans dag",
+            "03-08": "Int. kvinnodagen",
+            "03-25": "Våffeldagen",
+            "04-30": "Valborg",
+            "05-01": "Första maj",
+            "06-06": "Nationaldagen",
+            "10-04": "Kanelbullens dag",
+            "10-24": "FN-dagen",
+            "10-31": "Halloween",
+            "11-06": "Gustav Adolfsdagen",
+            "11-10": "Mårtensgås",
+            "11-11": "Chokladens dag",
+            "12-10": "Nobeldagen",
+            "12-13": "Luciadagen",
+            "12-24": "Julafton",
+            "12-25": "Juldagen",
+            "12-26": "Annandag jul",
+            "12-31": "Nyårsafton"
+        };
+
+        // Kontrollflagga för att bestämma om markering ska appliceras
+        let shouldHighlight = true;
+
+        // Funktion för att formatera datum i YYYY-MM-DD baserat på lokal tid
+        function formatDateLocal(date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Funktion för att beräkna Påskdagen baserat på Gauss algoritm
+        function calculateEaster(year) {
+            const a = year % 19;
+            const b = Math.floor(year / 100);
+            const c = year % 100;
+            const d = Math.floor(b / 4);
+            const e = b % 4;
+            const f = Math.floor((b + 8) / 25);
+            const g = Math.floor((b - f + 1) / 3);
+            const h = (19 * a + b - d - g + 15) % 30;
+            const i = Math.floor(c / 4);
+            const k = c % 4;
+            const l = (32 + 2 * e + 2 * i - h - k) % 7;
+            const m = Math.floor((a + 11 * h + 22 * l) / 451);
+            const month = Math.floor((h + l - 7 * m + 114) / 31); // 3=March, 4=April
+            const day = ((h + l - 7 * m + 114) % 31) + 1;
+            return new Date(year, month - 1, day);
+        }
+
+        // Funktion för att få datum från ISO veckonummer och år
+        function getDateOfISOWeek(week, year) {
+            const thursday = new Date(year, 0, 4); // January 4th
+            const dayOfWeek = thursday.getDay() || 7; // Sunday=7
+            const mondayFirstWeek = new Date(thursday);
+            mondayFirstWeek.setDate(thursday.getDate() - dayOfWeek + 1);
+            const desiredMonday = new Date(mondayFirstWeek);
+            desiredMonday.setDate(mondayFirstWeek.getDate() + (week - 1) * 7);
+            return desiredMonday;
+        }
+
+        // Funktion för att få totalt antal ISO veckor i ett år
+        function getISOWeeksInYear(year) {
+            const dec28 = new Date(year, 11, 28);
+            return getISOWeekNumber(dec28);
+        }
+
+        // Funktion för att få ISO veckonummer
+        function getISOWeekNumber(date) {
+            const tempDate = new Date(date.getTime());
+            tempDate.setHours(0, 0, 0, 0);
+            tempDate.setDate(tempDate.getDate() + 3 - ((tempDate.getDay() + 6) % 7));
+            const week1 = new Date(tempDate.getFullYear(), 0, 4);
+            const weekNumber = 1 + Math.round(((tempDate - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+            return weekNumber;
+        }
+
+        // Funktioner för att beräkna rörliga helgdagar
+        function getMovableHolidays(year) {
+            const holidays = {};
+
+            // Beräkna Påskdagen
+            const easterSunday = calculateEaster(year);
+
+            // Fettisdagen: 47 dagar före Påskdagen
+            const fettis = new Date(easterSunday);
+            fettis.setDate(easterSunday.getDate() - 47);
+            holidays[formatDateLocal(fettis).slice(5)] = "Fettisdagen";
+
+            // Påskdagen: Påskdagen
+            holidays[formatDateLocal(easterSunday).slice(5)] = "Påskdagen";
+
+            // Skärtorsdag: 3 dagar före Påskdagen
+            const skartorsdag = new Date(easterSunday);
+            skartorsdag.setDate(easterSunday.getDate() - 3);
+            holidays[formatDateLocal(skartorsdag).slice(5)] = "Skärtorsdag";
+
+            // Långfredag: 2 dagar före Påskdagen
+            const langfredag = new Date(easterSunday);
+            langfredag.setDate(easterSunday.getDate() - 2);
+            holidays[formatDateLocal(langfredag).slice(5)] = "Långfredag";
+
+            // Påskafton: 1 dag före Påskdagen
+            const paskafton = new Date(easterSunday);
+            paskafton.setDate(easterSunday.getDate() - 1);
+            holidays[formatDateLocal(paskafton).slice(5)] = "Påskafton";
+
+            // Kristi himmelsfärdsdag: 39 dagar efter Påskdagen
+            const kristiHimmelsfardsdag = new Date(easterSunday);
+            kristiHimmelsfardsdag.setDate(easterSunday.getDate() + 39);
+            holidays[formatDateLocal(kristiHimmelsfardsdag).slice(5)] = "Kristi flygare";
+
+            // Midsommarafton: Fredag mellan 19-25 juni
+            const midsommaraftonDate = getMidsommarafton(year);
+            if (midsommaraftonDate) {
+                holidays[midsommaraftonDate] = "Midsommarafton";
+
+                // Midsommardag: Lördag efter Midsommarafton
+                const [month, day] = midsommaraftonDate.split('-').map(Number);
+                const midsommarafton = new Date(year, month - 1, day);
+                midsommarafton.setDate(midsommarafton.getDate() + 1);
+                const midsommardagDate = formatDateLocal(midsommarafton).slice(5);
+                holidays[midsommardagDate] = "Midsommardag";
+            }
+
+            // Alla helgons dag: Lördag mellan 31 oktober och 6 november
+            const allaHelgonsDagDate = getAllaHelgonsDag(year);
+            if (allaHelgonsDagDate) {
+                holidays[allaHelgonsDagDate] = "Alla helgons dag";
+            }
+
+            // Mors dag: Sista söndagen i maj
+            const morsDagDate = getMorsDag(year);
+            if (morsDagDate) {
+                holidays[morsDagDate] = "Mors dag";
+            }
+
+            // Fars dag: Andra söndagen i november
+            const farsDagDate = getFarsDag(year);
+            if (farsDagDate) {
+                holidays[farsDagDate] = "Fars dag";
+            }
+
+            // Första advent: Söndag mellan 27 november och 3 december
+            const firstAdventDate = getFirstAdvent(year);
+            if (firstAdventDate) {
+                holidays[firstAdventDate] = "Första advent";
+            }
+
+            // Sommartid: Sista söndagen i mars
+            const sommartidDate = getSommartid(year);
+            if (sommartidDate) {
+                holidays[sommartidDate] = "Sommartid";
+            }
+
+            // Vintertid: Sista söndagen i oktober
+            const vintertidDate = getVintertid(year);
+            if (vintertidDate) {
+                holidays[vintertidDate] = "Vintertid";
+            }
+
+            return holidays;
+        }
+
+        // Hjälpfunktioner för att beräkna specifika helgdagar
+        function getMidsommarafton(year) {
+            for (let day = 19; day <= 25; day++) { // June 19-25
+                const date = new Date(year, 5, day); // June is month 5 (0-based)
+                if (date.getDay() === 5) { // Friday
+                    return formatDateLocal(date).slice(5);
+                }
+            }
+            return null;
+        }
+
+        function getAllaHelgonsDag(year) {
+            for (let day = 31; day <= 37; day++) { // 31 Oct to 6 Nov
+                const date = new Date(year, 9, day); // October is month 9 (0-based)
+                if (date.getDay() === 6 && date.getDate() <= 6) { // Saturday
+                    return formatDateLocal(date).slice(5);
+                }
+            }
+            return null;
+        }
+
+        function getMorsDag(year) {
+            // Mors dag: sista söndagen i maj
+            const mayLast = new Date(year, 4, 31); // May is month 4 (0-based)
+            const lastSunday = new Date(mayLast);
+            const day = lastSunday.getDay();
+            lastSunday.setDate(mayLast.getDate() - (day === 0 ? 0 : day));
+            return formatDateLocal(lastSunday).slice(5);
+        }
+
+        function getFarsDag(year) {
+            // Fars dag: andra söndagen i november
+            let count = 0;
+            for (let day = 1; day <= 30; day++) {
+                const date = new Date(year, 10, day); // November is month 10 (0-based)
+                if (date.getDay() === 0) { // Sunday
+                    count++;
+                    if (count === 2) {
+                        return formatDateLocal(date).slice(5);
+                    }
+                }
+            }
+            return null;
+        }
+
+        function getFirstAdvent(year) {
+            // Första advent: Söndag mellan 27 november och 3 december
+            for (let day = 27; day <= 30; day++) {
+                const date = new Date(year, 10, day); // November is month 10 (0-based)
+                if (date.getDay() === 0) { // If Sunday
+                    return formatDateLocal(date).slice(5); // Return formatted MM-DD
+                }
+            }
+            for (let day = 1; day <= 3; day++) { // Check if December 1-3 is a Sunday
+                const date = new Date(year, 11, day); // December is month 11 (0-based)
+                if (date.getDay() === 0) { // If Sunday
+                    return formatDateLocal(date).slice(5); // Return formatted MM-DD
+                }
+            }
+            return null;
+        }
+
+        function getSommartid(year) {
+            // Sommartid: sista söndagen i mars
+            const marchLast = new Date(year, 2, 31); // March is month 2 (0-based)
+            const lastSunday = new Date(marchLast);
+            const day = lastSunday.getDay();
+            lastSunday.setDate(marchLast.getDate() - (day === 0 ? 0 : day));
+            return formatDateLocal(lastSunday).slice(5);
+        }
+
+        function getVintertid(year) {
+            // Vintertid: sista söndagen i oktober
+            const octoberLast = new Date(year, 9, 31); // October is month 9 (0-based)
+            const lastSunday = new Date(octoberLast);
+            const day = lastSunday.getDay();
+            lastSunday.setDate(octoberLast.getDate() - (day === 0 ? 0 : day));
+            return formatDateLocal(lastSunday).slice(5);
+        }
+
+        // Funktion för att hämta rörliga helgdagar för ett år
+        function getMovableHolidaysByYear(year) {
+            return getMovableHolidays(year);
+        }
+
+        // Funktion för att hämta veckodagar med eventuell helgdagsetikett
+        function getWeekDates(mondayDate, selectedDate, holidays) {
+            const daysOfWeek = ["Mån", "Tis", "Ons", "Tor", "Fre", "Lör", "Sön"];
+            const days = [];
+            const selectedDateStr = formatDateLocal(new Date(selectedDate));
+
+            for (let i = 0; i < 7; i++) {
+                const currentDay = new Date(mondayDate);
+                currentDay.setDate(mondayDate.getDate() + i);
+                const currentDayStr = formatDateLocal(currentDay);
+                
+                // Extrahera månad och dag för att jämföra med helgdagar
+                const monthDay = currentDayStr.slice(5); // "MM-DD"
+
+                // Kolla om dagens datum finns i helgdagar
+                const holiday = holidays[monthDay] || fixedHolidays[monthDay] || "";
+
+                days.push({
+                    name: daysOfWeek[i],
+                    date: currentDayStr,
+                    isSelected: shouldHighlight && currentDayStr === selectedDateStr,
+                    holiday: holiday // Lägg till helgdagsetikett om det finns
+                });
+            }
+            return days;
+        }
+
+        // Funktion för att uppdatera visade veckodagar med helgdagsetikett och varannan rad bakgrund
+        function updateResults(mondayDate) {
+            const selectedDate = document.getElementById("dateInput").value;
+            const year = mondayDate.getFullYear();
+            const movableHolidays = getMovableHolidaysByYear(year);
+            const days = getWeekDates(mondayDate, selectedDate, movableHolidays);
+            let listHtml = "";
+
+            days.forEach(day => {
+                // Lägg till helgdagsetikett om det finns
+                const holidayText = day.holiday ? day.holiday : "";
+                
+                // Strukturera listitem med två spans för fixering
+                listHtml += `
+                    <li class="${day.isSelected ? 'highlight' : ''}">
+                        <span>${day.name}: ${day.date}</span>
+                        <span class="holiday">${holidayText}</span>
+                    </li>
+                `;
+            });
+
+            document.getElementById("weekdays").innerHTML = listHtml;
+        }
+
+        // Funktion för att uppdatera vecka och år baserat på valt datum
+        function updateSliders(mondayDate) {
+            const selectedDate = document.getElementById("dateInput").value;
+            const weekNumber = getISOWeekNumber(mondayDate);
+            const year = mondayDate.getFullYear();
+            const totalWeeks = getISOWeeksInYear(year);
+            const weekResult = document.getElementById("weekResult");
+            const yearResult = document.getElementById("yearResult");
+
+            // Uppdatera veckans nummer
+            weekResult.textContent = weekNumber > totalWeeks ? totalWeeks : weekNumber;
+            // Uppdatera årets nummer
+            yearResult.textContent = year;
+        }
+
+        // Funktion för att justera datumet med ett antal dagar
+        function adjustDate(days) {
+            const dateInput = document.getElementById("dateInput");
+            let selectedDate = new Date(dateInput.value);
+            selectedDate.setDate(selectedDate.getDate() + days);
+            const formattedDate = formatDateLocal(selectedDate);
+            dateInput.value = formattedDate;
+            const mondayDate = getMondayOfWeek(selectedDate);
+            updateResults(mondayDate);
+            updateSliders(mondayDate);
+        }
+
+        // Funktion för att justera året med ett antal
+        function adjustYear(yearChange) {
+            const dateInput = document.getElementById("dateInput");
+            let selectedDate = new Date(dateInput.value);
+            const originalMonth = selectedDate.getMonth();
+            const originalDay = selectedDate.getDate();
+
+            selectedDate.setFullYear(selectedDate.getFullYear() + yearChange);
+
+            // Bevara månaden och dagen så mycket som möjligt
+            // Om den nya månaden inte har den ursprungliga dagen, sätt till sista dagen i månaden
+            const lastDayOfMonth = new Date(selectedDate.getFullYear(), originalMonth + 1, 0).getDate();
+            if (originalDay > lastDayOfMonth) {
+                selectedDate.setDate(lastDayOfMonth);
+            }
+
+            const formattedDate = formatDateLocal(selectedDate);
+            dateInput.value = formattedDate;
+            const mondayDate = getMondayOfWeek(selectedDate);
+            updateResults(mondayDate);
+            updateSliders(mondayDate);
+        }
+
+        // Funktion för att sätta datumväljaren till idag
+        function setToToday() {
+            const today = new Date();
+            const formattedDate = formatDateLocal(today);
+            document.getElementById("dateInput").value = formattedDate;
+            const mondayDate = getMondayOfWeek(today);
+            updateResults(mondayDate);
+            updateSliders(mondayDate);
+        }
+
+        // Hjälpfunktion för att beräkna måndagen i den valda veckan
+        function getMondayOfWeek(date) {
+            const dayOfWeek = date.getDay() || 7; // Sunday=7
+            const monday = new Date(date);
+            monday.setDate(date.getDate() - dayOfWeek + 1);
+            return monday;
+        }
+
+        // Event listeners för knappar
+        document.getElementById("decreaseWeekBtn").addEventListener("click", () => {
+            shouldHighlight = true;
+            adjustDate(-7);
+        });
+        document.getElementById("increaseWeekBtn").addEventListener("click", () => {
+            shouldHighlight = true;
+            adjustDate(7);
+        });
+        document.getElementById("decreaseYearBtn").addEventListener("click", () => {
+            shouldHighlight = true;
+            adjustYear(-1);
+        });
+        document.getElementById("increaseYearBtn").addEventListener("click", () => {
+            shouldHighlight = true;
+            adjustYear(1);
+        });
+        document.getElementById("todayBtn").addEventListener("click", () => {
+            shouldHighlight = true;
+            setToToday();
+        });
+
+        // Event listener för datumväljaren (med auto-replace när input är tömd)
+        document.getElementById("dateInput").addEventListener("input", function () {
+            if (this.value === "") {
+                // Sätt automatiskt dagens datum när input är tömd
+                this.value = formatDateLocal(new Date());
+            }
+        });
+
+        // Event listener för datumväljaren när värdet ändras
+        document.getElementById("dateInput").addEventListener("change", function () {
+            shouldHighlight = true;
+            const selectedDate = new Date(this.value);
+            const mondayDate = getMondayOfWeek(selectedDate);
+            updateResults(mondayDate);
+            updateSliders(mondayDate);
+        });
+
+        // Initiera sidan med dagens datum
+        document.addEventListener("DOMContentLoaded", setToToday);
+    </script>
+</body>
+</html>
