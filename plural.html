@@ -192,13 +192,13 @@
             margin-bottom: 25px;
         }
 
-        .options {
-            list-style-type: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+.options {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
         .options li {
             width: 100%;
@@ -242,7 +242,7 @@
         }
 
         .option-button.wrong {
-            background-color: var(--wrong-color);
+            background-color: var(--wrong-color) !important;
             color: #ffffff;
             border-color: var(--wrong-color);
         }
@@ -396,6 +396,19 @@
                 gap: 20px;
             }
         }
+
+/* For larger screens, adjust the options to display in two columns */
+@media (min-width: 1024px) {
+    .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Two equal columns */
+        gap: 15px; /* Space between the columns and rows */
+    }
+
+    .options li {
+        width: 100%; /* Make sure each option button fills its grid space */
+    }
+}
 
         /* Mobile Phones */
         @media (max-width: 480px) {
@@ -613,7 +626,7 @@
             { singular: "(en) ugn", correct: "ugnar", incorrect: ["ugner", "ugnor", "ugn"] },
             { singular: "(en) dryck", correct: "drycker", incorrect: ["dryckar", "dryckor", "dryck"] },
             { singular: "(en) diskmaskin", correct: "diskmaskiner", incorrect: ["diskmaskinar", "diskmaskinor", "diskmaskin"] },
-            { singular: "(ett) ben", correct: "ben", incorrect: ["benar", "benor", "ben"] },
+            { singular: "(ett) ben", correct: "ben", incorrect: ["benar", "benor", "bener"] },
             { singular: "(ett) öga", correct: "ögon", incorrect: ["ögar", "ögor", "öga"] },
             { singular: "(ett) huvud", correct: "huvuden", incorrect: ["huvudar", "huvudor", "huvud"] },
             { singular: "(ett) barn", correct: "barn", incorrect: ["barnor", "barnar", "barner"] },
@@ -670,41 +683,45 @@
         }
 
         // Load Quiz Questions
-        function loadQuestion() {
-            if (currentQuestion >= quizData.length) {
-                showResult();
-                return;
-            }
+function loadQuestion() {
+    if (currentQuestion >= quizData.length) {
+        showResult();
+        return;
+    }
 
-            const currentData = quizData[currentQuestion];
-            questionElement.innerHTML = `The plural of <br>"${currentData.singular}" is ...`; // Added <br> after "of"
+    // Clear all buttons of 'correct' and 'wrong' classes, and ensure they are reset properly
+    optionsButtons.forEach(button => {
+        button.disabled = false; // Re-enable the buttons
+        button.classList.remove('correct', 'wrong'); // Remove styling classes
+        button.blur(); // Remove focus from the button to prevent any leftover styles
+    });
 
-            // Combine correct and incorrect options and shuffle them
-            const options = shuffle([currentData.correct, ...currentData.incorrect]);
+    // Load new question data
+    const currentData = quizData[currentQuestion];
+    questionElement.innerHTML = `The plural of <br>${currentData.singular.slice(0, 5)}<span style="font-weight:bold; color:#007BFF;">${currentData.singular.slice(5)}</span> is ...`;
 
-            // Assign options to buttons
-            optionsButtons.forEach((button, index) => {
-                button.textContent = options[index];
-                button.disabled = false;
-                button.classList.remove('correct', 'wrong');
-                button.blur(); // Remove focus from each button
-            });
+    // Combine correct and incorrect options and shuffle them
+    const options = shuffle([currentData.correct, ...currentData.incorrect]);
 
-            feedbackElement.textContent = '';
-            feedbackElement.classList.remove('correct', 'wrong');
-            feedbackElement.style.opacity = '0'; // Hide feedback
+    // Assign options to buttons
+    optionsButtons.forEach((button, index) => {
+        button.textContent = options[index];
+    });
 
-            // Update progress bar
-            const progressPercent = ((currentQuestion) / quizData.length) * 100;
-            progressBarElement.style.width = `${progressPercent}%`;
+    feedbackElement.textContent = ''; // Reset feedback text
+    feedbackElement.style.opacity = '0'; // Hide feedback
 
-            // Add fade-in effect
-            questionContainer.classList.remove('fade-out');
-            questionContainer.classList.add('fade-in');
-            setTimeout(() => {
-                questionContainer.classList.add('fade-in-active');
-            }, 10); // Delay to ensure CSS transition applies
-        }
+    // Update progress bar
+    const progressPercent = ((currentQuestion) / quizData.length) * 100;
+    progressBarElement.style.width = `${progressPercent}%`;
+
+    // Add fade-in effect for the new question
+    questionContainer.classList.remove('fade-out');
+    questionContainer.classList.add('fade-in');
+    setTimeout(() => {
+        questionContainer.classList.add('fade-in-active');
+    }, 10); // Delay to ensure CSS transition applies
+}
 
         // Handle Answer Selection
         function selectAnswer(button) {
