@@ -3,28 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plural exercise</title>
+    <title>Plural Exercise</title>
     <!-- Font Awesome for Icons (Optional) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyKI2h0tU6p6EY+P3ZcI3hUCrE5xE9uhVbjoTv/xvvFXkuqygsR6vJyW0VxStTfJ9NqvGQbF1gSxFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* Grundläggande styling */
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Root Variables for Easy Theming */
+        :root {
+            --primary-color: #007BFF;
+            --primary-color-dark: #66b3ff;
+            --background-light: linear-gradient(120deg, #f0f4f7, #dfe9ef);
+            --background-dark: linear-gradient(120deg, #2b2b2b, #121212);
+            --text-color-light: #333;
+            --text-color-dark: #e0e0e0;
+            --correct-color: #28a745;
+            --wrong-color: #dc3545;
+            --transition-speed: 0.3s;
+        }
+
+        /* Body Styling */
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(120deg, #f0f4f7, #dfe9ef);
-            color: #333;
+            background: var(--background-light);
+            color: var(--text-color-light);
             margin: 0;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            transition: background 0.5s ease, color 0.5s ease;
+            transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
             position: relative; /* To ensure fixed elements are positioned relative to the viewport */
         }
 
-        .dark-mode {
-            background: linear-gradient(120deg, #2b2b2b, #121212);
-            color: #e0e0e0;
+        /* Dark Mode Styling */
+        body.dark-mode {
+            background: var(--background-dark);
+            color: var(--text-color-dark);
         }
 
         /* Toggle Container */
@@ -39,7 +60,7 @@
         }
 
         .toggle-container span {
-            font-size: 1em;
+            font-size: 1rem;
             color: inherit;
         }
 
@@ -48,7 +69,7 @@
             position: relative;
             display: inline-block;
             width: 50px;
-            height: 24px;
+            height: 26px;
         }
 
         .toggle-switch input {
@@ -65,101 +86,102 @@
             right: 0;
             bottom: 0;
             background-color: #ccc;
-            transition: 0.4s;
-            border-radius: 24px;
+            transition: background-color var(--transition-speed);
+            border-radius: 26px;
         }
 
         .toggle-switch .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 20px;
+            width: 20px;
             left: 3px;
             bottom: 3px;
             background-color: white;
-            transition: 0.4s;
+            transition: transform var(--transition-speed);
             border-radius: 50%;
         }
 
         .toggle-switch input:checked + .slider {
-            background-color: #007BFF;
+            background-color: var(--primary-color);
         }
 
         .toggle-switch input:checked + .slider:before {
-            transform: translateX(26px);
+            transform: translateX(24px);
         }
 
         /* Quiz Container Styling */
         .quiz-container {
             background: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
             max-width: 600px;
             width: 90%;
-            padding: 20px;
+            padding: 30px;
             margin: 20px;
             position: relative;
-            transition: background 0.5s ease, color 0.5s ease;
+            transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
         }
 
-        .dark-mode .quiz-container {
+        body.dark-mode .quiz-container {
             background: #2c2c2c;
         }
 
         h1 {
             text-align: center;
-            color: #007BFF;
-            margin-bottom: 10px;
-            transition: color 0.5s ease;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 2rem;
+            transition: color var(--transition-speed) ease;
         }
 
-        .dark-mode h1 {
-            color: #66b3ff;
+        body.dark-mode h1 {
+            color: var(--primary-color-dark);
         }
 
         .progress-container {
             width: 100%;
             background: #e0e0e0;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
-            height: 20px;
-            margin-bottom: 20px;
+            height: 24px;
+            margin-bottom: 25px;
         }
 
-        .dark-mode .progress-container {
+        body.dark-mode .progress-container {
             background: #444;
         }
 
         .progress-bar {
             height: 100%;
-            background: #007BFF;
+            background: var(--primary-color);
             width: 0%;
-            transition: width 0.3s ease-in-out;
+            transition: width var(--transition-speed) ease-in-out;
         }
 
-        .dark-mode .progress-bar {
-            background: #66b3ff;
+        body.dark-mode .progress-bar {
+            background: var(--primary-color-dark);
         }
 
         .scoreboard {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .score {
-            font-size: 1.2em;
-            color: #333;
+            font-size: 1.2rem;
+            color: inherit;
         }
 
-        .dark-mode .score {
-            color: #e0e0e0;
+        body.dark-mode .score {
+            color: var(--text-color-dark);
         }
 
         .question {
-            font-size: 1.5em;
+            font-size: 1.6rem;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .options {
@@ -167,7 +189,7 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
         }
 
         .options li {
@@ -177,133 +199,228 @@
         .option-button {
             width: 100%;
             padding: 15px;
-            font-size: 1em;
-            border: 2px solid #007BFF;
-            border-radius: 8px;
+            font-size: 1.1rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
             background-color: #f9f9f9;
-            color: #007BFF;
+            color: var(--primary-color);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--transition-speed);
             text-align: center;
+            min-height: 50px;
         }
 
         .option-button:hover {
-            background-color: #007BFF;
+            background-color: var(--primary-color);
             color: #ffffff;
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
-        .dark-mode .option-button {
+        body.dark-mode .option-button {
             background-color: #555;
-            color: #66b3ff;
-            border: 2px solid #66b3ff;
+            color: var(--primary-color-dark);
+            border: 2px solid var(--primary-color-dark);
         }
 
-        .dark-mode .option-button:hover {
-            background-color: #66b3ff;
+        body.dark-mode .option-button:hover {
+            background-color: var(--primary-color-dark);
             color: #1a1a1a;
         }
 
         .option-button.correct {
-            background-color: #28a745;
+            background-color: var(--correct-color);
             color: #ffffff;
-            border-color: #28a745;
+            border-color: var(--correct-color);
         }
 
         .option-button.wrong {
-            background-color: #dc3545;
+            background-color: var(--wrong-color);
             color: #ffffff;
-            border-color: #dc3545;
+            border-color: var(--wrong-color);
         }
 
         /* Ensure wrong buttons are red in dark mode */
-        .dark-mode .option-button.wrong {
-            background-color: #dc3545;
+        body.dark-mode .option-button.wrong {
+            background-color: var(--wrong-color);
             color: #ffffff;
-            border-color: #dc3545;
+            border-color: var(--wrong-color);
         }
 
         /* Ensure correct buttons are green in dark mode */
-        .dark-mode .option-button.correct {
-            background-color: #28a745;
+        body.dark-mode .option-button.correct {
+            background-color: var(--correct-color);
             color: #ffffff;
-            border-color: #28a745;
+            border-color: var(--correct-color);
         }
 
         .feedback {
             text-align: center;
             font-weight: bold;
             margin-top: 20px;
-            font-size: 1.2em;
+            font-size: 1.3rem;
             min-height: 40px; /* Reserving space to prevent jumping */
-            transition: opacity 0.3s ease;
+            transition: opacity var(--transition-speed) ease;
+            opacity: 0;
         }
 
         .feedback.correct {
-            color: #28a745;
+            color: var(--correct-color);
         }
 
         .feedback.wrong {
-            color: #ff6b6b;
+            color: var(--wrong-color);
         }
 
-        .dark-mode .feedback.correct {
-            color: #28a745;
+        body.dark-mode .feedback.correct {
+            color: var(--correct-color);
         }
 
-        .dark-mode .feedback.wrong {
-            color: #ff6b6b;
+        body.dark-mode .feedback.wrong {
+            color: var(--wrong-color);
         }
 
         .result {
             text-align: center;
-            font-size: 1.5em;
+            font-size: 1.6rem;
             display: none;
         }
 
-        button {
-            background-color: #007BFF;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .result h2 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
         }
 
-        button:hover {
+        body.dark-mode .result h2 {
+            color: var(--primary-color-dark);
+        }
+
+        .result p {
+            margin-bottom: 25px;
+        }
+
+        .result button {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+
+        .result button:hover {
             background-color: #0056b3;
         }
 
-        /* Fade animation */
+        /* Fade Animation */
         .fade-out {
             opacity: 0;
-            transition: opacity 0.5s ease-out;
+            transition: opacity var(--transition-speed) ease-out;
         }
 
         .fade-in {
             opacity: 0;
-            transition: opacity 0.5s ease-in;
+            transition: opacity var(--transition-speed) ease-in;
         }
 
         .fade-in-active {
             opacity: 1;
         }
 
-        /* Responsive Design */
-        @media (max-width: 600px) {
+        /* Responsive Design Enhancements */
+        @media (max-width: 768px) {
+            .toggle-container {
+                top: 15px;
+                right: 15px;
+            }
+
             .quiz-container {
-                padding: 15px;
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
             }
 
             .question {
-                font-size: 1.2em;
+                font-size: 1.4rem;
+                margin-bottom: 20px;
             }
 
             .option-button {
-                font-size: 0.9em;
+                font-size: 1rem;
+                padding: 14px;
+                min-height: 48px;
+            }
+
+            .feedback {
+                font-size: 1.2rem;
+            }
+
+            .result {
+                font-size: 1.4rem;
+            }
+
+            .result button {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .toggle-container {
+                top: 10px;
+                right: 10px;
+                gap: 8px;
+            }
+
+            .toggle-switch {
+                width: 40px;
+                height: 20px;
+            }
+
+            .toggle-switch .slider:before {
+                height: 16px;
+                width: 16px;
+                left: 2px;
+                bottom: 2px;
+            }
+
+            .toggle-switch input:checked + .slider:before {
+                transform: translateX(20px);
+            }
+
+            .quiz-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .question {
+                font-size: 1.3rem;
+                margin-bottom: 18px;
+            }
+
+            .option-button {
+                font-size: 0.95rem;
                 padding: 12px;
+                min-height: 45px;
+            }
+
+            .feedback {
+                font-size: 1.1rem;
+            }
+
+            .result {
+                font-size: 1.3rem;
+            }
+
+            .result button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -320,7 +437,7 @@
     </div>
 
     <div class="quiz-container">
-        <h1>Plural exercise</h1>
+        <h1>Plural Exercise</h1>
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
@@ -474,7 +591,7 @@
 
         // DOM Elements
         const questionElement = document.getElementById('question');
-        const optionsElement = document.querySelectorAll('.option-button');
+        const optionsButtons = document.querySelectorAll('.option-button');
         const feedbackElement = document.getElementById('feedback');
         const resultElement = document.getElementById('result');
         const correctCountElement = document.getElementById('correct-count');
@@ -486,12 +603,13 @@
         const darkModeToggle = document.getElementById('darkModeToggle');
         const modeLabel = document.getElementById('modeLabel');
 
-        // Shuffle Function
+        // Shuffle Function using Fisher-Yates Algorithm
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
+            return array;
         }
 
         // Load Quiz Questions
@@ -504,17 +622,14 @@
             const currentData = quizData[currentQuestion];
             questionElement.textContent = `The plural of "${currentData.singular}" is ...`;
 
-            // Combine correct and incorrect options
-            const options = [currentData.correct, ...currentData.incorrect];
-            shuffle(options);
+            // Combine correct and incorrect options and shuffle them
+            const options = shuffle([currentData.correct, ...currentData.incorrect]);
 
             // Assign options to buttons
-            optionsElement.forEach((button, index) => {
+            optionsButtons.forEach((button, index) => {
                 button.textContent = options[index];
                 button.disabled = false;
                 button.classList.remove('correct', 'wrong');
-                button.style.backgroundColor = ''; // Reset background
-                button.style.color = ''; // Reset color
             });
 
             feedbackElement.textContent = '';
@@ -539,7 +654,7 @@
             const currentData = quizData[currentQuestion];
 
             // Disable all buttons
-            optionsElement.forEach(btn => btn.disabled = true);
+            optionsButtons.forEach(btn => btn.disabled = true);
 
             if (selectedAnswer === currentData.correct) {
                 correctCount++;
@@ -555,7 +670,7 @@
                 button.classList.add('wrong');
 
                 // Highlight the correct answer
-                optionsElement.forEach(btn => {
+                optionsButtons.forEach(btn => {
                     if (btn.textContent === currentData.correct) {
                         btn.classList.add('correct');
                     }
@@ -604,12 +719,13 @@
             loadQuestion();
         }
 
-        // Toggle Dark Mode
-function toggleDarkMode() {
-    document.body.classList.toggle("dark-mode");
-    const modeLabel = document.getElementById("modeLabel");
-    modeLabel.innerText = document.body.classList.contains("dark-mode") ? "Dark mode" : "Dark mode";
-}
+        // Toggle Dark Mode and Save Preference
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            const isDarkMode = document.body.classList.contains("dark-mode");
+            modeLabel.innerText = isDarkMode ? "Light mode" : "Dark mode";
+            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        }
 
         // Initialize Dark Mode Based on Saved Preference
         function initializeDarkMode() {
@@ -617,7 +733,7 @@ function toggleDarkMode() {
             if (darkModeSetting === 'enabled') {
                 darkModeToggle.checked = true;
                 document.body.classList.add('dark-mode');
-                modeLabel.textContent = 'Dark mode On';
+                modeLabel.textContent = 'Light mode';
             } else {
                 darkModeToggle.checked = false;
                 document.body.classList.remove('dark-mode');
