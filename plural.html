@@ -710,6 +710,7 @@
         function selectAnswer(button) {
             const selectedAnswer = button.textContent;
             const currentData = quizData[currentQuestion];
+            let isCorrect = false;
 
             // Disable all buttons
             optionsButtons.forEach(btn => btn.disabled = true);
@@ -720,13 +721,18 @@
                 feedbackElement.textContent = 'Correct!';
                 feedbackElement.classList.add('correct');
                 button.classList.add('correct');
+                isCorrect = true;
             } else {
                 wrongCount++;
                 wrongScoreElement.textContent = wrongCount;
                 feedbackElement.textContent = `Incorrect! The answer is "${currentData.correct}".`;
                 feedbackElement.classList.add('wrong');
                 button.classList.add('wrong');
+            }
 
+            feedbackElement.style.opacity = '1'; // Show feedback
+
+            if (!isCorrect) {
                 // Highlight the correct answer
                 optionsButtons.forEach(btn => {
                     if (btn.textContent === currentData.correct) {
@@ -734,8 +740,6 @@
                     }
                 });
             }
-
-            feedbackElement.style.opacity = '1'; // Show feedback
 
             currentQuestion++;
 
@@ -781,7 +785,7 @@
         function toggleDarkMode() {
             document.body.classList.toggle("dark-mode");
             const isDarkMode = document.body.classList.contains("dark-mode");
-            modeLabel.innerText = isDarkMode ? "Dark mode" : "Dark mode"; // Updated label for clarity
+            modeLabel.innerText = isDarkMode ? "Light mode" : "Dark mode"; // Updated label for clarity
             localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
         }
 
@@ -791,7 +795,7 @@
             if (darkModeSetting === 'enabled') {
                 darkModeToggle.checked = true;
                 document.body.classList.add('dark-mode');
-                modeLabel.textContent = 'Dark mode';
+                modeLabel.textContent = 'Light mode';
             } else {
                 darkModeToggle.checked = false;
                 document.body.classList.remove('dark-mode');
