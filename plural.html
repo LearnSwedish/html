@@ -3,833 +3,901 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plural Exercise</title>
-    <!-- Font Awesome for Icons (Optional) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrQkTyKI2h0tU6p6EY+P3ZcI3hUCrE5xE9uhVbjoTv/xvvFXkuqygsR6vJyW0VxStTfJ9NqvGQbF1gSxFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        /* Basic Reset */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    <title>Plural exercise</title>
+<style>
+/* Allmänt */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #000;
+    transition: background-color 0.3s, color 0.3s;
+}
 
-        /* Root Variables for Easy Theming */
-        :root {
-            --primary-color: #007BFF;
-            --primary-color-dark: #66b3ff;
-            --background-light: linear-gradient(120deg, #f0f4f7, #dfe9ef);
-            --background-dark: linear-gradient(120deg, #2b2b2b, #121212);
-            --text-color-light: #333;
-            --text-color-dark: #e0e0e0;
-            --correct-color: #28a745;
-            --wrong-color: #dc3545;
-            --transition-speed: 0.3s;
-        }
-
-        /* Body Styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            background: var(--background-light);
-            color: var(--text-color-light);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
-            position: relative; /* To ensure fixed elements are positioned relative to the viewport */
-        }
-
-        /* Dark Mode Styling */
-        body.dark-mode {
-            background: var(--background-dark);
-            color: var(--text-color-dark);
-        }
-
-        /* Toggle Container */
-        .toggle-container {
-            position: fixed; /* Fixes the container relative to the viewport */
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000; /* Ensures the toggle stays on top */
-        }
-
-        .toggle-container span {
-            font-size: 1rem;
-            color: inherit;
-        }
-
-        /* Toggle Switch Styling */
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-switch .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: background-color var(--transition-speed);
-            border-radius: 26px;
-        }
-
-        .toggle-switch .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: transform var(--transition-speed);
-            border-radius: 50%;
-        }
-
-        .toggle-switch input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-
-        .toggle-switch input:checked + .slider:before {
-            transform: translateX(24px);
-        }
-
-        /* Quiz Container Styling */
-        .quiz-container {
-            background: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border-radius: 16px;
-            max-width: 600px;
-            width: 90%;
-            padding: 30px;
-            margin: 20px;
-            position: relative;
-            transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
-        }
-
-        body.dark-mode .quiz-container {
-            background: #2c2c2c;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            font-size: 2rem;
-            transition: color var(--transition-speed) ease;
-        }
-
-        body.dark-mode h1 {
-            color: var(--primary-color-dark);
-        }
-
-        .progress-container {
-            width: 100%;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            height: 24px;
-            margin-bottom: 25px;
-        }
-
-        body.dark-mode .progress-container {
-            background: #444;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--primary-color);
-            width: 0%;
-            transition: width var(--transition-speed) ease-in-out;
-        }
-
-        body.dark-mode .progress-bar {
-            background: var(--primary-color-dark);
-        }
-
-        .scoreboard {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-
-        .score {
-            font-size: 1.2rem;
-            color: inherit;
-        }
-
-        /* Prevent "Correct" and "Mistakes" counts from jumping when they reach two digits */
-        .score span {
-            display: inline-block;
-            width: 24px; /* Adjust as needed */
-            text-align: center;
-            font-weight: bold;
-        }
-
-        body.dark-mode .score {
-            color: var(--text-color-dark);
-        }
-
-        .question {
-            font-size: 1.6rem;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-.options {
-    list-style-type: none;
-    padding: 0;
+.container {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    margin: 20px;
 }
 
-        .options li {
-            width: 100%;
-        }
+/* Dark mode */
+.dark-mode {
+    background-color: #121212;
+    color: #fff;
+}
 
-        .option-button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            border: 2px solid var(--primary-color);
-            border-radius: 10px;
-            background-color: #f9f9f9;
-            color: var(--primary-color);
-            cursor: pointer;
-            transition: all var(--transition-speed);
-            text-align: center;
-            min-height: 50px;
-        }
+button {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 16px;
+    border-radius: 5px;
+}
 
-        .option-button:hover {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            transform: scale(1.02);
-        }
+/* H1-färg i Light mode */
+.question-text {
+    color: #000; /* Svart text i ljus läge */
+    transition: color 0.3s;
+    margin-bottom: 20px;
+}
 
-        body.dark-mode .option-button {
-            background-color: #555;
-            color: var(--primary-color-dark);
-            border: 2px solid var(--primary-color-dark);
-        }
+/* H1-färg i Dark mode */
+.dark-mode .question-text {
+    color: #fff;
+}
 
-        body.dark-mode .option-button:hover {
-            background-color: var(--primary-color-dark);
-            color: #1a1a1a;
-        }
+/* Knappar i Light mode */
+.answer {
+    background-color: #f0f0f0; /* Ljus grå bakgrund i ljus läge */
+    color: #000; /* Svart text i ljus läge */
+}
 
-        .option-button.correct {
-            background-color: var(--correct-color);
-            color: #ffffff;
-            border-color: var(--correct-color);
-        }
+/* Knappar i Dark mode */
+.dark-mode .answer {
+    background-color: #333; /* Mörk bakgrund i mörkt läge */
+    color: #fff; /* Vit text i mörkt läge */
+}
 
-        .option-button.wrong {
-            background-color: var(--wrong-color) !important;
-            color: #ffffff;
-            border-color: var(--wrong-color);
-        }
+/* Knappar hover i Light mode */
+.buttons:not(.answered) .answer:hover {
+    background-color: lightgray;
+}
 
-        /* Ensure wrong buttons are red in dark mode */
-        body.dark-mode .option-button.wrong {
-            background-color: var(--wrong-color);
-            color: #ffffff;
-            border-color: var(--wrong-color);
-        }
+/* Knappar hover i Dark mode */
+.dark-mode .buttons:not(.answered) .answer:hover {
+    background-color: #444;
+}
 
-        /* Ensure correct buttons are green in dark mode */
-        body.dark-mode .option-button.correct {
-            background-color: var(--correct-color);
-            color: #ffffff;
-            border-color: var(--correct-color);
-        }
+/* Grid för desktop och tablets */
+.buttons {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+}
 
-        /* Prevent focus styles from affecting buttons */
-        .option-button:focus {
-            outline: none;
-            box-shadow: none;
-        }
-
-        .feedback {
-            text-align: center;
-            font-weight: bold;
-            margin-top: 20px;
-            font-size: 1.3rem;
-            min-height: 40px; /* Reserving space to prevent jumping */
-            transition: opacity var(--transition-speed) ease;
-            opacity: 0;
-        }
-
-        .feedback.correct {
-            color: var(--correct-color);
-        }
-
-        .feedback.wrong {
-            color: var(--wrong-color);
-        }
-
-        body.dark-mode .feedback.correct {
-            color: var(--correct-color);
-        }
-
-        body.dark-mode .feedback.wrong {
-            color: var(--wrong-color);
-        }
-
-        .result {
-            text-align: center;
-            font-size: 1.6rem;
-            display: none;
-        }
-
-        .result h2 {
-            margin-bottom: 15px;
-            color: var(--primary-color);
-        }
-
-        body.dark-mode .result h2 {
-            color: var(--primary-color-dark);
-        }
-
-        .result p {
-            margin-bottom: 25px;
-        }
-
-        .result button {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color var(--transition-speed);
-        }
-
-        .result button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Fade Animation */
-        .fade-out {
-            opacity: 0;
-            transition: opacity var(--transition-speed) ease-out;
-        }
-
-        .fade-in {
-            opacity: 0;
-            transition: opacity var(--transition-speed) ease-in;
-        }
-
-        .fade-in-active {
-            opacity: 1;
-        }
-
-        /* Responsive Design Enhancements */
-
-        /* Tablets and Small Screens */
-        @media (max-width: 768px) {
-            /* Adjust the toggle container position */
-            .toggle-container {
-                top: 15px;
-                right: 15px;
-            }
-
-            /* Reduce padding in the quiz container */
-            .quiz-container {
-                padding: 25px;
-            }
-
-            /* Increase the main heading font size */
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            /* Increase the question font size and adjust margin */
-            .question {
-                font-size: 1.4rem;
-                margin-bottom: 20px;
-            }
-
-            /* Enhance option buttons for better touch targets */
-            .option-button {
-                font-size: 1rem;
-                padding: 14px;
-                min-height: 48px;
-            }
-
-            /* Increase feedback text size */
-            .feedback {
-                font-size: 1.2rem;
-            }
-
-            /* Increase result text size */
-            .result {
-                font-size: 1.4rem;
-            }
-
-            /* Adjust result button padding and font size */
-            .result button {
-                padding: 10px 20px;
-                font-size: 0.95rem;
-            }
-
-            /* Increase gap between option buttons */
-            .options {
-                gap: 20px;
-            }
-        }
-
-/* For larger screens, adjust the options to display in two columns */
-@media (min-width: 1024px) {
-    .options {
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Two equal columns */
-        gap: 15px; /* Space between the columns and rows */
-    }
-
-    .options li {
-        width: 100%; /* Make sure each option button fills its grid space */
+@media (min-width: 600px) {
+    .buttons {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
-        /* Mobile Phones */
-        @media (max-width: 480px) {
-            /* Further adjust the toggle container for smaller screens */
-            .toggle-container {
-                top: 10px;
-                right: 10px;
-                gap: 8px;
-            }
+/* Staplad layout för små skärmar */
+@media (max-width: 599px) {
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
 
-            /* Scale down the toggle switch */
-            .toggle-switch {
-                width: 40px;
-                height: 20px;
-            }
+/* Knappfärger efter svar */
+.correct {
+    background-color: green;
+    color: white;
+}
 
-            /* Adjust the slider circle size and position */
-            .toggle-switch .slider:before {
-                height: 16px;
-                width: 16px;
-                left: 2px;
-                bottom: 2px;
-            }
+.dark-mode .correct {
+    background-color: #00b300;
+}
 
-            /* Adjust the slider circle movement for smaller toggle */
-            .toggle-switch input:checked + .slider:before {
-                transform: translateX(20px);
-            }
+.incorrect {
+    background-color: red;
+    color: white;
+}
 
-            /* Make the quiz container full width and remove side margins */
-            .quiz-container {
-                width: 100%;
-                margin: 0;
-                padding: 20px;
-            }
+.dark-mode .incorrect {
+    background-color: #ff4d4d;
+}
 
-            /* Further reduce the main heading font size */
-            h1 {
-                font-size: 1.6rem;
-            }
+/* Disable cursor pointer och inaktivera klick efter answering */
+.buttons.answered .answer {
+    cursor: default;
+    pointer-events: none; /* Förhindrar klick */
+}
 
-            /* Further reduce the question font size and adjust margin */
-            .question {
-                font-size: 1.3rem;
-                margin-bottom: 18px;
-            }
+/* Inaktivera hover om .answered är satt */
+.buttons.answered .answer:hover {
+    background-color: initial;
+}
 
-            /* Further reduce option button font size and padding */
-            .option-button {
-                font-size: 0.95rem;
-                padding: 12px;
-                min-height: 45px;
-            }
+/* Inaktivera hover i mörkt läge om .answered är satt */
+.dark-mode .buttons.answered .answer:hover {
+    background-color: initial;
+}
 
-            /* Further reduce feedback text size */
-            .feedback {
-                font-size: 1.1rem;
-            }
+/* Stil för toggle-switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-bottom: 0; /* Remove any margin to align with other elements */
+    display: flex;
+    align-items: center;
+}
 
-            /* Further reduce result text size */
-            .result {
-                font-size: 1.3rem;
-            }
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
-            /* Further reduce result button padding and font size */
-            .result button {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
 
-            /* Ensure sufficient spacing between option buttons */
-            .options {
-                gap: 20px;
-            }
-        }
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
 
-        /* Prevent hover styles on touch devices */
-        @media (hover: none) and (pointer: coarse) {
-            .option-button:hover {
-                background-color: #f9f9f9; /* Revert to original background */
-                color: var(--primary-color);
-                transform: none;
-            }
-        }
-    </style>
+/* När input är checked */
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Dark mode slider bakgrundsfärg */
+.dark-mode .slider {
+    background-color: #666;
+}
+
+.dark-mode input:checked + .slider {
+    background-color: #444;
+}
+
+/* Fade-effekt */
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+.fade-in {
+    opacity: 1;
+    transition: opacity 1s ease-in;
+}
+
+/* Light mode highlight */
+.highlight {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Dark mode highlight */
+.dark-mode .highlight {
+    font-weight: bold;
+    color: yellow;
+}
+
+.gender {
+    font-style: none;
+}
+
+/* Style for the toggle container */
+.toggle-container {
+    display: flex;
+    align-items: center; /* Vertically centers all child elements */
+    margin-bottom: 20px; /* Adds space below the toggle container */
+}
+
+/* Style for the theme label */
+.theme-label {
+    margin-right: 10px; /* Space between the label and the toggle */
+    font-size: 16px;
+    line-height: 1; /* Ensures that the label text aligns well with the toggle */
+    display: flex;
+    align-items: center; /* Aligns the label text vertically with other elements */
+}
+
+/* Default tooltip styles (light mode) */
+.tooltip {
+    padding: 8px 12px;
+    background-color: #333; /* Dark background */
+    color: #fff; /* Light text */
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+    position: absolute;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.2s ease-in-out; /* Smooth fade-in/out */
+}
+
+.tooltip.visible {
+    opacity: 1;
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* Position arrow below the tooltip */
+    left: 10px; /* Align arrow slightly to the left */
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent; /* Arrow color matches tooltip */
+}
+
+/* Dark mode tooltip styles */
+body.dark-mode .tooltip {
+    background-color: #fff; /* Light background */
+    color: #333; /* Dark text */
+    box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .tooltip::after {
+    border-color: #fff transparent transparent transparent; /* Arrow color matches tooltip */
+}
+
+/* Style for the How to... button */
+.how-to-btn {
+    margin-left: 10px; /* Space between the toggle and the button */
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center; /* Align the button text vertically */
+    height: 34px; /* Match the height of the toggle for consistent alignment */
+}
+
+.how-to-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+    background: white; /* Always white background */
+    color: black; /* Always black text */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 600px;
+    width: 80%;
+    transform: translateY(-50px);
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.modal-content th, .modal-content td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.modal-content th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.close-button {
+    float: right;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    background-color: #ccc;
+    border-radius: 50%;
+    line-height: 20px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.close-button:hover {
+    background-color: #f44336;
+    transform: scale(1.2);
+    color: white;
+}
+
+/* Progress bar styles */
+.progress-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: #f3f3f3;
+    border-radius: 20px;
+    margin: 20px 0; /* Space between toggle and question */
+    height: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%; /* Start with 0% width */
+    background-color: #4caf50; /* Green color for the bar */
+    border-radius: 20px;
+    transition: width 0.5s ease-in-out; /* Smooth transition */
+}
+
+/* Additional media query for mobile and tablet users */
+@media (max-width: 768px) {
+    /* Increase font size for questions and feedback */
+    .question-text {
+        font-size: 22px; /* Larger text for readability */
+    }
+
+    #feedback {
+        font-size: 18px; /* Adjust feedback text size */
+    }
+
+    /* Increase button size for better touch experience */
+    .answer {
+        font-size: 18px; /* Larger font */
+        padding: 15px 25px; /* Increased padding for larger touch area */
+    }
+
+    .how-to-btn {
+        font-size: 16px; /* Adjust size for better readability */
+        padding: 10px 20px; /* Adjust padding */
+    }
+
+    .switch {
+        width: 70px; /* Slightly larger width for toggle */
+        height: 40px; /* Larger height for better touch experience */
+    }
+
+    .slider:before {
+        height: 30px;
+        width: 30px;
+        left: 5px;
+        bottom: 5px;
+    }
+
+    /* Adjust modal for smaller screens */
+    .modal-content {
+        width: 90%; /* Take up more width on small screens */
+        padding: 15px; /* Adjust padding for consistency */
+        max-width: 100%; /* Prevent exceeding screen width */
+    }
+    
+    /* Progress bar adjustments */
+    .progress-container {
+        max-width: 100%; /* Take up full width on mobile */
+        height: 25px; /* Slightly larger for visibility */
+    }
+
+    .progress-bar {
+        height: 100%; /* Match the new container height */
+    }
+}
+
+</style>
+
 </head>
 <body>
+    <div class="container">
+        <div class="toggle-container"> <!-- Add a wrapper div for the label and toggle -->
+            <label class="theme-label" for="theme-toggle">Dark mode</label>
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
+            <button class="how-to-btn" onclick="openModal()">How to...</button> <!-- Existing button -->
+            <button class="how-to-btn" onclick="openPrinciplesModal()">Principles</button> <!-- New button -->
+        </div>
+        
+        <div id="howToModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal()">&times;</span>
+                <h2>About this exercise</h2>
+                <p>In this exercise, you will learn how to pluralise a range of frequently used nouns (all taken from the "<a href="https://learnswedish.github.io/html/learngender7mindmaps.html" target="_blank">Seven mind maps</a>"). The gender of each word is indicated (as a helpful hint), and if you have forgotten what the word means, you only need to hover over/click the word.</p>
+            </div>
+        </div>
 
-    <!-- Dark Mode Toggle Switch -->
-    <div class="toggle-container">
-        <span id="modeLabel">Dark mode</span>
-        <label class="toggle-switch">
-            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
-            <span class="slider"></span>
-        </label>
-    </div>
+        <div id="principlesModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="closePrinciplesModal()">&times;</span>
+                <h2>Principles of Swedish pluralisation</h2>
+                <table>
+                    <tr>
+                        <th>Category</th>
+                        <th>Plural ending</th>
+                    </tr>
+                    <tr>
+                        <td>en-words ending in -a</td>
+                        <td>-or</td>
+                    </tr>
+                    <tr>
+                        <td>en-words ending in -e</td>
+                        <td>-ar</td>
+                    </tr>
+                    <tr>
+                        <td>en-words ending in a consonant</td>
+                        <td>-er</td>
+                    </tr>
+                    <tr>
+                        <td>en-words ending in -el/-er/-en</td>
+                        <td>-lar, -rer, -ner</td>
+                    </tr>
+                    <tr>
+                        <td>en-words ending in -are</td>
+                        <td>-are</td>
+                    </tr>
+                    <tr>
+                        <td>en-words ending in -and</td>
+                        <td>-änder</td>
+                    </tr>
+                    <tr>
+                        <td>en-words with irregular plurals</td>
+                        <td>(various)</td>
+                    </tr>
+                    <tr>
+                        <td>ett-words ending in a vowel</td>
+                        <td>-n</td>
+                    </tr>
+                    <tr>
+                        <td>ett-words ending in a consonant</td>
+                        <td>No change</td>
+                    </tr>
+                    <tr>
+                        <td>ett-words ending in -um</td>
+                        <td>-er</td>
+                    </tr>
+                    <tr>
+                        <td>English loanwords</td>
+                        <td>-s</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
-    <div class="quiz-container">
-        <h1>Plural Exercise</h1>
+        <!-- Progress Bar -->
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
-        <div class="scoreboard">
-            <div class="score">Correct: <span id="correct-score">0</span></div>
-            <div class="score">Mistakes: <span id="wrong-score">0</span></div>
+        <h1 class="question-text" id="question-text">
+            The plural of <span class="gender" id="gender">(en)</span> <span class="highlight" id="noun">stol</span> is ...
+        </h1>
+        <div class="buttons" id="buttons-container">
+            <!-- Answer options will be inserted dynamically here -->
         </div>
-        <div id="quiz">
-            <div id="question-container" class="fade-in">
-                <div class="question" id="question">Fråga här</div>
-                <ul class="options">
-                    <li><button class="option-button" onclick="selectAnswer(this)">Alternativ 1</button></li>
-                    <li><button class="option-button" onclick="selectAnswer(this)">Alternativ 2</button></li>
-                    <li><button class="option-button" onclick="selectAnswer(this)">Alternativ 3</button></li>
-                    <li><button class="option-button" onclick="selectAnswer(this)">Alternativ 4</button></li>
-                </ul>
-                <div class="feedback" id="feedback"></div>
-            </div>
-            <div class="result" id="result">
-                <h2>Quiz completed!</h2>
-                <p>You got <span id="correct-count">0</span> answer(s) correct and made <span id="wrong-count">0</span> mistake(s).</p>
-                <button onclick="restartQuiz()">Start over</button>
-            </div>
-        </div>
+        <p id="feedback"></p>
     </div>
 
+    <!-- Tooltip element -->
+    <div class="tooltip" id="custom-tooltip"></div>
     <script>
-        // Quiz Data
-        let quizData = [
-            { singular: "(en) näsa", correct: "näsor", incorrect: ["näser", "näsar", "näsa"] },
-            { singular: "(en) kind", correct: "kinder", incorrect: ["kindar", "kindor", "kind"] },
-            { singular: "(en) tand", correct: "tänder", incorrect: ["tandar", "tandor", "tand"] },
-            { singular: "(en) hand", correct: "händer", incorrect: ["handar", "handor", "hand"] },
-            { singular: "(en) fot", correct: "fötter", incorrect: ["fotar", "fotor", "fot"] },
-            { singular: "(en) mage", correct: "magar", incorrect: ["mager", "magor", "mage"] },
-            { singular: "(en) rygg", correct: "ryggar", incorrect: ["rygger", "ryggor", "rygg"] },
-            { singular: "(en) tå", correct: "tår", incorrect: ["tåar", "tåor", "tå"] },
-            { singular: "(en) arm", correct: "armar", incorrect: ["armer", "armor", "arm"] },
-            { singular: "(en) axel", correct: "axlar", incorrect: ["axler", "axlor", "axel"] },
-            { singular: "(en) kropp", correct: "kroppar", incorrect: ["kropper", "kroppor", "kropp"] },
-            { singular: "(en) panna", correct: "pannor", incorrect: ["panner", "pannar", "panna"] },
-            { singular: "(en) mun", correct: "munnar", incorrect: ["munner", "munnor", "mun"] },
-            { singular: "(ett) öra", correct: "öron", incorrect: ["örar", "öror", "öra"] },
-            { singular: "(ett) finger", correct: "fingrar", incorrect: ["fingrer", "fingror", "finger"] },
-            { singular: "(en) mamma", correct: "mammor", incorrect: ["mammer", "mammar", "mamma"] },
-            { singular: "(en) pappa", correct: "pappor", incorrect: ["papper", "pappar", "pappa"] },
-            { singular: "(en) pojke", correct: "pojkar", incorrect: ["pojker", "pojkor", "pojke"] },
-            { singular: "(en) flicka", correct: "flickor", incorrect: ["flicker", "flickar", "flicka"] },
-            { singular: "(en) son", correct: "söner", incorrect: ["sonar", "sonor", "son"] },
-            { singular: "(en) dotter", correct: "döttrar", incorrect: ["döttrer", "döttror", "dotter"] },
-            { singular: "(en) partner", correct: "partners", incorrect: ["partnerar", "partneror", "partner"] },
-            { singular: "(en) kompis", correct: "kompisar", incorrect: ["kompiser", "kompisor", "kompis"] },
-            { singular: "(en) vän", correct: "vänner", incorrect: ["vänar", "vänor", "vän"] },
-            { singular: "(en) släkting", correct: "släktingar", incorrect: ["släktinger", "släktingor", "släkting"] },
-            { singular: "(en) granne", correct: "grannar", incorrect: ["granner", "grannor", "granne"] },
-            { singular: "(en) fru", correct: "fruar", incorrect: ["fruer", "fruor", "fru"] },
-            { singular: "(en) man", correct: "män", incorrect: ["manar", "manor", "man"] },
-            { singular: "(en) bror", correct: "bröder", incorrect: ["brorar", "broror", "bror"] },
-            { singular: "(en) syster", correct: "systrar", incorrect: ["systrer", "systror", "syster"] },
-            { singular: "(en) bil", correct: "bilar", incorrect: ["biler", "bilor", "bil"] },
-            { singular: "(en) cykel", correct: "cyklar", incorrect: ["cykler", "cyklor", "cykel"] },
-            { singular: "(en) buss", correct: "bussar", incorrect: ["busser", "bussor", "buss"] },
-            { singular: "(en) moped", correct: "mopeder", incorrect: ["mopedar", "mopedor", "moped"] },
-            { singular: "(en) motorcykel", correct: "motorcyklar", incorrect: ["motorcykler", "motorcyklor", "motorcykel"] },
-            { singular: "(en) promenad", correct: "promenader", incorrect: ["promenadar", "promenador", "promenad"] },
-            { singular: "(en) lastbil", correct: "lastbilar", incorrect: ["lastbiler", "lastbilor", "lastbil"] },
-            { singular: "(en) husvagn", correct: "husvagnar", incorrect: ["husvagner", "husvagnor", "husvagn"] },
-            { singular: "(en) rullstol", correct: "rullstolar", incorrect: ["rullstoler", "rullstolor", "rullstol"] },
-            { singular: "(en) tunnelbana", correct: "tunnelbanor", incorrect: ["tunnelbaner", "tunnelbanar", "tunnelbana"] },
-            { singular: "(en) segelbåt", correct: "segelbåtar", incorrect: ["segelbåter", "segelbåtor", "segelbåt"] },
-            { singular: "(en) raket", correct: "raketer", incorrect: ["raketar", "raketor", "raket"] },
-            { singular: "(en) flygplats", correct: "flygplatser", incorrect: ["flygplatsar", "flygplatsor", "flygplats"] },
-            { singular: "(en) ost", correct: "ostar", incorrect: ["oster", "ostor", "ost"] },
-            { singular: "(en) korv", correct: "korvar", incorrect: ["korver", "korvor", "korv"] },
-            { singular: "(en) apelsin", correct: "apelsiner", incorrect: ["apelsinar", "apelsinor", "apelsin"] },
-            { singular: "(en) morot", correct: "morötter", incorrect: ["morotar", "morotor", "morot"] },
-            { singular: "(en) sallad", correct: "sallader", incorrect: ["salladar", "sallador", "sallad"] },
-            { singular: "(en) soppa", correct: "soppor", incorrect: ["sopper", "soppar", "soppa"] },
-            { singular: "(en) hamburgare", correct: "hamburgare", incorrect: ["hamburgar", "hamburgor", "hamburgarer"] },
-            { singular: "(en) pizza", correct: "pizzor", incorrect: ["pizzer", "pizzar", "pizza"] },
-            { singular: "(en) kaka", correct: "kakor", incorrect: ["kaker", "kakar", "kaka"] },
-            { singular: "(en) smörgås", correct: "smörgåsar", incorrect: ["smörgåser", "smörgåsor", "smörgås"] },
-            { singular: "(en) yoghurt", correct: "yoghurtar", incorrect: ["yoghurter", "yoghurtor", "yoghurt"] },
-            { singular: "(en) natt", correct: "nätter", incorrect: ["nattar", "nattor", "natt"] },
-            { singular: "(en) dag", correct: "dagar", incorrect: ["dager", "dagor", "dag"] },
-            { singular: "(en) morgon", correct: "morgnar", incorrect: ["morgner", "morgnor", "morgon"] },
-            { singular: "(en) förmiddag", correct: "förmiddagar", incorrect: ["förmiddager", "förmiddagor", "förmiddag"] },
-            { singular: "(en) lunch", correct: "luncher", incorrect: ["lunchar", "lunchor", "lunch"] },
-            { singular: "(en) eftermiddag", correct: "eftermiddagar", incorrect: ["eftermiddager", "eftermiddagor", "eftermiddag"] },
-            { singular: "(en) kväll", correct: "kvällar", incorrect: ["kväller", "kvällor", "kväll"] },
-            { singular: "(en) vardag", correct: "vardagar", incorrect: ["vardager", "vardagor", "vardag"] },
-            { singular: "(en) helg", correct: "helger", incorrect: ["helgar", "helgor", "helg"] },
-            { singular: "(en) vecka", correct: "veckor", incorrect: ["vecker", "veckar", "vecka"] },
-            { singular: "(en) månad", correct: "månader", incorrect: ["månadar", "månador", "månad"] },
-            { singular: "(en) tid", correct: "tider", incorrect: ["tidar", "tidor", "tid"] },
-            { singular: "(en) klocka", correct: "klockor", incorrect: ["klocker", "klockar", "klocka"] },
-            { singular: "(en) timme", correct: "timmar", incorrect: ["timmer", "timmor", "timme"] },
-            { singular: "(en) årstid", correct: "årstider", incorrect: ["årstidar", "årstidor", "årstid"] },
-            { singular: "(en) anställning", correct: "anställningar", incorrect: ["anställninger", "anställningor", "anställning"] },
-            { singular: "(en) chef", correct: "chefer", incorrect: ["chefar", "chefor", "chef"] },
-            { singular: "(en) kollega", correct: "kollegor", incorrect: ["kolleger", "kollegar", "kollega"] },
-            { singular: "(en) dator", correct: "datorer", incorrect: ["datorar", "datoror", "dator"] },
-            { singular: "(en) bärbar dator", correct: "bärbara datorer", incorrect: ["bärbara datorar", "bärbara datoror", "bärbara dator"] },
-            { singular: "(en) avdelning", correct: "avdelningar", incorrect: ["avdelninger", "avdelningor", "avdelning"] },
-            { singular: "(en) kund", correct: "kunder", incorrect: ["kundar", "kundor", "kund"] },
-            { singular: "(en) lön", correct: "löner", incorrect: ["lönar", "lönor", "lön"] },
-            { singular: "(en) stol", correct: "stolar", incorrect: ["stoler", "stolor", "stol"] },
-            { singular: "(en) sked", correct: "skedar", incorrect: ["skeder", "skedor", "sked"] },
-            { singular: "(en) gaffel", correct: "gafflar", incorrect: ["gaffler", "gafflor", "gaffel"] },
-            { singular: "(en) kniv", correct: "knivar", incorrect: ["kniver", "knivor", "kniv"] },
-            { singular: "(en) tallrik", correct: "tallrikar", incorrect: ["tallriker", "tallrikor", "tallrik"] },
-            { singular: "(en) servett", correct: "servetter", incorrect: ["servettar", "servettor", "servett"] },
-            { singular: "(en) kastrull", correct: "kastruller", incorrect: ["kastrullar", "kastrullor", "kastrull"] },
-            { singular: "(en) gryta", correct: "grytor", incorrect: ["gryter", "grytar", "gryta"] },
-            { singular: "(en) spis", correct: "spisar", incorrect: ["spiser", "spisor", "spis"] },
-            { singular: "(en) ugn", correct: "ugnar", incorrect: ["ugner", "ugnor", "ugn"] },
-            { singular: "(en) dryck", correct: "drycker", incorrect: ["dryckar", "dryckor", "dryck"] },
-            { singular: "(en) diskmaskin", correct: "diskmaskiner", incorrect: ["diskmaskinar", "diskmaskinor", "diskmaskin"] },
-            { singular: "(ett) ben", correct: "ben", incorrect: ["benar", "benor", "bener"] },
-            { singular: "(ett) öga", correct: "ögon", incorrect: ["ögar", "ögor", "öga"] },
-            { singular: "(ett) huvud", correct: "huvuden", incorrect: ["huvudar", "huvudor", "huvud"] },
-            { singular: "(ett) barn", correct: "barn", incorrect: ["barnor", "barnar", "barner"] },
-            { singular: "(ett) fordon", correct: "fordon", incorrect: ["fordonor", "fordonar", "fordoner"] },
-            { singular: "(ett) flygplan", correct: "flygplan", incorrect: ["flygplanor", "flygplanar", "flygplaner"] },
-            { singular: "(ett) tåg", correct: "tåg", incorrect: ["tågor", "tågar", "tåger"] },
-            { singular: "(ett) vin", correct: "viner", incorrect: ["vinor", "vinar", "viner"] },
-            { singular: "(ett) bröd", correct: "bröd", incorrect: ["brödor", "brödar", "bröder"] },
-            { singular: "(ett) år", correct: "år", incorrect: ["åror", "årar", "årer"] },
-            { singular: "(ett) århundrade", correct: "århundraden", incorrect: ["århundrador", "århundradar", "århundrader"] },
-            { singular: "(ett) liv", correct: "liv", incorrect: ["livor", "livar", "liver"] },
-            { singular: "(ett) möte", correct: "möten", incorrect: ["mötor", "mötar", "möter"] },
-            { singular: "(ett) avtal", correct: "avtal", incorrect: ["avtalor", "avtalar", "avtaler"] },
-            { singular: "(ett) jobb", correct: "jobb", incorrect: ["jobbor", "jobbar", "jobber"] },
-            { singular: "(ett) arbete", correct: "arbeten", incorrect: ["arbetor", "arbetar", "arbeter"] },
-            { singular: "(ett) företag", correct: "företag", incorrect: ["företagor", "företagar", "företager"] },
-            { singular: "(ett) samarbete", correct: "samarbeten", incorrect: ["samarbetor", "samarbetar", "samarbeter"] },
-            { singular: "(ett) projekt", correct: "projekt", incorrect: ["projektor", "projektar", "projekter"] },
-            { singular: "(ett) resultat", correct: "resultat", incorrect: ["resultator", "resultatar", "resultater"] },
-            { singular: "(ett) verktyg", correct: "verktyg", incorrect: ["verktygor", "verktygar", "verktyger"] },
-            { singular: "(ett) kök", correct: "kök", incorrect: ["kökor", "kökar", "köker"] },
-            { singular: "(ett) bord", correct: "bord", incorrect: ["bordor", "bordar", "border"] },
-            { singular: "(ett) glas", correct: "glas", incorrect: ["glasor", "glasar", "glaser"] },
-            { singular: "(ett) recept", correct: "recept", incorrect: ["receptor", "receptar", "recepter"] },
-            { singular: "(ett) fat", correct: "fat", incorrect: ["fator", "fatar", "fater"] },
-        ];
+// Hämta referenser
+const toggleSwitch = document.getElementById('theme-toggle');
+const body = document.body;
+const feedback = document.getElementById('feedback');
+const buttonsContainer = document.getElementById('buttons-container');
+const questionText = document.getElementById('question-text');
+const tooltip = document.getElementById('custom-tooltip');
+const progressBar = document.getElementById('progress-bar');
 
-        // Quiz State
-        let currentQuestion = 0;
-        let correctCount = 0;
-        let wrongCount = 0;
+// Kolla om användaren tidigare valt ett tema och tillämpa det
+if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    toggleSwitch.checked = true;
+}
 
-        // DOM Elements
-        const questionElement = document.getElementById('question');
-        const optionsButtons = document.querySelectorAll('.option-button');
-        const feedbackElement = document.getElementById('feedback');
-        const resultElement = document.getElementById('result');
-        const correctCountElement = document.getElementById('correct-count');
-        const wrongCountElement = document.getElementById('wrong-count');
-        const progressBarElement = document.getElementById('progress-bar');
-        const correctScoreElement = document.getElementById('correct-score');
-        const wrongScoreElement = document.getElementById('wrong-score');
-        const questionContainer = document.getElementById('question-container');
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const modeLabel = document.getElementById('modeLabel');
+// Toggle-funktion
+toggleSwitch.addEventListener('change', () => {
+    if (toggleSwitch.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+    }
+});
 
-        // Shuffle Function using Fisher-Yates Algorithm
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+function openModal() {
+    const modal = document.getElementById('howToModal');
+    modal.classList.add('show');
+}
 
-        // Load Quiz Questions
-function loadQuestion() {
-    if (currentQuestion >= quizData.length) {
-        showResult();
+function closeModal() {
+    const modal = document.getElementById('howToModal');
+    modal.classList.remove('show');
+}
+
+// Optional: Close the modal when clicking outside of the modal content
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('howToModal');
+    if (event.target === modal) {
+        modal.classList.remove('show');
+    }
+});
+
+// Array av frågor med tooltips
+const questions = [
+    { gender: "(en)", noun: "näsa", options: ["näsor", "näser", "näsar", "näsa"], correctAnswer: 0, tooltip: "nose" },
+    { gender: "(en)", noun: "kind", options: ["kinder", "kindar", "kindor", "kind"], correctAnswer: 0, tooltip: "cheek" },
+    { gender: "(en)", noun: "tand", options: ["tänder", "tandar", "tandor", "tand"], correctAnswer: 0, tooltip: "tooth" },
+    { gender: "(en)", noun: "hand", options: ["händer", "handar", "handor", "hand"], correctAnswer: 0, tooltip: "hand" },
+    { gender: "(en)", noun: "fot", options: ["fötter", "fotar", "fotor", "fot"], correctAnswer: 0, tooltip: "foot" },
+    { gender: "(en)", noun: "mage", options: ["magar", "mager", "magor", "mage"], correctAnswer: 0, tooltip: "stomach" },
+    { gender: "(en)", noun: "rygg", options: ["ryggar", "rygger", "ryggor", "rygg"], correctAnswer: 0, tooltip: "back" },
+    { gender: "(en)", noun: "tå", options: ["tår", "tåar", "tåor", "tå"], correctAnswer: 0, tooltip: "toe" },
+    { gender: "(en)", noun: "arm", options: ["armar", "armer", "armor", "arm"], correctAnswer: 0, tooltip: "arm" },
+    { gender: "(en)", noun: "axel", options: ["axlar", "axler", "axlor", "axel"], correctAnswer: 0, tooltip: "shoulder" },
+    { gender: "(en)", noun: "kropp", options: ["kroppar", "kropper", "kroppor", "kropp"], correctAnswer: 0, tooltip: "body" },
+    { gender: "(en)", noun: "panna", options: ["pannor", "panner", "pannar", "panna"], correctAnswer: 0, tooltip: "forehead" },
+    { gender: "(en)", noun: "mun", options: ["munnar", "munner", "munnor", "mun"], correctAnswer: 0, tooltip: "mouth" },
+    { gender: "(ett)", noun: "öra", options: ["öron", "örar", "öror", "öra"], correctAnswer: 0, tooltip: "ear" },
+    { gender: "(ett)", noun: "finger", options: ["fingrar", "fingrer", "fingror", "finger"], correctAnswer: 0, tooltip: "finger" },
+    { gender: "(en)", noun: "mamma", options: ["mammor", "mammer", "mammar", "mamma"], correctAnswer: 0, tooltip: "mum" },
+    { gender: "(en)", noun: "pappa", options: ["pappor", "papper", "pappar", "pappa"], correctAnswer: 0, tooltip: "dad" },
+    { gender: "(en)", noun: "pojke", options: ["pojkar", "pojker", "pojkor", "pojke"], correctAnswer: 0, tooltip: "boy" },
+    { gender: "(en)", noun: "flicka", options: ["flickor", "flicker", "flickar", "flicka"], correctAnswer: 0, tooltip: "girl" },
+    { gender: "(en)", noun: "son", options: ["söner", "sönar", "sonor", "son"], correctAnswer: 0, tooltip: "son" },
+    { gender: "(en)", noun: "dotter", options: ["döttrar", "döttrer", "döttror", "dotter"], correctAnswer: 0, tooltip: "daughter" },
+    { gender: "(en)", noun: "partner", options: ["partners", "partnerar", "partneror", "partner"], correctAnswer: 0, tooltip: "partner" },
+    { gender: "(en)", noun: "kompis", options: ["kompisar", "kompiser", "kompisor", "kompis"], correctAnswer: 0, tooltip: "friend" },
+    { gender: "(en)", noun: "vän", options: ["vänner", "vännar", "vännor", "vän"], correctAnswer: 0, tooltip: "friend" },
+    { gender: "(en)", noun: "släkting", options: ["släktingar", "släktinger", "släktingor", "släkting"], correctAnswer: 0, tooltip: "relative" },
+    { gender: "(en)", noun: "granne", options: ["grannar", "granner", "grannor", "granne"], correctAnswer: 0, tooltip: "neighbour" },
+    { gender: "(en)", noun: "fru", options: ["fruar", "fruer", "fruor", "fru"], correctAnswer: 0, tooltip: "wife" },
+    { gender: "(en)", noun: "man", options: ["män", "männar", "mannor", "man"], correctAnswer: 0, tooltip: "husband" },
+    { gender: "(en)", noun: "bror", options: ["bröder", "brorar", "brödor", "bror"], correctAnswer: 0, tooltip: "brother" },
+    { gender: "(en)", noun: "syster", options: ["systrar", "systrer", "systror", "syster"], correctAnswer: 0, tooltip: "sister" },
+    { gender: "(en)", noun: "bil", options: ["bilar", "biler", "bilor", "bil"], correctAnswer: 0, tooltip: "car" },
+    { gender: "(en)", noun: "cykel", options: ["cyklar", "cykler", "cyklor", "cykel"], correctAnswer: 0, tooltip: "bicycle" },
+    { gender: "(en)", noun: "buss", options: ["bussar", "busser", "bussor", "buss"], correctAnswer: 0, tooltip: "bus" },
+    { gender: "(en)", noun: "moped", options: ["mopeder", "mopedar", "mopedor", "moped"], correctAnswer: 0, tooltip: "moped" },
+    { gender: "(en)", noun: "motorcykel", options: ["motorcyklar", "motorcykler", "motorcyklor", "motorcykel"], correctAnswer: 0, tooltip: "motorcycle" },
+    { gender: "(en)", noun: "promenad", options: ["promenader", "promenadar", "promenador", "promenad"], correctAnswer: 0, tooltip: "walk" },
+    { gender: "(en)", noun: "lastbil", options: ["lastbilar", "lastbiler", "lastbilor", "lastbil"], correctAnswer: 0, tooltip: "lorry" },
+    { gender: "(en)", noun: "husvagn", options: ["husvagnar", "husvagner", "husvagnor", "husvagn"], correctAnswer: 0, tooltip: "caravan" },
+    { gender: "(en)", noun: "rullstol", options: ["rullstolar", "rullstoler", "rullstolor", "rullstol"], correctAnswer: 0, tooltip: "wheelchair" },
+    { gender: "(en)", noun: "tunnelbana", options: ["tunnelbanor", "tunnelbaner", "tunnelbanar", "tunnelbana"], correctAnswer: 0, tooltip: "underground" },
+    { gender: "(en)", noun: "segelbåt", options: ["segelbåtar", "segelbåter", "segelbåtor", "segelbåt"], correctAnswer: 0, tooltip: "sailboat" },
+    { gender: "(en)", noun: "raket", options: ["raketer", "raketar", "raketor", "raket"], correctAnswer: 0, tooltip: "rocket" },
+    { gender: "(en)", noun: "flygplats", options: ["flygplatser", "flygplatsar", "flygplatsor", "flygplats"], correctAnswer: 0, tooltip: "airport" },
+    { gender: "(en)", noun: "ost", options: ["ostar", "oster", "ostor", "ost"], correctAnswer: 0, tooltip: "cheese" },
+    { gender: "(en)", noun: "korv", options: ["korvar", "korver", "korvor", "korv"], correctAnswer: 0, tooltip: "sausage" },
+    { gender: "(en)", noun: "apelsin", options: ["apelsiner", "apelsinar", "apelsinor", "apelsin"], correctAnswer: 0, tooltip: "orange" },
+    { gender: "(en)", noun: "morot", options: ["morötter", "moröttar", "moroter", "morot"], correctAnswer: 0, tooltip: "carrot" },
+    { gender: "(en)", noun: "sallad", options: ["sallader", "salladar", "sallador", "sallad"], correctAnswer: 0, tooltip: "salad" },
+    { gender: "(en)", noun: "soppa", options: ["soppor", "sopper", "soppar", "soppa"], correctAnswer: 0, tooltip: "soup" },
+    { gender: "(en)", noun: "hamburgare", options: ["hamburgare", "hamburgers", "hamburgor", "hamburgarer"], correctAnswer: 0, tooltip: "hamburger" },
+    { gender: "(en)", noun: "pizza", options: ["pizzor", "pizzer", "pizzar", "pizza"], correctAnswer: 0, tooltip: "pizza" },
+    { gender: "(en)", noun: "kaka", options: ["kakor", "kaker", "kakar", "kaka"], correctAnswer: 0, tooltip: "cake" },
+    { gender: "(en)", noun: "smörgås", options: ["smörgåsar", "smörgåser", "smörgåsor", "smörgås"], correctAnswer: 0, tooltip: "sandwich" },
+    { gender: "(en)", noun: "yoghurt", options: ["yoghurtar", "yoghurter", "yoghurtor", "yoghurt"], correctAnswer: 0, tooltip: "yoghurt" },
+    { gender: "(en)", noun: "natt", options: ["nätter", "nattar", "nättor", "natt"], correctAnswer: 0, tooltip: "night" },
+    { gender: "(en)", noun: "dag", options: ["dagar", "dager", "dagor", "dag"], correctAnswer: 0, tooltip: "day" },
+    { gender: "(en)", noun: "morgon", options: ["morgnar", "morgner", "morgnor", "morgon"], correctAnswer: 0, tooltip: "morning" },
+    { gender: "(en)", noun: "förmiddag", options: ["förmiddagar", "förmiddager", "förmiddagor", "förmiddag"], correctAnswer: 0, tooltip: "forenoon" },
+    { gender: "(en)", noun: "lunch", options: ["luncher", "lunchar", "lunchor", "lunch"], correctAnswer: 0, tooltip: "lunch" },
+    { gender: "(en)", noun: "eftermiddag", options: ["eftermiddagar", "eftermiddager", "eftermiddagor", "eftermiddag"], correctAnswer: 0, tooltip: "afternoon" },
+    { gender: "(en)", noun: "kväll", options: ["kvällar", "kväller", "kvällor", "kväll"], correctAnswer: 0, tooltip: "evening" },
+    { gender: "(en)", noun: "vardag", options: ["vardagar", "vardager", "vardagor", "vardag"], correctAnswer: 0, tooltip: "weekday" },
+    { gender: "(en)", noun: "helg", options: ["helger", "helgar", "helgor", "helg"], correctAnswer: 0, tooltip: "weekend" },
+    { gender: "(en)", noun: "vecka", options: ["veckor", "vecker", "veckar", "vecka"], correctAnswer: 0, tooltip: "week" },
+    { gender: "(en)", noun: "månad", options: ["månader", "månadar", "månador", "månad"], correctAnswer: 0, tooltip: "month" },
+    { gender: "(en)", noun: "tid", options: ["tider", "tidar", "tidor", "tid"], correctAnswer: 0, tooltip: "time" },
+    { gender: "(en)", noun: "klocka", options: ["klockor", "klocker", "klockar", "klocka"], correctAnswer: 0, tooltip: "clock" },
+    { gender: "(en)", noun: "timme", options: ["timmar", "timmer", "timmor", "timme"], correctAnswer: 0, tooltip: "hour" },
+    { gender: "(en)", noun: "årstid", options: ["årstider", "årstidar", "årstidor", "årstid"], correctAnswer: 0, tooltip: "season" },
+    { gender: "(en)", noun: "anställning", options: ["anställningar", "anställninger", "anställningor", "anställning"], correctAnswer: 0, tooltip: "employment" },
+    { gender: "(en)", noun: "chef", options: ["chefer", "chefar", "chefor", "chef"], correctAnswer: 0, tooltip: "manager" },
+    { gender: "(en)", noun: "kollega", options: ["kollegor", "kolleger", "kollegar", "kollega"], correctAnswer: 0, tooltip: "colleague" },
+    { gender: "(en)", noun: "dator", options: ["datorer", "datorar", "datoror", "dator"], correctAnswer: 0, tooltip: "computer" },
+    { gender: "(en)", noun: "bärbar dator", options: ["bärbara datorer", "bärbara datorar", "bärbara datoror", "bärbara dator"], correctAnswer: 0, tooltip: "laptop" },
+    { gender: "(en)", noun: "avdelning", options: ["avdelningar", "avdelninger", "avdelningor", "avdelning"], correctAnswer: 0, tooltip: "department" },
+    { gender: "(en)", noun: "kund", options: ["kunder", "kundar", "kundor", "kund"], correctAnswer: 0, tooltip: "customer" },
+    { gender: "(en)", noun: "lön", options: ["löner", "lönar", "lönor", "lön"], correctAnswer: 0, tooltip: "salary" },
+    { gender: "(en)", noun: "stol", options: ["stolar", "stoler", "stolor", "stol"], correctAnswer: 0, tooltip: "chair" },
+    { gender: "(en)", noun: "sked", options: ["skedar", "skeder", "skedor", "sked"], correctAnswer: 0, tooltip: "spoon" },
+    { gender: "(en)", noun: "gaffel", options: ["gafflar", "gaffler", "gafflor", "gaffel"], correctAnswer: 0, tooltip: "fork" },
+    { gender: "(en)", noun: "kniv", options: ["knivar", "kniver", "knivor", "kniv"], correctAnswer: 0, tooltip: "knife" },
+    { gender: "(en)", noun: "tallrik", options: ["tallrikar", "tallriker", "tallrikor", "tallrik"], correctAnswer: 0, tooltip: "plate" },
+    { gender: "(en)", noun: "servett", options: ["servetter", "servettar", "servettor", "servett"], correctAnswer: 0, tooltip: "napkin" },
+    { gender: "(en)", noun: "kastrull", options: ["kastruller", "kastrullar", "kastrullor", "kastrull"], correctAnswer: 0, tooltip: "saucepan" },
+    { gender: "(en)", noun: "gryta", options: ["grytor", "gryter", "grytar", "gryta"], correctAnswer: 0, tooltip: "pot" },
+    { gender: "(en)", noun: "spis", options: ["spisar", "spiser", "spisor", "spis"], correctAnswer: 0, tooltip: "cooker" },
+    { gender: "(en)", noun: "ugn", options: ["ugnar", "ugner", "ugnor", "ugn"], correctAnswer: 0, tooltip: "oven" },
+    { gender: "(en)", noun: "dryck", options: ["drycker", "dryckar", "dryckor", "dryck"], correctAnswer: 0, tooltip: "drink" },
+    { gender: "(en)", noun: "diskmaskin", options: ["diskmaskiner", "diskmaskinar", "diskmaskinor", "diskmaskin"], correctAnswer: 0, tooltip: "dishwasher" },
+    { gender: "(ett)", noun: "ben", options: ["ben", "benar", "benor", "bener"], correctAnswer: 0, tooltip: "leg" },
+    { gender: "(ett)", noun: "öga", options: ["ögon", "ögar", "ögor", "öga"], correctAnswer: 0, tooltip: "eye" },
+    { gender: "(ett)", noun: "huvud", options: ["huvuden", "huvudar", "huvudor", "huvud"], correctAnswer: 0, tooltip: "head" },
+    { gender: "(ett)", noun: "barn", options: ["barn", "barnor", "barnar", "barner"], correctAnswer: 0, tooltip: "child" },
+    { gender: "(ett)", noun: "fordon", options: ["fordon", "fordonor", "fordonar", "fordoner"], correctAnswer: 0, tooltip: "vehicle" },
+    { gender: "(ett)", noun: "flygplan", options: ["flygplan", "flygplanor", "flygplanar", "flygplaner"], correctAnswer: 0, tooltip: "aeroplane" },
+    { gender: "(ett)", noun: "tåg", options: ["tåg", "tågor", "tågar", "tåger"], correctAnswer: 0, tooltip: "train" },
+    { gender: "(ett)", noun: "vin", options: ["viner", "vinor", "vinar", "viner"], correctAnswer: 0, tooltip: "wine" },
+    { gender: "(ett)", noun: "bröd", options: ["bröd", "brödor", "brödar", "bröder"], correctAnswer: 0, tooltip: "bread" },
+    { gender: "(ett)", noun: "år", options: ["år", "åror", "årar", "årer"], correctAnswer: 0, tooltip: "year" },
+    { gender: "(ett)", noun: "århundrade", options: ["århundraden", "århundrador", "århundradar", "århundrader"], correctAnswer: 0, tooltip: "century" },
+    { gender: "(ett)", noun: "liv", options: ["liv", "livor", "livar", "liver"], correctAnswer: 0, tooltip: "life" },
+    { gender: "(ett)", noun: "möte", options: ["möten", "mötor", "mötar", "möter"], correctAnswer: 0, tooltip: "meeting" },
+    { gender: "(ett)", noun: "avtal", options: ["avtal", "avtalor", "avtalar", "avtaler"], correctAnswer: 0, tooltip: "agreement" },
+    { gender: "(ett)", noun: "jobb", options: ["jobb", "jobbor", "jobbar", "jobber"], correctAnswer: 0, tooltip: "job" },
+    { gender: "(ett)", noun: "arbete", options: ["arbeten", "arbetor", "arbetar", "arbeter"], correctAnswer: 0, tooltip: "work" },
+    { gender: "(ett)", noun: "företag", options: ["företag", "företagor", "företagar", "företager"], correctAnswer: 0, tooltip: "company" },
+    { gender: "(ett)", noun: "samarbete", options: ["samarbeten", "samarbetor", "samarbetar", "samarbeter"], correctAnswer: 0, tooltip: "cooperation" },
+    { gender: "(ett)", noun: "projekt", options: ["projekt", "projektor", "projektar", "projekter"], correctAnswer: 0, tooltip: "project" },
+    { gender: "(ett)", noun: "resultat", options: ["resultat", "resultator", "resultatar", "resultater"], correctAnswer: 0, tooltip: "result" },
+    { gender: "(ett)", noun: "verktyg", options: ["verktyg", "verktygor", "verktygar", "verktyger"], correctAnswer: 0, tooltip: "tool" },
+    { gender: "(ett)", noun: "kök", options: ["kök", "kökor", "kökar", "köker"], correctAnswer: 0, tooltip: "kitchen" },
+    { gender: "(ett)", noun: "bord", options: ["bord", "bordor", "bordar", "border"], correctAnswer: 0, tooltip: "table" },
+    { gender: "(ett)", noun: "glas", options: ["glas", "glasor", "glasar", "glaser"], correctAnswer: 0, tooltip: "glass" },
+    { gender: "(ett)", noun: "recept", options: ["recept", "receptor", "receptar", "recepter"], correctAnswer: 0, tooltip: "recipe" },
+    { gender: "(ett)", noun: "fat", options: ["fat", "fator", "fatar", "fater"], correctAnswer: 0, tooltip: "dish" }
+
+];
+
+// State tracking
+let usedQuestions = [];
+let correctCount = 0;
+let incorrectCount = 0;
+
+// Function to shuffle an array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+// Funktion för att visa tooltip
+function showTooltip(event, text) {
+    tooltip.textContent = text;
+    tooltip.style.display = 'block';
+
+    // Get the noun element's position
+    const nounRect = event.target.getBoundingClientRect();
+    const screenWidth = window.innerWidth;
+
+    // Position the tooltip above and slightly to the right of the noun
+    let leftPosition = nounRect.left + 5;
+    let topPosition = nounRect.top - tooltip.offsetHeight - 5;
+
+    // Ensure tooltip stays within viewport on small screens
+    if (leftPosition + tooltip.offsetWidth > screenWidth) {
+        leftPosition = screenWidth - tooltip.offsetWidth - 10; // Adjust to fit within the screen
+    }
+
+    tooltip.style.left = `${leftPosition}px`;
+    tooltip.style.top = `${topPosition}px`;
+
+    // Add the visible class for smooth fade-in
+    tooltip.classList.add('visible');
+}
+
+// Funktion för att gömma tooltip
+function hideTooltip() {
+    tooltip.classList.remove('visible');
+}
+
+function openPrinciplesModal() {
+    const modal = document.getElementById('principlesModal');
+    modal.classList.add('show');
+}
+
+function closePrinciplesModal() {
+    const modal = document.getElementById('principlesModal');
+    modal.classList.remove('show');
+}
+
+// Optional: Close the modal when clicking outside of the modal content
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('principlesModal');
+    if (event.target === modal) {
+        modal.classList.remove('show');
+    }
+});
+
+// Funktion för att byta fråga med fade-effekt
+function changeQuestion() {
+    if (usedQuestions.length === questions.length) {
+        showFinalScore();
         return;
     }
 
-    // Clear all buttons of 'correct' and 'wrong' classes, and ensure they are reset properly
-    optionsButtons.forEach(button => {
-        button.disabled = false; // Re-enable the buttons
-        button.classList.remove('correct', 'wrong'); // Remove styling classes
-        button.blur(); // Remove focus from the button to prevent any leftover styles
-    });
+    questionText.classList.add('fade-out');
+    buttonsContainer.classList.add('fade-out');
+    feedback.classList.add('fade-out');
 
-    // Load new question data
-    const currentData = quizData[currentQuestion];
-    questionElement.innerHTML = `The plural of <br>${currentData.singular.slice(0, 5)}<span style="font-weight:bold; color:#007BFF;">${currentData.singular.slice(5)}</span> is ...`;
-
-    // Combine correct and incorrect options and shuffle them
-    const options = shuffle([currentData.correct, ...currentData.incorrect]);
-
-    // Assign options to buttons
-    optionsButtons.forEach((button, index) => {
-        button.textContent = options[index];
-    });
-
-    feedbackElement.textContent = ''; // Reset feedback text
-    feedbackElement.style.opacity = '0'; // Hide feedback
-
-    // Update progress bar
-    const progressPercent = ((currentQuestion) / quizData.length) * 100;
-    progressBarElement.style.width = `${progressPercent}%`;
-
-    // Add fade-in effect for the new question
-    questionContainer.classList.remove('fade-out');
-    questionContainer.classList.add('fade-in');
     setTimeout(() => {
-        questionContainer.classList.add('fade-in-active');
-    }, 10); // Delay to ensure CSS transition applies
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * questions.length);
+        } while (usedQuestions.includes(randomIndex));
+
+        usedQuestions.push(randomIndex);
+        const newQuestion = questions[randomIndex];
+
+        document.getElementById('gender').textContent = newQuestion.gender;
+        const nounElement = document.getElementById('noun');
+        nounElement.textContent = newQuestion.noun;
+
+        // Shuffle the options array before rendering buttons
+        const shuffledOptions = [...newQuestion.options];
+        shuffleArray(shuffledOptions);
+
+        buttonsContainer.innerHTML = shuffledOptions.map((option) => {
+            // Find the original index of the option for the checkAnswer function
+            const originalIndex = newQuestion.options.indexOf(option);
+            return `<button class="answer" onclick="checkAnswer(this, ${originalIndex}, ${randomIndex})">${option}</button>`;
+        }).join('');
+
+        feedback.textContent = '';
+
+        // Add event listeners for tooltip (both mouse and touch for compatibility)
+        nounElement.addEventListener('mouseenter', (e) => showTooltip(e, newQuestion.tooltip));
+        nounElement.addEventListener('mouseleave', hideTooltip);
+        nounElement.addEventListener('touchstart', (e) => showTooltip(e, newQuestion.tooltip));
+        nounElement.addEventListener('touchend', hideTooltip);
+
+        questionText.classList.remove('fade-out');
+        buttonsContainer.classList.remove('fade-out');
+        feedback.classList.remove('fade-out');
+        questionText.classList.add('fade-in');
+        buttonsContainer.classList.add('fade-in');
+        feedback.classList.add('fade-in');
+
+        buttonsContainer.classList.remove('answered');
+        document.activeElement.blur();
+
+        setTimeout(() => {
+            questionText.classList.remove('fade-in');
+            buttonsContainer.classList.remove('fade-in');
+            feedback.classList.remove('fade-in');
+        }, 1000);
+    }, 1000);
 }
 
-        // Handle Answer Selection
-        function selectAnswer(button) {
-            const selectedAnswer = button.textContent;
-            const currentData = quizData[currentQuestion];
-            let isCorrect = false;
+// Kontrollera svar
+function checkAnswer(button, answerIndex, questionIndex) {
+    const correctAnswer = questions[questionIndex].correctAnswer;
 
-            // Disable all buttons
-            optionsButtons.forEach(btn => btn.disabled = true);
+    buttonsContainer.classList.add('answered');
+    document.querySelectorAll('.answer').forEach(btn => {
+        btn.classList.remove('correct', 'incorrect');
+    });
 
-            if (selectedAnswer === currentData.correct) {
-                correctCount++;
-                correctScoreElement.textContent = correctCount;
-                feedbackElement.textContent = 'Correct!';
-                feedbackElement.classList.add('correct');
-                button.classList.add('correct');
-                isCorrect = true;
-            } else {
-                wrongCount++;
-                wrongScoreElement.textContent = wrongCount;
-                feedbackElement.textContent = `Incorrect! The answer is "${currentData.correct}".`;
-                feedbackElement.classList.add('wrong');
-                button.classList.add('wrong');
-            }
+    if (answerIndex === correctAnswer) {
+        button.classList.add('correct');
+        feedback.textContent = 'Correct answer';
+        correctCount++;
+    } else {
+        button.classList.add('incorrect');
+        feedback.textContent = `Wrong answer: The correct answer is "${questions[questionIndex].options[correctAnswer]}"`;
+        document.querySelectorAll('.answer')[correctAnswer].classList.add('correct');
+        incorrectCount++;
+    }
 
-            feedbackElement.style.opacity = '1'; // Show feedback
+    updateProgressBar(); // Update the progress bar immediately when the answer is picked
 
-            if (!isCorrect) {
-                // Highlight the correct answer
-                optionsButtons.forEach(btn => {
-                    if (btn.textContent === currentData.correct) {
-                        btn.classList.add('correct');
-                    }
-                });
-            }
+    setTimeout(() => {
+        changeQuestion();
+    }, 1500);
+}
 
-            currentQuestion++;
+// Funktion för att uppdatera progress bar
+function updateProgressBar() {
+    const progress = (usedQuestions.length / questions.length) * 100;
+    progressBar.style.width = `${progress}%`;
+}
 
-            // Update progress bar
-            const progressPercent = ((currentQuestion) / quizData.length) * 100;
-            progressBarElement.style.width = `${progressPercent}%`;
+// Initiera första frågan utan fade-effekt
+function initializeQuestion() {
+    // Set the progress bar to 0% on load
+    progressBar.style.width = '0%';
 
-            // Add fade-out effect and load next question after a delay
-            setTimeout(() => {
-                questionContainer.classList.remove('fade-in', 'fade-in-active');
-                questionContainer.classList.add('fade-out');
-                setTimeout(loadQuestion, 500); // Wait for fade-out to complete
-            }, 1500);
-        }
+    let initialIndex;
+    do {
+        initialIndex = Math.floor(Math.random() * questions.length);
+    } while (usedQuestions.includes(initialIndex));
 
-        // Show Quiz Results
-        function showResult() {
-            document.getElementById('question-container').style.display = 'none';
-            resultElement.style.display = 'block';
-            correctCountElement.textContent = correctCount;
-            wrongCountElement.textContent = wrongCount;
-            progressBarElement.style.width = `100%`;
-        }
+    usedQuestions.push(initialIndex);
+    const initialQuestion = questions[initialIndex];
 
-        // Restart the Quiz
-        function restartQuiz() {
-            currentQuestion = 0;
-            correctCount = 0;
-            wrongCount = 0;
-            resultElement.style.display = 'none';
-            document.getElementById('question-container').style.display = 'block';
-            correctScoreElement.textContent = correctCount;
-            wrongScoreElement.textContent = wrongCount;
-            progressBarElement.style.width = '0%';
+    document.getElementById('gender').textContent = initialQuestion.gender;
+    const nounElement = document.getElementById('noun');
+    nounElement.textContent = initialQuestion.noun;
 
-            // Shuffle the questions again
-            shuffle(quizData);
+    // Shuffle the options array before rendering buttons
+    const shuffledOptions = [...initialQuestion.options];
+    shuffleArray(shuffledOptions);
 
-            loadQuestion();
-        }
+    buttonsContainer.innerHTML = shuffledOptions.map((option) => {
+        // Find the original index of the option for the checkAnswer function
+        const originalIndex = initialQuestion.options.indexOf(option);
+        return `<button class="answer" onclick="checkAnswer(this, ${originalIndex}, ${initialIndex})">${option}</button>`;
+    }).join('');
 
-        // Toggle Dark Mode and Save Preference
-        function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
-            const isDarkMode = document.body.classList.contains("dark-mode");
-            modeLabel.innerText = isDarkMode ? "Dark mode" : "Dark mode"; // Updated label for clarity
-            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
-        }
+    feedback.textContent = '';
 
-        // Initialize Dark Mode Based on Saved Preference
-        function initializeDarkMode() {
-            const darkModeSetting = localStorage.getItem('darkMode');
-            if (darkModeSetting === 'enabled') {
-                darkModeToggle.checked = true;
-                document.body.classList.add('dark-mode');
-                modeLabel.textContent = 'Dark mode';
-            } else {
-                darkModeToggle.checked = false;
-                document.body.classList.remove('dark-mode');
-                modeLabel.textContent = 'Dark mode';
-            }
-        }
+    // Add event listeners for tooltip (both mouse and touch for compatibility)
+    nounElement.addEventListener('mouseenter', (e) => showTooltip(e, initialQuestion.tooltip));
+    nounElement.addEventListener('mouseleave', hideTooltip);
+    nounElement.addEventListener('touchstart', (e) => showTooltip(e, initialQuestion.tooltip));
+    nounElement.addEventListener('touchend', hideTooltip);
+}
 
-        // Initialize Quiz and Dark Mode on Page Load
-        window.onload = function() {
-            initializeDarkMode();
-            shuffle(quizData);
-            loadQuestion();
 
-            // Ensure no button is focused on load
-            optionsButtons.forEach(button => button.blur());
-        };
+// Function to show the final score
+function showFinalScore() {
+    questionText.textContent = `You have answered all questions!`;
+    buttonsContainer.innerHTML = `
+        <p>Correct: ${correctCount}</p>
+        <p>Incorrect: ${incorrectCount}</p>
+        <button onclick="location.reload()">Start over</button>
+    `;
+    feedback.textContent = '';
+}
+
+// Initiera första frågan
+initializeQuestion();
+
     </script>
-
 </body>
 </html>
