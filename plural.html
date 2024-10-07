@@ -100,6 +100,7 @@ button {
 
 .dark-mode .correct {
     background-color: #00b300;
+    color: white;
 }
 
 .incorrect {
@@ -109,6 +110,7 @@ button {
 
 .dark-mode .incorrect {
     background-color: #ff4d4d;
+    color: white;
 }
 
 /* Disable cursor pointer och inaktivera klick efter answering */
@@ -518,7 +520,7 @@ body.dark-mode .tooltip::after {
             <div class="progress-bar" id="progress-bar"></div>
         </div>
         <h1 class="question-text" id="question-text">
-            <center>The plural of<br /><span class="gender" id="gender">(en)</span> <span class="highlight" id="noun">stol</span> is ...</center>
+            The plural of <span class="gender" id="gender">(en)</span> <span class="highlight" id="noun">stol</span> is ...
         </h1>
         <div class="buttons" id="buttons-container">
             <!-- Answer options will be inserted dynamically here -->
@@ -816,30 +818,52 @@ function changeQuestion() {
 
 // Kontrollera svar
 function checkAnswer(button, answerIndex, questionIndex) {
-    const correctAnswer = questions[questionIndex].correctAnswer;
+    const correctAnswerIndex = questions[questionIndex].correctAnswer;
 
+    // Mark all buttons as part of an answered state to disable interactions
     buttonsContainer.classList.add('answered');
-    document.querySelectorAll('.answer').forEach(btn => {
+
+    // Get the correct button based on the question’s correct answer index
+    const buttons = document.querySelectorAll('.answer');
+    let correctButton = null;
+
+    buttons.forEach((btn, index) => {
+        // Find the correct button
+        if (btn.textContent === questions[questionIndex].options[correctAnswerIndex]) {
+            correctButton = btn;
+        }
+        // Reset previous styles
         btn.classList.remove('correct', 'incorrect');
     });
 
-    if (answerIndex === correctAnswer) {
-        button.classList.add('correct');
+    // Ensure the correct button is styled regardless of which button is clicked
+    if (correctButton) {
+        correctButton.classList.add('correct');
+    }
+
+    // If the clicked button is incorrect, mark it as incorrect
+    if (button.textContent !== questions[questionIndex].options[correctAnswerIndex]) {
+        button.classList.add('incorrect');
+    }
+
+    // Set feedback based on the user's selection
+    if (answerIndex === correctAnswerIndex) {
         feedback.textContent = 'Correct answer';
         correctCount++;
     } else {
-        button.classList.add('incorrect');
-        feedback.textContent = `Wrong answer: The correct answer is "${questions[questionIndex].options[correctAnswer]}"`;
-        document.querySelectorAll('.answer')[correctAnswer].classList.add('correct');
+        feedback.textContent = `Wrong answer: The correct answer is "${questions[questionIndex].options[correctAnswerIndex]}"`;
         incorrectCount++;
     }
 
-    updateProgressBar(); // Update the progress bar immediately when the answer is picked
+    // Update the progress bar after the answer
+    updateProgressBar();
 
+    // Move to the next question after a delay
     setTimeout(() => {
         changeQuestion();
     }, 1500);
 }
+
 
 // Funktion för att uppdatera progress bar
 function updateProgressBar() {
