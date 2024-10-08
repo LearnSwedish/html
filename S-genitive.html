@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>S-genitive Exercise</title>
     <style>
+        /* Existing styles */
         /* Ensure padding and borders are included in the element's total width and height */
         * {
             box-sizing: border-box;
@@ -14,7 +15,8 @@
         body {
             font-family: 'Work Sans', sans-serif;
             background-color: #f9f9f9;
-            padding: 20px;
+            padding: 15px;
+            position: relative; /* To ensure tooltip is positioned relative to body */
         }
 
         h1, p {
@@ -85,12 +87,14 @@
             display: flex;
             align-items: center;
             margin-bottom: 15px;
+            position: relative; /* To ensure tooltip positioning */
         }
         .exercise-item label {
             flex: 0 0 40%; /* Fixed width for labels */
             margin-right: 10px;
             text-align: left; /* Left-align the label text */
             padding-right: 10px;
+            cursor: pointer; /* Indicate that label is interactive */
         }
         .exercise-item input {
             flex: 0 0 50%; /* Fixed width for input fields */
@@ -140,12 +144,55 @@
                 margin-bottom: 10px;
             }
         }
+
+        /* Tooltip styles */
+        .tooltip {
+            padding: 8px 12px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+            font-family: 'Work Sans', sans-serif;
+            z-index: 1000;
+            position: fixed; /* Changed from absolute to fixed */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            pointer-events: none; /* Prevent tooltip from interfering with mouse events */
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+            /* Adjust position based on where the tooltip is */
+            top: 100%;
+            left: 10px;
+        }
+
+        /* Adjust tooltip arrow when positioned below */
+        .tooltip.above::after {
+            border-color: transparent transparent #333 transparent;
+            top: -10px; /* Position the arrow below the tooltip */
+            transform: rotate(180deg);
+        }
+
+        /* Optional: Adjust tooltip for dark backgrounds if needed */
+        /* You can customize further if your design includes dark mode */
+
     </style>
 </head>
 <body>
     <h1>Rewrite using the -s-genitive</h1>
     <p>Example: parken i byn → byns park</p>
-	<p><strong>Hey!</strong> Don't have å, ä, ö on your keyboard?<br />No problem, you can use a and o instead.</p><br />
+    <p><strong>Hey!</strong> Don't have å, ä, ö on your keyboard?<br />No problem, you can use a and o instead.<br /><br />
+	Don't understand the Swedish? Hover the phrase!</p><br />
     
     <div class="exercise-container">
         <!-- "Restart" Button -->
@@ -156,108 +203,112 @@
         
         <!-- Exercise Items -->
         <div class="exercise-item">
-            <label for="input1">dörren till huset</label>
+            <label for="input1" data-tooltip="The door to the house">dörren till huset</label>
             <input type="search" id="input1">
             <span class="icon" id="icon1"></span>
         </div>
         <div class="exercise-item">
-            <label for="input2">lampan i vardagsrummet</label>
+            <label for="input2" data-tooltip="The lamp in the living room">lampan i vardagsrummet</label>
             <input type="search" id="input2">
             <span class="icon" id="icon2"></span>
         </div>
         <div class="exercise-item">
-            <label for="input3">blommorna i trädgården</label>
+            <label for="input3" data-tooltip="The flowers in the garden">blommorna i trädgården</label>
             <input type="search" id="input3">
             <span class="icon" id="icon3"></span>
         </div>
         <div class="exercise-item">
-            <label for="input4">hunden hos grannen</label>
+            <label for="input4" data-tooltip="The dog at the neighbour's">hunden hos grannen</label>
             <input type="search" id="input4">
             <span class="icon" id="icon4"></span>
         </div>
         <div class="exercise-item">
-            <label for="input5">skolan i byn</label>
+            <label for="input5" data-tooltip="The school in the village">skolan i byn</label>
             <input type="search" id="input5">
             <span class="icon" id="icon5"></span>
         </div>
         <div class="exercise-item">
-            <label for="input6">fönstret i sovrummet</label>
+            <label for="input6" data-tooltip="The window in the bedroom">fönstret i sovrummet</label>
             <input type="search" id="input6">
             <span class="icon" id="icon6"></span>
         </div>
         <div class="exercise-item">
-            <label for="input7">porten till gården</label>
+            <label for="input7" data-tooltip="The gate to the courtyard">porten till gården</label>
             <input type="search" id="input7">
             <span class="icon" id="icon7"></span>
         </div>
         <div class="exercise-item">
-            <label for="input8">gardinen i fönstret</label>
+            <label for="input8" data-tooltip="The curtain in the window">gardinen i fönstret</label>
             <input type="search" id="input8">
             <span class="icon" id="icon8"></span>
         </div>
         <div class="exercise-item">
-            <label for="input9">stigen i skogen</label>
+            <label for="input9" data-tooltip="The path in the forest">stigen i skogen</label>
             <input type="search" id="input9">
             <span class="icon" id="icon9"></span>
         </div>
         <div class="exercise-item">
-            <label for="input10">arbetarna på företaget</label>
+            <label for="input10" data-tooltip="The workers at the company">arbetarna på företaget</label>
             <input type="search" id="input10">
             <span class="icon" id="icon10"></span>
         </div>
         <div class="exercise-item">
-            <label for="input11">domkyrkan i Göteborg</label>
+            <label for="input11" data-tooltip="The cathedral in Gothenburg">domkyrkan i Göteborg</label>
             <input type="search" id="input11">
             <span class="icon" id="icon11"></span>
         </div>
         <div class="exercise-item">
-            <label for="input12">huset där grannarna bor</label>
+            <label for="input12" data-tooltip="The house where the neighbours live">huset där grannarna bor</label>
             <input type="search" id="input12">
             <span class="icon" id="icon12"></span>
         </div>
         <div class="exercise-item">
-            <label for="input13">lamporna på gatan</label>
+            <label for="input13" data-tooltip="The lamps on the street">lamporna på gatan</label>
             <input type="search" id="input13">
             <span class="icon" id="icon13"></span>
         </div>
         <div class="exercise-item">
-            <label for="input14">bänkarna i kyrkan</label>
+            <label for="input14" data-tooltip="The benches in the church">bänkarna i kyrkan</label>
             <input type="search" id="input14">
             <span class="icon" id="icon14"></span>
         </div>
         <div class="exercise-item">
-            <label for="input15">sjukhuset i staden</label>
+            <label for="input15" data-tooltip="The hospital in the town">sjukhuset i staden</label>
             <input type="search" id="input15">
             <span class="icon" id="icon15"></span>
         </div>
         <div class="exercise-item">
-            <label for="input16">växterna på balkongen</label>
+            <label for="input16" data-tooltip="The plants on the balcony">växterna på balkongen</label>
             <input type="search" id="input16">
             <span class="icon" id="icon16"></span>
         </div>
         <div class="exercise-item">
-            <label for="input17">fiskarna i dammen</label>
+            <label for="input17" data-tooltip="The fish in the pond">fiskarna i dammen</label>
             <input type="search" id="input17">
             <span class="icon" id="icon17"></span>
         </div>
         <div class="exercise-item">
-            <label for="input18">staketet runt tomten</label>
+            <label for="input18" data-tooltip="The fence around the yard">staketet runt tomten</label>
             <input type="search" id="input18">
             <span class="icon" id="icon18"></span>
         </div>
         <div class="exercise-item">
-            <label for="input19">skämtet för dagen</label>
+            <label for="input19" data-tooltip="The joke of the day">skämtet för dagen</label>
             <input type="search" id="input19">
             <span class="icon" id="icon19"></span>
         </div>
         <div class="exercise-item">
-            <label for="input20">skuggan under trädet</label>
+            <label for="input20" data-tooltip="The shadow under the tree">skuggan under trädet</label>
             <input type="search" id="input20">
             <span class="icon" id="icon20"></span>
         </div>
     </div>
     
+    <!-- Tooltip element -->
+    <div class="tooltip" id="custom-tooltip"></div>
+    
     <script>
+        // Existing JavaScript code
         // Object containing correct answers
         const correctAnswers = {
             1: ['husets dörr', 'husets dorr'],
@@ -364,6 +415,71 @@
                 handleEnterKey(event, i);
             });
         }
+
+        /* Tooltip JavaScript */
+
+        // Get references to tooltip elements
+        const tooltip = document.getElementById('custom-tooltip');
+
+        // Function to show tooltip
+        function showTooltip(event, text) {
+            tooltip.textContent = text;
+            tooltip.style.display = 'block';
+
+            // Get the label element's position relative to the viewport
+            const labelRect = event.target.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+
+            // Calculate position: above the label
+            let leftPosition = labelRect.left + (labelRect.width / 2) - (tooltipRect.width / 2);
+            let topPosition = labelRect.top - tooltipRect.height - 10; // 10px above
+
+            // Ensure tooltip stays within viewport horizontally
+            if (leftPosition < 10) {
+                leftPosition = 10; // 10px from the left edge
+            } else if (leftPosition + tooltipRect.width > window.innerWidth - 10) {
+                leftPosition = window.innerWidth - tooltipRect.width - 10; // 10px from the right edge
+            }
+
+            // If tooltip goes above the viewport, place it below the label
+            if (topPosition < 10) { // 10px from the top
+                topPosition = labelRect.bottom + 10; // 10px below
+                tooltip.classList.add('above');
+            } else {
+                tooltip.classList.remove('above');
+            }
+
+            tooltip.style.left = `${leftPosition}px`;
+            tooltip.style.top = `${topPosition}px`;
+
+            // Add the visible class for smooth fade-in
+            tooltip.classList.add('visible');
+        }
+
+        // Function to hide tooltip
+        function hideTooltip() {
+            tooltip.classList.remove('visible');
+        }
+
+        // Add event listeners to all labels for tooltip
+        const labels = document.querySelectorAll('.exercise-item label');
+        labels.forEach(label => {
+            const translation = label.getAttribute('data-tooltip');
+            label.addEventListener('mouseenter', (e) => showTooltip(e, translation));
+            label.addEventListener('mouseleave', hideTooltip);
+            label.addEventListener('touchstart', (e) => {
+                showTooltip(e, translation);
+            });
+            label.addEventListener('touchend', hideTooltip);
+        });
+
+        // Optional: Hide tooltip when clicking anywhere else
+        window.addEventListener('click', (event) => {
+            if (!event.target.matches('.exercise-item label')) {
+                hideTooltip();
+            }
+        });
+
     </script>
     
 </body>
