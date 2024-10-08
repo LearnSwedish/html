@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plural exercise</title>
 <style>
-/* Allmänt */
+/* General */
 body {
     font-family: Arial, sans-serif;
     background-color: #fff;
@@ -26,6 +26,7 @@ body {
     color: #fff;
 }
 
+/* Button styles */
 button {
     padding: 10px 20px;
     border: none;
@@ -35,64 +36,39 @@ button {
     border-radius: 5px;
 }
 
-/* H1-färg i Light mode */
+/* Question text */
 .question-text {
-    color: #000; /* Svart text i ljus läge */
+    color: #000;
     transition: color 0.3s;
     margin-bottom: 20px;
 }
 
-/* H1-färg i Dark mode */
+/* Dark mode question text */
 .dark-mode .question-text {
     color: #fff;
 }
 
-/* Knappar i Light mode */
+/* Answer button styles */
 .answer {
-    background-color: #f0f0f0; /* Ljus grå bakgrund i ljus läge */
-    color: #000; /* Svart text i ljus läge */
+    background-color: #f0f0f0;
+    color: #000;
 }
 
-/* Knappar i Dark mode */
 .dark-mode .answer {
-    background-color: #333; /* Mörk bakgrund i mörkt läge */
-    color: #fff; /* Vit text i mörkt läge */
+    background-color: #333;
+    color: #fff;
 }
 
-/* Knappar hover i Light mode */
+/* Answer button hover styles */
 .buttons:not(.answered) .answer:hover {
     background-color: lightgray;
 }
 
-/* Knappar hover i Dark mode */
 .dark-mode .buttons:not(.answered) .answer:hover {
     background-color: #444;
 }
 
-/* Grid för desktop och tablets */
-.buttons {
-    display: grid;
-    gap: 10px;
-    width: 100%;
-    max-width: 400px;
-}
-
-@media (min-width: 600px) {
-    .buttons {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-/* Staplad layout för små skärmar */
-@media (max-width: 599px) {
-    .buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-}
-
-/* Knappfärger efter svar */
+/* Answer button colors based on response */
 .correct {
     background-color: green;
     color: white;
@@ -113,29 +89,27 @@ button {
     color: white;
 }
 
-/* Disable cursor pointer och inaktivera klick efter answering */
+/* Disable pointer and hover for answered state */
 .buttons.answered .answer {
     cursor: default;
-    pointer-events: none; /* Förhindrar klick */
+    pointer-events: none;
 }
 
-/* Inaktivera hover om .answered är satt */
 .buttons.answered .answer:hover {
     background-color: initial;
 }
 
-/* Inaktivera hover i mörkt läge om .answered är satt */
 .dark-mode .buttons.answered .answer:hover {
     background-color: initial;
 }
 
-/* Stil för toggle-switch */
+/* Toggle switch styles */
 .switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
-    margin-bottom: 0; /* Remove any margin to align with other elements */
+    margin-bottom: 0;
     display: flex;
     align-items: center;
 }
@@ -170,7 +144,6 @@ button {
     border-radius: 50%;
 }
 
-/* När input är checked */
 input:checked + .slider {
     background-color: #2196F3;
 }
@@ -179,7 +152,6 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
 
-/* Dark mode slider bakgrundsfärg */
 .dark-mode .slider {
     background-color: #666;
 }
@@ -188,7 +160,7 @@ input:checked + .slider:before {
     background-color: #444;
 }
 
-/* Fade-effekt */
+/* Fade effect */
 .fade-out {
     opacity: 0;
     transition: opacity 1s ease-out;
@@ -199,13 +171,12 @@ input:checked + .slider:before {
     transition: opacity 1s ease-in;
 }
 
-/* Light mode highlight */
+/* Highlight styles */
 .highlight {
     font-weight: bold;
     color: #007bff;
 }
 
-/* Dark mode highlight */
 .dark-mode .highlight {
     font-weight: bold;
     color: yellow;
@@ -215,35 +186,35 @@ input:checked + .slider:before {
     font-style: none;
 }
 
-/* Style for the toggle container */
+/* Toggle container */
 .toggle-container {
     display: flex;
-    align-items: center; /* Vertically centers all child elements */
-    margin-bottom: 20px; /* Adds space below the toggle container */
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-/* Style for the theme label */
+/* Theme label */
 .theme-label {
-    margin-right: 10px; /* Space between the label and the toggle */
+    margin-right: 10px;
     font-size: 16px;
-    line-height: 1; /* Ensures that the label text aligns well with the toggle */
+    line-height: 1;
     display: flex;
-    align-items: center; /* Aligns the label text vertically with other elements */
+    align-items: center;
 }
 
-/* Default tooltip styles (light mode) */
+/* Tooltip styles */
 .tooltip {
     padding: 8px 12px;
-    background-color: #333; /* Dark background */
-    color: #fff; /* Light text */
+    background-color: #333;
+    color: #fff;
     border-radius: 4px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     font-size: 14px;
     font-family: Arial, sans-serif;
     z-index: 1000;
     position: absolute;
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.2s ease-in-out; /* Smooth fade-in/out */
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
 }
 
 .tooltip.visible {
@@ -253,27 +224,26 @@ input:checked + .slider:before {
 .tooltip::after {
     content: '';
     position: absolute;
-    top: 100%; /* Position arrow below the tooltip */
-    left: 10px; /* Align arrow slightly to the left */
+    top: 100%;
+    left: 10px;
     border-width: 5px;
     border-style: solid;
-    border-color: #333 transparent transparent transparent; /* Arrow color matches tooltip */
+    border-color: #333 transparent transparent transparent;
 }
 
-/* Dark mode tooltip styles */
 body.dark-mode .tooltip {
-    background-color: #fff; /* Light background */
-    color: #333; /* Dark text */
+    background-color: #fff;
+    color: #333;
     box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
 }
 
 body.dark-mode .tooltip::after {
-    border-color: #fff transparent transparent transparent; /* Arrow color matches tooltip */
+    border-color: #fff transparent transparent transparent;
 }
 
-/* Style for the How to... button */
+/* How-to button styles */
 .how-to-btn {
-    margin-left: 10px; /* Space between the toggle and the button */
+    margin-left: 10px;
     padding: 5px 10px;
     background-color: #007bff;
     color: white;
@@ -283,8 +253,8 @@ body.dark-mode .tooltip::after {
     font-size: 14px;
     transition: background-color 0.3s;
     display: flex;
-    align-items: center; /* Align the button text vertically */
-    height: 34px; /* Match the height of the toggle for consistent alignment */
+    align-items: center;
+    height: 34px;
 }
 
 .how-to-btn:hover {
@@ -293,7 +263,7 @@ body.dark-mode .tooltip::after {
 
 /* Modal styles */
 .modal {
-    display: none; /* Initially hidden */
+    display: none;
     position: fixed;
     left: 0;
     top: 0;
@@ -308,8 +278,8 @@ body.dark-mode .tooltip::after {
 }
 
 .modal-content {
-    background: white; /* Always white background */
-    color: black; /* Always black text */
+    background: white;
+    color: black;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -370,44 +340,91 @@ body.dark-mode .tooltip::after {
     max-width: 400px;
     background-color: #f3f3f3;
     border-radius: 20px;
-    margin: 20px 0; /* Space between toggle and question */
+    margin: 20px 0;
     height: 20px;
     overflow: hidden;
 }
 
 .progress-bar {
     height: 100%;
-    width: 0%; /* Start with 0% width */
-    background-color: #4caf50; /* Green color for the bar */
+    width: 0%;
+    background-color: #4caf50;
     border-radius: 20px;
-    transition: width 0.5s ease-in-out; /* Smooth transition */
+    transition: width 0.5s ease-in-out;
 }
 
-/* Additional media query for mobile and tablet users */
+/* Style for feedback text */
+.feedback {
+    font-size: 30px;
+    margin-top: 40px;
+    color: #333;
+    transition: color 0.3s;
+	text-align: center; /* Center the text */
+}
+
+/* Dark mode feedback text */
+.dark-mode .feedback {
+    color: #ddd;
+}
+
+/* Desktop layout (above 768px) */
+@media (min-width: 769px) {
+    .buttons {
+        grid-template-columns: 1fr 1fr;
+        display: grid;
+        gap: 15px;
+        max-width: 800px;
+    }
+
+    .answer {
+        padding: 15px 20px;
+        font-size: 18px;
+    }
+}
+
+/* Mobile and tablet layout (up to 768px) */
 @media (max-width: 768px) {
-    /* Increase font size for questions and feedback */
     .question-text {
-        font-size: 22px; /* Larger text for readability */
+        font-size: 22px;
     }
 
     #feedback {
-        font-size: 18px; /* Adjust feedback text size */
+        font-size: 18px;
     }
 
-    /* Increase button size for better touch experience */
     .answer {
-        font-size: 18px; /* Larger font */
-        padding: 15px 25px; /* Increased padding for larger touch area */
+        font-size: 18px;
+        padding: 15px 25px;
+    }
+
+    .correct {
+        background-color: green !important;
+        color: white !important;
+    }
+
+    .incorrect {
+        background-color: red !important;
+        color: white !important;
+    }
+
+    .dark-mode .correct {
+        background-color: #00b300 !important;
+        color: white !important;
+    }
+
+    .dark-mode .incorrect {
+        background-color: #ff4d4d !important;
+        color: white !important;
     }
 
     .how-to-btn {
-        font-size: 16px; /* Adjust size for better readability */
-        padding: 10px 20px; /* Adjust padding */
+        font-size: 16px;
+        padding: 10px 20px;
     }
 
     .switch {
-        width: 70px; /* Slightly larger width for toggle */
-        height: 40px; /* Larger height for better touch experience */
+        width: 70px;
+        height: 40px;
     }
 
     .slider:before {
@@ -417,25 +434,41 @@ body.dark-mode .tooltip::after {
         bottom: 5px;
     }
 
-    /* Adjust modal for smaller screens */
     .modal-content {
-        width: 90%; /* Take up more width on small screens */
-        padding: 15px; /* Adjust padding for consistency */
-        max-width: 100%; /* Prevent exceeding screen width */
+        width: 90%;
+        padding: 15px;
+        max-width: 100%;
     }
-    
-    /* Progress bar adjustments */
+
     .progress-container {
-        max-width: 100%; /* Take up full width on mobile */
-        height: 25px; /* Slightly larger for visibility */
+        max-width: 100%;
+        height: 25px;
     }
 
     .progress-bar {
-        height: 100%; /* Match the new container height */
+        height: 100%;
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .feedback {
+        font-size: 18px;
+    }
+}
+
+/* Tablet and small desktop layout (600px to 768px) */
+@media (min-width: 600px) and (max-width: 768px) {
+    .buttons {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
 </style>
+
 
 </head>
 <body>
@@ -508,12 +541,12 @@ body.dark-mode .tooltip::after {
             <div class="progress-bar" id="progress-bar"></div>
         </div>
         <h1 class="question-text" id="question-text">
-            The plural of <span class="gender" id="gender">(en)</span> <span class="highlight" id="noun">stol</span> is ...
+            <center>What is the correct<br />plural form of<br /><br /><span class="gender" id="gender">(en)</span> <span class="highlight" id="noun">stol</span>?<br /><br /></center>
         </h1>
         <div class="buttons" id="buttons-container">
             <!-- Answer options will be inserted dynamically here -->
         </div>
-        <p id="feedback"></p>
+        <p id="feedback" class="feedback"></p>
     </div>
 
     <!-- Tooltip element -->
@@ -839,7 +872,7 @@ function checkAnswer(button, answerIndex, questionIndex) {
         feedback.textContent = 'Correct answer';
         correctCount++;
     } else {
-        feedback.textContent = `Wrong answer: The correct answer is "${questions[questionIndex].options[correctAnswerIndex]}"`;
+        feedback.innerHTML = `Wrong answer:<br>The correct answer is "${questions[questionIndex].options[correctAnswerIndex]}"`;
         incorrectCount++;
     }
 
