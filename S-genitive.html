@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>S-genitive Exercise</title>
+    <style>
+        /* Ensure padding and borders are included in the element's total width and height */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+    font-family: 'Work Sans', sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+        h1, p {
+    font-family: 'Work Sans', sans-serif;
+    text-align: center;
+}
+
+.exercise-item label,
+.exercise-item input,
+.check-button,
+.restart-button {
+    font-family: 'Work Sans', sans-serif;
+}
+        .exercise-container {
+            position: relative; /* To position buttons absolutely within this container */
+            display: flex;
+            flex-direction: column;
+            max-width: 620px; /* Increased width for better spacing */
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 40px 20px 20px 20px; /* Added top padding to accommodate buttons */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        /* "Check answers" Button Styling */
+        .check-button {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .check-button:hover {
+            background-color: #45a049;
+        }
+        /* "Restart" Button Styling */
+        .restart-button {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            padding: 8px 16px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .restart-button:hover {
+            background-color: #da190b;
+        }
+        .exercise-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .exercise-item label {
+            flex: 0 0 40%; /* Fixed width for labels */
+            margin-right: 10px;
+            text-align: left; /* Left-align the label text */
+            padding-right: 10px;
+        }
+.exercise-item input {
+    flex: 0 0 50%; /* Fixed width for input fields */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600; /* Makes the input text semi-bold */
+}
+        .icon {
+            flex: 0 0 24px; /* Fixed width for icons */
+            text-align: center;
+            margin-left: 10px;
+            font-size: 20px;
+            height: 24px; /* Ensures vertical alignment */
+            display: flex;
+            align-items: center; /* Vertically center the icon */
+            justify-content: center; /* Horizontally center the icon */
+
+        /* Green and Red Colors for Icons */
+        .icon.correct {
+            color: green !important; /* Ensure green color */
+        }
+        .icon.incorrect {
+            color: red !important; /* Ensure red color */
+        }
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .exercise-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .exercise-item label,
+            .exercise-item input,
+            .icon {
+                flex: none;
+                width: 100%;
+                margin: 5px 0;
+            }
+            .icon {
+                margin-left: 0;
+            }
+            .check-button,
+            .restart-button {
+                position: static;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Rewrite using the -s-genitive</h1>
+    <p>Example: parken i byn → byns park</p><br />
+    
+    <div class="exercise-container">
+        <!-- "Restart" Button -->
+        <button class="restart-button" onclick="restartExercise()">Restart</button><br /><br />
+        
+        <!-- "Check answers" Button -->
+        <button class="check-button" onclick="checkAllAnswers()">Check answers</button>
+        
+        <!-- Exercise Items -->
+        <div class="exercise-item">
+            <label for="input1">dörren till huset</label>
+            <input type="text" id="input1">
+            <span class="icon" id="icon1"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input2">lampan i vardagsrummet</label>
+            <input type="text" id="input2">
+            <span class="icon" id="icon2"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input3">blommorna i trädgården</label>
+            <input type="text" id="input3">
+            <span class="icon" id="icon3"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input4">hunden hos grannen</label>
+            <input type="text" id="input4">
+            <span class="icon" id="icon4"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input5">skolan i byn</label>
+            <input type="text" id="input5">
+            <span class="icon" id="icon5"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input6">fönstret i sovrummet</label>
+            <input type="text" id="input6">
+            <span class="icon" id="icon6"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input7">porten till gården</label>
+            <input type="text" id="input7">
+            <span class="icon" id="icon7"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input8">gardinen i fönstret</label>
+            <input type="text" id="input8">
+            <span class="icon" id="icon8"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input9">stigen i skogen</label>
+            <input type="text" id="input9">
+            <span class="icon" id="icon9"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input10">arbetarna på företaget</label>
+            <input type="text" id="input10">
+            <span class="icon" id="icon10"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input11">domkyrkan i Göteborg</label>
+            <input type="text" id="input11">
+            <span class="icon" id="icon11"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input12">huset där grannarna bor</label>
+            <input type="text" id="input12">
+            <span class="icon" id="icon12"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input13">lamporna på gatan</label>
+            <input type="text" id="input13">
+            <span class="icon" id="icon13"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input14">bänkarna i kyrkan</label>
+            <input type="text" id="input14">
+            <span class="icon" id="icon14"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input15">sjukhuset i staden</label>
+            <input type="text" id="input15">
+            <span class="icon" id="icon15"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input16">växterna på balkongen</label>
+            <input type="text" id="input16">
+            <span class="icon" id="icon16"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input17">fiskarna i dammen</label>
+            <input type="text" id="input17">
+            <span class="icon" id="icon17"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input18">staketet runt tomten</label>
+            <input type="text" id="input18">
+            <span class="icon" id="icon18"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input19">skämtet för dagen</label>
+            <input type="text" id="input19">
+            <span class="icon" id="icon19"></span>
+        </div>
+        <div class="exercise-item">
+            <label for="input20">skuggan under trädet</label>
+            <input type="text" id="input20">
+            <span class="icon" id="icon20"></span>
+        </div>
+    </div>
+    
+    <script>
+        // Object containing correct answers
+        const correctAnswers = {
+            1: 'husets dörr',
+            2: 'vardagsrummets lampa',
+            3: 'trädgårdens blommor',
+            4: 'grannens hund',
+            5: 'byns skola',
+            6: 'sovrummets fönster',
+            7: 'gårdens port',
+            8: 'fönstrets gardin',
+            9: 'skogens stig',
+            10: 'företagets arbetare',
+            11: 'Göteborgs domkyrka',
+            12: 'grannarnas hus',
+            13: 'gatans lampor',
+            14: 'kyrkans bänkar',
+            15: 'stadens sjukhus',
+            16: 'balkongens växter',
+            17: 'dammens fiskar',
+            18: 'tomtens staket',
+            19: 'dagens skämt',
+            20: 'trädets skugga'
+        };
+
+        // Function to check all answers
+        function checkAllAnswers() {
+            for (let i = 1; i <= 20; i++) {
+                const input = document.getElementById(`input${i}`);
+                const icon = document.getElementById(`icon${i}`);
+                const userAnswer = input.value.toLowerCase().trim();
+                const correctAnswer = correctAnswers[i].toLowerCase();
+
+                if (userAnswer === correctAnswer) {
+                    icon.textContent = '✅️';
+                    icon.classList.add('correct');
+                    icon.classList.remove('incorrect');
+                } else if (userAnswer !== "") {
+                    icon.textContent = '❌';
+                    icon.classList.add('incorrect');
+                    icon.classList.remove('correct');
+                } else {
+                    icon.textContent = '';
+                    icon.classList.remove('correct', 'incorrect');
+                }
+            }
+        }
+
+        // Function to restart the exercise
+        function restartExercise() {
+            for (let i = 1; i <= 20; i++) {
+                const input = document.getElementById(`input${i}`);
+                const icon = document.getElementById(`icon${i}`);
+                input.value = '';          // Clear input field
+                icon.textContent = '';     // Remove icon
+                icon.classList.remove('correct', 'incorrect'); // Remove classes
+            }
+            // Set focus to the first input field after restarting
+            document.getElementById('input1').focus();
+        }
+
+        // Function to handle Enter key navigation
+        function handleEnterKey(event, currentIndex) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent form submission or default behavior
+                const nextIndex = currentIndex + 1;
+                if (nextIndex <= 20) {
+                    document.getElementById(`input${nextIndex}`).focus();
+                } else {
+                    // Optionally, you can trigger the "Check answers" button when Enter is pressed on the last input
+                    // checkAllAnswers();
+                }
+            }
+        }
+
+        // Set focus to the first input field on page load
+        window.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('input1').focus();
+        });
+
+        // Add event listeners to all input fields for Enter key navigation
+        for (let i = 1; i <= 20; i++) {
+            const input = document.getElementById(`input${i}`);
+            input.addEventListener('keydown', function(event) {
+                handleEnterKey(event, i);
+            });
+        }
+    </script>
+    
+</body>
+</html>
