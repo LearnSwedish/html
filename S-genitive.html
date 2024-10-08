@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Work Sans Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>S-genitive Exercise</title>
     <style>
         /* Ensure padding and borders are included in the element's total width and height */
@@ -11,22 +12,30 @@
             box-sizing: border-box;
         }
         body {
-    font-family: 'Work Sans', sans-serif;
-    background-color: #f9f9f9;
-    padding: 20px;
-}
+            font-family: 'Work Sans', sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
 
         h1, p {
-    font-family: 'Work Sans', sans-serif;
-    text-align: center;
-}
+            font-family: 'Work Sans', sans-serif;
+            text-align: center;
+        }
 
-.exercise-item label,
-.exercise-item input,
-.check-button,
-.restart-button {
-    font-family: 'Work Sans', sans-serif;
-}
+        .exercise-item label,
+        .exercise-item input,
+        .check-button,
+        .restart-button {
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        /* Apply semi-bold font weight to labels and buttons */
+        .exercise-item label,
+        .check-button,
+        .restart-button {
+            font-weight: 600; /* Semi-bold */
+        }
+
         .exercise-container {
             position: relative; /* To position buttons absolutely within this container */
             display: flex;
@@ -50,6 +59,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            z-index: 1;
         }
         .check-button:hover {
             background-color: #45a049;
@@ -66,6 +76,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            z-index: 1;
         }
         .restart-button:hover {
             background-color: #da190b;
@@ -81,14 +92,14 @@
             text-align: left; /* Left-align the label text */
             padding-right: 10px;
         }
-.exercise-item input {
-    flex: 0 0 50%; /* Fixed width for input fields */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 600; /* Makes the input text semi-bold */
-}
+        .exercise-item input {
+            flex: 0 0 50%; /* Fixed width for input fields */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600; /* Makes the input text semi-bold */
+        }
         .icon {
             flex: 0 0 24px; /* Fixed width for icons */
             text-align: center;
@@ -98,7 +109,7 @@
             display: flex;
             align-items: center; /* Vertically center the icon */
             justify-content: center; /* Horizontally center the icon */
-
+        }
         /* Green and Red Colors for Icons */
         .icon.correct {
             color: green !important; /* Ensure green color */
@@ -133,7 +144,8 @@
 </head>
 <body>
     <h1>Rewrite using the -s-genitive</h1>
-    <p>Example: parken i byn → byns park</p><br />
+    <p>Example: parken i byn → byns park</p>
+	<p><strong>Hey!</strong> Don't have å, ä, ö on your keyboard?<br />No problem, you can use a and o instead.</p><br />
     
     <div class="exercise-container">
         <!-- "Restart" Button -->
@@ -248,25 +260,25 @@
     <script>
         // Object containing correct answers
         const correctAnswers = {
-            1: ['husets dörr', 'husets dorr']
-            2: 'vardagsrummets lampa',
-            3: ['trädgårdens blommor', 'tradgardens blommor']
-            4: 'grannens hund',
-            5: 'byns skola',
-            6: ['sovrummets fönster', 'sovrummets fonster']
-            7: ['gårdens port', 'gardens port']
-            8: ['fönstrets gardin', 'fonstrets gardin']
-            9: 'skogens stig',
-            10: ['företagets arbetare', 'foretagets arbetare']
-            11: ['Göteborgs domkyrka', 'Goteborgs domkyrka']
-            12: 'grannarnas hus',
-            13: 'gatans lampor',
-            14: ['kyrkans bänkar', 'kyrkans bankar']
-            15: 'stadens sjukhus',
-            16: ['balkongens växter', 'balkongens vaxter']
-            17: 'dammens fiskar',
-            18: 'tomtens staket',
-            19: ['dagens skämt', 'dagens skamt']
+            1: ['husets dörr', 'husets dorr'],
+            2: ['vardagsrummets lampa'],
+            3: ['trädgårdens blommor', 'tradgardens blommor'],
+            4: ['grannens hund'],
+            5: ['byns skola'],
+            6: ['sovrummets fönster', 'sovrummets fonster'],
+            7: ['gårdens port', 'gardens port'],
+            8: ['fönstrets gardin', 'fonstrets gardin'],
+            9: ['skogens stig'],
+            10: ['företagets arbetare', 'foretagets arbetare'],
+            11: ['Göteborgs domkyrka', 'Goteborgs domkyrka'],
+            12: ['grannarnas hus'],
+            13: ['gatans lampor'],
+            14: ['kyrkans bänkar', 'kyrkans bankar'],
+            15: ['stadens sjukhus'],
+            16: ['balkongens växter', 'balkongens vaxter'],
+            17: ['dammens fiskar'],
+            18: ['tomtens staket'],
+            19: ['dagens skämt', 'dagens skamt'],
             20: ['trädets skugga', 'tradets skugga']
         };
 
@@ -276,19 +288,39 @@
                 const input = document.getElementById(`input${i}`);
                 const icon = document.getElementById(`icon${i}`);
                 const userAnswer = input.value.toLowerCase().trim();
-                const correctAnswer = correctAnswers[i].toLowerCase();
-
-                if (userAnswer === correctAnswer) {
-                    icon.textContent = '✅️';
-                    icon.classList.add('correct');
-                    icon.classList.remove('incorrect');
-                } else if (userAnswer !== "") {
-                    icon.textContent = '❌';
-                    icon.classList.add('incorrect');
-                    icon.classList.remove('correct');
+                
+                // Check if correctAnswers[i] exists and is an array
+                if (Array.isArray(correctAnswers[i])) {
+                    const answers = correctAnswers[i].map(answer => answer.toLowerCase());
+                    if (answers.includes(userAnswer)) {
+                        icon.textContent = '✔️';
+                        icon.classList.add('correct');
+                        icon.classList.remove('incorrect');
+                    } else if (userAnswer !== "") {
+                        icon.textContent = '❌';
+                        icon.classList.add('incorrect');
+                        icon.classList.remove('correct');
+                    } else {
+                        icon.textContent = '';
+                        icon.classList.remove('correct', 'incorrect');
+                    }
+                } else if (typeof correctAnswers[i] === 'string') {
+                    const correctAnswer = correctAnswers[i].toLowerCase();
+                    if (userAnswer === correctAnswer) {
+                        icon.textContent = '✔️';
+                        icon.classList.add('correct');
+                        icon.classList.remove('incorrect');
+                    } else if (userAnswer !== "") {
+                        icon.textContent = '❌';
+                        icon.classList.add('incorrect');
+                        icon.classList.remove('correct');
+                    } else {
+                        icon.textContent = '';
+                        icon.classList.remove('correct', 'incorrect');
+                    }
                 } else {
-                    icon.textContent = '';
-                    icon.classList.remove('correct', 'incorrect');
+                    // In case correctAnswers[i] is neither an array nor a string
+                    console.error(`Invalid format for correctAnswers[${i}]`);
                 }
             }
         }
