@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="vocab-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Eight: 3</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dark mode</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Unit Eight: 3</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+    <p id="swedish-word" class="clickable-word" onclick="speakSwedish()">
+        <span id="word-text"></span>
+        <i class="fa-regular fa-circle-play"></i>
+    </p>
+</div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Correct Answers: <span id="correct-counter">0</span></p>
+            <p>Mistakes: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Words missed on first try:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Reset</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Yes</button>
+                <button class="modal-btn" onclick="closeModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        const vocabulary = [
+			{ swedish: "(ett) tvivel", english: ["doubt", "assumption", "certainty", "conclusion"], correct: 0 },
+			{ swedish: "(en) pjäs", english: ["play", "puzzle", "mission", "strategy"], correct: 0 },
+			{ swedish: "(en) självbiografi", english: ["autobiography", "mystery novel", "travel diary", "fiction piece"], correct: 0 },
+			{ swedish: "Hemsöborna", english: ["The People of Hemsö", "A Brief History of Time", "The Adventures of Tintin", "Game of Thrones"], correct: 0 },
+			{ swedish: "att kämpa", english: ["struggle, battle", "celebration", "partnership", "agreement"], correct: 0 },
+			{ swedish: "etablissemanget", english: ["the Establishment", "local market", "freelance scene", "start-up community"], correct: 0 },
+			{ swedish: "(ett) sammanhang", english: ["context", "disarray", "disconnection", "randomness"], correct: 0 },
+			{ swedish: "banbrytande", english: ["pioneering", "common", "outdated", "trivial"], correct: 0 },
+			{ swedish: "(ett) skådespel", english: ["drama", "documentary", "quiz show", "reality TV"], correct: 0 },
+			{ swedish: "Ett drömspel", english: ["A Dreamplay", "A Silent Film", "A Sports Review", "An Instruction Manual"], correct: 0 },
+			{ swedish: "Spöksonaten", english: ["The Ghost Sonata", "The Bird Opera", "The Dog Symphony", "The Fish Ballet"], correct: 0 },
+			{ swedish: "folklig, folkligt", english: ["with a wide public", "in a hidden spot", "within a closed group", "among a few friends"], correct: 0 },
+			{ swedish: "(en) pristagare", english: ["prizewinner", "participant", "team member", "runner-up"], correct: 0 },
+			{ swedish: "(en) berättelse", english: ["story", "statistic", "formula", "diagram"], correct: 0 },
+			{ swedish: "(en) handling", english: ["plot", "calendar", "equipment", "sculpture"], correct: 0 },
+			{ swedish: "övernaturlig, övernaturligt", english: ["supernatural", "ordinary", "technological", "agricultural"], correct: 0 },
+			{ swedish: "(ett) inslag", english: ["element", "whole", "galaxy", "adventure"], correct: 0 },
+			{ swedish: "(ett) avtal", english: ["contract", "doodle", "advertisement", "casual note"], correct: 0 },
+			{ swedish: "(ett) fall", english: ["case", "party", "celebration", "festival"], correct: 0 },
+			{ swedish: "galen, galet", english: ["mad", "organized", "strategic", "calm"], correct: 0 },
+			{ swedish: "Törnrosa", english: ["Sleeping Beauty", "Iron Man", "Wonder Woman", "Sherlock Holmes"], correct: 0 },
+			{ swedish: "Askungen", english: ["Cinderella", "Harry Potter", "Batman", "Robin Hood"], correct: 0 },
+			{ swedish: "(ett) odjur", english: ["beast", "robot", "painter", "explorer"], correct: 0 },
+			{ swedish: "renodlad, renodlat", english: ["out and out", "somewhat hesitant", "kind of in-between", "neither here nor there"], correct: 0 },
+			{ swedish: "(ett) spöke", english: ["ghost", "robot", "treasure", "spaceship"], correct: 0 },
+			{ swedish: "att betrakta", english: ["regard", "ignore", "forget", "dismiss"], correct: 0 },
+			{ swedish: "(en) sagotant", english: ["old woman who tells stories", "astronaut", "computer programmer", "graffiti artist"], correct: 0 },
+			{ swedish: "(ett) rykte", english: ["reputation", "obscurity", "privacy", "confusion"], correct: 0 },
+
+        ];
+   </script>
+<script src="vocab-scripts.js"></script>
+<script>
+    window.addEventListener('load', () => {
+        ResponsiveVoice.speak("", "Swedish Female"); // Preload Swedish voice
+    });
+</script>
+</body>
+</html>

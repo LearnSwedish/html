@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="vocab-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Eight: 2</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dark mode</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Unit Eight: 2</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+    <p id="swedish-word" class="clickable-word" onclick="speakSwedish()">
+        <span id="word-text"></span>
+        <i class="fa-regular fa-circle-play"></i>
+    </p>
+</div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Correct Answers: <span id="correct-counter">0</span></p>
+            <p>Mistakes: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Words missed on first try:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Reset</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Yes</button>
+                <button class="modal-btn" onclick="closeModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        const vocabulary = [
+			{ swedish: "att ta en fika", english: ["get a coffee/tea", "take a nap", "buy a sandwich", "read a magazine"], correct: 0 },
+			{ swedish: "absolut", english: ["too right", "mostly", "sort of", "kind of"], correct: 0 },
+			{ swedish: "helst inte", english: ["I'd rather not", "I might consider", "possibly later", "under certain conditions"], correct: 0 },
+			{ swedish: "får... inte", english: ["not allowed to", "permitted for now", "best avoided", "reluctantly agreed"], correct: 0 },
+			{ swedish: "att röka", english: ["smoke", "sing", "whisper", "hum"], correct: 0 },
+			{ swedish: "bör", english: ["should, ought to", "could think about", "might have to", "would possibly"], correct: 0 },
+			{ swedish: "(en) terrass", english: ["terrace", "rooftop", "courtyard", "alley"], correct: 0 },
+			{ swedish: "fortfarande", english: ["still", "a bit moving", "sort of settled", "slightly shaking"], correct: 0 },
+			{ swedish: "ganska", english: ["rather, quite", "scarcely", "mildly", "slightly off"], correct: 0 },
+			{ swedish: "ledig, ledigt", english: ["free, vacant", "partially taken", "somewhat accessible", "lightly occupied"], correct: 0 },
+			{ swedish: "att hålla med om", english: ["agree (with)", "pass by", "avoid conflict", "stay neutral"], correct: 0 },
+			{ swedish: "tydligt", english: ["clearly", "almost apparent", "mildly visible", "partly revealed"], correct: 0 },
+			{ swedish: "själv", english: ["yourself", "somewhat like you", "with others", "in a group"], correct: 0 },
+			{ swedish: "långtråkig, långtråkigt", english: ["boring", "mildly engaging", "not too thrilling", "average"], correct: 0 },
+			{ swedish: "(ett) slut", english: ["end", "take a break", "pause for a bit", "slow down"], correct: 0 },
+			{ swedish: "kanske", english: ["maybe", "pretty sure not", "leaning towards yes", "hesitant yes"], correct: 0 },
+			{ swedish: "väldigt", english: ["really, extremely", "almost totally", "faintly impressive", "decently enough"], correct: 0 },
+			{ swedish: "lika bra", english: ["equally as good", "about the same", "marginally similar", "a bit comparable"], correct: 0 },
+			{ swedish: "ikväll", english: ["this evening", "around midday", "early night", "before dawn"], correct: 0 },
+			{ swedish: "(en) diktuppläsning", english: ["poetry reading", "spoken discussion", "lyrical exchange", "scripted talk"], correct: 0 },
+			{ swedish: "studentkåren", english: ["the students' union", "neighborhood club", "alumni association", "campus market"], correct: 0 },
+			{ swedish: "intresserad, intresserat", english: ["interested", "casually curious", "slightly attentive", "vaguely aware"], correct: 0 },
+			{ swedish: "att bero på", english: ["depend", "sort of rely on", "tentatively connect", "not quite tied to"], correct: 0 },
+			{ swedish: "känd, känt", english: ["famous, well-known", "known in some circles", "moderately mentioned", "kind of popular"], correct: 0 },
+			{ swedish: "(en) författare", english: ["writer", "casual storyteller", "occasional notetaker", "random scribbler"], correct: 0 },
+			{ swedish: "nja", english: ["no", "probably not", "sometimes yes", "it depends"], correct: 0 },
+			{ swedish: "inte precis", english: ["not exactly", "sort of precise", "vaguely similar", "almost like that"], correct: 0 },
+			{ swedish: "(en) amatörpoet", english: ["amateur poet", "casual songwriter", "hobby novelist", "part-time blogger"], correct: 0 },
+			{ swedish: "att vara upptagen", english: ["be busy", "half-occupied", "sometimes free", "multitasking lightly"], correct: 0 },
+			{ swedish: "att tvätta håret", english: ["wash the hair", "rinse the face", "scrub hands", "brush off the dust"], correct: 0 },
+
+        ];
+   </script>
+<script src="vocab-scripts.js"></script>
+<script>
+    window.addEventListener('load', () => {
+        ResponsiveVoice.speak("", "Swedish Female"); // Preload Swedish voice
+    });
+</script>
+</body>
+</html>

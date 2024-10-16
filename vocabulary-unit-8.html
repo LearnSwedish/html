@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="vocab-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Eight: all</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dark mode</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Unit Eight: all</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+    <p id="swedish-word" class="clickable-word" onclick="speakSwedish()">
+        <span id="word-text"></span>
+        <i class="fa-regular fa-circle-play"></i>
+    </p>
+</div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Correct Answers: <span id="correct-counter">0</span></p>
+            <p>Mistakes: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Words missed on first try:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Reset</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Yes</button>
+                <button class="modal-btn" onclick="closeModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        const vocabulary = [
+			{ swedish: "(en) kurs", english: ["course", "program", "curriculum", "syllabus"], correct: 0 },
+			{ swedish: "(en) litteratur", english: ["literature", "fiction", "prose", "writings"], correct: 0 },
+			{ swedish: "(en) 15-poängskurs", english: ["ten-week course", "short-term program", "semester", "module"], correct: 0 },
+			{ swedish: "(en) skräck", english: ["horror", "terror", "fright", "dread"], correct: 0 },
+			{ swedish: "att se fram emot", english: ["look forward to", "anticipate", "await", "expect"], correct: 0 },
+			{ swedish: "att älska", english: ["love", "adore", "cherish", "appreciate"], correct: 0 },
+			{ swedish: "en bok", english: ["book", "novel", "tome", "volume"], correct: 0 },
+			{ swedish: "förutom det", english: ["apart from the fact that, besides", "moreover", "additionally", "except for"], correct: 0 },
+			{ swedish: "(en) filmatisering", english: ["screen version", "adaptation", "film rendition", "movie version"], correct: 0 },
+			{ swedish: "Sagan om ringen", english: ["Lord of the Rings", "Harry Potter", "The Hobbit", "Game of Thrones"], correct: 0 },
+			{ swedish: "minst", english: ["at least", "minimum", "no less than", "not less than"], correct: 0 },
+			{ swedish: "att lära sig", english: ["learn", "study", "understand", "grasp"], correct: 0 },
+			{ swedish: "samma", english: ["the same", "identical", "unchanged", "equivalent"], correct: 0 },
+			{ swedish: "(ett) intresse", english: ["interest", "curiosity", "fascination", "concern"], correct: 0 },
+			{ swedish: "att anmäla sig", english: ["enrol", "register", "sign up", "join"], correct: 0 },
+			{ swedish: "ett trettiotal", english: ["about thirty", "nearly thirty", "approximately thirty", "roughly thirty"], correct: 0 },
+			{ swedish: "(en) föreläsningssal", english: ["lecture room", "classroom", "hall", "auditorium"], correct: 0 },
+			{ swedish: "komma in", english: ["go in", "enter", "step in", "access"], correct: 0 },
+			{ swedish: "bredvid", english: ["next to", "beside", "adjacent to", "near"], correct: 0 },
+			{ swedish: "fransk, franskt", english: ["French", "Italian", "Spanish", "German"], correct: 0 },
+			{ swedish: "(en) tjej", english: ["girl", "lass", "maiden", "young woman"], correct: 0 },
+			{ swedish: "(en) introduktionskurs", english: ["introductory course", "beginner class", "foundation course", "entry-level class"], correct: 0 },
+			{ swedish: "med [också]", english: ["too", "also", "as well", "likewise"], correct: 0 },
+			{ swedish: "att prata", english: ["talk, chat", "converse", "discuss", "banter"], correct: 0 },
+			{ swedish: "(en) sommar", english: ["summer", "warm season", "vacation period", "midsummer"], correct: 0 },
+			{ swedish: "att förbättra", english: ["improve", "enhance", "boost", "upgrade"], correct: 0 },
+			{ swedish: "avsevärt", english: ["considerably", "significantly", "greatly", "markedly"], correct: 0 },
+			{ swedish: "att komma fram till", english: ["come to the conclusion", "determine", "infer", "deduce"], correct: 0 },
+			{ swedish: "att bero på", english: ["be due to the fact that", "result from", "stem from", "be because of"], correct: 0 },
+			{ swedish: "att skaffa sig", english: ["acquire", "obtain", "secure", "gain"], correct: 0 },
+			{ swedish: "(en) pojkvän", english: ["boyfriend", "partner", "beau", "companion"], correct: 0 },
+			{ swedish: "tvärt", english: ["suddenly", "abruptly", "instantly", "unexpectedly"], correct: 0 },
+			{ swedish: "därför att", english: ["because", "since", "as", "due to"], correct: 0 },
+			{ swedish: "(en) föreläsning", english: ["lecture", "talk", "presentation", "discourse"], correct: 0 },
+			{ swedish: "(en) föreläsare", english: ["lecturer", "instructor", "professor", "speaker"], correct: 0 },
+			{ swedish: "engagerad, engagerat", english: ["intense", "fervent", "passionate", "strong"], correct: 0 },
+			{ swedish: "att antecka", english: ["take notes", "jot down", "write down", "record"], correct: 0 },
+			{ swedish: "flitigt", english: ["assiduously", "diligently", "meticulously", "thoroughly"], correct: 0 },
+			{ swedish: "lätt", english: ["easy", "simple", "effortless", "straightforward"], correct: 0 },
+			{ swedish: "att följa med", english: ["follow", "pursue", "track", "trail"], correct: 0 },
+			{ swedish: "för fort", english: ["too fast", "hasty", "speedy", "rapid"], correct: 0 },
+			{ swedish: "dessutom", english: ["what is more", "furthermore", "additionally", "in addition"], correct: 0 },
+			{ swedish: "(en) tavla", english: ["board", "panel", "committee", "council"], correct: 0 },
+			{ swedish: "(en) ordbok", english: ["dictionary", "glossary", "lexicon", "wordbook"], correct: 0 },
+			{ swedish: "att få", english: ["receive, get", "acquire", "obtain", "collect"], correct: 0 },
+			{ swedish: "(en) användning", english: ["use", "utilize", "employ", "apply"], correct: 0 },
+			{ swedish: "en hel del", english: ["quite a lot", "a great deal", "plenty", "numerous"], correct: 0 },
+			{ swedish: "(ett) ord", english: ["word", "term", "expression", "phrase"], correct: 0 },
+			{ swedish: "att slå upp", english: ["look up (in a book)", "search", "consult", "refer to"], correct: 0 },
+			{ swedish: "(ett) slut", english: ["end", "conclusion", "finish", "closure"], correct: 0 },
+			{ swedish: "att undra", english: ["wonder", "ponder", "question", "marvel"], correct: 0 },
+			{ swedish: "(en) fråga", english: ["question", "inquiry", "query", "doubt"], correct: 0 },
+			{ swedish: "tyst", english: ["silent", "quiet", "mute", "hushed"], correct: 0 },
+			{ swedish: "(en) sal", english: ["hall", "corridor", "gallery", "passage"], correct: 0 },
+			{ swedish: "att avsluta", english: ["conclude", "wrap up", "finalize", "close"], correct: 0 },
+			{ swedish: "plötsligt", english: ["suddenly", "quickly", "all of a sudden", "in a flash"], correct: 0 },
+			{ swedish: "(ett) prat", english: ["chatter", "gossip", "babble", "ramble"], correct: 0 },
+			{ swedish: "att ta en fika", english: ["get a coffee/tea", "take a nap", "buy a sandwich", "read a magazine"], correct: 0 },
+			{ swedish: "absolut", english: ["too right", "mostly", "sort of", "kind of"], correct: 0 },
+			{ swedish: "helst inte", english: ["I'd rather not", "I might consider", "possibly later", "under certain conditions"], correct: 0 },
+			{ swedish: "får... inte", english: ["not allowed to", "permitted for now", "best avoided", "reluctantly agreed"], correct: 0 },
+			{ swedish: "att röka", english: ["smoke", "sing", "whisper", "hum"], correct: 0 },
+			{ swedish: "bör", english: ["should, ought to", "could think about", "might have to", "would possibly"], correct: 0 },
+			{ swedish: "(en) terrass", english: ["terrace", "rooftop", "courtyard", "alley"], correct: 0 },
+			{ swedish: "fortfarande", english: ["still", "a bit moving", "sort of settled", "slightly shaking"], correct: 0 },
+			{ swedish: "ganska", english: ["rather, quite", "scarcely", "mildly", "slightly off"], correct: 0 },
+			{ swedish: "ledig, ledigt", english: ["free, vacant", "partially taken", "somewhat accessible", "lightly occupied"], correct: 0 },
+			{ swedish: "att hålla med om", english: ["agree (with)", "pass by", "avoid conflict", "stay neutral"], correct: 0 },
+			{ swedish: "tydligt", english: ["clearly", "almost apparent", "mildly visible", "partly revealed"], correct: 0 },
+			{ swedish: "själv", english: ["yourself", "somewhat like you", "with others", "in a group"], correct: 0 },
+			{ swedish: "långtråkig, långtråkigt", english: ["boring", "mildly engaging", "not too thrilling", "average"], correct: 0 },
+			{ swedish: "(ett) slut", english: ["end", "take a break", "pause for a bit", "slow down"], correct: 0 },
+			{ swedish: "kanske", english: ["maybe", "pretty sure not", "leaning towards yes", "hesitant yes"], correct: 0 },
+			{ swedish: "väldigt", english: ["really, extremely", "almost totally", "faintly impressive", "decently enough"], correct: 0 },
+			{ swedish: "lika bra", english: ["equally as good", "about the same", "marginally similar", "a bit comparable"], correct: 0 },
+			{ swedish: "ikväll", english: ["this evening", "around midday", "early night", "before dawn"], correct: 0 },
+			{ swedish: "(en) diktuppläsning", english: ["poetry reading", "spoken discussion", "lyrical exchange", "scripted talk"], correct: 0 },
+			{ swedish: "studentkåren", english: ["the students' union", "neighborhood club", "alumni association", "campus market"], correct: 0 },
+			{ swedish: "intresserad, intresserat", english: ["interested", "casually curious", "slightly attentive", "vaguely aware"], correct: 0 },
+			{ swedish: "att bero på", english: ["depend", "sort of rely on", "tentatively connect", "not quite tied to"], correct: 0 },
+			{ swedish: "känd, känt", english: ["famous, well-known", "known in some circles", "moderately mentioned", "kind of popular"], correct: 0 },
+			{ swedish: "(en) författare", english: ["writer", "casual storyteller", "occasional notetaker", "random scribbler"], correct: 0 },
+			{ swedish: "nja", english: ["no", "probably not", "sometimes yes", "it depends"], correct: 0 },
+			{ swedish: "inte precis", english: ["not exactly", "sort of precise", "vaguely similar", "almost like that"], correct: 0 },
+			{ swedish: "(en) amatörpoet", english: ["amateur poet", "casual songwriter", "hobby novelist", "part-time blogger"], correct: 0 },
+			{ swedish: "att vara upptagen", english: ["be busy", "half-occupied", "sometimes free", "multitasking lightly"], correct: 0 },
+			{ swedish: "att tvätta håret", english: ["wash the hair", "rinse the face", "scrub hands", "brush off the dust"], correct: 0 },
+			{ swedish: "(ett) tvivel", english: ["doubt", "assumption", "certainty", "conclusion"], correct: 0 },
+			{ swedish: "(en) pjäs", english: ["play", "puzzle", "mission", "strategy"], correct: 0 },
+			{ swedish: "(en) självbiografi", english: ["autobiography", "mystery novel", "travel diary", "fiction piece"], correct: 0 },
+			{ swedish: "Hemsöborna", english: ["The People of Hemsö", "A Brief History of Time", "The Adventures of Tintin", "Game of Thrones"], correct: 0 },
+			{ swedish: "att kämpa", english: ["struggle, battle", "celebration", "partnership", "agreement"], correct: 0 },
+			{ swedish: "etablissemanget", english: ["the Establishment", "local market", "freelance scene", "start-up community"], correct: 0 },
+			{ swedish: "(ett) sammanhang", english: ["context", "disarray", "disconnection", "randomness"], correct: 0 },
+			{ swedish: "banbrytande", english: ["pioneering", "common", "outdated", "trivial"], correct: 0 },
+			{ swedish: "(ett) skådespel", english: ["drama", "documentary", "quiz show", "reality TV"], correct: 0 },
+			{ swedish: "Ett drömspel", english: ["A Dreamplay", "A Silent Film", "A Sports Review", "An Instruction Manual"], correct: 0 },
+			{ swedish: "Spöksonaten", english: ["The Ghost Sonata", "The Bird Opera", "The Dog Symphony", "The Fish Ballet"], correct: 0 },
+			{ swedish: "folklig, folkligt", english: ["with a wide public", "in a hidden spot", "within a closed group", "among a few friends"], correct: 0 },
+			{ swedish: "(en) pristagare", english: ["prizewinner", "participant", "team member", "runner-up"], correct: 0 },
+			{ swedish: "(en) berättelse", english: ["story", "statistic", "formula", "diagram"], correct: 0 },
+			{ swedish: "(en) handling", english: ["plot", "calendar", "equipment", "sculpture"], correct: 0 },
+			{ swedish: "övernaturlig, övernaturligt", english: ["supernatural", "ordinary", "technological", "agricultural"], correct: 0 },
+			{ swedish: "(ett) inslag", english: ["element", "whole", "galaxy", "adventure"], correct: 0 },
+			{ swedish: "(ett) avtal", english: ["contract", "doodle", "advertisement", "casual note"], correct: 0 },
+			{ swedish: "(ett) fall", english: ["case", "party", "celebration", "festival"], correct: 0 },
+			{ swedish: "galen, galet", english: ["mad", "organized", "strategic", "calm"], correct: 0 },
+			{ swedish: "Törnrosa", english: ["Sleeping Beauty", "Iron Man", "Wonder Woman", "Sherlock Holmes"], correct: 0 },
+			{ swedish: "Askungen", english: ["Cinderella", "Harry Potter", "Batman", "Robin Hood"], correct: 0 },
+			{ swedish: "(ett) odjur", english: ["beast", "robot", "painter", "explorer"], correct: 0 },
+			{ swedish: "renodlad, renodlat", english: ["out and out", "somewhat hesitant", "kind of in-between", "neither here nor there"], correct: 0 },
+			{ swedish: "(ett) spöke", english: ["ghost", "robot", "treasure", "spaceship"], correct: 0 },
+			{ swedish: "att betrakta", english: ["regard", "ignore", "forget", "dismiss"], correct: 0 },
+			{ swedish: "(en) sagotant", english: ["old woman who tells stories", "astronaut", "computer programmer", "graffiti artist"], correct: 0 },
+			{ swedish: "(ett) rykte", english: ["reputation", "obscurity", "privacy", "confusion"], correct: 0 },
+			
+        ];
+   </script>
+<script src="vocab-scripts.js"></script>
+<script>
+    window.addEventListener('load', () => {
+        ResponsiveVoice.speak("", "Swedish Female"); // Preload Swedish voice
+    });
+</script>
+</body>
+</html>
