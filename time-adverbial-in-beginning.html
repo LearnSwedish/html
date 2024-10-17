@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Time adverbial goes first</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+        .score {
+            font-size: 16px;
+            margin-right: 10px;
+            position: fixed;
+            top: 20px;
+            right: 15px;
+            z-index: 1001;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .section-title i {
+            margin-right: 10px;
+        }
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(to right, #ddd, #333, #ddd);
+            margin: 30px 0;
+            width: 60%;
+        }
+        .word-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 900px;
+            position: relative;
+        }
+        .word {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: move;
+            font-size: 18px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .word:hover {
+            background-color: #d4d4d4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .correct {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 24px;
+            color: green;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .celebration-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 100%;
+        }
+        .celebration-modal-content img {
+            max-width: 80%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .close-button {
+            float: right;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 20px;
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .close-button:hover {
+            background-color: #f44336;
+            transform: scale(1.2);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="score">Score: <span id="score">0</span> / 15</div>
+    <h1>Front time adverbials, and fix word order</h1>
+
+    <!-- No Problem Section -->
+    <div class="section-title"><i class="fa-solid fa-thumbs-up"></i> No problem</div>
+    <div id="sortable1" class="word-container" data-correct="Sedan fyra år tillbaka bor Marie i Göteborg" data-scored="false">
+        <div class="word">Marie</div>
+        <div class="word">bor</div>
+        <div class="word">i Göteborg</div>
+        <div class="word">sedan</div>
+        <div class="word">fyra år</div>
+        <div class="word">tillbaka</div>
+    </div>
+    <div id="sortable2" class="word-container" data-correct="Sedan i våras jobbar hon som lärare på en skola i stan" data-scored="false">
+        <div class="word">Hon</div>
+        <div class="word">jobbar</div>
+        <div class="word">som</div>
+        <div class="word">lärare</div>
+        <div class="word">på</div>
+        <div class="word">en skola</div>
+        <div class="word">i stan</div>
+        <div class="word">sedan</div>
+        <div class="word">i våras</div>
+    </div>
+    <div id="sortable3" class="word-container" data-correct="Varje morgon tar hon bussen till skolan" data-scored="false">
+        <div class="word">Hon</div>
+        <div class="word">tar</div>
+        <div class="word">bussen</div>
+        <div class="word">till</div>
+        <div class="word">skolan</div>
+        <div class="word">varje</div>
+        <div class="word">morgon</div>
+    </div>
+    <div id="sortable4" class="word-container" data-correct="Innan lektionerna startar dricker hon en kopp te" data-scored="false">
+        <div class="word">Hon</div>
+        <div class="word">dricker</div>
+        <div class="word">en kopp te</div>
+        <div class="word">innan</div>
+        <div class="word">lektionerna</div>
+        <div class="word">startar</div>
+    </div>
+    <div id="sortable5" class="word-container" data-correct="När klockan slår åtta samlas eleverna i klassrummet" data-scored="false">
+        <div class="word">Eleverna</div>
+        <div class="word">samlas</div>
+        <div class="word">i klassrummet</div>
+        <div class="word">när</div>
+        <div class="word">klockan</div>
+        <div class="word">slår åtta</div>
+    </div>
+
+    <!-- Divider Line -->
+    <hr>
+
+    <!-- Harder! Section -->
+    <div class="section-title"><i class="fa-solid fa-cloud-rain"></i> Harder!</div>
+    <div id="sortable6" class="word-container" data-correct="Hela förmiddagen undervisar Marie i matematik och svenska" data-scored="false">
+        <div class="word">Marie</div>
+        <div class="word">undervisar</div>
+        <div class="word">i matematik</div>
+        <div class="word">svenska</div>
+        <div class="word">och</div>
+        <div class="word">hela</div>
+        <div class="word">förmiddagen</div>
+    </div>
+    <div id="sortable7" class="word-container" data-correct="På rasten tar hon en promenad runt skolgården" data-scored="false">
+        <div class="word">Hon</div>
+        <div class="word">tar</div>
+        <div class="word">runt</div>
+        <div class="word">skolgården</div>
+        <div class="word">en promenad</div>
+        <div class="word">på</div>
+        <div class="word">rasten</div>
+    </div>
+    <div id="sortable8" class="word-container" data-correct="Efter lunch har hon möte med kollegorna på sitt kontor" data-scored="false">
+        <div class="word">Hon</div>
+        <div class="word">har</div>
+        <div class="word">möte</div>
+        <div class="word">kollegorna</div>
+        <div class="word">med</div>
+        <div class="word">på</div>
+        <div class="word">sitt kontor</div>
+        <div class="word">efter</div>
+        <div class="word">lunch</div>
+    </div>
+    <div id="sortable9" class="word-container" data-correct="Efter mötet läser hon mail och rättar sina elevers prov" data-scored="false">
+        <div class="word">Rättar</div>
+		<div class="word">mail och</div>
+        <div class="word">läser hon</div>
+        <div class="word">prov</div>
+        <div class="word">sina</div>
+        <div class="word">elevers</div>
+        <div class="word">efter</div>
+        <div class="word">mötet</div>
+    </div>
+    <div id="sortable10" class="word-container" data-correct="Mot slutet av dagen förbereder hon material för nästa dag" data-scored="false">
+        <div class="word">Hon</div>
+        <div class="word">förbereder</div>
+        <div class="word">nästa</div>
+        <div class="word">dag</div>
+        <div class="word">material för</div>
+        <div class="word">mot slutet</div>
+        <div class="word">av</div>
+        <div class="word">dagen</div>
+    </div>
+
+    <!-- Divider Line -->
+    <hr>
+
+    <!-- Insane! Section -->
+    <div class="section-title"><i class="fa-solid fa-fire"></i> Inferno!</div>
+    <div id="sortable11" class="word-container" data-correct="Innan hon går hem planerar hon lektionerna för veckan" data-scored="false">
+        <div class="word">Planerar</div>
+        <div class="word">för veckan</div>
+        <div class="word">lektionerna</div>
+        <div class="word">hon</div>
+        <div class="word">går</div>
+        <div class="word">hem</div>
+        <div class="word">hon</div>
+        <div class="word">innan</div>
+    </div>
+    <div id="sortable12" class="word-container" data-correct="Efter jobbet besöker hon ibland biblioteket på universitetet" data-scored="false">
+        <div class="word">Hon</div>
+        <div class="word">ibland</div>
+        <div class="word">på</div>
+        <div class="word">efter</div>
+        <div class="word">besöker</div>
+        <div class="word">biblioteket</div>
+        <div class="word">universitetet</div>
+        <div class="word">jobbet</div>
+    </div>
+    <div id="sortable13" class="word-container" data-correct="Vid 17-tiden tar hon bussen hem till lägenheten" data-scored="false">
+        <div class="word">17-tiden</div>
+        <div class="word">vid</div>
+        <div class="word">lägenheten</div>
+        <div class="word">till</div>
+        <div class="word">hem</div>
+        <div class="word">bussen</div>
+        <div class="word">tar</div>
+        <div class="word">hon</div>
+    </div>
+    <div id="sortable14" class="word-container" data-correct="På kvällen lagar hon mat och kanske ringer en vän" data-scored="false">
+        <div class="word">Kvällen</div>
+        <div class="word">vän</div>
+        <div class="word">ringer</div>
+        <div class="word">och kanske</div>
+        <div class="word">lagar hon</div>
+        <div class="word">på</div>
+        <div class="word">en</div>
+        <div class="word">mat</div>
+    </div>
+    <div id="sortable15" class="word-container" data-correct="Innan hon går och lägger sig tittar hon ibland på en film" data-scored="false">
+        <div class="word">Sig</div>
+        <div class="word">innan</div>
+        <div class="word">på en</div>		
+        <div class="word">och</div>
+        <div class="word">lägger</div>
+        <div class="word">hon</div>
+        <div class="word">ibland</div>
+        <div class="word">film</div>
+        <div class="word">hon</div>
+        <div class="word">går</div>
+        <div class="word">tittar</div>
+    </div><br /><br /><br />
+    
+    <!-- Celebration Modal -->
+    <div id="celebrationModal" class="modal">
+        <div class="celebration-modal-content">
+            <span class="close-button" onclick="closeCelebrationModal()">&times;</span>
+            <img src="https://i.imgur.com/5XZQKYx.png" alt="Celebration">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize sortable for each container
+            for (let i = 1; i <= 15; i++) {
+                let container = document.getElementById('sortable' + i);
+                Sortable.create(container, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: function(evt) {
+                        updateWordCapitalization(container); // First, update capitalization
+                        checkSentenceOrder(container); // Then, check the sentence order
+                    }
+                });
+            }
+        });
+
+        function updateWordCapitalization(container) {
+            let words = Array.from(container.querySelectorAll('.word'));
+
+            if (words.length > 0) {
+                // Capitalize the first word
+                let firstWord = words[0].textContent.trim();
+                words[0].textContent = capitalizeFirstLetter(firstWord);
+
+                // Lowercase the rest of the words except "Marie" and "Majorna"
+                for (let i = 1; i < words.length; i++) {
+                    let word = words[i].textContent.trim();
+                    if (word !== 'Marie' && word !== 'Majorna') {
+                        words[i].textContent = word.charAt(0).toLowerCase() + word.slice(1);
+                    }
+                }
+            }
+        }
+
+        function capitalizeFirstLetter(word) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        }
+
+        function checkSentenceOrder(container) {
+            // Use all words from the sentence container
+            let words = Array.from(container.querySelectorAll('.word')).map(function(el) {
+                return el.textContent.trim();
+            }).join(' ');
+
+            let correct = container.dataset.correct;
+            let scored = container.dataset.scored === 'true';
+
+            // Compare the sentence in a case-insensitive way
+            if (words.toLowerCase() === correct.toLowerCase()) {
+                if (!scored) {
+                    // Add a checkmark for correct order
+                    if (!container.querySelector('.correct')) {
+                        let correctMark = document.createElement('span');
+                        correctMark.className = 'correct';
+                        correctMark.innerHTML = '&#10004;';
+                        container.appendChild(correctMark);
+                    }
+                    let score = parseInt(document.getElementById('score').textContent);
+                    document.getElementById('score').textContent = score + 1;
+                    container.dataset.scored = 'true';
+                    checkForMaxScore(score + 1);
+                }
+            } else {
+                // Remove checkmark if the sentence is incorrect
+                if (scored) {
+                    let correctMark = container.querySelector('.correct');
+                    if (correctMark) {
+                        container.removeChild(correctMark);
+                    }
+                    let score = parseInt(document.getElementById('score').textContent);
+                    document.getElementById('score').textContent = score - 1;
+                    container.dataset.scored = 'false';
+                }
+            }
+        }
+
+        function checkForMaxScore(score) {
+            if (score >= 15) {
+                openCelebrationModal();
+            }
+        }
+
+        function openCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'flex';
+        }
+
+        function closeCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
