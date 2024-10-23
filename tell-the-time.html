@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tell the Time Exercise</title>
+<style>
+body {
+    text-align: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    margin-top: 40px;
+    font-size: 2em;
+    color: #333;
+}
+
+/* Clock styles */
+#clock {
+    width: 300px;
+    height: 300px;
+    border: 5px solid #4CAF50;
+    border-radius: 50%;
+    margin: 0 auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Button container */
+#button-container {
+    width: 200px;
+    height: 50px;
+    margin: 0 auto;
+}
+
+/* General button styling */
+button {
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Start button */
+#start-btn {
+    margin-top: 20px;
+}
+
+/* New time button */
+#new-time-btn {
+    margin-top: 20px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Input section */
+#input-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+#input-time {
+    padding: 10px;
+    font-size: 16px;
+    width: 220px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Score counter */
+#score-counter {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-color: #4CAF50;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Feedback styles */
+#feedback {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.correct {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.wrong {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.correct-answer {
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.modal-content p {
+    text-align: left;
+    line-height: 1.6;
+    font-size: 1.1em;
+}
+
+/* Close and start-over buttons */
+#close-modal-btn, #start-over-btn {
+    padding: 12px 24px;
+    margin-top: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#close-modal-btn:hover, #start-over-btn:hover {
+    background-color: #3e9e44;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Results modal content */
+#results-modal .modal-content {
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+</style>
+</head>
+<body>
+
+<div id="score-counter">Score: 0</div>
+
+<h1>Vad är klockan?</h1>
+
+<!-- Analogue Clock -->
+<canvas id="clock" width="300" height="300"></canvas><br />
+
+<!-- Container for buttons -->
+<div id="button-container">
+    <!-- Start Button -->
+    <button id="start-btn">Start exercise</button>
+    <!-- New Time Button -->
+    <button id="new-time-btn">New time</button>
+</div>
+
+<!-- Instructions modal -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h2>Exercise instructions</h2>
+        <p>In this exercise, you will see 10 random clock times. Your task is to answer 'Vad är klockan?' (What time is it?) in Swedish, using words only. For example, if the clock shows 10:10, write 'tio över tio.' If your keyboard lacks å, ä, or ö, use 'a' and 'o' instead.</p>
+        <button id="close-modal-btn">Got it!</button>
+    </div>
+</div>
+
+<!-- Results Modal -->
+<div id="results-modal" class="modal">
+    <div class="modal-content">
+        <h2>Exercise completed</h2>
+        <p id="final-score"></p>
+        <button id="start-over-btn">Start over</button>
+    </div>
+</div>
+
+<!-- Text Input Field and Done Button -->
+<div id="input-section" style="display: none;">
+    <p>Klockan är &nbsp;<input type="text" id="input-time" placeholder="Enter the time (in Swedish)" autocomplete="off" />
+    <button id="done-btn">Done</button>
+</div>
+
+<div id="feedback"></div>
+
+<script>
+const canvas = document.getElementById("clock");
+const ctx = canvas.getContext("2d");
+let radius = canvas.height / 2;
+ctx.translate(radius, radius);
+radius *= 0.90;
+
+const startBtn = document.getElementById("start-btn");
+const newTimeBtn = document.getElementById("new-time-btn");
+const inputSection = document.getElementById("input-section");
+const inputTime = document.getElementById("input-time");
+const doneBtn = document.getElementById("done-btn");
+const scoreCounter = document.getElementById("score-counter");
+
+const resultsModal = document.getElementById("results-modal");
+const finalScore = document.getElementById("final-score");
+const startOverBtn = document.getElementById("start-over-btn");
+
+let score = 0;
+let rounds = 0;
+const maxRounds = 10;
+let currentHour = 0;
+let currentMinute = 0;
+
+const swedishTimeMap = {
+			"00:05": "fem över tolv",
+			"00:10": "tio över tolv",
+			"00:15": "kvart över tolv",
+			"00:20": "tjugo över tolv",
+			"00:25": "fem i halv ett",
+			"00:30": "halv ett",
+			"00:35": "fem över halv ett",
+			"00:40": "tjugo i ett",
+			"00:45": "kvart i ett",
+			"00:50": "tio i ett",
+			"00:55": "fem i ett",
+			"01:00": "ett",
+			"01:05": "fem över ett",
+			"01:10": "tio över ett",
+			"01:15": "kvart över ett",
+			"01:20": "tjugo över ett",
+			"01:25": "fem i halv två",
+			"01:30": "halv två",
+			"01:35": "fem över halv två",
+			"01:40": "tjugo i två",
+			"01:45": "kvart i två",
+			"01:50": "tio i två",
+			"01:55": "fem i två",
+			"02:00": "två",
+			"02:05": "fem över två",
+			"02:10": "tio över två",
+			"02:15": "kvart över två",
+			"02:20": "tjugo över två",
+			"02:25": "fem i halv tre",
+			"02:30": "halv tre",
+			"02:35": "fem över halv tre",
+			"02:40": "tjugo i tre",
+			"02:45": "kvart i tre",
+			"02:50": "tio i tre",
+			"02:55": "fem i tre",
+			"03:00": "tre",
+			"03:05": "fem över tre",
+			"03:10": "tio över tre",
+			"03:15": "kvart över tre",
+			"03:20": "tjugo över tre",
+			"03:25": "fem i halv fyra",
+			"03:30": "halv fyra",
+			"03:35": "fem över halv fyra",
+			"03:40": "tjugo i fyra",
+			"03:45": "kvart i fyra",
+			"03:50": "tio i fyra",
+			"03:55": "fem i fyra",
+			"04:00": "fyra",
+			"04:05": "fem över fyra",
+			"04:10": "tio över fyra",
+			"04:15": "kvart över fyra",
+			"04:20": "tjugo över fyra",
+			"04:25": "fem i halv fem",
+			"04:30": "halv fem",
+			"04:35": "fem över halv fem",
+			"04:40": "tjugo i fem",
+			"04:45": "kvart i fem",
+			"04:50": "tio i fem",
+			"04:55": "fem i fem",
+			"05:00": "fem",
+			"05:05": "fem över fem",
+			"05:10": "tio över fem",
+			"05:15": "kvart över fem",
+			"05:20": "tjugo över fem",
+			"05:25": "fem i halv sex",
+			"05:30": "halv sex",
+			"05:35": "fem över halv sex",
+			"05:40": "tjugo i sex",
+			"05:45": "kvart i sex",
+			"05:50": "tio i sex",
+			"05:55": "fem i sex",
+			"06:00": "sex",
+			"06:05": "fem över sex",
+			"06:10": "tio över sex",
+			"06:15": "kvart över sex",
+			"06:20": "tjugo över sex",
+			"06:25": "fem i halv sju",
+			"06:30": "halv sju",
+			"06:35": "fem över halv sju",
+			"06:40": "tjugo i sju",
+			"06:45": "kvart i sju",
+			"06:50": "tio i sju",
+			"06:55": "fem i sju",
+			"07:00": "sju",
+			"07:05": "fem över sju",
+			"07:10": "tio över sju",
+			"07:15": "kvart över sju",
+			"07:20": "tjugo över sju",
+			"07:25": "fem i halv åtta",
+			"07:30": "halv åtta",
+			"07:35": "fem över halv åtta",
+			"07:40": "tjugo i åtta",
+			"07:45": "kvart i åtta",
+			"07:50": "tio i åtta",
+			"07:55": "fem i åtta",
+			"08:00": "åtta",
+			"08:05": "fem över åtta",
+			"08:10": "tio över åtta",
+			"08:15": "kvart över åtta",
+			"08:20": "tjugo över åtta",
+			"08:25": "fem i halv nio",
+			"08:30": "halv nio",
+			"08:35": "fem över halv nio",
+			"08:40": "tjugo i nio",
+			"08:45": "kvart i nio",
+			"08:50": "tio i nio",
+			"08:55": "fem i nio",
+			"09:00": "nio",
+			"09:05": "fem över nio",
+			"09:10": "tio över nio",
+			"09:15": "kvart över nio",
+			"09:20": "tjugo över nio",
+			"09:25": "fem i halv tio",
+			"09:30": "halv tio",
+			"09:35": "fem över halv tio",
+			"09:40": "tjugo i tio",
+			"09:45": "kvart i tio",
+			"09:50": "tio i tio",
+			"09:55": "fem i tio",
+			"10:00": "tio",
+			"10:05": "fem över tio",
+			"10:10": "tio över tio",
+			"10:15": "kvart över tio",
+			"10:20": "tjugo över tio",
+			"10:25": "fem i halv elva",
+			"10:30": "halv elva",
+			"10:35": "fem över halv elva",
+			"10:40": "tjugo i elva",
+			"10:45": "kvart i elva",
+			"10:50": "tio i elva",
+			"10:55": "fem i elva",
+			"11:00": "elva",
+			"11:05": "fem över elva",
+			"11:10": "tio över elva",
+			"11:15": "kvart över elva",
+			"11:20": "tjugo över elva",
+			"11:25": "fem i halv tolv",
+			"11:30": "halv tolv",
+			"11:35": "fem över halv tolv",
+			"11:40": "tjugo i tolv",
+			"11:45": "kvart i tolv",
+			"11:50": "tio i tolv",
+			"11:55": "fem i tolv",
+			"12:00": "tolv",
+			"12:05": "fem över tolv",
+			"12:10": "tio över tolv",
+			"12:15": "kvart över tolv",
+			"12:20": "tjugo över tolv",
+			"12:25": "fem i halv ett",
+			"12:30": "halv ett",
+			"12:35": "fem över halv ett",
+			"12:40": "tjugo i ett",
+			"12:45": "kvart i ett",
+			"12:50": "tio i ett",
+			"12:55": "fem i ett",
+
+};
+
+const times = Object.keys(swedishTimeMap);
+
+// Draw the clock on page load
+drawFace(ctx, radius);
+drawNumbers(ctx, radius);
+drawTime(ctx, radius, 10, 10);
+
+function drawClock() {
+    drawFace(ctx, radius);
+    drawNumbers(ctx, radius);
+    const randomTime = times[Math.floor(Math.random() * times.length)];
+    [currentHour, currentMinute] = randomTime.split(":").map(Number);
+    drawTime(ctx, radius, currentHour, currentMinute);
+}
+
+function drawFace(ctx, radius) {
+    const grad = ctx.createRadialGradient(0, 0, radius * 0.95, 0, 0, radius * 1.05);
+    grad.addColorStop(0, '#333');
+    grad.addColorStop(0.5, 'white');
+    grad.addColorStop(1, '#333');
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = radius * 0.1;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 0.1, 0, 2 * Math.PI);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+}
+
+function drawNumbers(ctx, radius) {
+    ctx.font = radius * 0.15 + "px arial";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    for (let num = 1; num < 13; num++) {
+        const ang = num * Math.PI / 6;
+        ctx.rotate(ang);
+        ctx.translate(0, -radius * 0.85);
+        ctx.rotate(-ang);
+        ctx.fillText(num.toString(), 0, 0);
+        ctx.rotate(ang);
+        ctx.translate(0, radius * 0.85);
+        ctx.rotate(-ang);
+    }
+}
+
+function drawTime(ctx, radius, hour, minute) {
+    const hourPos = (hour % 12) * Math.PI / 6 + (minute * Math.PI / (6 * 60));
+    const minutePos = (minute * Math.PI / 30);
+
+    drawHand(ctx, hourPos, radius * 0.5, radius * 0.07);
+    drawHand(ctx, minutePos, radius * 0.8, radius * 0.07);
+}
+
+function drawHand(ctx, pos, length, width) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.moveTo(0, 0);
+    ctx.rotate(pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(-pos);
+}
+
+doneBtn.addEventListener('click', function () {
+    checkAnswer();
+    doneBtn.disabled = true; // Prevent repeated clicks
+
+    if (rounds < maxRounds) {
+        setTimeout(() => {
+            showNewTimeButton();
+        }, 300);
+    } else {
+        setTimeout(showResultsModal, 1000); // Show results modal after delay on final round
+    }
+});
+
+function showNewTimeButton() {
+    newTimeBtn.style.visibility = "visible";
+    newTimeBtn.style.opacity = 0;
+
+    let fadeEffect = setInterval(() => {
+        if (parseFloat(newTimeBtn.style.opacity) < 1) {
+            newTimeBtn.style.opacity = (parseFloat(newTimeBtn.style.opacity) + 0.1).toString();
+        } else {
+            clearInterval(fadeEffect);
+        }
+    }, 50);
+}
+
+function newTime() {
+    inputTime.value = "";
+    document.getElementById('feedback').innerHTML = "";
+    drawClock();
+    newTimeBtn.style.visibility = "hidden";
+    newTimeBtn.style.opacity = 0;
+}
+
+inputTime.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        if (!doneBtn.disabled) {
+            doneBtn.click();
+        }
+    }
+});
+
+function normalizeInput(str) {
+    return str
+        .toLowerCase()
+        .replace(/å|ä/g, 'a')  // Replace 'å' and 'ä' with 'a'
+        .replace(/ö/g, 'o');   // Replace 'ö' with 'o'
+}
+
+function checkAnswer() {
+    const userAnswer = normalizeInput(inputTime.value.trim());
+    const formattedTime = `${currentHour < 10 ? "0" : ""}${currentHour}:${currentMinute < 10 ? "0" : ""}${currentMinute}`;
+    const correctAnswer = swedishTimeMap[formattedTime];
+
+    const feedback = document.getElementById('feedback');
+
+    if (normalizeInput(correctAnswer) === userAnswer) {
+        score++;
+        feedback.innerHTML = '<span class="correct">Correct answer!</span>';
+    } else {
+        feedback.innerHTML = `<span class="wrong">Wrong answer!</span> The correct answer is <span class="correct-answer">"${correctAnswer}"</span>`;
+    }
+
+    scoreCounter.innerHTML = `Score: ${score}`;
+    rounds++;
+}
+
+function showResultsModal() {
+    finalScore.innerHTML = `You've completed the exercise with a score of ${score} out of ${maxRounds}!<br><br>Would you like to try again?`;
+    resultsModal.style.display = "block";
+}
+
+startOverBtn.addEventListener('click', () => {
+    location.reload(); // Reload the page to reset the exercise
+});
+
+const modal = document.getElementById("modal");
+const closeModalBtn = document.getElementById("close-modal-btn");
+
+function showModal() {
+    modal.style.display = "block";
+}
+
+closeModalBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    inputSection.style.display = "flex";
+    newTimeBtn.style.visibility = "hidden";
+    drawClock(); // Start drawing random times after exercise starts
+});
+
+startBtn.addEventListener('click', () => {
+    startBtn.style.display = "none";
+    showModal(); // Show instructions modal
+});
+
+newTimeBtn.addEventListener('click', () => {
+    newTime();
+    doneBtn.disabled = false;
+});
+</script>
+</body>
+</html>
