@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang='sv'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verb Exercise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #fff;
+            color: #000;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .exercise-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+		
+		/* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+		
+		/* Dark mode styles for modals */
+.dark-mode .modal-content {
+    background-color: #333; /* Darker background for modal */
+    color: #fff; /* Light text color */
+    border: 1px solid #555; /* Darker border for the modal */
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2); /* Lighter shadow for dark mode */
+}
+
+.dark-mode .modal {
+    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay for modal background */
+}
+
+        .close {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+        }
+
+        /* Table for the "About those verbs" modal */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+		
+		/* Dark mode table styles */
+.dark-mode table {
+    border-color: #555; /* Darker border for the table */
+}
+
+.dark-mode th,
+.dark-mode td {
+    border: 1px solid #555; /* Darker borders for the table cells */
+    color: #fff; /* Light text color for better contrast */
+}
+
+.dark-mode th {
+    background-color: #444; /* Darker background for table headers */
+    font-weight: bold;
+}
+
+.dark-mode tr:nth-child(even) {
+    background-color: #333; /* Darker background for even rows */
+}
+
+.dark-mode tr:nth-child(odd) {
+    background-color: #444; /* Slightly lighter background for odd rows */
+}
+
+        .fade {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .fade-in {
+            opacity: 1;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .translation {
+            font-style: italic;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .dark-mode #modal {
+            background-color: #333;
+            color: #fff;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        button {
+			margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .dark-mode button {
+            background-color: #666;
+            color: #fff;
+        }
+
+        .dark-mode button:hover {
+            background-color: #555;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #f3f3f3;
+            border-radius: 20px;
+            margin: 20px auto;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            border-radius: 20px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .dark-mode .slider {
+            background-color: #666;
+        }
+
+        .dark-mode input:checked + .slider {
+            background-color: #444;
+        }
+
+        .theme-label {
+            margin-right: 10px;
+            font-size: 16px;
+            vertical-align: middle;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .answer {
+            background-color: #f0f0f0;
+			font-size: 1.2em;
+            color: #000;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .answer:hover {
+            background-color: lightgray;
+        }
+
+        .dark-mode .answer {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-mode .answer:hover {
+            background-color: #555;
+        }
+		
+		#options-container {
+			margin-top: 30px; /* Adjust the value to create more space */
+		}
+		
+		#sentence {
+			font-size: 1.3em; /* Adjust size for Swedish sentence */
+			font-weight: bold; /* Make it bold */
+			color: #333; /* Change text color */
+			margin-bottom: 10px; /* Add space between the Swedish sentence and the translation */
+		}
+
+		.translation {
+			font-size: 1em; /* Adjust size for the English translation */
+			font-style: italic; /* Keep it italicized */
+			color: #666; /* Change text color */
+			margin-bottom: 20px; /* Add space below the translation */
+		}
+		
+		.dark-mode #sentence {
+			color: #fff; /* White text color for the Swedish sentence in dark mode */
+		}
+
+		.dark-mode .translation {
+			color: #ddd; /* Light gray text color for the English translation in dark mode */
+		}
+		
+.motivation-container {
+    width: 30%; /* Set the width to 50% */
+    margin: 30px auto; /* Center the container horizontally */
+    background-color: #f9f9f9;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    padding: 30px 30px 15px 30px; /* Add padding at the top to move the content down */
+    font-size: 1.3em;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.motivation-title {
+    font-weight: bold;
+    font-size: 1.3em; /* Adjust the size if needed */
+    margin-bottom: 10px; /* Space between title and content */
+}
+
+.dark-mode .motivation-container {
+    background-color: #333;
+    border-color: #555;
+    color: #fff;
+}
+
+/* Correct feedback: Bold green */
+.correct {
+	    font-size: 1.5em;
+		color: green;
+		font-weight: bold;
+}
+
+/* Incorrect feedback: Bold red */
+.incorrect {
+	    font-size: 1.5em;
+		color: red;
+		font-weight: bold;
+}
+
+/* Dark mode styles */
+.dark-mode .correct {
+    color: #90ee90; /* Light green for dark mode */
+    text-shadow: 
+        1px 1px 0 black, /* Adjust shadow to contrast with the background */
+        -1px -1px 0 black, 
+        1px -1px 0 black, 
+        -1px 1px 0 black;
+}
+
+.dark-mode .incorrect {
+    color: #ff7f7f; /* Light red for dark mode */
+    text-shadow: 
+        1px 1px 0 black, /* Black shadow for better contrast in dark mode */
+        -1px -1px 0 black, 
+        1px -1px 0 black, 
+        -1px 1px 0 black;
+}
+
+/* Center the "Next sentence" button */
+#next-button {
+    display: block;
+	font-size: 1em;
+    margin: 20px auto; /* Center the button horizontally with margin */
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#next-button:hover {
+    background-color: #45a049;
+}
+
+#info-button {
+    margin-left: 20px; /* Adjust this value for desired spacing */
+	margin-right: 15px;
+}
+
+#about-verbs-button {
+    margin-left: 20px; /* Adjust this value for spacing between the two buttons */
+}
+
+#info-modal .modal-content p {
+    font-size: 20px; /* Adjust the text size */
+    line-height: 1.6; /* Adjust the line height */
+}
+
+    </style>
+</head>
+
+<body>
+    <h1>
+        <center>Åka, resa, köra, gå, vandra – which is it?</center>
+    </h1>
+    <!-- Dark mode toggle and buttons -->
+    <div class="exercise-container toggle-container">
+        <label class="theme-label" for="theme-toggle">Dark mode</label>
+        <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
+        <div class="buttons-container">
+            <button id="info-button">Info</button>
+            <button id="verbs-button">About those verbs</button>
+        </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="exercise-container">
+        <div id="sentence-container">
+            <p id="sentence"></p>
+            <p id="translation" class="translation"></p> <!-- English translation -->
+            <div id="options-container"></div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+<!-- Motivation container -->
+<div class="motivation-container fade" id="motivation-container" style="display: none;">
+    <strong class="motivation-title">Explanation:</strong>
+    <p id="motivation"></p>
+    <button id="next-button" style="display: block; margin-top: 15px;">Next sentence</button>
+</div>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="info-close">&times;</span>
+            <h2>Exercise Info</h2>
+            <p>This exercise is about choosing the correct type of verb in 25 different sentences – "åka" (travel; go [by]), "resa" (travel), "köra" (drive), "gå" (walk; leave), and "vandra" (hike) – all relating to some type of movement over short or long distances. A tip: Read the entire sentence before choosing a verb – the context can make all the difference! Another tip! If you click the "About those verbs" button, you can see how these verbs differ in Swedish. Good luck!</p>
+        </div>
+    </div>
+
+    <!-- Verbs Modal -->
+    <div id="verbs-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="verbs-close">&times;</span>
+            <h2>About those verbs</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Verb</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Åka</td>
+                        <td>Using transportation (except planes), with focus on being a passenger or for sports (e.g., skiing).</td>
+                    </tr>
+                    <tr>
+                        <td>Resa</td>
+                        <td>Moving over long distances, often with focus on exploring new places and cultures (pleasure).</td>
+                    </tr>
+                    <tr>
+                        <td>Köra</td>
+                        <td>Using a motor vehicle (but not typically a train) with some focus on <em>personally operating it</em>.</td>
+                    </tr>
+                    <tr>
+                        <td>Gå</td>
+                        <td>Moving on foot a short distance. Also in "<b>have to</b> go", "<b>visit</b> the doctor" (måste gå; gå till läkaren)</td>
+                    </tr>
+                    <tr>
+                        <td>Vandra</td>
+                        <td>A longer, deliberate walk, often exploratory and enjoyable. Compare English "hike" or "wandering".</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for final result -->
+    <div id="overlay"></div>
+    <div id="modal">
+        <h2>Exercise completed!</h2>
+        <p id="result"></p>
+        <button onclick="location.reload()">Start over</button>
+    </div>
+
+
+<script>
+    const sentences = [
+    { 
+        sentence: "Vi ska [slot] till Göteborg i helgen för att se pjäsen.", 
+        correctVerb: "åka", 
+        translation: "We will [slot] to Gothenburg this weekend to watch the play.", 
+        motivation: "The focus is on the experience of being transported rather than the act of driving or operating a vehicle.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Hon [slot] tunnelbana till jobbet varje dag.", 
+        correctVerb: "åker", 
+        translation: "She [slot] the underground to work every day.", 
+        motivation: "The focus is on her experience of commuting to work, emphasizing the role of the passenger.", 
+        options: ["åker", "reser", "kör", "går", "vandrar"] 
+    },
+    { 
+        sentence: "Hon [slot] snowboard i backarna varje vinter.", 
+        correctVerb: "åker", 
+        translation: "She [slot] snowboards on the slopes every winter.", 
+        motivation: "In Swedish, \"åka\" is commonly used to describe various forms of movement in sports, especially those involving sliding or gliding.", 
+        options: ["åker", "reser", "kör", "går", "vandrar"] 
+    },
+    { 
+        sentence: "Jag [slot] buss till skolan varje morgon.", 
+        correctVerb: "åker", 
+        translation: "I [slot] the bus to school every morning.", 
+        motivation: "The focus is on the act of being transported to school, highlighting the passenger experience.", 
+        options: ["åker", "reser", "kör", "går", "vandrar"] 
+    },
+    { 
+        sentence: "Jag ska [slot] taxi hem efter festen.", 
+        correctVerb: "åka", 
+        translation: "I will [slot] a taxi home after the party.", 
+        motivation: "The context of traveling home after a party emphasizes the experience of being transported by someone else (the taxi driver).", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Jag [slot] till affären för att handla, det ligger bara några kvarter bort.", 
+        correctVerb: "går", 
+        translation: "I [slot] to the shop to do some shopping, it\"s just a few blocks away.", 
+        motivation: "The phrase \"det ligger bara några kvarter bort\" emphasizes that the store is nearby.", 
+        options: ["åker", "reser", "kör", "går", "vandrar"] 
+    },
+    { 
+        sentence: "Vi måste [slot] hem nu, jag är trött.", 
+        correctVerb: "gå", 
+        translation: "We have to [slot] home now, I\"m tired.", 
+        motivation: "The use of \"gå\" here encapsulates the overall action of going home, which may involve walking but is more about the intention to leave.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Det är dags att [slot] till jobbet.", 
+        correctVerb: "gå", 
+        translation: "It\"s time to [slot] to work.", 
+        motivation: "The phrase \"det är dags\" (it is time) implies a scheduled or routine action, indicating that it is the appropriate time to leave for work.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Vi [slot] på en guidad tur i staden.", 
+        correctVerb: "går", 
+        translation: "We [slot] on a guided tour of the city.", 
+        motivation: "\"Gå\" is appropriate as it refers to participating in a guided tour, which typically involves walking.", 
+        options: ["åker", "reser", "kör", "går", "vandrar"] 
+    },
+    { 
+        sentence: "Jag [slot] alltid till jobbet när vädret är fint, det är bra motion.", 
+        correctVerb: "går", 
+        translation: "I always [slot] to work when the weather is nice, it\"s good exercise.", 
+        motivation: "\"Gå\" describes the act of walking to work, which is presented as a healthy choice.", 
+        options: ["åker", "reser", "kör", "går", "vandrar"] 
+    },
+    { 
+        sentence: "De ska [slot] till Japan nästa år.", 
+        correctVerb: "resa", 
+        translation: "They are going to [slot] to Japan next year.", 
+        motivation: "The verb \"resa\" is appropriate here as it conveys the action of traveling to a distant location (Japan).", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Hon älskar att [slot] till exotiska destinationer och upptäcka nya kulturer.", 
+        correctVerb: "resa", 
+        translation: "She loves to [slot] to exotic destinations and discover new cultures.", 
+        motivation: "\"Resa\" signifies the act of traveling to \"exotiska destinationer\" (exotic destinations).", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Jag har alltid drömt om att [slot] jorden runt och besöka alla kontinenter.", 
+        correctVerb: "resa", 
+        translation: "I have always dreamt of [slot] around the world and visiting all the continents.", 
+        motivation: "\"Resa\" here denotes the ambition to travel around the world, a long trip.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Familjen planerar att [slot] till Alperna över jul.", 
+        correctVerb: "resa", 
+        translation: "The family is planning to [slot] to the Alps for Christmas.", 
+        motivation: "The verb \"resa\" is suitable as it indicates the action of traveling to a distant place (Alps).", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "De bestämde sig för att [slot] till Karibien för att koppla av och njuta av solen.", 
+        correctVerb: "resa", 
+        translation: "They decided to [slot] to the Caribbean to relax and enjoy the sun.", 
+        motivation: "\"Resa\" describes traveling to a distant place for relaxation and enjoyment.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Jag måste [slot] försiktigt på de hala vägarna under vintern.", 
+        correctVerb: "köra", 
+        translation: "I have to [slot] carefully on the icy roads during the winter.", 
+        motivation: "\"Köra\" is used because the context of slippery roads implies driving carefully.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Han [slot] hela vägen till Malmö utan att stanna.", 
+        correctVerb: "körde", 
+        translation: "He [slot] all the way to Malmö without stopping.", 
+        motivation: "The context indicates that he was continuously driving to Malmö without stopping.", 
+        options: ["åkte", "reste", "körde", "gick", "vandrade"] 
+    },
+    { 
+        sentence: "Jag ska [slot] min syster till skolan varje dag.", 
+        correctVerb: "köra", 
+        translation: "I will [slot] my sister to school every day.", 
+        motivation: "The phrase \"ska köra min syster\" clearly indicates the intention to drive someone.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Jag måste [slot] försiktigt när det regnar.", 
+        correctVerb: "köra", 
+        translation: "I have to [slot] carefully when it rains.", 
+        motivation: "Driving carefully in the rain requires the verb \"köra\", indicating a necessity to operate a vehicle.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Familjen planerar att [slot] en lång biltur genom landet under sommaren.", 
+        correctVerb: "köra", 
+        translation: "The family is planning to [slot] on a long car trip through the country during the summer.", 
+        motivation: "\"Köra\" is appropriate for describing a long car trip where active driving is involved.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Vi ska [slot] i fjällen i sommar.", 
+        correctVerb: "vandra", 
+        translation: "We are going to [slot] in the mountains this summer.", 
+        motivation: "\"Vandra\" refers specifically to hiking or trekking in mountainous areas.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Hon älskar att [slot] i naturen och upptäcka nya stigar.", 
+        correctVerb: "vandra", 
+        translation: "She loves to [slot] in nature and discover new trails.", 
+        motivation: "\"Vandra\" captures the essence of walking in nature for exploration.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "Familjen [slot] genom nationalparken och njöt av utsikten.", 
+        correctVerb: "vandrade", 
+        translation: "The family [slot] through the national park and enjoyed the view.", 
+        motivation: "\"Vandra\" is suitable as it describes a scenic and enjoyable hiking experience.", 
+        options: ["åkte", "reste", "körde", "gick", "vandrade"] 
+    },
+    { 
+        sentence: "Jag planerar att [slot] längs kusten i sommar.", 
+        correctVerb: "vandra", 
+        translation: "I am planning to [slot] along the coast this summer.", 
+        motivation: "\"Vandra\" is appropriate when referring to hiking along the coast.", 
+        options: ["åka", "resa", "köra", "gå", "vandra"] 
+    },
+    { 
+        sentence: "De [slot] i flera timmar innan de nådde toppen av berget.", 
+        correctVerb: "vandrade", 
+        translation: "They [slot] for several hours before reaching the top of the mountain.", 
+        motivation: "\"Vandra\" is used to describe hiking for an extended period.", 
+        options: ["åkte", "reste", "körde", "gick", "vandrade"] 
+    },
+    ];
+
+    let shuffledSentences = shuffleArray(sentences);
+    let currentIndex = 0;
+    let score = 0;
+
+    // Shuffle the array of sentences
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+// Load the next sentence
+function loadNextSentence() {
+    // Reset feedback and hide motivation
+    document.getElementById('feedback').textContent = '';
+    const motivationContainer = document.getElementById('motivation-container');
+    motivationContainer.style.display = 'none'; // Hide motivation at start
+
+    // Check if all sentences are done
+    if (currentIndex >= shuffledSentences.length) {
+        showResultModal();
+        return;
+    }
+
+    const currentSentence = shuffledSentences[currentIndex];
+    document.getElementById('sentence').textContent = currentSentence.sentence.replace("[slot]", "____");
+    document.getElementById('translation').textContent = currentSentence.translation.replace("[slot]", "____");
+
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = ''; // Clear previous options
+
+    // Generate answer buttons
+    currentSentence.options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'answer';
+        button.textContent = option;
+        button.onclick = () => checkAnswer(option, currentSentence.correctVerb, currentSentence.motivation);
+        optionsContainer.appendChild(button);
+    });
+
+    fadeIn(document.getElementById('sentence-container'));
+    fadeIn(document.getElementById('options-container'));
+    fadeIn(document.getElementById('feedback'));
+
+    // Check if it's the last sentence
+    const nextButton = document.getElementById('next-button');
+    if (currentIndex === shuffledSentences.length - 1) {
+        nextButton.textContent = 'Check my result'; // Final question, change button text
+    } else {
+        nextButton.textContent = 'Next sentence'; // Regular case
+    }
+}
+
+// Check the answer and show feedback and motivation
+function checkAnswer(selectedVerb, correctVerb, motivation) {
+    const feedback = document.getElementById('feedback');
+    const motivationContainer = document.getElementById('motivation-container');
+    const motivationText = document.getElementById('motivation');
+
+    // Clear previous feedback styling
+    feedback.classList.remove('correct', 'incorrect');
+
+    // Display feedback and apply appropriate class for correct or incorrect
+    if (selectedVerb === correctVerb) {
+        feedback.textContent = 'Correct!';
+        feedback.classList.add('correct');
+        score++; // Increment score for correct answer
+    } else {
+        feedback.textContent = 'Incorrect!';
+        feedback.classList.add('incorrect');
+    }
+
+    // Update progress bar when an answer is checked
+    updateProgressBar();
+
+    // Update and display motivation
+    motivationText.textContent = motivation;
+    motivationContainer.style.display = 'block'; // Ensure it's set to block before fading in
+    fadeIn(motivationContainer); // Apply fade-in effect
+
+    // Show the "Next sentence" button and handle click
+    const nextButton = document.getElementById('next-button');
+    nextButton.onclick = () => {
+        fadeOutElements();
+    };
+}
+
+// Function to fade out elements and load the next sentence
+function fadeOutElements() {
+    fadeOut(document.getElementById('sentence-container'));
+    fadeOut(document.getElementById('options-container'));
+    fadeOut(document.getElementById('feedback'));
+    fadeOut(document.getElementById('motivation-container'));
+
+    setTimeout(() => {
+        currentIndex++;
+        loadNextSentence();
+    }, 1000); // Wait before loading the next sentence
+}
+
+    // Fade in an element
+    function fadeIn(element) {
+        element.classList.add('fade-in');
+        element.classList.remove('fade');
+    }
+
+    // Fade out an element
+    function fadeOut(element) {
+        element.classList.add('fade');
+        element.classList.remove('fade-in');
+    }
+
+// Update progress bar
+function updateProgressBar() {
+    const progress = ((currentIndex + 1) / shuffledSentences.length) * 100;
+    document.getElementById('progress-bar').style.width = `${progress}%`;
+}
+
+function showResultModal() {
+    const totalSentences = shuffledSentences.length;
+    document.getElementById('result').textContent = `You scored ${score} out of ${totalSentences} points!`;
+    document.getElementById('modal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+}
+
+    // Load the first sentence when the page is loaded
+    window.onload = loadNextSentence;
+
+    // Dark mode toggle functionality
+    const toggleSwitch = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+        body.classList.add('dark-mode');
+        toggleSwitch.checked = true;
+    }
+
+    toggleSwitch.addEventListener('change', () => {
+        if (toggleSwitch.checked) {
+            body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+</script>
+    <script>
+        // Get modal elements
+        const infoModal = document.getElementById('info-modal');
+        const verbsModal = document.getElementById('verbs-modal');
+
+        // Get button elements
+        const infoButton = document.getElementById('info-button');
+        const verbsButton = document.getElementById('verbs-button');
+
+        // Get close buttons
+        const infoClose = document.getElementById('info-close');
+        const verbsClose = document.getElementById('verbs-close');
+
+        // Event listeners for opening modals
+        infoButton.onclick = function () {
+            infoModal.style.display = 'block';
+        }
+
+        verbsButton.onclick = function () {
+            verbsModal.style.display = 'block';
+        }
+
+        // Event listeners for closing modals
+        infoClose.onclick = function () {
+            infoModal.style.display = 'none';
+        }
+
+        verbsClose.onclick = function () {
+            verbsModal.style.display = 'none';
+        }
+
+        // Close modals when clicking outside of them
+        window.onclick = function (event) {
+            if (event.target == infoModal) {
+                infoModal.style.display = 'none';
+            }
+            if (event.target == verbsModal) {
+                verbsModal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>
