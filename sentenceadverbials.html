@@ -1,740 +1,744 @@
+
 <!DOCTYPE html>
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
     <title>Sentence Adverbial Placement</title>
+    <!-- jQuery UI CSS for potential future use -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- jQuery Library -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- SortableJS Library for drag-and-drop functionality -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
-/* General body styling */
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    height: 100vh;
-    margin: 0;
-}
-
-body, body.dark-mode {
-    transition: background-color 0.3s ease;
-}
-
-/* Ensure all dark mode elements also transition in sync */
-.score, .dark-mode-toggle, h1, p.instructions, .movable-blue, .tooltip, .modal-content, .close-button {
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Score, Start Over, and Dark Mode Toggle container */
-.score-container {
-    position: fixed;
-    top: 20px;
-    right: 40px; /* Position for desktop */
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    width: 125px; /* Maintains original width for desktop */
-    z-index: 1001;
-    gap: 10px;
-}
-
-/* Individual button styles */
-.score, .start-over, .dark-mode-toggle {
-    font-size: 16px;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 100%;
-}
-
-/* Start Over button specific styling */
-.start-over {
-    cursor: pointer;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-}
-
-.start-over:hover {
-    background-color: #0056b3;
-}
-
-/* Dark mode toggle specific styling */
-.dark-mode-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    white-space: nowrap; /* Prevents line break */
-}
-
-/* Hide default checkbox */
-.switch input {
-    display: none;
-}
-
-/* Slider container */
-.switch {
-    position: relative;
-    width: 40px;
-    height: 20px;
-    margin-right: 10px;
-}
-
-/* Slider appearance */
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 20px;
-}
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-}
-
-/* Slider active state */
-input:checked + .slider {
-    background-color: #007BFF;
-}
-input:checked + .slider:before {
-    transform: translateX(17px);
-}
-
-/* Container for all the content */
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-left: 50px;
-    margin-top: 20px;
-    width: 100%;
-    max-width: 900px;
-}
-
-/* Header and instructions styles */
-h1 {
-    text-align: left;
-    color: #333333;
-    font-size: 24px;
-    margin-bottom: 20px;
-    line-height: 1.4;
-    padding-top: 10px;
-    position: relative;
-    z-index: 1;
-}
-
-p.instructions {
-    text-align: left;
-    color: #666666;
-    font-size: 16px;
-    line-height: 1.5;
-    margin-bottom: 30px;
-}
-
-/* Word container and individual word styles */
-.word-container {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    min-height: 40px;
-    user-select: none;
-    text-align: left;
-    margin-bottom: 10px;
-}
-
-/* Word styles */
-.word {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 12px;
-    background-color: #e0e0e0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 18px;
-    user-select: none;
-    position: relative;
-}
-
-/* Movable blue word styling */
-.movable-blue {
-    background-color: #007BFF;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 18px;
-    cursor: pointer;
-    color: white;
-}
-
-/* Tooltip styling */
-.tooltip {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: 8px;
-    background-color: #333;
-    color: white;
-    padding: 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 10;
-}
-
-
-.disable-tooltips .tooltip {
-    display: none !important;
-}
-
-.word:hover .tooltip {
-    opacity: 1;
-}
-
-/* Styles for correct and incorrect answers */
-/* Correct answer styling */
-.correct {
-    background-color: #4cbb17;
-    color: white;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-/* Incorrect answer styling */
-.incorrect {
-    background-color: #ff2c2c;
-    color: white;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-/* Extra bottom spacing */
-.bottom-space {
-    height: 100px;
-}
-
-/* Modal general styling */
-.modal {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    max-width: 700px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.close-button {
-    float: right;
-    padding: 5px;
-    cursor: pointer;
-    font-size: 18px;
-    background-color: #ccc;
-    border-radius: 50%;
-    line-height: 20px;
-    width: 30px;
-    height: 30px;
-    margin: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.close-button:hover {
-    background-color: #f44336;
-    transform: scale(1.2);
-    color: white;
-}
-
-/* Dark mode styles */
-body.dark-mode {
-    background-color: #1a1a1a;
-    color: #ffffff;
-}
-
-body.dark-mode .score, body.dark-mode .dark-mode-toggle {
-    background-color: #c7c5c5;
-    color: #000;
-    box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
-}
-
-body.dark-mode .word-container {
-    background-color: #2d2d2d;
-    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
-}
-
-body.dark-mode h1 {
-    color: #ffffff;
-}
-
-body.dark-mode p.instructions {
-    color: #cccccc; /* A slightly lighter shade for readability */
-}
-
-body.dark-mode .word {
-    background-color: #404040;
-    border-color: #555;
-    color: #ffffff;
-}
-
-body.dark-mode .movable-blue {
-    border-color: #555;
-}
-
-body.dark-mode .tooltip {
-    background-color: #c7c5c5;
-    color: #000;
-    box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
-}
-
-body.dark-mode .modal-content {
-    background-color: #2d2d2d;
-    color: #ffffff;
-}
-
-body.dark-mode .close-button {
-    background-color: #404040;
-    color: #ffffff;
-}
-
-body.dark-mode .close-button:hover {
-    background-color: #d32f2f;
-}
-
-.movable-blue:hover .tooltip, .word:hover .tooltip {
-    opacity: 1;
-}
-
-.disable-tooltips .tooltip {
-    display: none !important;
-}
-
-/* Media query for tablet and mobile screens */
-@media (max-width: 768px) {
-    /* Center content for tablet screens */
-    .container {
-        max-width: 100%;
-        padding-left: 20px;
-    }
-    .score-container {
-        top: 10px;
-        right: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    /* Mobile-specific adjustments */
-    .score-container {
-        right: 10px;
-        width: auto;
-    }
-    h1 {
-        font-size: 20px;
-    }
-    p.instructions {
-        font-size: 14px;
-    }
-    .score, .start-over, .dark-mode-toggle {
-        font-size: 14px;
-        padding: 8px;
-    }
-    .word, .movable-blue {
-        font-size: 16px;
-    }
-    .tooltip {
-        font-size: 12px;
-    }
-}
-</style>
-<script>
-    // Immediately check the last dark mode setting
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        document.documentElement.classList.add('dark-mode');
-    }
-
-    function setDarkMode(enabled) {
-        if (enabled) {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('darkMode', 'enabled');
-        } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkMode', 'disabled');
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
         }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const darkModeToggle = document.getElementById('darkModeSwitch');
-        const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
-
-        // Set the initial state based on previous preference
-        setDarkMode(isDarkModeEnabled);
-        darkModeToggle.checked = isDarkModeEnabled;
-
-        // Listen for toggle changes
-        darkModeToggle.addEventListener('change', function () {
-            setDarkMode(this.checked);
-        });
-    });
-</script>
-</head>
-<body>
-
-	<div class="score-container">
-		<div class="score">Score: <span id="score">0</span> / 15</div>
-		<div class="dark-mode-toggle"> <label class="switch"> <input type="checkbox" id="darkModeSwitch"> <span class="slider"></span> </label> <span>Dark mode</span> </div>
-		<div class="start-over" onclick="startOver()">Start over</div>
-	</div>
-    <div class="container">
-	
-
-
-        <h1>Sentence Adverbials in Main Clauses:<br />Grab the blue word and place it correctly</h1>
-        <p class="instructions">Instructions: You only get one shot for each sentence. Place the missing piece correctly<br />to earn points. Place it incorrectly, and you lose 1 point. If you don’t understand a word,<br />just hover over it. Max score: 15.</p>
-
-    <script>	
-        	document.addEventListener('DOMContentLoaded', function() {
-        		const sentences = [{
-        				prompt: ["Förra", "året", "reste", "de", "utomlands"],
-        				correct: "Förra året reste de aldrig utomlands",
-        				missing: "aldrig"
-						
-        			},
-        			{
-        				prompt: ["Igår", "var", "det", "soligt"],
-        				correct: "Igår var det inte soligt",
-        				missing: "inte"
-        			},
-        			{
-        				prompt: ["I", "somras", "gick", "vi", "på", "konsert"],
-        				correct: "I somras gick vi inte på konsert",
-        				missing: "inte"
-        			},
-        			{
-        				prompt: ["Hon", "går", "till", "gymmet", "efter", "jobbet"],
-        				correct: "Hon går ofta till gymmet efter jobbet",
-        				missing: "ofta"
-        			},
-        			{
-        				prompt: ["Hon", "är", "glad", "när", "hon", "dansar"],
-        				correct: "Hon är alltid glad när hon dansar",
-        				missing: "alltid"
-        			},
-        			{
-        				prompt: ["Förra", "hösten", "promenerade", "de", "i", "parken"],
-        				correct: "Förra hösten promenerade de sällan i parken",
-        				missing: "sällan"
-        			},
-        			{
-        				prompt: ["De", "reser", "utomlands", "under", "sommaren"],
-        				correct: "De reser sannolikt utomlands under sommaren",
-        				missing: "sannolikt"
-        			},
-        			{
-        				prompt: ["Hon", "kommer", "för", "sent", "till", "mötet", "på", "måndagar"],
-        				correct: "Hon kommer aldrig för sent till mötet på måndagar",
-        				missing: "aldrig"
-        			},
-        			{
-        				prompt: ["I", "fredags", "tittade", "vi", "på", "film"],
-        				correct: "I fredags tittade vi inte på film",
-        				missing: "inte"
-        			},
-        			{
-        				prompt: ["Hon", "går", "och", "handlar", "när", "hon", "har", "slutat", "jobba"],
-        				correct: "Hon går ofta och handlar när hon har slutat jobba",
-        				missing: "ofta"
-        			},
-        			{
-        				prompt: ["Hon", "skrattar", "när", "hon", "ser", "roliga", "filmer"],
-        				correct: "Hon skrattar alltid när hon ser roliga filmer",
-        				missing: "alltid"
-        			},
-        			{
-        				prompt: ["Förra", "månaden", "spelade", "han", "gitarr"],
-        				correct: "Förra månaden spelade han ofta gitarr",
-        				missing: "ofta"
-        			},
-        			{
-        				prompt: ["Förra", "året", "gick", "hon", "till", "gymmet"],
-        				correct: "Förra året gick hon troligen till gymmet",
-        				missing: "troligen"
-        			},
-        			{
-        				prompt: ["Vi", "kommer", "att", "delta", "i", "tävlingen"],
-        				correct: "Vi kommer naturligtvis att delta i tävlingen",
-        				missing: "naturligtvis",
-        				tooltipOverride: {
-        					"kommer": "will"
-        				}
-        			},
-        			{
-        				prompt: ["Han", "kunde", "inte", "komma", "till", "mötet"],
-        				correct: "Han kunde tyvärr inte komma till mötet",
-        				missing: "tyvärr"
-        			}
-        		];
-
-        		const tooltipDataOriginal = {
-        			"förra": "last",
-        			"året": "year",
-        			"reste": "traveled",
-        			"de": "they",
-        			"utomlands": "abroad",
-        			"igår": "yesterday",
-        			"var": "was",
-        			"det": "it",
-        			"soligt": "sunny",
-        			"i": "in",
-        			"somras": "this past summer",
-        			"gick": "went",
-        			"vi": "we",
-        			"på": "on",
-        			"konsert": "concert",
-        			"hon": "she",
-        			"går": "goes",
-        			"till": "to",
-        			"gymmet": "the gym",
-        			"efter": "after",
-        			"jobbet": "work",
-        			"är": "is",
-        			"glad": "happy",
-        			"när": "when",
-        			"dansar": "dances",
-        			"hösten": "autumn",
-        			"promenerade": "walked",
-        			"parken": "the park",
-        			"reser": "travel",
-        			"under": "during",
-        			"sommaren": "the summer",
-        			"kommer": "comes",
-        			"att": "to",
-        			"delta": "participate",
-        			"för": "too",
-        			"sent": "late",
-        			"mötet": "the meeting",
-        			"måndagar": "Mondays",
-        			"fredags": "this past Friday",
-        			"tittade": "watched",
-        			"film": "movie",
-        			"och": "and",
-        			"handlar": "shops",
-        			"har": "has",
-        			"slutat": "finished",
-        			"jobba": "(to) work",
-        			"tävlingen": "the competition",
-        			"kunde": "could",
-        			"inte": "not",
-        			"komma": "come",
-        			"skrattar": "laughs",
-        			"ser": "sees",
-        			"roliga": "funny",
-        			"filmer": "movies",
-        			"månaden": "month",
-        			"spelade": "played",
-        			"han": "he",
-        			"gitarr": "guitar",
-        			"troligen": "probably",
-        			"naturligtvis": "of course",
-        			"tyvärr": "unfortunately",
-        		};
-
-        		const tooltipData = {};
-        		for (let key in tooltipDataOriginal) {
-        			tooltipData[key.toLowerCase()] = tooltipDataOriginal[key];
-        		}
-
-        		sentences.forEach((item, index) => {
-        			let sentenceWrapper = document.createElement('div');
-        			sentenceWrapper.className = 'sentence-wrapper';
-
-        			let container = document.createElement('div');
-        			container.id = 'sortable' + (index + 1);
-        			container.className = 'word-container';
-        			container.setAttribute('data-correct', item.correct);
-        			container.setAttribute('data-scored', 'false');
-
-        			container.innerHTML = item.prompt.map((word, idx) => {
-        				// Check if there's a specific tooltip for this instance of the word
-        				const tooltipText = (item.tooltipOverride && item.tooltipOverride[word]) || tooltipData[word.toLowerCase()] || '';
-        				// Include the tooltip as a child element
-        				return `<div class="word">${word}<div class="tooltip">${tooltipText}</div></div>`;
-        			}).join('') + `<div class="movable-blue">${item.missing}</div>`;
-
-        			sentenceWrapper.appendChild(container);
-        			document.querySelector('.container').appendChild(sentenceWrapper);
-
-        			Sortable.create(container, {
-        				animation: 150,
-        				ghostClass: 'sortable-ghost',
-        				handle: '.movable-blue',
-        				onStart: function() {
-        					document.body.classList.add('disable-tooltips'); // Hide all tooltips during drag
-        				},
-        				onEnd: function(evt) {
-        					setTimeout(() => {
-        						document.body.classList.remove('disable-tooltips'); // Re-enable tooltips after drop
-        					}, 100); // Adjust delay if necessary
-
-        					checkPlacement(container, evt.item);
-        				}
-        			});
-        		});
-        	});
-
-        function checkPlacement(container, movedItem) {
-        	// Collect only main text content, ignoring tooltip elements
-        	const currentOrder = Array.from(container.children).map(child =>
-        		child.childNodes[0].textContent.trim() // Grabs only the main word text
-        	).join(' ');
-
-        	const correctOrder = container.dataset.correct;
-        	const scored = container.dataset.scored === 'true';
-
-        	// Clear previous styles on the moved item
-        	movedItem.classList.remove('correct', 'incorrect');
-
-        	if (currentOrder === correctOrder) {
-        		if (!scored) {
-        			movedItem.classList.add('correct');
-        			updateScore(1);
-        			container.dataset.scored = 'true';
-
-        			// Disable further movement
-        			movedItem.classList.remove('movable-blue');
-        			movedItem.removeAttribute('draggable');
-        		}
-        	} else {
-        		movedItem.classList.add('incorrect');
-        		if (!scored) {
-        			updateScore(-1);
-        			container.dataset.scored = 'true';
-
-        			// Disable further movement
-        			movedItem.classList.remove('movable-blue');
-        			movedItem.removeAttribute('draggable');
-        		}
-        	}
+        
+        /* Transition for dark mode */
+        body, body.dark-mode {
+            transition: background-color 0.3s ease;
         }
-
-        function updateScore(value) {
-        	const scoreElement = document.getElementById('score');
-        	let currentScore = parseInt(scoreElement.textContent);
-        	scoreElement.textContent = currentScore + value;
-        	checkForMaxScore(currentScore + value);
+        
+        /* Ensure all dark mode elements also transition in sync */
+        .score, .dark-mode-toggle, h1, p.instructions, .movable-blue, .tooltip, .modal-content, .close-button {
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
-
-        function checkForMaxScore(score) {
-        	if (score >= 15) {
-        		openCelebrationModal();
-        	}
+        
+        /* Score, Start Over, and Dark Mode Toggle container */
+        .score-container {
+            position: fixed;
+            top: 20px;
+            right: 40px; /* Position for desktop */
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 125px; /* Maintains original width for desktop */
+            z-index: 1001;
+            gap: 10px;
         }
-
-        function openCelebrationModal() {
-        	document.getElementById('celebrationModal').style.display = 'flex';
+        
+        /* Individual button styles */
+        .score, .start-over, .dark-mode-toggle {
+            font-size: 16px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
         }
-
-        function closeCelebrationModal() {
-        	document.getElementById('celebrationModal').style.display = 'none';
+        
+        /* Start Over button specific styling */
+        .start-over {
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
         }
-
-        function startOver() {
-        	location.reload();
-        } 
-	</script> 
-        <!-- Add the game code here as it was previously -->
-    </div>
-
-    <!-- Dark Mode Toggle Script -->
+        
+        .start-over:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Dark mode toggle specific styling */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            white-space: nowrap; /* Prevents line break */
+        }
+        
+        /* Hide default checkbox */
+        .switch input {
+            display: none;
+        }
+        
+        /* Slider container */
+        .switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        /* Slider appearance */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        /* Slider active state */
+        input:checked + .slider {
+            background-color: #007BFF;
+        }
+        input:checked + .slider:before {
+            transform: translateX(17px);
+        }
+        
+        /* Container for all the content */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-left: 50px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 900px;
+			padding-bottom: 100px;
+        }
+        
+        /* Header and instructions styles */
+        h1 {
+            text-align: left;
+            color: #333333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            padding-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        p.instructions {
+            text-align: left;
+            color: #666666;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        
+        /* Word container and individual word styles */
+        .word-container {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: 40px;
+            user-select: none;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        
+        /* Word styles */
+        .word {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 18px;
+            user-select: none;
+            position: relative;
+        }
+        
+        /* Movable blue word styling */
+        .movable-blue {
+            background-color: #007BFF;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            color: white;
+            position: relative; /* Added to position tooltip */
+        }
+        
+        /* Tooltip styling */
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 8px;
+            background-color: #333;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .disable-tooltips .tooltip {
+            display: none !important;
+        }
+        
+        .word:hover .tooltip, .movable-blue:hover .tooltip {
+            opacity: 1;
+        }
+        
+        /* Styles for correct and incorrect answers */
+        /* Correct answer styling */
+        .correct {
+            background-color: #4cbb17;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        /* Incorrect answer styling */
+        .incorrect {
+            background-color: #ff2c2c;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        /* Extra bottom spacing */
+        .bottom-space {
+            height: 100px;
+        }
+        
+        /* Modal general styling */
+        .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .close-button {
+            float: right;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            background-color: #ccc;
+            border-radius: 50%;
+            line-height: 20px;
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .close-button:hover {
+            background-color: #f44336;
+            transform: scale(1.2);
+            color: white;
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .score, body.dark-mode .dark-mode-toggle {
+            background-color: #c7c5c5;
+            color: #000;
+            box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
+        }
+        
+        body.dark-mode .word-container {
+            background-color: #2d2d2d;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+        
+        body.dark-mode h1 {
+            color: #ffffff;
+        }
+        
+        body.dark-mode p.instructions {
+            color: #cccccc; /* A slightly lighter shade for readability */
+        }
+        
+        body.dark-mode .word {
+            background-color: #404040;
+            border-color: #555;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .movable-blue {
+            border-color: #555;
+        }
+        
+        body.dark-mode .tooltip {
+            background-color: #c7c5c5;
+            color: #000;
+            box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
+        }
+        
+        body.dark-mode .modal-content {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .close-button {
+            background-color: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .close-button:hover {
+            background-color: #d32f2f;
+        }
+        
+        .disable-tooltips .tooltip {
+            display: none !important;
+        }
+        
+        /* Media query for tablet and mobile screens */
+        @media (max-width: 768px) {
+            /* Center content for tablet screens */
+            .container {
+                max-width: 100%;
+                padding-left: 20px;
+            }
+            .score-container {
+                top: 10px;
+                right: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Mobile-specific adjustments */
+            .score-container {
+                right: 10px;
+                width: auto;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            p.instructions {
+                font-size: 14px;
+            }
+            .score, .start-over, .dark-mode-toggle {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .word, .movable-blue {
+                font-size: 16px;
+            }
+            .tooltip {
+                font-size: 12px;
+            }
+        }
+    </style>
     <script>
-        // Apply the last saved setting for dark mode immediately on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const darkModeToggle = document.getElementById('darkModeSwitch');
+        // Define the checkPlacement function globally
+        function checkPlacement(container, movedItem) {
+            // Collect only main text content, ignoring tooltip elements
+            const currentOrder = Array.from(container.children).map(child =>
+                child.childNodes[0].textContent.trim() // Grabs only the main word text
+            ).join(' ');
 
-            // Check if dark mode was previously enabled and apply it
-            if (localStorage.getItem('darkMode') === 'enabled') {
+            const correctOrder = container.dataset.correct;
+            const scored = container.dataset.scored === 'true';
+
+            // Clear previous styles on the moved item
+            movedItem.classList.remove('correct', 'incorrect');
+
+            if (currentOrder === correctOrder) {
+                if (!scored) {
+                    movedItem.classList.add('correct');
+                    updateScore(1);
+                    container.dataset.scored = 'true';
+
+                    // Disable further movement
+                    movedItem.classList.remove('movable-blue');
+                    movedItem.removeAttribute('draggable');
+                }
+            } else {
+                movedItem.classList.add('incorrect');
+                if (!scored) {
+                    updateScore(-1);
+                    container.dataset.scored = 'true';
+
+                    // Disable further movement
+                    movedItem.classList.remove('movable-blue');
+                    movedItem.removeAttribute('draggable');
+                }
+            }
+        }
+
+        // Define the updateScore function globally
+        function updateScore(value) {
+            const scoreElement = document.getElementById('score');
+            let currentScore = parseInt(scoreElement.textContent);
+            scoreElement.textContent = currentScore + value;
+            checkForMaxScore(currentScore + value);
+        }
+
+        // Define the checkForMaxScore function globally
+        function checkForMaxScore(score) {
+            if (score >= 15) {
+                openCelebrationModal();
+            }
+        }
+
+        // Define the openCelebrationModal function globally
+        function openCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'flex';
+        }
+
+        // Define the closeCelebrationModal function globally
+        function closeCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'none';
+        }
+
+        // Define the startOver function globally
+        function startOver() {
+            location.reload();
+        }
+
+        // Define the setDarkMode function globally
+        function setDarkMode(enabled) {
+            if (enabled) {
                 document.body.classList.add('dark-mode');
-                darkModeToggle.checked = true;
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        // Initialize everything after DOM has fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            const darkModeToggle = document.getElementById('darkModeSwitch');
+            const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+
+            // Set the initial state based on previous preference
+            setDarkMode(isDarkModeEnabled);
+            darkModeToggle.checked = isDarkModeEnabled;
+
+            // Listen for toggle changes
+            darkModeToggle.addEventListener('change', function () {
+                setDarkMode(this.checked);
+            });
+
+            // Initialize the game
+            const sentences = [
+                {
+                    prompt: ["Förra", "året", "reste", "de", "utomlands"],
+                    correct: "Förra året reste de aldrig utomlands",
+                    missing: "aldrig"
+                },
+                {
+                    prompt: ["Igår", "var", "det", "soligt"],
+                    correct: "Igår var det inte soligt",
+                    missing: "inte"
+                },
+                {
+                    prompt: ["I", "somras", "gick", "vi", "på", "konsert"],
+                    correct: "I somras gick vi inte på konsert",
+                    missing: "inte"
+                },
+                {
+                    prompt: ["Hon", "går", "till", "gymmet", "efter", "jobbet"],
+                    correct: "Hon går ofta till gymmet efter jobbet",
+                    missing: "ofta"
+                },
+                {
+                    prompt: ["Hon", "är", "glad", "när", "hon", "dansar"],
+                    correct: "Hon är alltid glad när hon dansar",
+                    missing: "alltid"
+                },
+                {
+                    prompt: ["Förra", "hösten", "promenerade", "de", "i", "parken"],
+                    correct: "Förra hösten promenerade de sällan i parken",
+                    missing: "sällan"
+                },
+                {
+                    prompt: ["De", "reser", "utomlands", "under", "sommaren"],
+                    correct: "De reser sannolikt utomlands under sommaren",
+                    missing: "sannolikt"
+                },
+                {
+                    prompt: ["Hon", "kommer", "för", "sent", "till", "mötet", "på", "måndagar"],
+                    correct: "Hon kommer aldrig för sent till mötet på måndagar",
+                    missing: "aldrig"
+                },
+                {
+                    prompt: ["I", "fredags", "tittade", "vi", "på", "film"],
+                    correct: "I fredags tittade vi inte på film",
+                    missing: "inte"
+                },
+                {
+                    prompt: ["Hon", "går", "och", "handlar", "när", "hon", "har", "slutat", "jobba"],
+                    correct: "Hon går ofta och handlar när hon har slutat jobba",
+                    missing: "ofta"
+                },
+                {
+                    prompt: ["Hon", "skrattar", "när", "hon", "ser", "roliga", "filmer"],
+                    correct: "Hon skrattar alltid när hon ser roliga filmer",
+                    missing: "alltid"
+                },
+                {
+                    prompt: ["Förra", "månaden", "spelade", "han", "gitarr"],
+                    correct: "Förra månaden spelade han ofta gitarr",
+                    missing: "ofta"
+                },
+                {
+                    prompt: ["Förra", "året", "gick", "hon", "till", "gymmet"],
+                    correct: "Förra året gick hon troligen till gymmet",
+                    missing: "troligen"
+                },
+                {
+                    prompt: ["Vi", "kommer", "att", "delta", "i", "tävlingen"],
+                    correct: "Vi kommer naturligtvis att delta i tävlingen",
+                    missing: "naturligtvis",
+                    tooltipOverride: {
+                        "kommer": "will"
+                    }
+                },
+                {
+                    prompt: ["Han", "kunde", "inte", "komma", "till", "mötet"],
+                    correct: "Han kunde tyvärr inte komma till mötet",
+                    missing: "tyvärr"
+                }
+            ];
+
+            const tooltipDataOriginal = {
+                "aldrig": "never",
+                "alltid": "always",
+                "att": "to",
+                "dansar": "dances",
+                "de": "they",
+                "delta": "participate",
+                "det": "it",
+                "efter": "after",
+                "film": "movie",
+                "filmer": "movies",
+                "fredags": "this past Friday",
+                "för": "too",
+                "förra": "last",
+                "gick": "went",
+                "gitarr": "guitar",
+                "glad": "happy",
+                "gymmet": "the gym",
+                "går": "goes",
+                "han": "he",
+                "handlar": "shops",
+                "har": "has",
+                "hon": "she",
+                "hösten": "autumn",
+                "i": "in",
+                "igår": "yesterday",
+                "inte": "not",
+                "jobba": "(to) work",
+                "jobbet": "work",
+                "komma": "come",
+                "kommer": "comes",
+                "konsert": "concert",
+                "kunde": "could",
+                "månaden": "month",
+                "måndagar": "Mondays",
+                "mötet": "the meeting",
+                "naturligtvis": "of course",
+                "när": "when",
+                "och": "and",
+                "ofta": "often",
+                "parken": "the park",
+                "promenerade": "walked",
+                "på": "on",
+                "reser": "travel",
+                "reste": "traveled",
+                "roliga": "funny",
+                "sannolikt": "(most) likely",
+                "sent": "late",
+                "ser": "sees",
+                "skrattar": "laughs",
+                "slutat": "finished",
+                "soligt": "sunny",
+                "sommaren": "the summer",
+                "somras": "this past summer",
+                "spelade": "played",
+                "sällan": "rarely",
+                "till": "to",
+                "tittade": "watched",
+                "troligen": "probably",
+                "tyvärr": "unfortunately",
+                "tävlingen": "the competition",
+                "under": "during",
+                "utomlands": "abroad",
+                "var": "was",
+                "vi": "we",
+                "året": "year",
+                "är": "is"
+            };
+
+            const tooltipData = {};
+            for (let key in tooltipDataOriginal) {
+                tooltipData[key.toLowerCase()] = tooltipDataOriginal[key];
             }
 
-            // Listen for toggle changes and update localStorage and body class
-            darkModeToggle.addEventListener('change', function() {
-                if (this.checked) {
-                    document.body.classList.add('dark-mode');
-                    localStorage.setItem('darkMode', 'enabled');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    localStorage.setItem('darkMode', 'disabled');
-                }
+            // Dynamically create sentences and initialize SortableJS
+            sentences.forEach((item, index) => {
+                let sentenceWrapper = document.createElement('div');
+                sentenceWrapper.className = 'sentence-wrapper';
+
+                let container = document.createElement('div');
+                container.id = 'sortable' + (index + 1);
+                container.className = 'word-container';
+                container.setAttribute('data-correct', item.correct);
+                container.setAttribute('data-scored', 'false');
+
+                // Construct the HTML for regular words with tooltips
+                const wordsHTML = item.prompt.map((word) => {
+                    const tooltipText = (item.tooltipOverride && item.tooltipOverride[word]) || tooltipData[word.toLowerCase()] || '';
+                    return `<div class="word">${word}<div class="tooltip">${tooltipText}</div></div>`;
+                }).join('');
+
+                // Construct the HTML for movable blue word with tooltip
+                const movableBlueHTML = `<div class="movable-blue">${item.missing}<div class="tooltip">${tooltipData[item.missing.toLowerCase()] || ''}</div></div>`;
+
+                // Set the inner HTML of the container
+                container.innerHTML = wordsHTML + movableBlueHTML;
+
+                // Append the container to the sentence wrapper
+                sentenceWrapper.appendChild(container);
+
+                // Append the sentence wrapper to the main container
+                document.querySelector('.container').appendChild(sentenceWrapper);
+
+                // Initialize SortableJS on the container
+                Sortable.create(container, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    handle: '.movable-blue',
+                    onStart: function() {
+                        document.body.classList.add('disable-tooltips'); // Hide all tooltips during drag
+                    },
+                    onEnd: function(evt) {
+                        setTimeout(() => {
+                            document.body.classList.remove('disable-tooltips'); // Re-enable tooltips after drop
+                        }, 100); // Adjust delay if necessary
+
+                        checkPlacement(container, evt.item);
+                    }
+                });
             });
         });
     </script>
+</head>
+<body>
 
+    <!-- Score, Dark Mode Toggle, and Start Over Button -->
+    <div class="score-container">
+        <div class="score">Score: <span id="score">0</span> / 15</div>
+        <div class="dark-mode-toggle"> 
+            <label class="switch"> 
+                <input type="checkbox" id="darkModeSwitch"> 
+                <span class="slider"></span> 
+            </label> 
+            <span>Dark mode</span> 
+        </div>
+        <div class="start-over" onclick="startOver()">Start over</div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container">
+
+        <h1>Sentence Adverbials in Main Clauses:<br />Grab the blue word and place it correctly</h1>
+        <p class="instructions">
+            Instructions: You only get one shot for each sentence. Place the missing piece correctly<br />
+            to earn points. Place it incorrectly, and you lose 1 point. If you don’t understand a word,<br />
+            just hover over it. Max score: 15.
+        </p>
+
+        <!-- The sentences and movable words are dynamically added by JavaScript -->
+
+    </div>
 
     <!-- Celebration Modal -->
-<div id="celebrationModal" class="modal">
-    <div class="modal-content">
-        <span class="close-button" onclick="closeCelebrationModal()">&times;</span>
-        <img src="https://i.imgur.com/5XZQKYx.png" alt="Celebration">
+    <div id="celebrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeCelebrationModal()">&times;</span>
+            <img src="https://i.imgur.com/5XZQKYx.png" alt="Celebration">
+        </div>
     </div>
-</div>
 </body>
 </html>
