@@ -2,65 +2,176 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Sentence Adverbials in Subclauses: Grab the blue word and place it correctly</title>
+    <title>Sentence Adverbial Placement</title>
+    <!-- jQuery UI CSS for potential future use -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- jQuery Library -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- SortableJS Library for drag-and-drop functionality -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
+        /* General body styling */
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
             background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
             margin: 0;
         }
-        .score, .start-over {
-            font-size: 16px;
+        
+        /* Transition for dark mode */
+        body, body.dark-mode {
+            transition: background-color 0.3s ease;
+        }
+        
+        /* Ensure all dark mode elements also transition in sync */
+        .score, .dark-mode-toggle, h1, p.instructions, .movable-blue, .tooltip, .modal-content, .close-button {
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* Score, Start Over, and Dark Mode Toggle container */
+        .score-container {
             position: fixed;
             top: 20px;
+            right: 40px; /* Position for desktop */
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 125px; /* Maintains original width for desktop */
             z-index: 1001;
+            gap: 10px;
+        }
+        
+        /* Individual button styles */
+        .score, .start-over, .dark-mode-toggle {
+            font-size: 16px;
             background-color: #fff;
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
         }
-        .score {
-            right: 20px;
-        }
+        
+        /* Start Over button specific styling */
         .start-over {
-            left: 20px;
             cursor: pointer;
             background-color: #007BFF;
             color: white;
             border: none;
-            border-radius: 5px;
         }
+        
         .start-over:hover {
             background-color: #0056b3;
         }
+        
+        /* Dark mode toggle specific styling */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            white-space: nowrap; /* Prevents line break */
+        }
+        
+        /* Hide default checkbox */
+        .switch input {
+            display: none;
+        }
+        
+        /* Slider container */
+        .switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        /* Slider appearance */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        /* Slider active state */
+        input:checked + .slider {
+            background-color: #007BFF;
+        }
+        input:checked + .slider:before {
+            transform: translateX(17px);
+        }
+        
+        /* Container for all the content */
         .container {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-top: 5px;
+            align-items: flex-start;
+            padding-left: 50px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 900px;
+			padding-bottom: 100px;
         }
-        .sentence-wrapper {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
+        
+        /* Header and instructions styles */
+        h1 {
+            text-align: left;
+            color: #333333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            padding-top: 10px;
+            position: relative;
+            z-index: 1;
         }
+        
+        p.instructions {
+            text-align: left;
+            color: #666666;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        
+        /* Word container and individual word styles */
         .word-container {
-            display: flex;
+            display: inline-flex;
             flex-wrap: wrap;
             gap: 10px;
             padding: 10px;
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            width: 800px; /* Fixed width for consistent left positioning */
             min-height: 40px;
-            user-select: none; /* Prevent text selection */
-            position: relative;
+            user-select: none;
+            text-align: left;
+            margin-bottom: 10px;
         }
+        
+        /* Word styles */
         .word {
             display: inline-flex;
             align-items: center;
@@ -70,8 +181,11 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 18px;
-            user-select: none; /* Prevent text selection */
+            user-select: none;
+            position: relative;
         }
+        
+        /* Movable blue word styling */
         .movable-blue {
             background-color: #007BFF;
             display: inline-flex;
@@ -83,9 +197,42 @@
             font-size: 18px;
             cursor: pointer;
             color: white;
+            position: relative; /* Added to position tooltip */
         }
+        
+        /* Tooltip styling */
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 8px;
+            background-color: #333;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .disable-tooltips .tooltip {
+            display: none !important;
+        }
+        
+        .word:hover .tooltip, .movable-blue:hover .tooltip {
+            opacity: 1;
+        }
+        
+        /* Styles for correct and incorrect answers */
+        /* Correct answer styling */
         .correct {
-            background-color: green;
+            background-color: #4cbb17;
+            color: white;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -94,10 +241,12 @@
             border-radius: 4px;
             font-size: 18px;
             cursor: pointer;
-            color: white;
         }
+        
+        /* Incorrect answer styling */
         .incorrect {
-            background-color: red;
+            background-color: #ff2c2c;
+            color: white;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -106,8 +255,14 @@
             border-radius: 4px;
             font-size: 18px;
             cursor: pointer;
-            color: white;
         }
+        
+        /* Extra bottom spacing */
+        .bottom-space {
+            height: 100px;
+        }
+        
+        /* Modal general styling */
         .modal {
             display: none;
             position: fixed;
@@ -120,14 +275,18 @@
             justify-content: center;
             align-items: center;
         }
+        
         .modal-content {
             background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
             max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
         }
+        
         .close-button {
             float: right;
             padding: 5px;
@@ -144,424 +303,489 @@
             justify-content: center;
             transition: background-color 0.3s, transform 0.3s;
         }
+        
         .close-button:hover {
             background-color: #f44336;
             transform: scale(1.2);
             color: white;
         }
-        .modal-button {
-            padding: 5px 10px;
-            background-color: #a9a9a9; /* Dark gray */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-right: 10px;
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
         }
-        .modal-button:hover {
-            background-color: #000000; /* Black */
+        
+        body.dark-mode .score, body.dark-mode .dark-mode-toggle {
+            background-color: #c7c5c5;
+            color: #000;
+            box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
         }
-        .subclause-button {
-            padding: 5px 10px;
-            background-color: #a9a9a9; /* Dark gray */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 10px; /* Ensures space on the left side of the button */
+        
+        body.dark-mode .word-container {
+            background-color: #2d2d2d;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
         }
-        .subclause-button:hover {
-            background-color: #000000; /* Black */
+        
+        body.dark-mode h1 {
+            color: #ffffff;
         }
-        .celebration-modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 100%;
+        
+        body.dark-mode p.instructions {
+            color: #cccccc; /* A slightly lighter shade for readability */
         }
-
-        .celebration-modal-content img {
-            max-width: 80%;
-            height: auto;
-            border-radius: 8px;
+        
+        body.dark-mode .word {
+            background-color: #404040;
+            border-color: #555;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .movable-blue {
+            border-color: #555;
+        }
+        
+        body.dark-mode .tooltip {
+            background-color: #c7c5c5;
+            color: #000;
+            box-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);
+        }
+        
+        body.dark-mode .modal-content {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .close-button {
+            background-color: #404040;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .close-button:hover {
+            background-color: #d32f2f;
+        }
+        
+        .disable-tooltips .tooltip {
+            display: none !important;
+        }
+        
+        /* Media query for tablet and mobile screens */
+        @media (max-width: 768px) {
+            /* Center content for tablet screens */
+            .container {
+                max-width: 100%;
+                padding-left: 20px;
+            }
+            .score-container {
+                top: 10px;
+                right: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Mobile-specific adjustments */
+            .score-container {
+                right: 10px;
+                width: auto;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            p.instructions {
+                font-size: 14px;
+            }
+            .score, .start-over, .dark-mode-toggle {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .word, .movable-blue {
+                font-size: 16px;
+            }
+            .tooltip {
+                font-size: 12px;
+            }
         }
     </style>
+    <script>
+        // Define the checkPlacement function globally
+        function checkPlacement(container, movedItem) {
+            // Collect only main text content, ignoring tooltip elements
+            const currentOrder = Array.from(container.children).map(child =>
+                child.childNodes[0].textContent.trim() // Grabs only the main word text
+            ).join(' ');
+
+            const correctOrder = container.dataset.correct;
+            const scored = container.dataset.scored === 'true';
+
+            // Clear previous styles on the moved item
+            movedItem.classList.remove('correct', 'incorrect');
+
+            if (currentOrder === correctOrder) {
+                if (!scored) {
+                    movedItem.classList.add('correct');
+                    updateScore(1);
+                    container.dataset.scored = 'true';
+
+                    // Disable further movement
+                    movedItem.classList.remove('movable-blue');
+                    movedItem.removeAttribute('draggable');
+                }
+            } else {
+                movedItem.classList.add('incorrect');
+                if (!scored) {
+                    updateScore(-1);
+                    container.dataset.scored = 'true';
+
+                    // Disable further movement
+                    movedItem.classList.remove('movable-blue');
+                    movedItem.removeAttribute('draggable');
+                }
+            }
+        }
+
+        // Define the updateScore function globally
+        function updateScore(value) {
+            const scoreElement = document.getElementById('score');
+            let currentScore = parseInt(scoreElement.textContent);
+            scoreElement.textContent = currentScore + value;
+            checkForMaxScore(currentScore + value);
+        }
+
+        // Define the checkForMaxScore function globally
+        function checkForMaxScore(score) {
+            if (score >= 15) {
+                openCelebrationModal();
+            }
+        }
+
+        // Define the openCelebrationModal function globally
+        function openCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'flex';
+        }
+
+        // Define the closeCelebrationModal function globally
+        function closeCelebrationModal() {
+            document.getElementById('celebrationModal').style.display = 'none';
+        }
+
+        // Define the startOver function globally
+        function startOver() {
+            location.reload();
+        }
+
+        // Define the setDarkMode function globally
+        function setDarkMode(enabled) {
+            if (enabled) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+
+        // Initialize everything after DOM has fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            const darkModeToggle = document.getElementById('darkModeSwitch');
+            const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+
+            // Set the initial state based on previous preference
+            setDarkMode(isDarkModeEnabled);
+            darkModeToggle.checked = isDarkModeEnabled;
+
+            // Listen for toggle changes
+            darkModeToggle.addEventListener('change', function () {
+                setDarkMode(this.checked);
+            });
+
+            // Initialize the game
+            const sentences = [
+                {
+                prompt: ["Om", "du", "ringer", "mig", "blir", "jag", "förbannad"],
+                correct: "Om du inte ringer mig blir jag förbannad",
+                missing: "inte"
+                },
+
+                {
+                prompt: ["Eftersom", "han", "är", "sen", "kommer", "han", "inte", "hinna", "tåget"],
+                correct: "Eftersom han sannolikt är sen kommer han inte hinna tåget",
+                missing: "sannolikt"
+                },
+
+                {
+                prompt: ["Hon", "sa", "att", "han", "är", "glad"],
+                correct: "Hon sa att han alltid är glad",
+                missing: "alltid"
+                },
+
+                {
+                prompt: ["Om", "Sverige", "vinner", "matchen", "blir", "det", "kalabalik"],
+                correct: "Om Sverige inte vinner matchen blir det kalabalik",
+                missing: "inte",
+        			tooltipOverride: {
+        				"blir": "becomes"
+        			}
+                },
+
+                {
+                prompt: ["Eftersom", "tävlingen", "är", "inställd", "åker", "vi", "hem", "igen"],
+                correct: "Eftersom tävlingen tyvärr är inställd åker vi hem igen",
+                missing: "tyvärr"
+                },
+
+                {
+                prompt: ["Han", "sa", "att", "hon", "skulle", "komma"],
+                correct: "Han sa att hon säkert skulle komma",
+                missing: "säkert"
+                },
+
+                {
+                prompt: ["Eftersom", "han", "inte", "kom", "i", "tid", "missade", "han", "mötet"],
+                correct: "Eftersom han tyvärr inte kom i tid missade han mötet",
+                missing: "tyvärr",
+        			tooltipOverride: {
+        				"blir": "becomes"
+        			}
+                },
+
+                {
+                prompt: ["Han", "berättade", "för", "oss", "att", "hans", "mamma", "var", "sjuk"],
+                correct: "Han berättade för oss att hans mamma tyvärr var sjuk",
+                missing: "tyvärr"
+                },
+
+                {
+                prompt: ["Vi", "tog", "bilen", "eftersom", "det", "skulle", "börja", "regna", "snart"],
+                correct: "Vi tog bilen eftersom det sannolikt skulle börja regna snart",
+                missing: "sannolikt"
+                },
+
+                {
+                prompt: ["Han", "besöker", "museet", "eftersom", "han", "hittar", "inspiration", "där"],
+                correct: "Han besöker museet eftersom han ofta hittar inspiration där",
+                missing: "ofta"
+                },
+
+                {
+                prompt: ["När", "solen", "skiner", "blir", "jag", "på", "ett", "dåligt", "humör"],
+                correct: "När solen inte skiner blir jag på ett dåligt humör",
+                missing: "inte"
+                },
+
+                {
+                prompt: ["De", "reser", "mycket", "även", "om", "det", "blir", "väldigt", "dyrt"],
+                correct: "De reser mycket även om det förmodligen blir väldigt dyrt",
+                missing: "förmodligen",
+        			tooltipOverride: {
+        				"blir": "becomes"
+        			}
+                },
+
+                {
+                prompt: ["Han", "arbetar", "övertid", "även", "om", "det", "är", "stressigt"],
+                correct: "Han arbetar övertid även om det ofta är stressigt",
+                missing: "ofta"
+                },
+
+                {
+                prompt: ["Jag", "skriver", "brev", "även", "om", "jag", "föredrar", "e-post"],
+                correct: "Jag skriver brev även om jag naturligtvis föredrar e-post",
+                missing: "naturligtvis"
+                },
+
+                {
+                prompt: ["Trots", "att", "jag", "är", "upptagen", "med", "arbete", "läser", "jag", "böcker"],
+                correct: "Trots att jag alltid är upptagen med arbete läser jag böcker",
+                missing: "alltid",
+        			tooltipOverride: {
+        				"är": "am"
+        			}
+                }
+            ];
+
+            const tooltipDataOriginal = {
+                "alltid": "always",
+				"arbetar": "works",
+				"arbete": "work",
+				"att": "that",
+				"berättade": "told",
+				"besöker": "visits",
+				"bilen": "the car",
+				"bli": "become",
+				"blir": "become",
+				"brev": "letters",
+				"böcker": "books",
+				"börja": "start",
+				"de": "they",
+				"det": "it",
+				"du": "you",
+				"dyrt": "expensive",
+				"dåligt": "bad",
+				"där": "there",
+				"eftersom": "since",
+				"e-post": "email",
+				"ett": "a",
+				"för": "for",
+				"förbannad": "angry",
+				"föredrar": "prefer",
+				"förmodligen": "probably",
+				"försenad": "delayed",
+				"glad": "happy",
+				"han": "he",
+				"hann": "managed",
+				"hans": "his",
+				"hem": "home",
+				"hinna": "catch",
+				"hittar": "finds",
+				"hon": "she",
+				"humör": "mood",
+				"i": "in",
+				"igen": "again",
+				"inspiration": "inspiration",
+				"inställd": "cancelled",
+				"inte": "not",
+				"jag": "I",
+				"kalabalik": "chaos",
+				"kom": "came",
+				"komma": "come",
+				"kommer": "will",
+				"läser": "read",
+				"mamma": "mother",
+				"matchen": "the match",
+				"med": "with",
+				"mig": "me",
+				"missade": "missed",
+				"museet": "the museum",
+				"mycket": "a lot",
+				"mötet": "the meeting",
+				"naturligtvis": "naturally",
+				"när": "when",
+				"ofta": "often",
+				"om": "if",
+				"oss": "us",
+				"på": "on (= in)",
+				"regna": "rain",
+				"reser": "travel",
+				"ringer": "phone; call",
+				"sa": "said",
+				"sannolikt": "likely",
+				"sen": "late",
+				"sjuk": "ill",
+				"skiner": "shines",
+				"skriver": "write",
+				"skulle": "would",
+				"snart": "soon",
+				"solen": "the sun",
+				"stressigt": "stressful",
+				"Sverige": "Sweden",
+				"säkert": "certainly",
+				"tid": "time",
+				"tog": "took",
+				"trots": "despite",
+				"tyvärr": "unfortunately",
+				"tåget": "the train",
+				"tävlingen": "the competition",
+				"upptagen": "busy",
+				"var": "was",
+				"vi": "we",
+				"vinner": "wins",
+				"väldigt": "very",
+				"åker": "go",
+				"är": "is",
+				"även": "even",
+				"övertid": "overtime"
+
+            };
+
+            const tooltipData = {};
+            for (let key in tooltipDataOriginal) {
+                tooltipData[key.toLowerCase()] = tooltipDataOriginal[key];
+            }
+
+            // Dynamically create sentences and initialize SortableJS
+            sentences.forEach((item, index) => {
+                let sentenceWrapper = document.createElement('div');
+                sentenceWrapper.className = 'sentence-wrapper';
+
+                let container = document.createElement('div');
+                container.id = 'sortable' + (index + 1);
+                container.className = 'word-container';
+                container.setAttribute('data-correct', item.correct);
+                container.setAttribute('data-scored', 'false');
+
+                // Construct the HTML for regular words with tooltips
+                const wordsHTML = item.prompt.map((word) => {
+                    const tooltipText = (item.tooltipOverride && item.tooltipOverride[word]) || tooltipData[word.toLowerCase()] || '';
+                    return `<div class="word">${word}<div class="tooltip">${tooltipText}</div></div>`;
+                }).join('');
+
+                // Construct the HTML for movable blue word with tooltip
+                const movableBlueHTML = `<div class="movable-blue">${item.missing}<div class="tooltip">${tooltipData[item.missing.toLowerCase()] || ''}</div></div>`;
+
+                // Set the inner HTML of the container
+                container.innerHTML = wordsHTML + movableBlueHTML;
+
+                // Append the container to the sentence wrapper
+                sentenceWrapper.appendChild(container);
+
+                // Append the sentence wrapper to the main container
+                document.querySelector('.container').appendChild(sentenceWrapper);
+
+                // Initialize SortableJS on the container
+                Sortable.create(container, {
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    handle: '.movable-blue',
+                    onStart: function() {
+                        document.body.classList.add('disable-tooltips'); // Hide all tooltips during drag
+                    },
+                    onEnd: function(evt) {
+                        setTimeout(() => {
+                            document.body.classList.remove('disable-tooltips'); // Re-enable tooltips after drop
+                        }, 100); // Adjust delay if necessary
+
+                        checkPlacement(container, evt.item);
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
-    <div class="start-over" onclick="startOver()">Start over</div>
-    <div class="score">Score: <span id="score">0</span> / 15,0</div>
+
+    <!-- Score, Dark Mode Toggle, and Start Over Button -->
+    <div class="score-container">
+        <div class="score">Score: <span id="score">0</span> / 15</div>
+        <div class="dark-mode-toggle"> 
+            <label class="switch"> 
+                <input type="checkbox" id="darkModeSwitch"> 
+                <span class="slider"></span> 
+            </label> 
+            <span>Dark mode</span> 
+        </div>
+        <div class="start-over" onclick="startOver()">Start over</div>
+    </div>
+
+    <!-- Main Content Container -->
     <div class="container">
-        <center><h1>Sentence Adverbials in Subclauses:<br />Grab the blue word and place it correctly</h1></center>
-        <center><p>Instructions: You only get one shot for each sentence. Place the missing piece correctly to earn<br />
-		   points. If you can do this without needing help to identify the subclause, you will earn 1 point;<br />
-		   otherwise, you will only receive 0.5 points. For each mistake, you get -1 point. Max score: 15.</p><br /><br />
-        <!-- Sentence 1 -->
-        <div class="sentence-wrapper" id="sentence1">
-            <button class="modal-button" onclick="openModal(1)">Translate</button>
-            <div class="word-container" data-id="1" data-correct="När solen inte skiner blir jag på dåligt humör">
-                <div class="word subclause">När</div>
-                <div class="word subclause">solen</div>
-                <div class="word subclause">skiner</div>
-                <div class="word">blir</div>
-                <div class="word">jag</div>
-                <div class="word">på</div>
-                <div class="word">dåligt</div>
-                <div class="word">humör</div>
-                <div class="movable-blue">inte</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(1)">The Subclause</button>
-        </div>
-        <!-- Sentence 2 -->
-        <div class="sentence-wrapper" id="sentence2">
-            <button class="modal-button" onclick="openModal(2)">Translate</button>
-            <div class="word-container" data-id="2" data-correct="De är sura på varandra eftersom de inte är överens">
-                <div class="word">De</div>
-                <div class="word">är</div>
-                <div class="word">sura</div>
-                <div class="word">på</div>
-                <div class="word">varandra</div>
-                <div class="word subclause">eftersom</div>
-                <div class="word subclause">de</div>
-                <div class="word subclause">är</div>
-                <div class="word subclause">överens</div>
-                <div class="movable-blue">inte</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(2)">The Subclause</button>
-        </div>
-        <!-- Sentence 3 -->
-        <div class="sentence-wrapper" id="sentence3">
-            <button class="modal-button" onclick="openModal(3)">Translate</button>
-            <div class="word-container" data-id="3" data-correct="Om du inte ringer blir jag förbannad">
-                <div class="word subclause">Om</div>
-                <div class="word subclause">du</div>
-                <div class="word subclause">ringer</div>
-                <div class="word">blir</div>
-                <div class="word">jag</div>
-                <div class="word">förbannad</div>
-                <div class="movable-blue">inte</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(3)">The Subclause</button>
-        </div>
-        <!-- Sentence 4 -->
-        <div class="sentence-wrapper" id="sentence4">
-            <button class="modal-button" onclick="openModal(4)">Translate</button>
-            <div class="word-container" data-id="4" data-correct="Eftersom det inte är kallt har vi bara tunna kläder">
-                <div class="word subclause">Eftersom</div>
-                <div class="word subclause">det</div>
-                <div class="word subclause">är</div>
-                <div class="word subclause">kallt</div>
-                <div class="word">har</div>
-                <div class="word">vi</div>
-                <div class="word">bara</div>
-                <div class="word">tunna</div>
-                <div class="word">kläder</div>
-                <div class="movable-blue">inte</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(4)">The Subclause</button>
-        </div>
-        <!-- Sentence 5 -->
-        <div class="sentence-wrapper" id="sentence5">
-            <button class="modal-button" onclick="openModal(5)">Translate</button>
-            <div class="word-container" data-id="5" data-correct="De sjunger eftersom de inte är ledsna">
-                <div class="word">De</div>
-                <div class="word">sjunger</div>
-                <div class="word subclause">eftersom</div>
-                <div class="word subclause">de</div>
-                <div class="word subclause">är</div>
-                <div class="word subclause">ledsna</div>
-                <div class="movable-blue">inte</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(5)">The Subclause</button>
-        </div>
-        <!-- Sentence 6 -->
-        <div class="sentence-wrapper" id="sentence6">
-            <button class="modal-button" onclick="openModal(6)">Translate</button>
-            <div class="word-container" data-id="6" data-correct="Eftersom han sannolikt är sen kommer han inte hinna tåget">
-                <div class="word subclause">Eftersom</div>
-                <div class="word subclause">han</div>
-                <div class="word subclause">är</div>
-                <div class="word subclause">sen</div>
-                <div class="word">kommer</div>
-                <div class="word">han</div>
-                <div class="word">inte</div>
-                <div class="word">hinna</div>
-                <div class="word">tåget</div>
-                <div class="movable-blue">sannolikt</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(6)">The Subclause</button>
-        </div>
-        <!-- Sentence 7 -->
-        <div class="sentence-wrapper" id="sentence7">
-            <button class="modal-button" onclick="openModal(7)">Translate</button>
-            <div class="word-container" data-id="7" data-correct="När vikingarna inte stred handlade de med andra">
-                <div class="word subclause">När</div>
-                <div class="word subclause">vikingarna</div>
-                <div class="word subclause">stred</div>
-                <div class="word">handlade</div>
-                <div class="word">de</div>
-                <div class="word">med</div>
-                <div class="word">andra</div>
-                <div class="movable-blue">inte</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(7)">The Subclause</button>
-        </div>
-        <!-- Sentence 8 -->
-        <div class="sentence-wrapper" id="sentence8">
-            <button class="modal-button" onclick="openModal(8)">Translate</button>
-            <div class="word-container" data-id="8" data-correct="Hon sa att hon alltid är glad">
-                <div class="word">Hon</div>
-                <div class="word">sa</div>
-                <div class="word subclause">att</div>
-                <div class="word subclause">hon</div>
-                <div class="word subclause">är</div>
-                <div class="word subclause">glad</div>
-                <div class="movable-blue">alltid</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(8)">The Subclause</button>
-        </div>
-        <!-- Sentence 9 -->
-        <div class="sentence-wrapper" id="sentence9">
-            <button class="modal-button" onclick="openModal(9)">Translate</button>
-            <div class="word-container" data-id="9" data-correct="Han berättade för oss att hans mamma tyvärr var försenad">
-                <div class="word">Han</div>
-                <div class="word">berättade</div>
-                <div class="word">för</div>
-                <div class="word">oss</div>
-                <div class="word subclause">att</div>
-                <div class="word subclause">hans</div>
-                <div class="word subclause">mamma</div>
-                <div class="word subclause">var</div>
-                <div class="word subclause">försenad</div>
-                <div class="movable-blue">tyvärr</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(9)">The Subclause</button>
-        </div>
-        <!-- Sentence 10 -->
-        <div class="sentence-wrapper" id="sentence10">
-            <button class="modal-button" onclick="openModal(10)">Translate</button>
-            <div class="word-container" data-id="10" data-correct="Eftersom det tyvärr är regnigt stannar vi inne hela dagen">
-                <div class="word subclause">Eftersom</div>
-                <div class="word subclause">det</div>
-                <div class="word subclause">är</div>
-                <div class="word subclause">regnigt</div>
-                <div class="word">stannar</div>
-                <div class="word">vi</div>
-                <div class="word">inne</div>
-                <div class="word">hela</div>
-                <div class="word">dagen</div>
-                <div class="movable-blue">tyvärr</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(10)">The Subclause</button>
-        </div>
-        <!-- Sentence 11 -->
-        <div class="sentence-wrapper" id="sentence11">
-            <button class="modal-button" onclick="openModal(11)">Translate</button>
-            <div class="word-container" data-id="11" data-correct="Hon sa att hon säkert skulle komma">
-                <div class="word">Hon</div>
-                <div class="word">sa</div>
-                <div class="word subclause">att</div>
-                <div class="word subclause">hon</div>
-                <div class="word subclause">skulle</div>
-                <div class="word subclause">komma</div>
-                <div class="movable-blue">säkert</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(11)">The Subclause</button>
-        </div>
-        <!-- Sentence 12 -->
-        <div class="sentence-wrapper" id="sentence12">
-            <button class="modal-button" onclick="openModal(12)">Translate</button>
-            <div class="word-container" data-id="12" data-correct="Om Sverige inte vinner matchen blir det kalabalik">
-                <div class="word subclause">Om</div>
-                <div class="word subclause">Sverige</div>
-                <div class="word subclause">vinner</div>
-                <div class="word subclause">matchen</div>
-                <div class="word">blir</div>
-                <div class="word">det</div>
-                <div class="word">kalabalik</div>
-                <div class="movable-blue">inte</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(12)">The Subclause</button>
-        </div>
-        <!-- Sentence 13 -->
-        <div class="sentence-wrapper" id="sentence13">
-            <button class="modal-button" onclick="openModal(13)">Translate</button>
-            <div class="word-container" data-id="13" data-correct="Eftersom tävlingen tyvärr är inställd åker vi hem igen">
-                <div class="word subclause">Eftersom</div>
-                <div class="word subclause">tävlingen</div>
-                <div class="word subclause">är</div>
-                <div class="word subclause">inställd</div>
-                <div class="word">åker</div>
-                <div class="word">vi</div>
-                <div class="word">hem</div>
-                <div class="word">igen</div>
-                <div class="movable-blue">tyvärr</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(13)">The Subclause</button>
-        </div>
-        <!-- Sentence 14 -->
-        <div class="sentence-wrapper" id="sentence14">
-            <button class="modal-button" onclick="openModal(14)">Translate</button>
-            <div class="word-container" data-id="14" data-correct="Trots att hon knappast har ork städar hon huset">
-                <div class="word subclause">Trots</div>
-                <div class="word subclause">att</div>
-                <div class="word subclause">hon</div>
-                <div class="word subclause">har</div>
-                <div class="word subclause">ork</div>
-                <div class="word">städar</div>
-                <div class="word">hon</div>
-                <div class="word">huset</div>
-                <div class="movable-blue">knappast</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(14)">The Subclause</button>
-        </div>
-        <!-- Sentence 15 -->
-        <div class="sentence-wrapper" id="sentence15">
-            <button class="modal-button" onclick="openModal(15)">Translate</button>
-            <div class="word-container" data-id="15" data-correct="Eftersom han tyvärr inte kom i tid missade han mötet">
-                <div class="word subclause">Eftersom</div>
-                <div class="word subclause">han</div>
-                <div class="word subclause">inte</div>
-                <div class="word subclause">kom</div>
-                <div class="word subclause">i</div>
-                <div class="word subclause">tid</div>
-                <div class="word">missade</div>
-                <div class="word">han</div>
-                <div class="word">mötet</div>
-                <div class="movable-blue">tyvärr</div>
-            </div>
-            <button class="subclause-button" onclick="highlightSubclause(15)">The Subclause</button>
-        </div>
+
+        <h1>Sentence Adverbials in Subclauses:<br />Grab the blue word and place it correctly</h1>
+        <p class="instructions">
+            Instructions: In this exercise, you should (1) identify the <strong>subordinate clause</strong> and (2) place the sentence<br />
+			adverb correctly <strong>within it</strong>. You only get one shot for each sentence. If you don’t understand a word, just<br />
+			hover it. Max score: 15.
+        </p>
+
+        <!-- The sentences and movable words are dynamically added by JavaScript -->
+
     </div>
 
     <!-- Celebration Modal -->
     <div id="celebrationModal" class="modal">
-        <div class="celebration-modal-content">
-            <span class="close-button" onclick="closeCelebrationModal()">&times;</span>
-            <img src="https://i.imgur.com/qE4iOMo.png" alt="Celebration">
-        </div>
-    </div>
-
-    <div id="translationModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
-            <h2>Translation</h2>
-            <p id="currentTranslation">Current expression:</p>
-            <p id="correctTranslation">Change it to say:</p>
+            <span class="close-button" onclick="closeCelebrationModal()">&times;</span>
+            <img src="https://i.imgur.com/5XZQKYx.png" alt="Celebration">
         </div>
     </div>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeSortables();
-    });
-
-    function initializeSortables() {
-        document.querySelectorAll('.word-container').forEach(container => {
-            Sortable.create(container, {
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                handle: '.movable-blue',
-                onEnd: function(evt) {
-                    checkPlacement(evt.to, evt.item);
-                }
-            });
-        });
-    }
-
-    function highlightSubclause(id) {
-        const container = document.querySelector(`.word-container[data-id="${id}"]`);
-        container.querySelectorAll('.word.subclause').forEach(word => {
-            word.style.backgroundColor = 'orange';
-        });
-        container.setAttribute('data-highlighted', 'true');
-    }
-
-    function openModal(id) {
-        const modal = document.getElementById('translationModal');
-        modal.style.display = 'flex';
-        const sentenceDetails = {
-            1: ["When the sun is shining, I get in a bad mood", "When the sun isn't shining, I get in a bad mood"],
-            2: ["There's tension between them because they're on the same page", "There's tension between them because they're not on the same page"],
-            3: ["If you call me, I'll be furious", "If you don't call me, I'll be furious"],
-            4: ["As it's cold, we've only got thin clothes on", "As it's not cold, we've only got thin clothes on"],
-            5: ["They sing because they are sad", "They sing because they aren't sad"],
-            6: ["As he is late, he won't catch the train", "As he is likely late, he won't catch the train"],
-            7: ["When the Vikings fought, they were trading with others", "When the Vikings weren't fighting, they were trading with others"],
-            8: ["She said that she is happy", "She said that she is always happy"],
-            9: ["He informed us that his mother was delayed", "He informed us that his mother was unfortunately delayed"],
-            10: ["As it is rainy, we stay inside all day", "As it is unfortunately rainy, we stay inside all day"],
-            11: ["She said that she would come", "She said that she would surely come"],
-            12: ["If Sweden wins the match, there'll be chaos", "If Sweden doesn't win the match, there'll be chaos"],
-            13: ["As the competition is canceled, we're heading back home", "As the competition is unfortunately canceled, we're heading back home"],
-            14: ["Despite having energy, she cleans the house", "Despite hardly having energy, she cleans the house"],
-            15: ["Because he didn't arrive on time, he missed the meeting", "Because he unfortunately didn't arrive on time, he missed the meeting"]
-        };
-        document.getElementById('currentTranslation').textContent = "Original: " + sentenceDetails[id][0];
-        document.getElementById('correctTranslation').textContent = "After change: " + sentenceDetails[id][1];
-    }
-
-    function closeModal() {
-        document.getElementById('translationModal').style.display = 'none';
-    }
-
-    function checkPlacement(container, movedItem) {
-        const currentOrder = Array.from(container.children).map(child => child.textContent.trim()).join(' ');
-        const correctOrder = container.getAttribute('data-correct');
-        const scored = container.getAttribute('data-scored') === 'true';
-        const highlighted = container.getAttribute('data-highlighted') === 'true';
-
-        movedItem.classList.remove('correct', 'incorrect'); // Clear previous styles
-
-        if (currentOrder === correctOrder) {
-            if (!scored) {
-                movedItem.classList.add('correct');
-                const scoreIncrement = highlighted ? 0.5 : 1;
-                updateScore(scoreIncrement);
-                container.setAttribute('data-scored', 'true');
-                // Disable further movement
-                movedItem.classList.remove('movable-blue');
-                movedItem.removeAttribute('draggable');
-            }
-        } else {
-            movedItem.classList.add('incorrect');
-            if (!scored) {
-                updateScore(-1);
-                container.setAttribute('data-scored', 'true');
-                // Disable further movement
-                movedItem.classList.remove('movable-blue');
-                movedItem.removeAttribute('draggable');
-            }
-        }
-    }
-
-    function updateScore(value) {
-        const scoreElement = document.getElementById('score');
-        let currentScore = parseFloat(scoreElement.textContent); // Ensure floating-point operation
-        scoreElement.textContent = (currentScore + value).toFixed(1); // Update with precision to handle halves
-        checkForMaxScore(currentScore + value);
-    }
-
-    function checkForMaxScore(score) {
-        if (score >= 15) {
-            openCelebrationModal();
-        }
-    }
-
-    function openCelebrationModal() {
-        document.getElementById('celebrationModal').style.display = 'flex';
-    }
-
-    function closeCelebrationModal() {
-        document.getElementById('celebrationModal').style.display = 'none';
-    }
-
-    function startOver() {
-        location.reload(); // This will reset all settings including re-enabling movement of the blue word
-    }
-    </script>
 </body>
 </html>
