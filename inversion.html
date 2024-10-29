@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -35,30 +36,43 @@
             background-color: var(--border-color);
             box-shadow: 0 4px 12px var(--shadow);
             margin: 20px auto;
-            max-width: 1200px; /* Adjust as needed */
+            max-width: 1000px; /* Adjust as needed */
             border-radius: 8px;
             overflow: hidden;
         }
 
-        /* Header Styling */
+        /* Header with Button */
         .header {
             grid-column: span 12;
             background-color: var(--header-bg);
             color: var(--header-color);
             font-weight: 600;
-            padding: 16px;
-            text-align: left;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 1.25rem;
         }
 
-        /* Cell Styling */
-        .cell {
-            padding: 8px 16px;
-            font-size: 1rem;
-            background-color: #ffffff;
-            display: flex;
-            align-items: center;
+        .modal-btn {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
+
+        /* Cell Styling */
+.cell {
+    padding: 2px 8px; /* Reduced padding for less row height */
+    font-size: 1rem;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    white-space: nowrap; /* Prevent line breaks in cells */
+}
 
         /* Centered Cells */
         .centered {
@@ -76,19 +90,19 @@
             background-color: var(--subject-bg);
             color: #155724;
             font-weight: 600;
-			justify-content: center; /* Aligns text to the left */
+			justify-content: center; 
 		}
         .verb {
             background-color: var(--verb-bg);
             color: #ffffff;
             font-weight: 600;
-			justify-content: center; /* Aligns text to the left */
+			justify-content: center; 
 		}
         .object {
             background-color: var(--object-bg);
             color: #ffffff;
             font-weight: 600;
-			justify-content: center; /* Aligns text to the left */
+			justify-content: center; 
         }
         .subclause {
             background-color: var(--subclause-bg);
@@ -106,34 +120,49 @@
         .span-2 { grid-column: span 2; }
         .span-6 { grid-column: span 6; }
 		.span-9 { grid-column: span 9; }
+		
+		        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .close-btn {
+            background-color: var(--secondary-color);
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <div class="table">
     <!-- Header Row -->
-    <div class="header">Inversion</div>
+    <div class="header">Inversion: How the subject and verb change places based on sentence start.<button class="modal-btn" onclick="openModal()">What is this?</button></div>
 
     <!-- Explanation Rows -->
     <div class="cell empty"></div>
-    <div class="cell"></div>
-    <div class="cell subject">Subject</div>
-    <div class="cell span-3"></div>
-    <div class="cell span-1"><strong>This table</strong></div>
-    <div class="cell span-6"></div>
-
-    <div class="cell"></div>
-    <div class="cell verb">Verb</div>
-    <div class="cell span-3"></div>
-    <div class="cell span-6" style="text-align: left;">This table shows how the subject and verb change places based on sentence start.</div>
-    <div class="cell"></div>
-
-    <div class="cell"></div>
-    <div class="cell object">Object</div>
-    <div class="cell span-3"></div>
-    <div class="cell span-6" style="text-align: left;"></div>
-    <div class="cell"></div>
-
+    <div class="cell empty"></div>
+    <div class="cell empty"></div>
     <div class="cell empty"></div>
 
     <!-- Data Rows -->
@@ -143,13 +172,13 @@
     <div class="cell subject" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Han</div>
     <div class="cell verb">köpte</div>
     <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">en bok</div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">idag</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">idag</div>
     <div class="cell span-3"></div>
 
     <div class="cell"></div>
     <div class="cell" style="border-bottom: 2px solid #dddddd;">Non-subject start</div>
     <div class="cell span-2" style="border-bottom: 2px solid #dddddd;"></div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">Idag</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">Idag</div>
     <div class="cell verb" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-bottom: 7px solid #000;">köpte</div>
     <div class="cell subject" style="border-bottom: 7px solid #000;">han</div>
     <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">en bok</div>
@@ -157,6 +186,13 @@
     <div class="cell centered" style="border-bottom: 7px solid #000;"><strong>inverted</strong></div>
 
     <div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+    <div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
 
     <div class="cell"><strong>1b</strong></div>
     <div class="cell" style="border-bottom: 2px solid #dddddd;">Subject start</div>
@@ -164,13 +200,13 @@
     <div class="cell subject" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Hon</div>
     <div class="cell verb">ringde</div>
     <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">honom</div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">igår</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">igår</div>
     <div class="cell span-3"></div>
 
     <div class="cell"></div>
     <div class="cell" style="border-bottom: 2px solid #dddddd;">Non-subject start</div>
     <div class="cell span-2" style="border-bottom: 2px solid #dddddd;"></div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">Igår</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">Igår</div>
     <div class="cell verb" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-bottom: 7px solid #000;">ringde</div>
     <div class="cell subject" style="border-bottom: 7px solid #000;">hon</div>
     <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">honom</div>
@@ -178,6 +214,13 @@
     <div class="cell centered" style="border-bottom: 7px solid #000;"><strong>inverted</strong></div>
 
     <div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+    <div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
 
     <div class="cell"><strong>2a</strong></div>
     <div class="cell" style="border-bottom: 2px solid #dddddd;">Main clause start</div>
@@ -185,16 +228,16 @@
     <div class="cell subject" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Han</div>
     <div class="cell verb">dricker</div>
     <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">kaffe</div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">när</div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">det</div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">regnar</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">när</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">det</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">regnar</div>
     <div class="cell"></div>
 
     <div class="cell"></div>
     <div class="cell subclause" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Subclause start</div>
-    <div class="cell subclause">När</div>
-    <div class="cell subclause">det</div>
-    <div class="cell subclause">regnar</div>
+    <div class="cell subclause" style="justify-content: center;">När</div>
+    <div class="cell subclause" style="justify-content: center;">det</div>
+    <div class="cell subclause" style="justify-content: center;">regnar</div>
     <div class="cell verb" style="border-bottom: 7px solid #000;">dricker</div>
     <div class="cell subject" style="border-bottom: 7px solid #000;">han</div>
     <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">kaffe</div>
@@ -202,6 +245,13 @@
     <div class="cell centered" style="border-bottom: 7px solid #000;"><strong>inverted</strong></div>
 
     <div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+    <div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
+	<div class="cell empty"></div>
 
     <div class="cell"><strong>2b</strong></div>
     <div class="cell" style="border-bottom: 2px solid #dddddd;">Main clause start</div>
@@ -209,24 +259,67 @@
     <div class="cell subject" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Hon</div>
     <div class="cell verb">ringer</div>
     <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">honom</div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">om</div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">hon</div>
-    <div class="cell" style="border-bottom: 2px solid #dddddd;">kan</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">om</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">hon</div>
+    <div class="cell" style="justify-content: center; border-bottom: 2px solid #dddddd;">kan</div>
     <div class="cell"></div>
 
     <div class="cell"></div>
     <div class="cell subclause" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Subclause start</div>
-    <div class="cell subclause">Om</div>
-    <div class="cell subclause">hon</div>
-    <div class="cell subclause">kan</div>
+    <div class="cell subclause" style="justify-content: center;">Om</div>
+    <div class="cell subclause" style="justify-content: center;">hon</div>
+    <div class="cell subclause" style="justify-content: center;">kan</div>
     <div class="cell verb" style="border-bottom: 7px solid #000;">ringer</div>
     <div class="cell subject" style="border-bottom: 7px solid #000;">hon</div>
     <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">honom</div>
     <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
     <div class="cell centered" style="border-bottom: 7px solid #000;"><strong>inverted</strong></div>
 
-    <div class="cell bordered-bottom-row"></div>
+    <div class="cell empty"></div>
+	<div class="cell empty"></div>
+    <div class="cell empty"></div>
+	<div class="cell empty"></div>
 </div>
+<!-- Modal Structure -->
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <h2>What is this?</h2>
+        <p>Swedish (just like for example English, German and Dutch) is an SVO language, which means that its basic sentence structure typically follows the Subject-Verb-Object order (also called <em>straight word order</em>). However, when a sentence begins with an element other than the subject, the verb and subject switch places — this is called <strong>inversion</strong>. Starting with an adverbial phrase, for example, moves the verb in the main clause before the subject.</p>
+
+<p>Below are color highlights used to identify sentence parts:</p>
+<div style="list-style: none; padding-left: 0; font-size: 1rem;">
+    <div style="background-color: #d4edda; color: #155724; font-weight: 600; padding: 5px; margin: 3px 0; border-radius: 5px;">Subject (Green)</div>
+    <div style="background-color: #ffb74d; color: #ffffff; font-weight: 600; padding: 5px; margin: 3px 0; border-radius: 5px;">Verb (Orange)</div>
+    <div style="background-color: #4da6ff; color: #ffffff; font-weight: 600; padding: 5px; margin: 3px 0; border-radius: 5px;">Object (Blue)</div>
+</div>
+
+<p>Inverted word order is also shown by <u>underlining</u> the swapped subject and verb.</p>
+
+
+
+        <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<script>
+    // Open Modal
+    function openModal() {
+        document.getElementById("infoModal").style.display = "flex";
+    }
+
+    // Close Modal
+    function closeModal() {
+        document.getElementById("infoModal").style.display = "none";
+    }
+
+    // Close modal if clicked outside content
+    window.onclick = function(event) {
+        var modal = document.getElementById("infoModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 
 </body>
 </html>
