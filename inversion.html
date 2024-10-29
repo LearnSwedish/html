@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Table with Divs</title>
+    <style>
+        /* CSS Variables for Consistent Styling */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #f8f9fa;
+            --header-bg: #343a40;
+            --header-color: #ffffff;
+            --striped-color: #e9ecef;
+            --subject-bg: #d4edda;
+            --verb-bg: #ffb74d;
+            --object-bg: #4da6ff;
+            --subclause-bg: #ff8a65;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Global Styling */
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            margin: 20px;
+            color: #212529;
+        }
+
+        /* Table Container */
+        .table {
+            display: grid;
+            background-color: var(--border-color);
+            box-shadow: 0 4px 12px var(--shadow);
+            margin: 20px auto;
+            max-width: 1200px; /* Adjust as needed */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Header Styling */
+        .header {
+            grid-column: span 12;
+            background-color: var(--header-bg);
+            color: var(--header-color);
+            font-weight: 600;
+            padding: 16px;
+            text-align: left;
+            font-size: 1.25rem;
+        }
+
+        /* Cell Styling */
+        .cell {
+            padding: 8px 16px;
+            font-size: 1rem;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Centered Cells */
+        .centered {
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Row Striping */
+        .striped:nth-child(odd) .cell {
+            background-color: var(--striped-color);
+        }
+
+        /* Color Classes */
+        .subject {
+            background-color: var(--subject-bg);
+            color: #155724;
+            font-weight: 600;
+			justify-content: center; /* Aligns text to the left */
+		}
+        .verb {
+            background-color: var(--verb-bg);
+            color: #ffffff;
+            font-weight: 600;
+			justify-content: center; /* Aligns text to the left */
+		}
+        .object {
+            background-color: var(--object-bg);
+            color: #ffffff;
+            font-weight: 600;
+			justify-content: center; /* Aligns text to the left */
+        }
+        .subclause {
+            background-color: var(--subclause-bg);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* Empty cell */
+        .empty {
+            grid-column: span 12;
+        }
+
+        /* Span specific cells */
+        .span-3 { grid-column: span 3; }
+        .span-2 { grid-column: span 2; }
+        .span-6 { grid-column: span 6; }
+		.span-9 { grid-column: span 9; }
+    </style>
+</head>
+<body>
+
+<div class="table">
+    <!-- Header Row -->
+    <div class="header">Inversion</div>
+
+    <!-- Explanation Rows -->
+    <div class="cell empty"></div>
+    <div class="cell"></div>
+    <div class="cell subject">Subject</div>
+    <div class="cell span-3"></div>
+    <div class="cell span-1"><strong>This table</strong></div>
+    <div class="cell span-6"></div>
+
+    <div class="cell"></div>
+    <div class="cell verb">Verb</div>
+    <div class="cell span-3"></div>
+    <div class="cell span-6" style="text-align: left;">This table shows how the subject and verb change based on sentence start.</div>
+    <div class="cell"></div>
+
+    <div class="cell"></div>
+    <div class="cell object">Object</div>
+    <div class="cell span-3"></div>
+    <div class="cell span-6" style="text-align: left;"></div>
+    <div class="cell"></div>
+
+    <div class="cell empty"></div>
+
+    <!-- Data Rows -->
+    <div class="cell"><strong>1a</strong></div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">Subject start</div>
+    <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell subject" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Han</div>
+    <div class="cell verb">köpte</div>
+    <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">en bok</div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">idag</div>
+    <div class="cell span-3"></div>
+
+    <div class="cell"></div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">Non-subject start</div>
+    <div class="cell span-2" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">Idag</div>
+    <div class="cell verb" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-bottom: 7px solid #000;">köpte</div>
+    <div class="cell subject" style="border-bottom: 7px solid #000;">han</div>
+    <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">en bok</div>
+    <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell centered" style="border-bottom: 7px solid #000;"><strong>inverted</strong></div>
+
+    <div class="cell empty"></div>
+
+    <div class="cell"><strong>1b</strong></div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">Subject start</div>
+    <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell subject" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Hon</div>
+    <div class="cell verb">ringde</div>
+    <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">honom</div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">igår</div>
+    <div class="cell span-3"></div>
+
+    <div class="cell"></div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">Non-subject start</div>
+    <div class="cell span-2" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">Igår</div>
+    <div class="cell verb" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-bottom: 7px solid #000;">ringde</div>
+    <div class="cell subject" style="border-bottom: 7px solid #000;">hon</div>
+    <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">honom</div>
+    <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell centered" style="border-bottom: 7px solid #000;"><strong>inverted</strong></div>
+
+    <div class="cell empty"></div>
+
+    <div class="cell"><strong>2a</strong></div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">Main clause start</div>
+    <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell subject" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Han</div>
+    <div class="cell verb">dricker</div>
+    <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">kaffe</div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">när</div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">det</div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">regnar</div>
+    <div class="cell"></div>
+
+    <div class="cell"></div>
+    <div class="cell subclause" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Subclause start</div>
+    <div class="cell subclause">När</div>
+    <div class="cell subclause">det</div>
+    <div class="cell subclause">regnar</div>
+    <div class="cell verb" style="border-bottom: 7px solid #000;">dricker</div>
+    <div class="cell subject" style="border-bottom: 7px solid #000;">han</div>
+    <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">kaffe</div>
+    <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell centered" style="border-bottom: 7px solid #000;"><strong>inverted</strong></div>
+
+    <div class="cell empty"></div>
+
+    <div class="cell"><strong>2b</strong></div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">Main clause start</div>
+    <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell subject" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Hon</div>
+    <div class="cell verb">ringer</div>
+    <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">honom</div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">om</div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">hon</div>
+    <div class="cell" style="border-bottom: 2px solid #dddddd;">kan</div>
+    <div class="cell"></div>
+
+    <div class="cell"></div>
+    <div class="cell subclause" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Subclause start</div>
+    <div class="cell subclause">Om</div>
+    <div class="cell subclause">hon</div>
+    <div class="cell subclause">kan</div>
+    <div class="cell verb" style="border-bottom: 7px solid #000;">ringer</div>
+    <div class="cell subject" style="border-bottom: 7px solid #000;">hon</div>
+    <div class="cell object" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px;">honom</div>
+    <div class="cell span-3" style="border-bottom: 2px solid #dddddd;"></div>
+    <div class="cell centered" style="border-bottom: 7px solid #000;"><strong>inverted</strong></div>
+
+    <div class="cell bordered-bottom-row"></div>
+</div>
+
+</body>
+</html>
