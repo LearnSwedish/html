@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Corrected Font Awesome CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+   
+    <title>Spot the Subclause</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        /* Score Container Styling */
+        .score-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1001;
+            gap: 10px;
+        }
+
+        /* Unified Button Styling */
+        .score, .dark-mode-toggle, .start-over {
+            width: 150px; /* Consistent width for all buttons */
+            padding: 10px;
+            box-sizing: border-box; /* Ensures padding/border don't affect width */
+            font-size: 16px;
+            text-align: center;
+            background-color: #fff;
+            color: #333;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Start Over Button Specific Styling */
+        .start-over {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .start-over:hover {
+            background-color: #0056b3;
+        }
+
+        /* Dark Mode Toggle Styling */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Ensures label and toggle switch are spaced */
+            gap: 10px; /* Space between the label and switch */
+        }
+
+        /* Slider Container */
+        .switch input {
+            display: none;
+        }
+
+        .switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 1px;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 1px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #007BFF;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(17px);
+        }
+
+        /* Dark Mode Styles for Buttons */
+        .dark-mode .score, .dark-mode .dark-mode-toggle, .dark-mode .start-over, .dark-mode .tooltip {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Highlighted Word Styling */
+        .highlighted {
+            background-color: #FFEB3B;
+            color: #333;
+        }
+
+        /* Dark Mode Highlighted Styling */
+        body.dark-mode .highlighted {
+            background-color: #FFEB3B;
+            color: #000;
+        }
+
+        /* Sentence Container Styling */
+        #sentence-container {
+            margin-top: 20px;
+			margin-bottom: 30px;
+            padding: 15px 20px;
+            background-color: #E8E9EB;
+            border-radius: 8px;
+            font-size: 1.4em;
+            line-height: 1.5;
+            user-select: none;
+            width: fit-content;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        /* Apply the pen cursor to any part within the sentence container */
+        #sentence-container:hover, #sentence-container:hover * {
+            cursor: url('https://i.imgur.com/KlK4jm4.png'), auto;
+        }
+
+        /* Word Styling with Tooltip */
+        .word {
+            color: black;
+            display: inline-block;
+            padding: 2px 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .word:hover {
+            cursor: url('https://i.imgur.com/KlK4jm4.png'), auto;
+        }
+
+        /* Tooltip Styling */
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 8px;
+            background-color: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            white-space: nowrap;
+            pointer-events: none;
+            text-align: center;
+            z-index: 10;
+        }
+
+        body.dark-mode .tooltip {
+            background-color: #444;
+            color: #ffffff;
+        }
+
+        .word:hover .tooltip {
+            opacity: 1;
+        }
+
+        /* Button Container Styling */
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        /* Button Styling */
+        #erase-button, #submit-button, #next-button {
+            padding: 10px 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+            width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Specific Styling for Next Button */
+        #next-button {
+            background-color: #28a745; /* Green color */
+        }
+
+        /* Darker Green on Hover for Next Button */
+        #next-button:hover:not(:disabled) {
+            background-color: #218838;
+        }
+
+        /* Ensure Next Button Disabled State is Greyed Out */
+        #next-button:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+
+        /* Hover Effect for Erase and Check Buttons */
+        #erase-button:hover, #submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Add margin to the right of icons within buttons */
+        .button-container button i, .start-over i {
+            margin-right: 8px;
+        }
+		
+		/* Modal Styling */
+		.modal {
+			display: none; /* Hidden by default */
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5); /* Overlay background */
+		}
+		
+		.modal-content {
+			background-color: #fefefe; /* Light background */
+			color: #333; /* Dark text */
+			margin: 10% auto; /* Center it */
+			padding: 20px;
+			border: 1px solid #888;
+			width: 80%;
+			max-width: 600px;
+			text-align: left;
+			border-radius: 8px;
+		}
+		
+/* Close Button Styling */
+.close-button {
+    float: right;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    background-color: #ccc;
+    border-radius: 50%;
+    line-height: 20px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.close-button:hover {
+    background-color: #f44336; /* Red color on hover */
+    transform: scale(1.2); /* Slightly enlarge on hover */
+    color: white; /* White '×' on hover */
+}
+
+/* Section Styling */
+.modal-content section {
+    margin-bottom: 25px;
+}
+
+.modal-content h3 {
+    margin-bottom: 10px;
+    color: #007BFF; /* Blue colour for subheadings */
+}
+
+.modal-content p, .modal-content li {
+    font-size: 1em;
+    line-height: 1.6;
+    color: #555;
+}
+
+.dialogue p {
+    background-color: #f9f9f9;
+    padding: 10px 15px;
+    border-left: 5px solid #007BFF;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.dialogue p strong {
+    color: #007BFF;
+}
+
+.dialogue p em {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 0.95em;
+}
+
+/* List Styling */
+.modal-content ol, .modal-content ul {
+    padding-left: 20px;
+}
+
+.modal-content ol li, .modal-content ul li {
+    margin-bottom: 10px;
+}
+
+
+        /* Enhanced Feedback Styling */
+
+        /* Base feedback styling */
+        #feedback {
+            font-size: 2em; /* 100% larger */
+            font-weight: bold;
+            text-align: center;
+            margin-top: 40px;
+            padding: 10px 20px; /* Added padding for better spacing */
+            border-radius: 5px; /* Rounded corners */
+            display: inline-block; /* Shrink to fit content */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        /* Correct feedback styling */
+        .feedback-correct {
+            background-color: #28a745; /* Same as Next button */
+            color: white; /* White text for contrast */
+        }
+
+        /* Incorrect feedback styling */
+        .feedback-incorrect {
+            background-color: #f8d7da; /* Light red background for light mode */
+            color: #721c24; /* Dark red text for light mode */
+        }
+
+        /* Dark mode styling for feedback */
+        body.dark-mode .feedback-correct {
+            background-color: #28a745; /* Same green as Next button in dark mode */
+            color: white; /* White text for contrast */
+        }
+
+        body.dark-mode .feedback-incorrect {
+            background-color: #721c24; /* Dark red background for dark mode */
+            color: #f8d7da; /* Light red text for dark mode */
+        }
+
+        /* Hide the feedback box when it is empty */
+        #feedback:empty {
+            display: none;
+        }
+
+        /* Optional: Add box-shadow for better separation in dark mode */
+        body.dark-mode #feedback {
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Progress Bar Styling */
+        .progress-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #e0e0e0; /* Light gray background for light mode */
+            border-radius: 20px;
+            margin: 20px auto;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%; /* Starts at 0% */
+            background-color: #4caf50; /* Green color for light mode */
+            border-radius: 20px;
+            transition: width 0.5s ease-in-out; /* Smooth width transition */
+        }
+
+        /* Dark Mode Colors */
+        body.dark-mode .progress-container {
+            background-color: #333; /* Dark background for dark mode */
+        }
+
+        body.dark-mode .progress-bar {
+            background-color: #90ee90; /* Light green for dark mode */
+        }
+        
+        /* Responsive Button Container */
+        @media (max-width: 500px) {
+            .button-container {
+                flex-direction: column;
+            }
+
+            /* Adjust button widths for small screens */
+            #erase-button, #submit-button, #next-button, .start-over {
+                width: 100%;
+            }
+			
+			    .modal-content {
+        padding: 20px;
+        width: 95%;
+        max-width: none;
+    }
+
+    .close-button {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+    }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Score, Dark Mode Toggle, and Start Over Button -->
+    <div class="score-container">
+        <div class="score">Score: &nbsp;<span id="score">0</span>&nbsp; / 60</div>
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+    <!-- New Info Button -->
+    <button class="start-over" id="info-button" onclick="openInfoModal()">
+        <i class="fas fa-info-circle"></i> Info
+    </button>
+    
+    <!-- New Help Button -->
+    <button class="start-over" id="help-button" onclick="openHelpModal()">
+        <i class="fas fa-question-circle"></i> Help
+    </button>
+        <!-- Start Over Button Using <button> for Semantic HTML -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </button>
+    </div>
+
+    <h1>Highlight the subclauses</h1>
+	<div class="image-container">
+        <img src="https://i.imgur.com/sp5VaA9.png" width="100" height="100" alt="Highlight Illustration" class="header-image">
+    </div>
+	<!-- Progress bar -->
+	<div class="progress-container">
+		<div class="progress-bar" id="progress-bar"></div>
+	</div>	
+    <div id="sentence-container"></div>
+
+    <!-- Button Container -->
+    <div class="button-container">
+        <!-- Erase Button -->
+        <button id="erase-button" onclick="eraseHighlighting()">
+            <i class="fas fa-eraser"></i> Erase
+        </button>
+        
+        <!-- Check Button -->
+        <button id="submit-button" onclick="checkAnswer()">
+            <i class="fas fa-paper-plane"></i> Check
+        </button>
+        
+        <!-- Next Button -->
+        <button id="next-button" onclick="nextSentence()" disabled>
+            <i class="fas fa-forward"></i> Next
+        </button>
+    </div>
+
+    <div id="feedback"></div>
+	
+	<!-- Modal Structure -->
+<div id="completionModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeModal()">&times;</span>
+        <h2>Exercise complete!</h2>
+        <p>Your total score is: <span id="finalScore"></span></p>
+    </div>
+</div>
+
+<!-- New Info Modal -->
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeInfoModal()">&times;</span>
+        <h2>Information</h2>
+        <p>This exercise helps you practice identifying subclauses in Swedish sentences. Use the highlight tool to select the subclause and check your answer. Answer correctly without any mistakes, and you will receive 1 point. If you require a second attempt (or more) to answer correctly, you will receive half a point.</p>
+		<p>The exercise includes the 20 most common ways to begin a subclause in Swedish. For each variant, three examples are provided. Anyone with a bit of mathematical knowledge will quickly realise that the exercise therefore consists of 60 practice sentences. Good luck!</p>
+    </div>
+</div>
+
+<!-- New Help Modal -->
+<div id="helpModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeHelpModal()" aria-label="Close modal">&times;</span>
+        <h2>Understanding subclauses</h2>
+        <p>A subclause is a part of a sentence that cannot stand alone and needs a main clause to form a complete sentence. The subclause <em>explains</em>, <em>specifies</em>, or <em>complements</em> the main clause and often begins with words such as (in English) "that", "because", "when", "which", etc.</p>
+		<p>Example:</p>
+		<ul><li><strong>Main clause</strong>: "Jag läser en bok" (I am reading a book)</li>
+		<li><strong>Subordinate clause</strong>: "eftersom jag har mycket tid" (because I have a lot of time)</li></ul>
+		<p>Combined sentence: "Jag läser en bok eftersom jag har mycket tid."</p>
+		<p>Subordinate clauses are quite easy to identify, as they almost always begin with a subordinating conjunction. In this exercise, you will learn to recognize the most common ones in Swedish, namely: <strong>ATT</strong> (that), <strong>(SÅ; FÖR; DÄRFÖR) ATT</strong> (because [of], in order to), <strong>EFTERSOM</strong> (since, because), <strong>OM</strong> (if), and some more.</p>
+    </div>
+</div>
+
+<script>
+    // Dark Mode Toggle Functionality
+    function setDarkMode(enabled) {
+        if (enabled) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const darkModeToggle = document.getElementById('darkModeSwitch');
+        const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+        setDarkMode(isDarkModeEnabled);
+        darkModeToggle.checked = isDarkModeEnabled;
+        darkModeToggle.addEventListener('change', function () {
+            setDarkMode(this.checked);
+        });
+
+        // Initialize Next button as disabled on page load
+        document.getElementById("next-button").disabled = true;
+        document.getElementById("erase-button").disabled = false;
+    });
+
+    // Initialize Score
+    let score = 0; // Initialize score
+    let alreadyAnsweredWrong = false; // Track if the user has already answered incorrectly
+
+    // Function to display the updated score in the HTML
+    function updateScoreDisplay() {
+        document.getElementById("score").textContent = score; // Update the score display
+    }
+
+    function startOver() {
+        location.reload();
+    }
+
+    // Sentences Data
+    const sentences = [
+            { sentence: "Jag hoppas att du kommer i tid.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["I", "hope", "that", "you", "come", "in", "time"] },
+            { sentence: "Hon sa att hon var trött.", subclauseIndices: [2, 3, 4, 5], wordTranslations: ["She", "said", "that", "she", "was", "tired"] },
+            { sentence: "De tror att vädret blir bättre imorgon.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["They", "believe", "that", "the weather", "will be", "better", "tomorrow"] },
+            { sentence: "Jag vet inte om han kommer.", subclauseIndices: [3, 4, 5], wordTranslations: ["I", "know", "not", "if", "he", "comes"] },
+            { sentence: "Om det regnar stannar vi inne.", subclauseIndices: [0, 1, 2], wordTranslations: ["If", "it", "rains", "stay", "we", "inside"] },
+            { sentence: "Hon frågade om jag behövde hjälp.", subclauseIndices: [2, 3, 4, 5], wordTranslations: ["She", "asked", "if", "I", "needed", "help"] },
+            { sentence: "När jag såg dig blev jag glad.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["When", "I", "saw", "you", "became", "I", "happy"] },
+            { sentence: "När jag är klar med jobbet ses vi.", subclauseIndices: [0, 1, 2, 3, 4, 5], wordTranslations: ["When", "I", "am", "done", "with", "the job", "see (each other)", "we"] },
+            { sentence: "När mötet är slut kommer han hem.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["When", "the meeting", "is", "over", "comes", "he", "home"] },
+            { sentence: "Eftersom det blev sent gick vi hem.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["Since", "it", "became", "late", "went", "we", "home"] },
+            { sentence: "Eftersom hon fick ett bra resultat är hon glad.", subclauseIndices: [0, 1, 2, 3, 4, 5], wordTranslations: ["Since", "she", "got", "a", "good", "result", "is", "she", "happy"] },
+            { sentence: "Eftersom vädret var dåligt stannade vi inne.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["Since", "the weather", "was", "bad", "stayed", "we", "inside"] },
+            { sentence: "Hon gick ut fastän det regnade.", subclauseIndices: [3, 4, 5], wordTranslations: ["She", "went", "out", "even though", "it", "rained"] },
+            { sentence: "Fastän han var sjuk gick han till jobbet.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["Even though", "he", "was", "ill", "went", "he", "to", "the job"] },
+            { sentence: "Vi stannade fastän vi ville gå.", subclauseIndices: [2, 3, 4, 5], wordTranslations: ["We", "stayed", "even though", "we", "wanted to", "go"] },
+            { sentence: "Jag städade så att huset skulle vara rent till gästerna.", subclauseIndices: [2, 3, 4, 5, 6, 7, 8, 9], wordTranslations: ["I", "cleaned", "so", "that", "the house", "would", "be", "clean", "for", "the guests"] },
+            { sentence: "Han sparade pengar så att han kunde resa.", subclauseIndices: [3, 4, 5, 6, 7], wordTranslations: ["He", "saved", "money", "so", "that", "he", "could", "travel"] },
+            { sentence: "Vi tränar så att vi blir bättre.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["We", "train", "so", "that", "we", "become", "better"] },
+            { sentence: "Jag läser medan hon tittar på TV.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["I", "read", "while", "she", "watches", "on", "TV"] },
+            { sentence: "Medan vi väntade pratade vi.", subclauseIndices: [0, 1, 2], wordTranslations: ["While", "we", "waited", "talked", "we"] },
+            { sentence: "Hon jobbar medan barnen sover.", subclauseIndices: [2, 3, 4], wordTranslations: ["She", "works", "while", "the children", "sleep"] },
+            { sentence: "Hon lyckades trots att det var svårt.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["She", "succeeded", "despite (the fact)", "that", "it", "was", "difficult"] },
+            { sentence: "Han fortsatte trots att han var trött.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["He", "continued", "despite (the fact)", "that", "he", "was", "tired"] },
+            { sentence: "Vi gick ut trots att det regnade.", subclauseIndices: [3, 4, 5, 6], wordTranslations: ["We", "went", "out", "despite (the fact)", "that", "it", "rained"] },
+            { sentence: "Ring mig innan du går.", subclauseIndices: [2, 3, 4], wordTranslations: ["Call", "me", "before", "you", "go"] },
+            { sentence: "Innan vi åker ska vi äta.", subclauseIndices: [0, 1, 2], wordTranslations: ["Before", "we", "go", "shall", "we", "eat"] },
+            { sentence: "Jag tvättar händerna innan jag lagar mat.", subclauseIndices: [3, 4, 5, 6], wordTranslations: ["I", "wash", "the hands", "before", "I", "prepare", "food"] },
+            { sentence: "Efter att vi ätit gick vi en promenad.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["After", "that", "we", "had eaten", "went", "we (for)", "a", "walk"] },
+            { sentence: "Hon kom hem efter att mötet var slut.", subclauseIndices: [3, 4, 5, 6, 7], wordTranslations: ["She", "came", "home", "after", "that", "the meeting", "was", "over"] },
+            { sentence: "Vi firade efter att vi klarat provet.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["We", "celebrated", "after", "that", "we", "passed", "the test"] },
+            { sentence: "Ta med paraplyet ifall det regnar.", subclauseIndices: [3, 4, 5], wordTranslations: ["Bring", "with (you)", "the umbrella", "in case", "it", "rains"] },
+            { sentence: "Vi tar med en extra filt ifall det blir kallt.", subclauseIndices: [6, 7, 8, 9], wordTranslations: ["We", "bring", "with (us)", "an", "extra", "blanket", "in case", "it", "becomes", "cold"] },
+            { sentence: "Ifall du behöver hjälp kan du ringa mig.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["In case", "you", "need", "help", "may", "you", "call", "me"] },
+            { sentence: "Så länge du behöver mig stannar jag.", subclauseIndices: [0, 1, 2, 3, 4], wordTranslations: ["As", "long as", "you", "need", "me", "stay", "I"] },
+            { sentence: "Vi kan vara ute så länge vädret är fint.", subclauseIndices: [4, 5, 6, 7, 8], wordTranslations: ["We", "can", "be", "outside", "as", "long as", "the weather", "is", "nice"] },
+            { sentence: "Du kan låna boken så länge du är försiktig.", subclauseIndices: [4, 5, 6, 7, 8], wordTranslations: ["You", "can", "borrow", "the book", "as", "long as", "you", "are", "careful"] },
+            { sentence: "Vi går så fort han är redo.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["We", "go", "as", "soon as", "he", "is", "ready"] },
+            { sentence: "Ring mig så fort du är hemma.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["Call", "me", "as", "soon as", "you", "are", "home"] },
+            { sentence: "Så fort jag vet meddelar jag dig.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["As", "soon as", "I", "know", "inform", "I", "you"] },
+            { sentence: "Vi går dit även om det regnar.", subclauseIndices: [3, 4, 5, 6], wordTranslations: ["We", "go", "there", "even", "if", "it", "rains"] },
+            { sentence: "Hon åker även om hon är trött.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["She", "goes", "even", "if", "she", "is", "tired"] },
+            { sentence: "Jag stannar hemma även om alla andra går ut.", subclauseIndices: [3, 4, 5, 6, 7, 8], wordTranslations: ["I", "stay", "home", "even", "if", "all", "others", "go", "out"] },
+            { sentence: "Jag tränar för att bli starkare.", subclauseIndices: [2, 3, 4, 5], wordTranslations: ["I", "train", "in order", "to", "become", "stronger"] },
+            { sentence: "Vi sparar pengar för att köpa en ny bil.", subclauseIndices: [3, 4, 5, 6, 7, 8], wordTranslations: ["We", "save", "money", "in order", "to", "buy", "a", "new", "car"] },
+            { sentence: "Hon studerar hårt för att klara provet.", subclauseIndices: [3, 4, 5, 6], wordTranslations: ["She", "studies", "hard", "in order", "to", "pass", "the test"] },
+            { sentence: "Jag gick hem därför att jag var trött.", subclauseIndices: [3, 4, 5, 6, 7], wordTranslations: ["I", "went", "home", "therefore (because)", "that", "I", "was", "tired"] },
+            { sentence: "De stannade inne därför att det regnade.", subclauseIndices: [3, 4, 5, 6], wordTranslations: ["They", "stayed", "inside", "therefore (because)", "that", "it", "rained"] },
+            { sentence: "Hon log därför att hon var glad.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["She", "smiled", "therefore (because)", "that", "she", "was", "happy"] },
+            { sentence: "Vi kan gå ut såvida det inte regnar.", subclauseIndices: [4, 5, 6, 7], wordTranslations: ["We", "can", "go", "out", "unless", "it", "does not", "rain"] },
+            { sentence: "Såvida du är försiktig får du låna boken.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["Provided that", "you", "are", "careful", "may", "you", "borrow", "the book"] },
+            { sentence: "Vi stannar här såvida inget ändras.", subclauseIndices: [3, 4, 5], wordTranslations: ["We", "stay", "here", "as long as", "nothing", "changes"] },
+            { sentence: "Utan att säga något gick hon ut.", subclauseIndices: [0, 1, 2, 3], wordTranslations: ["Without", "to", "say", "anything", "went", "she", "out"] },
+            { sentence: "Han klarade provet utan att plugga.", subclauseIndices: [3, 4, 5], wordTranslations: ["He", "passed", "the test", "without", "to", "study"] },
+            { sentence: "De åkte iväg utan att vi märkte det.", subclauseIndices: [3, 4, 5, 6, 7], wordTranslations: ["They", "went", "away", "without", "that", "we", "noticed", "it"] },
+            { sentence: "I och med att han flyttade blev det tomt här.", subclauseIndices: [0, 1, 2, 3, 4, 5], wordTranslations: ["In", "and", "with", "that", "he", "moved", "it", "became", "empty", "here"] },
+            { sentence: "Vi måste anpassa oss i och med att reglerna har ändrats.", subclauseIndices: [4, 5, 6, 7, 8, 9, 10], wordTranslations: ["We", "must", "adapt", "ourselves", "in", "and", "with", "that", "the rules", "have", "changed"] },
+            { sentence: "I och med att tekniken utvecklas förändras allt.", subclauseIndices: [0, 1, 2, 3, 4, 5], wordTranslations: ["In", "and", "with", "that", "technology", "develops", "everything", "changes"] },
+            { sentence: "Jag övar för att bli bättre.", subclauseIndices: [2, 3, 4, 5], wordTranslations: ["I", "practice", "in order", "to", "become", "better"] },
+            { sentence: "Vi sparar för att kunna resa.", subclauseIndices: [2, 3, 4, 5], wordTranslations: ["We", "save", "in order", "to", "be able", "to travel"] },
+            { sentence: "Hon studerar för att få bra betyg.", subclauseIndices: [2, 3, 4, 5, 6], wordTranslations: ["She", "studies", "in order", "to", "get", "good", "grades"] }
+    ];
+
+    let currentSentenceIndex = -1;
+    let isMarking = false;
+    let startWordIndex = null;
+    let selectedWords = [];
+
+    // Shuffle Sentences Array
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+	
+// Set progress bar to zero on page load
+document.addEventListener('DOMContentLoaded', function () {
+    updateScoreDisplay(); // Initial display of score
+    document.getElementById('progress-bar').style.width = '0%'; // Set progress bar to zero on load
+});
+
+// Update progress bar based on correct answer
+function updateProgressBar() {
+    const progress = ((currentSentenceIndex + 1) / 60) * 100;
+    document.getElementById('progress-bar').style.width = `${progress}%`;
+}
+
+
+// Load Next Sentence
+function nextSentence() {
+    // Clear previous feedback
+    const feedbackEl = document.getElementById("feedback");
+    feedbackEl.innerText = "";
+    // Alternatively, use:
+    // feedbackEl.textContent = "";
+    feedbackEl.classList.remove("feedback-correct", "feedback-incorrect");
+
+    // Reset the wrong answer tracking
+    alreadyAnsweredWrong = false;
+
+    // Disable Next button and enable Erase button for the new sentence
+    document.getElementById("next-button").disabled = true;
+    document.getElementById("erase-button").disabled = false;
+
+    currentSentenceIndex++;
+
+    if (currentSentenceIndex >= sentences.length) {
+        // Show modal with completion message and total score
+        openModal(score);
+        document.getElementById("sentence-container").innerHTML = "";
+
+        // Optionally, disable all buttons after completion
+        document.getElementById("erase-button").disabled = true;
+        document.getElementById("submit-button").disabled = true;
+        document.getElementById("next-button").disabled = true;
+        return;
+    }
+
+    const sentenceObj = sentences[currentSentenceIndex];
+    const words = sentenceObj.sentence.split(" ");
+    const sentenceContainer = document.getElementById("sentence-container");
+    sentenceContainer.innerHTML = "";
+
+    words.forEach((word, index) => {
+        const span = document.createElement("span");
+        span.classList.add("word");
+        span.innerText = word + " "; // Add space after each word
+
+        // Fetch the word's translation for tooltip
+        const tooltipText = sentenceObj.wordTranslations[index] || '';
+
+        if (tooltipText) {
+            const tooltip = document.createElement("div");
+            tooltip.classList.add("tooltip");
+            tooltip.innerText = tooltipText;
+            span.appendChild(tooltip);
+        }
+
+        // Event Listeners for Highlighting
+        span.onmousedown = () => startMarking(index);
+        span.onmouseover = () => updateMarking(index);
+        sentenceContainer.appendChild(span);
+    });
+
+    // Reset Highlighting Variables
+    selectedWords = [];
+    updateHighlightedWords();
+
+    // Add Mouse Up Listener to Stop Marking
+    document.addEventListener("mouseup", stopMarking);
+}
+
+// Function to open the Info modal
+function openInfoModal() {
+    document.getElementById("infoModal").style.display = "block";
+}
+
+// Function to close the Info modal
+function closeInfoModal() {
+    document.getElementById("infoModal").style.display = "none";
+}
+
+// Function to open the Help modal
+function openHelpModal() {
+    document.getElementById("helpModal").style.display = "block";
+}
+
+// Function to close the Help modal
+function closeHelpModal() {
+    document.getElementById("helpModal").style.display = "none";
+}
+
+    // Start Marking Selection
+    function startMarking(index) {
+        isMarking = true;
+        startWordIndex = index;
+        selectedWords = [index];
+        updateHighlightedWords();
+    }
+
+    // Update Marking Selection
+    function updateMarking(currentIndex) {
+        if (!isMarking) return;
+        selectedWords = [];
+        const minIndex = Math.min(startWordIndex, currentIndex);
+        const maxIndex = Math.max(startWordIndex, currentIndex);
+        for (let i = minIndex; i <= maxIndex; i++) {
+            selectedWords.push(i);
+        }
+        updateHighlightedWords();
+    }
+
+    // Update Highlighted Words in UI
+    function updateHighlightedWords() {
+        document.querySelectorAll(".word").forEach((span, index) => {
+            span.classList.toggle("highlighted", selectedWords.includes(index));
+        });
+    }
+
+    // Stop Marking Selection
+    function stopMarking() { 
+        isMarking = false; 
+    }
+
+// Erase Highlighting
+function eraseHighlighting() {
+    if (document.getElementById("feedback").innerText !== "Correct!") {
+        selectedWords = [];
+        updateHighlightedWords();
+        const feedbackEl = document.getElementById("feedback");
+        feedbackEl.innerText = "";
+        // Alternatively, use:
+        // feedbackEl.textContent = "";
+        feedbackEl.classList.remove("feedback-correct", "feedback-incorrect");
+    }
+}
+
+// Check Answer Functionality
+function checkAnswer() {
+    const sentenceObj = sentences[currentSentenceIndex];
+    const correctIndices = sentenceObj.subclauseIndices;
+
+    const sortedSelected = [...selectedWords].sort((a, b) => a - b);
+    const sortedCorrect = [...correctIndices].sort((a, b) => a - b);
+
+    const isCorrect = sortedSelected.length === sortedCorrect.length && 
+                      sortedSelected.every((val, index) => val === sortedCorrect[index]);
+
+    const feedbackEl = document.getElementById("feedback");
+
+    if (isCorrect) {
+        feedbackEl.innerText = "Correct!";
+        // Alternatively, use:
+        // feedbackEl.textContent = "Correct!";
+        feedbackEl.classList.add("feedback-correct");
+        feedbackEl.classList.remove("feedback-incorrect");
+
+        document.getElementById("next-button").disabled = false;
+        document.getElementById("erase-button").disabled = true;
+
+        score += alreadyAnsweredWrong ? 0.5 : 1; // 1 point for first try, 0.5 after a wrong answer
+        updateScoreDisplay(); // Update score display immediately
+
+        // Update progress bar only when the answer is correct
+        updateProgressBar();
+    } else {
+        feedbackEl.innerText = "Incorrect, please try again.";
+        // Alternatively, use:
+        // feedbackEl.textContent = "Incorrect, please try again.";
+        feedbackEl.classList.add("feedback-incorrect");
+        feedbackEl.classList.remove("feedback-correct");
+
+        alreadyAnsweredWrong = true;
+    }
+}
+	
+	// Function to open the modal and display the final score
+function openModal(finalScore) {
+    document.getElementById("finalScore").textContent = finalScore;
+    document.getElementById("completionModal").style.display = "block";
+}
+
+// Function to close the modal
+function closeModal() {
+    document.getElementById("completionModal").style.display = "none";
+}
+
+// Close modals when clicking outside the modal content
+window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    });
+}
+
+// Initialize the Exercise
+document.addEventListener('DOMContentLoaded', function () {
+    shuffleArray(sentences);
+    currentSentenceIndex = -1; // Ensure it starts at the first sentence
+    updateScoreDisplay(); // Display initial score
+    document.getElementById('progress-bar').style.width = '0%'; // Explicitly set progress bar to 0%
+    nextSentence(); // Load the first sentence
+});
+</script>
+</body>
+</html>
