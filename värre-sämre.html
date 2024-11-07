@@ -9,474 +9,433 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
    
     <style>
-    /* Reset and Base Styles */
-    *,
-    *::before,
-    *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: Arial, sans-serif;
-        /* Changed to Arial */
-        background-color: #f9fafb;
-        color: #2d3748;
-        line-height: 1.6;
-        font-size: 16px;
-        display: flex;
-        flex-direction: column;
-        /* Changed to column to stack elements vertically */
-        justify-content: flex-start;
-        /* Align items to the start vertically */
-        align-items: center;
-        /* Center items horizontally */
-        min-height: 100vh;
-        padding: 20px;
-        overflow-y: auto;
-        /* Allow background scrolling */
-        position: relative;
-        /* For fixed elements */
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    /* Title Styles */
-    .page-title {
-        text-align: center;
-        color: #333333;
-        font-size: 28px;
-        /* Increased font size for prominence */
-        margin-bottom: 20px;
-        line-height: 1.4;
-        padding-top: 10px;
-        position: relative;
-        z-index: 1;
-        transition: color 0.3s ease, background-color 0.3s ease;
-    }
-
-    body.dark-mode .page-title {
-        color: #ffffff;
-    }
-
-    /* Dark mode styles */
-    body.dark-mode {
-        background-color: #121212;
-        color: #e2e8f0;
-    }
-
-    /* Score, Start Over, and Dark Mode Toggle container */
-    .score-container {
-        position: fixed;
-        top: 20px;
-        right: 40px;
-        /* Position for desktop */
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        width: 150px;
-        /* Adjusted width for better spacing */
-        z-index: 1001;
-        gap: 10px;
-        /* Increased gap for better spacing */
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    /* Unified Button Styling */
-    .score,
-    .dark-mode-toggle,
-    .start-over {
-        width: 100%;
-        height: 40px;
-        /* Fixed height for uniformity */
-        padding: 0 10px;
-        /* Adjusted horizontal padding */
-        box-sizing: border-box;
-        /* Ensures padding/border don't affect width */
-        font-size: 16px;
-        text-align: center;
-        background-color: #fff;
-        color: #333;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s, color 0.3s;
-        cursor: pointer;
-        /* Add cursor pointer for buttons */
-        border: none;
-        /* Remove default border */
-    }
-
-    /* Start Over Button Specific Styling */
-    .start-over {
-        background-color: #007BFF;
-        color: white;
-        cursor: pointer;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s ease,
-            box-shadow 0.3s ease,
-            color 0.3s ease;
-    }
-
-    .start-over:hover {
-        background-color: #0056b3;
-    }
-
-    /* Dark mode toggle specific styling */
-    .dark-mode-toggle {
-        justify-content: flex-start;
-        /* Align switch and label to the start */
-        padding: 0 10px;
-        /* Adjust horizontal padding */
-        gap: 10px;
-        /* Space between switch and label */
-        cursor: default;
-        /* Default cursor for label */
-    }
-
-    /* Hide default checkbox */
-    .switch input {
-        display: none;
-    }
-
-    /* Slider container */
-    .switch {
-        position: relative;
-        width: 40px;
-        height: 20px;
-        display: inline-block;
-        /* Ensures width and height are respected */
-    }
-
-    /* Slider appearance */
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: 0.4s;
-        border-radius: 20px;
-    }
-
-    .slider::before {
-        position: absolute;
-        content: "";
-        height: 14px;
-        width: 14px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        transition: 0.4s;
-        border-radius: 50%;
-    }
-
-    /* Slider active state */
-    .switch input:checked+.slider {
-        background-color: #007BFF;
-    }
-
-    .switch input:checked+.slider::before {
-        transform: translateX(20px);
-        /* Smooth transition */
-    }
-
-    /* Container */
-    .container {
-        background-color: #ffffff;
-        padding: 40px 30px;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        max-width: 790px;
-        width: 100%;
-        text-align: center;
-        position: relative;
-        /* To stack with fixed elements */
-        transition: background-color 0.3s, box-shadow 0.3s;
-        margin-top: 20px;
-        /* Add some space below the title */
-    }
-
-    body.dark-mode .container {
-        background-color: #1a202c;
-        box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
-    }
-
-    /* Sentences */
-    .sentences {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    /* Sentence Styling */
-    .sentence {
-        background-color: #f7fafc;
-        padding: 20px;
-        padding-bottom: 5px;
-        /* Adjusted padding to accommodate the button */
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        position: relative;
-        /* For absolute children */
-        transition: background-color 0.3s, border 0.3s;
-        border-left: 6px solid transparent;
-        /* Reserve space for border */
-        text-align: left;
-        data-state: "none";
-        /* Initialize state to 'none' */
-    }
-
-    body.dark-mode .sentence {
-        background-color: #2d3748;
-        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
-    }
-
-    .sentence.correct {
-        border-left: 6px solid #38a169;
-        background-color: #cdffcd;
-        transition: border 0.3s, background-color 0.3s;
-    }
-
-    body.dark-mode .sentence.correct {
-        border-left: 6px solid #38a169;
-        background-color: #22543d;
-    }
-
-    .sentence.incorrect {
-        border-left: 6px solid #e53e3e;
-        background-color: #FFADB0;
-        transition: border 0.3s, background-color 0.3s;
-    }
-
-    body.dark-mode .sentence.incorrect {
-        border-left: 6px solid #e53e3e;
-        background-color: #742a2a;
-    }
-
-    .sentence p {
-        font-size: 1.1rem;
-        margin-bottom: 10px;
-        transition: color 0.3s;
-    }
-
-    body.dark-mode .sentence p {
-        color: #edf2f7;
-    }
-
-    /* Word and Tooltip Styling */
-    .word {
-        position: relative;
-        cursor: pointer;
-        color: #2d3748;
-        transition: color 0.3s, background-color 0.3s;
-        display: inline-block;
-        border-radius: 4px;
-    }
-
-    body.dark-mode .word {
-        color: #edf2f7;
-    }
-
-    .word::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        /* Starta från mitten */
-        bottom: -2px;
-        /* Justera avståndet till understrykningen */
-        width: 100%;
-        /* Full bredd */
-        height: 3px;
-        background-color: currentColor;
-        transform: translateX(-50%) scaleX(0);
-        /* Starta med ingen understrykning */
-        transform-origin: center;
-        /* Expandera från mitten */
-        transition: transform 0.3s ease;
-        /* Animering för understrykningen */
-    }
-
-    .word:hover::after,
-    .word:focus::after {
-        transform: translateX(-50%) scaleX(1);
-        /* Expanderar understrykningen */
-    }
-
-    /* Highlighting vid hover/fokus */
-    .word:hover,
-    .word:focus {
-        background-color: rgba(45, 55, 72, 0.1);
-        /* Ljust läge: ljus bakgrund */
-    }
-
-    body.dark-mode .word:hover,
-    body.dark-mode .word:focus {
-        background-color: rgba(226, 232, 240, 0.1);
-        /* Mörkt läge: mörkare bakgrund */
-    }
-
-    /* Tooltip Styling */
-    .tooltip {
-        position: absolute;
-        bottom: 125%;
-        /* Position över ordet */
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #333;
-        color: #fff;
-        padding: 6px 10px;
-        border-radius: 4px;
-        white-space: nowrap;
-        font-size: 0.9rem;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s, visibility 0.3s;
-        z-index: 10;
-    }
-
-    .word:hover .tooltip,
-    .word:focus .tooltip {
-        /* Visa verktygstips vid hover/fokus */
-        opacity: 1;
-        visibility: visible;
-    }
-
-    /* Tooltip Arrow */
-    .tooltip::after {
-        content: '';
-        position: absolute;
-        top: 100%;
-        /* Vid botten av verktygstipsen */
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 5px;
-        border-style: solid;
-        border-color: #333 transparent transparent transparent;
-    }
-
-    body.dark-mode .tooltip {
-        background-color: #555;
-        color: #fff;
-    }
-
-    body.dark-mode .tooltip::after {
-        border-color: #555 transparent transparent transparent;
-    }
-
-    /* Select Element Styling */
-    .sentence select {
-        padding: 4px 4px;
-        /* Better readability */
-        font-size: inherit;
-        /* Match the surrounding text size */
-        border: 1px solid #cbd5e0;
-        border-radius: 6px;
-        background-color: #edf2f7;
-        cursor: pointer;
-        transition: border-color 0.3s, background-color 0.3s;
-        width: 83px;
-        /* Accommodate "sämre" */
-        appearance: auto;
-        /* Default appearance */
-        -webkit-appearance: auto;
-        /* WebKit browsers */
-        -moz-appearance: auto;
-        /* Firefox */
-        background-image: initial;
-        /* Restore default background */
-        margin-left: 7px;
-        /* Space before the select */
-        margin-right: 7px;
-        /* Space after the select */
-    }
-
-    body.dark-mode .sentence select {
-        background-color: #4a5568;
-        color: #edf2f7;
-        border: 1px solid #718096;
-    }
-
-    .sentence select:focus {
-        border-color: #3182ce;
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
-    }
-
-    body.dark-mode .sentence select:focus {
-        border-color: #63b3ed;
-        box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
-    }
-
-    /* Modal styles */
-    .modal {
-        display: none;
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-    }
-
-    .modal-content {
-        background: white;
-        color: black;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        text-align: center;
-        max-width: 600px;
-        width: 80%;
-        transform: translateY(-50px);
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .modal.show {
-        display: flex;
-        opacity: 1;
-    }
-
-    .close-button {
-        float: right;
-        padding: 5px;
-        cursor: pointer;
-        font-size: 18px;
-        background-color: #ccc;
-        border-radius: 50%;
-        line-height: 20px;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s, transform 0.3s;
-    }
-
-    .close-button:hover {
-        background-color: #f44336;
-        transform: scale(1.2);
-        color: white;
-    }
-
-    body.dark-mode .modal-content {
-        background-color: #1a202c;
-        color: #edf2f7;
-        border-color: #2d3748;
-    }
-
+/* Reset and Base Styles */
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+	
+	body {
+		font-family: Arial, sans-serif;
+		background-color: #f9fafb;
+		color: #2d3748;
+		line-height: 1.6;
+		font-size: 16px;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		min-height: 100vh;
+		padding: 20px;
+		overflow-y: auto;
+		position: relative;
+		transition: background-color 0.3s, color 0.3s;
+	}
+	
+	body.dark-mode {
+		background-color: #121212;
+		color: #e2e8f0;
+	}
+	
+	/* Close Button Styling */
+	.close-button {
+		float: right;
+		padding: 5px;
+		cursor: pointer;
+		font-size: 18px;
+		background-color: #ccc;
+		border-radius: 50%;
+		line-height: 20px;
+		width: 30px;
+		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.3s, transform 0.3s;
+	}
+	
+	body.dark-mode .close-button {
+		background-color: #555;
+		color: #ffcccc;
+	}
+	
+	.close-button:hover {
+		background-color: #f44336;
+		transform: scale(1.2) rotate(90deg);
+		color: white;
+	}
+	
+	body.dark-mode .close-button:hover {
+		background-color: #ff6666;
+		color: white;
+		transform: scale(1.2) rotate(90deg);
+	}
+	
+	/* Container */
+	.container {
+		background-color: #ffffff;
+		padding: 40px 30px;
+		border-radius: 12px;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+		max-width: 790px;
+		width: 100%;
+		text-align: center;
+		position: relative;
+		transition: background-color 0.3s, box-shadow 0.3s;
+		margin-top: 20px;
+	}
+	
+	body.dark-mode .container {
+		background-color: #1a202c;
+		box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+	}
+	
+	/* Dark Mode Toggle */
+	.dark-mode-toggle {
+		justify-content: flex-start;
+		padding: 0 10px;
+		gap: 10px;
+		cursor: default;
+	}
+	
+	/* Modal */
+	.modal {
+		display: none;
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+		justify-content: center;
+		align-items: center;
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out;
+	}
+	
+	.modal-content {
+		background: white;
+		color: black;
+		padding: 20px;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		text-align: center;
+		max-width: 600px;
+		width: 80%;
+		transform: translateY(-50px);
+		transition: transform 0.3s ease-in-out;
+	}
+	
+	body.dark-mode .modal-content {
+		background-color: #1a202c;
+		color: #edf2f7;
+		border-color: #2d3748;
+	}
+	
+	.modal.show {
+		display: flex;
+		opacity: 1;
+	}
+	
+	/* Page Title */
+	.page-title {
+		text-align: center;
+		color: #333333;
+		font-size: 28px;
+		margin-bottom: 20px;
+		line-height: 1.4;
+		padding-top: 10px;
+		position: relative;
+		z-index: 1;
+		transition: color 0.3s ease, background-color 0.3s ease;
+	}
+	
+	body.dark-mode .page-title {
+		color: #ffffff;
+	}
+	
+	/* Score, Start Over, and Dark Mode Toggle Container */
+	.score-container {
+		position: fixed;
+		top: 20px;
+		right: 40px;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		width: 150px;
+		z-index: 1001;
+		gap: 10px;
+		transition: background-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	
+	/* Sentence Styling */
+	.sentence {
+		background-color: #f7fafc;
+		padding: 20px;
+		padding-bottom: 5px;
+		border-radius: 8px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+		position: relative;
+		transition: background-color 0.3s, border 0.3s;
+		border-left: 6px solid transparent;
+		text-align: left;
+		data-state: "none";
+	}
+	
+	body.dark-mode .sentence {
+		background-color: #2d3748;
+		box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+	}
+	
+	.sentence.correct {
+		border-left: 6px solid #38a169;
+		background-color: #cdffcd;
+		transition: border 0.3s, background-color 0.3s;
+	}
+	
+	body.dark-mode .sentence.correct {
+		border-left: 6px solid #38a169;
+		background-color: #22543d;
+	}
+	
+	.sentence.incorrect {
+		border-left: 6px solid #e53e3e;
+		background-color: #FFADB0;
+		transition: border 0.3s, background-color 0.3s;
+	}
+	
+	body.dark-mode .sentence.incorrect {
+		border-left: 6px solid #e53e3e;
+		background-color: #742a2a;
+	}
+	
+	.sentence p {
+		font-size: 1.1rem;
+		margin-bottom: 10px;
+		transition: color 0.3s;
+	}
+	
+	body.dark-mode .sentence p {
+		color: #edf2f7;
+	}
+	
+	/* Select Element Styling */
+	.sentence select {
+		padding: 4px 4px;
+		font-size: inherit;
+		border: 1px solid #cbd5e0;
+		border-radius: 6px;
+		background-color: #edf2f7;
+		cursor: pointer;
+		transition: border-color 0.3s, background-color 0.3s;
+		width: 83px;
+		appearance: auto;
+		-webkit-appearance: auto;
+		-moz-appearance: auto;
+		background-image: initial;
+		margin-left: 7px;
+		margin-right: 7px;
+	}
+	
+	body.dark-mode .sentence select {
+		background-color: #4a5568;
+		color: #edf2f7;
+		border: 1px solid #718096;
+	}
+	
+	.sentence select:focus {
+		border-color: #3182ce;
+		outline: none;
+		box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+	}
+	
+	body.dark-mode .sentence select:focus {
+		border-color: #63b3ed;
+		box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+	}
+	
+	/* Sentences */
+	.sentences {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+	
+	/* Slider Container */
+	.switch {
+		position: relative;
+		width: 40px;
+		height: 20px;
+		display: inline-block;
+	}
+	
+	/* Hide Default Checkbox */
+	.switch input {
+		display: none;
+	}
+	
+	/* Slider Appearance */
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ccc;
+		transition: 0.4s;
+		border-radius: 20px;
+	}
+	
+	.slider::before {
+		position: absolute;
+		content: "";
+		height: 14px;
+		width: 14px;
+		left: 3px;
+		bottom: 3px;
+		background-color: white;
+		transition: 0.4s;
+		border-radius: 50%;
+	}
+	
+	/* Slider Active State */
+	.switch input:checked+.slider {
+		background-color: #007BFF;
+	}
+	
+	.switch input:checked+.slider::before {
+		transform: translateX(20px);
+	}
+	
+	/* Start Over Button */
+	.start-over {
+		background-color: #007BFF;
+		color: white;
+		cursor: pointer;
+		border: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.3s ease;
+	}
+	
+	.start-over:hover {
+		background-color: #0056b3;
+		color: white;
+	}
+	
+	/* Tooltip Styling */
+	.tooltip {
+		position: absolute;
+		bottom: 125%;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: #333;
+		color: #fff;
+		padding: 6px 10px;
+		border-radius: 4px;
+		white-space: nowrap;
+		font-size: 0.9rem;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.3s, visibility 0.3s;
+		z-index: 10;
+	}
+	
+	body.dark-mode .tooltip {
+		background-color: #555;
+		color: #fff;
+	}
+	
+	.tooltip::after {
+		content: '';
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		border-width: 5px;
+		border-style: solid;
+		border-color: #333 transparent transparent transparent;
+	}
+	
+	body.dark-mode .tooltip::after {
+		border-color: #555 transparent transparent transparent;
+	}
+	
+	.word:hover .tooltip,
+	.word:focus .tooltip {
+		opacity: 1;
+		visibility: visible;
+	}
+	
+	/* Word Styling */
+	.word {
+		position: relative;
+		cursor: pointer;
+		color: #2d3748;
+		transition: color 0.3s, background-color 0.3s;
+		display: inline-block;
+		border-radius: 4px;
+	}
+	
+	body.dark-mode .word {
+		color: #edf2f7;
+	}
+	
+	.word::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		bottom: -2px;
+		width: 100%;
+		height: 3px;
+		background-color: currentColor;
+		transform: translateX(-50%) scaleX(0);
+		transform-origin: center;
+		transition: transform 0.3s ease;
+	}
+	
+	.word:hover::after,
+	.word:focus::after {
+		transform: translateX(-50%) scaleX(1);
+	}
+	
+	.word:hover,
+	.word:focus {
+		background-color: rgba(45, 55, 72, 0.1);
+	}
+	
+	body.dark-mode .word:hover,
+	body.dark-mode .word:focus {
+		background-color: rgba(226, 232, 240, 0.1);
+	}
+	
+	/* Unified Button Styling */
+	.score,
+	.dark-mode-toggle,
+	.start-over {
+		width: 100%;
+		height: 40px;
+		padding: 0 10px;
+		box-sizing: border-box;
+		font-size: 16px;
+		text-align: center;
+		background-color: #fff;
+		color: #333;
+		border-radius: 5px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.3s, color 0.3s;
+		cursor: pointer;
+		border: none;
+	}
 
     /* Responsive Design */
     @media (max-width: 600px) {
@@ -552,6 +511,7 @@
     </div>
     <!-- Page Title -->
     <h1 class="page-title">"Värre" or "sämre"?</h1>
+	<p>Read the "Info" to understand what this exercise is about.</p>
     <!-- Main Content Container -->
     <div class="container">
       <div class="sentences" id="sentences"></div>
@@ -560,8 +520,8 @@
     <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
       <div class="modal-content">
         <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
-        <h2 id="congratulationsModalTitle">Congratulations!</h2>
-        <p>You've answered correctly in all sentences!</p>
+        <h2 id="congratulationsModalTitle">Grattis!</h2>
+        <p>Du har svarat rätt på alla frågor!</p>
       </div>
     </div>
     <!-- New Info Modal -->
@@ -611,7 +571,7 @@
                     translation: "I"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -662,7 +622,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -709,7 +669,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -752,7 +712,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -803,7 +763,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -854,7 +814,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -905,7 +865,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -948,7 +908,7 @@
                     translation: "was"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -995,7 +955,7 @@
                     translation: "the final exam"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1038,7 +998,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1085,7 +1045,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1144,7 +1104,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1203,7 +1163,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1250,7 +1210,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1297,7 +1257,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="värre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1360,7 +1320,7 @@
                     translation: "performs"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1403,7 +1363,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1454,7 +1414,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1505,7 +1465,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1556,7 +1516,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1607,7 +1567,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1650,7 +1610,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1697,7 +1657,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1748,7 +1708,7 @@
                     translation: "was"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1795,7 +1755,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1846,7 +1806,7 @@
                     translation: "attitude"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1889,7 +1849,7 @@
                     translation: "become"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1928,7 +1888,7 @@
                     translation: "it"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -1975,7 +1935,7 @@
                     translation: "got"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -2018,7 +1978,7 @@
                     translation: "got"
                 },
                 {
-                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
+                    word: `<select data-correct="sämre" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
                     <option value="">pick</option>
                     <option value="värre">värre</option>
                     <option value="sämre">sämre</option>
@@ -2031,29 +1991,6 @@
 
         // Lägg till fler meningar efter behov
     ];
-
-    /**
-     * Genererar HTML för en enda mening med verktygstips för varje ord.
-     * @param {Object} sentence - Meningens objekt.
-     * @param {number} sentenceIndex - Index för meningen för unika tooltip-ID:n.
-     * @returns {string} - HTML-strängen för meningen.
-     */
-    function generateSentenceHTML(sentence, sentenceIndex) {
-        // Replace the custom marker {{SELECT}} with the dropdown
-        const sentenceWithDropdown = sentence.text.replace('{{SELECT}}', `
-        <select data-correct="${sentence.correct}" onchange="evaluateAnswer(this)" aria-label="Välj det korrekta adjektivet">
-            <option value="">pick</option>
-            <option value="värre">värre</option>
-            <option value="sämre">sämre</option>
-        </select>
-    `);
-
-        // Wrap the entire processed sentence in a div
-        return `<div class="sentence" data-state="none"><p>${sentenceWithDropdown}</p></div>`;
-    }
-
-
-
 
     /**
      * Blanda en array med Fisher-Yates algoritm.
