@@ -365,8 +365,7 @@
 		border-color: #555 transparent transparent transparent;
 	}
 	
-	.word:hover .tooltip,
-	.word:focus .tooltip {
+	.word:hover .tooltip {
 		opacity: 1;
 		visibility: visible;
 	}
@@ -1125,7 +1124,7 @@
                 },
                 {
                     word: `<select data-correct="B: Skriv" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
-                    <option value="">...</option>
+                    <option value="">B: ...</option>
                     <option value="B: Skriva">B: Skriva</option>
                     <option value="B: Skriv">B: Skriv</option>
                 </select>`,
@@ -1391,10 +1390,10 @@
                     translation: "Exactly!"
                 },
                 {
-                    word: `<select data-correct="Stå" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
-                    <option value="">...</option>
-                    <option value="Stå">Stå</option>
-                    <option value="Står">Står</option>
+                    word: `<select data-correct="B: Stå" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Stå">B: Stå</option>
+                    <option value="B: Står">B: Står</option>
                 </select>`,
                     translation: "Stand"
                 },
@@ -1732,7 +1731,7 @@
                     <option value="B: Lek">B: Lek</option>
                     <option value="B: Leka">B: Leka</option>
                 </select>`,
-                    translation: ""
+                    translation: "Play"
                 },
                 {
                     word: "inte",
@@ -1807,12 +1806,12 @@
                 word,
                 translation
             } = item;
-            return translation ?
-                `<span class="word" aria-describedby="tooltip-${sentenceIndex}-${wordIndex}" tabindex="0">
-                        ${word}
-                        <span class="tooltip" id="tooltip-${sentenceIndex}-${wordIndex}">${translation}</span>
-                    </span>` :
-                word;
+		return translation ?
+			`<span class="word" aria-describedby="tooltip-${sentenceIndex}-${wordIndex}">
+					${word}
+					<span class="tooltip" id="tooltip-${sentenceIndex}-${wordIndex}">${translation}</span>
+				</span>` :
+			word;
         });
 
         const sentenceWithTooltips = processedWords.join(' ');
