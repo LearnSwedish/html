@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common imperatives</title>
+    
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+   
+    <style>
+/* Reset and Base Styles */
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+	
+	body {
+		font-family: Arial, sans-serif;
+		background-color: #f9fafb;
+		color: #2d3748;
+		line-height: 1.6;
+		font-size: 16px;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		min-height: 100vh;
+		padding: 20px;
+		overflow-y: auto;
+		position: relative;
+		transition: background-color 0.3s, color 0.3s;
+	}
+	
+	body.dark-mode {
+		background-color: #121212;
+		color: #e2e8f0;
+	}
+	
+	/* Close Button Styling */
+	.close-button {
+		float: right;
+		padding: 5px;
+		cursor: pointer;
+		font-size: 18px;
+		background-color: #ccc;
+		border-radius: 50%;
+		line-height: 20px;
+		width: 30px;
+		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.3s, transform 0.3s;
+	}
+	
+	body.dark-mode .close-button {
+		background-color: #555;
+		color: #ffcccc;
+	}
+	
+	.close-button:hover {
+		background-color: #f44336;
+		transform: scale(1.2) rotate(90deg);
+		color: white;
+	}
+	
+	body.dark-mode .close-button:hover {
+		background-color: #ff6666;
+		color: white;
+		transform: scale(1.2) rotate(90deg);
+	}
+	
+	/* Container */
+	.container {
+		background-color: #ffffff;
+		padding: 40px 30px;
+		border-radius: 12px;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+		max-width: 790px;
+		width: 100%;
+		text-align: center;
+		position: relative;
+		transition: background-color 0.3s, box-shadow 0.3s;
+		margin-top: 20px;
+	}
+	
+	body.dark-mode .container {
+		background-color: #1a202c;
+		box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+	}
+	
+	/* Dark Mode Toggle */
+	.dark-mode-toggle {
+		justify-content: flex-start;
+		padding: 0 10px;
+		gap: 10px;
+		cursor: default;
+	}
+	
+	/* Modal */
+	.modal {
+		display: none;
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+		justify-content: center;
+		align-items: center;
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out;
+	}
+	
+	.modal-content {
+		background: white;
+		color: black;
+		padding: 20px;
+		border-radius: 8px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		text-align: center;
+		max-width: 600px;
+		width: 80%;
+		transform: translateY(-50px);
+		transition: transform 0.3s ease-in-out;
+	}
+	
+	body.dark-mode .modal-content {
+		background-color: #1a202c;
+		color: #edf2f7;
+		border-color: #2d3748;
+	}
+	
+	.modal.show {
+		display: flex;
+		opacity: 1;
+	}
+	
+	/* Page Title */
+	.page-title {
+		text-align: center;
+		color: #333333;
+		font-size: 28px;
+		margin-bottom: 20px;
+		line-height: 1.4;
+		padding-top: 10px;
+		position: relative;
+		z-index: 1;
+		transition: color 0.3s ease, background-color 0.3s ease;
+	}
+	
+	body.dark-mode .page-title {
+		color: #ffffff;
+	}
+	
+	/* Score, Start Over, and Dark Mode Toggle Container */
+	.score-container {
+		position: fixed;
+		top: 20px;
+		right: 40px;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		width: 150px;
+		z-index: 1001;
+		gap: 10px;
+		transition: background-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	
+	/* Sentence Styling */
+	.sentence {
+		background-color: #f7fafc;
+		padding: 20px;
+		padding-bottom: 5px;
+		border-radius: 8px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+		position: relative;
+		transition: background-color 0.3s, border 0.3s;
+		border-left: 6px solid transparent;
+		text-align: left;
+		data-state: "none";
+	}
+	
+	body.dark-mode .sentence {
+		background-color: #2d3748;
+		box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+	}
+	
+	.sentence.correct {
+		border-left: 6px solid #38a169;
+		background-color: #cdffcd;
+		transition: border 0.3s, background-color 0.3s;
+	}
+	
+	body.dark-mode .sentence.correct {
+		border-left: 6px solid #38a169;
+		background-color: #22543d;
+	}
+	
+	.sentence.incorrect {
+		border-left: 6px solid #e53e3e;
+		background-color: #FFADB0;
+		transition: border 0.3s, background-color 0.3s;
+	}
+	
+	body.dark-mode .sentence.incorrect {
+		border-left: 6px solid #e53e3e;
+		background-color: #742a2a;
+	}
+	
+	.sentence p {
+		font-size: 1.1rem;
+		margin-bottom: 10px;
+		transition: color 0.3s;
+	}
+	
+	body.dark-mode .sentence p {
+		color: #edf2f7;
+	}
+	
+	/* Select Element Styling */
+	.sentence select {
+		padding: 4px 4px;
+		font-size: inherit;
+		border: 1px solid #cbd5e0;
+		border-radius: 6px;
+		background-color: #edf2f7;
+		cursor: pointer;
+		transition: border-color 0.3s, background-color 0.3s;
+		width: auto;
+		appearance: auto;
+		-webkit-appearance: auto;
+		-moz-appearance: auto;
+		background-image: initial;
+	}
+	
+	body.dark-mode .sentence select {
+		background-color: #4a5568;
+		color: #edf2f7;
+		border: 1px solid #718096;
+	}
+	
+	.sentence select:focus {
+		border-color: #3182ce;
+		outline: none;
+		box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+	}
+	
+	body.dark-mode .sentence select:focus {
+		border-color: #63b3ed;
+		box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+	}
+	
+	/* Sentences */
+	.sentences {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+	
+	/* Slider Container */
+	.switch {
+		position: relative;
+		width: 40px;
+		height: 20px;
+		display: inline-block;
+	}
+	
+	/* Hide Default Checkbox */
+	.switch input {
+		display: none;
+	}
+	
+	/* Slider Appearance */
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ccc;
+		transition: 0.4s;
+		border-radius: 20px;
+	}
+	
+	.slider::before {
+		position: absolute;
+		content: "";
+		height: 14px;
+		width: 14px;
+		left: 3px;
+		bottom: 3px;
+		background-color: white;
+		transition: 0.4s;
+		border-radius: 50%;
+	}
+	
+	/* Slider Active State */
+	.switch input:checked+.slider {
+		background-color: #007BFF;
+	}
+	
+	.switch input:checked+.slider::before {
+		transform: translateX(20px);
+	}
+	
+	/* Start Over Button */
+	.start-over {
+		background-color: #007BFF;
+		color: white;
+		cursor: pointer;
+		border: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.3s ease;
+	}
+	
+	.start-over:hover {
+		background-color: #0056b3;
+		color: white;
+	}
+	
+	/* Tooltip Styling */
+	.tooltip {
+		position: absolute;
+		bottom: 125%;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: #333;
+		color: #fff;
+		padding: 6px 10px;
+		border-radius: 4px;
+		white-space: nowrap;
+		font-size: 0.9rem;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.3s, visibility 0.3s;
+		z-index: 10;
+	}
+	
+	body.dark-mode .tooltip {
+		background-color: #555;
+		color: #fff;
+	}
+	
+	.tooltip::after {
+		content: '';
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		border-width: 5px;
+		border-style: solid;
+		border-color: #333 transparent transparent transparent;
+	}
+	
+	body.dark-mode .tooltip::after {
+		border-color: #555 transparent transparent transparent;
+	}
+	
+	.word:hover .tooltip,
+	.word:focus .tooltip {
+		opacity: 1;
+		visibility: visible;
+	}
+	
+	/* Word Styling */
+	.word {
+		position: relative;
+		cursor: pointer;
+		color: #2d3748;
+		transition: color 0.3s, background-color 0.3s;
+		display: inline-block;
+		border-radius: 4px;
+	}
+	
+	body.dark-mode .word {
+		color: #edf2f7;
+	}
+	
+	.word::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		bottom: -2px;
+		width: 100%;
+		height: 3px;
+		background-color: currentColor;
+		transform: translateX(-50%) scaleX(0);
+		transform-origin: center;
+		transition: transform 0.3s ease;
+	}
+	
+	.word:hover::after,
+	.word:focus::after {
+		transform: translateX(-50%) scaleX(1);
+	}
+	
+	.word:hover,
+	.word:focus {
+		background-color: rgba(45, 55, 72, 0.1);
+	}
+	
+	body.dark-mode .word:hover,
+	body.dark-mode .word:focus {
+		background-color: rgba(226, 232, 240, 0.1);
+	}
+	
+	/* Unified Button Styling */
+	.score,
+	.dark-mode-toggle,
+	.start-over {
+		width: 100%;
+		height: 40px;
+		padding: 0 10px;
+		box-sizing: border-box;
+		font-size: 16px;
+		text-align: center;
+		background-color: #fff;
+		color: #333;
+		border-radius: 5px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.3s, color 0.3s;
+		cursor: pointer;
+		border: none;
+	}
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+        .score-container {
+            top: 10px;
+            right: 10px;
+            width: 120px;
+            gap: 10px;
+            /* Reduced gap for smaller screens */
+        }
+
+        .score,
+        .start-over,
+        .dark-mode-toggle {
+            font-size: 14px;
+            height: 45px;
+            /* Slightly smaller height for smaller screens */
+            padding: 0 10px;
+            /* Reduced horizontal padding */
+        }
+
+        .start-over {
+            padding: 0 12px;
+        }
+
+        .dark-mode-toggle {
+            padding: 0 8px;
+            gap: 8px;
+        }
+
+        /* Adjust switch size for smaller screens */
+        .switch {
+            width: 35px;
+            height: 18px;
+        }
+
+        .slider::before {
+            height: 12px;
+            width: 12px;
+            left: 3px;
+            bottom: 3px;
+        }
+
+        .switch input:checked+.slider::before {
+            transform: translateX(18px);
+        }
+    }
+
+    /* Additional Styles for Info Modal (Optional) */
+    /* You can customize the Info modal content further if needed */
+    </style>
+</head>
+<body>
+
+    <!-- Score, Dark Mode Toggle, Info Button, and Start Over Button -->
+    <div class="score-container">
+      <!-- Score Display -->
+      <div class="score">Score:&nbsp; <span id="score">0</span>&nbsp;/&nbsp;30 </div>
+      <!-- Dark Mode Toggle -->
+      <div class="dark-mode-toggle">
+        <label class="switch">
+          <input type="checkbox" id="darkModeSwitch">
+          <span class="slider"></span>
+        </label>
+        <span>Dark mode</span>
+      </div>
+      <!-- New Info Button -->
+      <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+        <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info </button>
+      <!-- Start Over Button -->
+      <button class="start-over" onclick="startOver()">
+        <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over </button>
+    </div>
+    <!-- Page Title -->
+    <h1 class="page-title">Pick the correct imperative</h1>
+	<p>Read the "Info" to understand what this exercise is about.</p>
+    <!-- Main Content Container -->
+    <div class="container">
+      <div class="sentences" id="sentences"></div>
+    </div>
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+      <div class="modal-content">
+        <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+        <h2 id="congratulationsModalTitle">Grattis!</h2>
+        <p>Du har svarat rätt på alla frågor!</p>
+      </div>
+    </div>
+    <!-- New Info Modal -->
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal-content">
+        <span class="close-button" onclick="closeModal('infoModal')">&times;</span>
+        <h2 id="infoModalTitle">Information</h2>
+            <p>On this page, you'll find 30 short dialogues between person A and B. Every time B speaks, an imperative is used (actually, the 30 most common imperatives in Swedish), and your task is to choose the correct form. The principle is quite simple: if a verb in the present tense ends in -er (like "skriver", "kommer"), then the imperative form is created by using the infinitive and removing the final -a. Otherwise, the imperative form is the same as the infinitive
+			. Of course, there are always exceptions — you’ll discover those on your own. Good luck!</p>
+        <!-- Add more informational content as needed -->
+      </div>
+    </div>
+
+    <script>
+        let score = 0;
+
+    const sentences = [{
+            words: [{
+                    word: "A: Soppan",
+                    translation: "The soup"
+                },
+                {
+                    word: "är",
+                    translation: "is"
+                },
+                {
+                    word: "ganska",
+                    translation: "rather"
+                },
+                {
+                    word: "mesig.",
+                    translation: "bland."
+                },
+                {
+                    word: `<select data-correct="B: Använd" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Använda">B: Använda</option>
+                    <option value="B: Använd">B: Använd</option>
+                </select>`,
+                    translation: "Use"
+                },
+                {
+                    word: "lite mer",
+                    translation: "a bit more"
+                },
+                {
+                    word: "peppar!",
+                    translation: "pepper"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Vad",
+                    translation: "What"
+                },
+                {
+                    word: "ska",
+                    translation: "shall"
+                },
+                {
+                    word: "jag",
+                    translation: "I"
+                },
+                {
+                    word: "göra?",
+                    translation: "do"
+                },
+                {
+                    word: "B: Ingenting,",
+                    translation: "Nothing"
+                },
+                {
+                    word: "bara",
+                    translation: "just"
+                },
+                {
+                    word: `<select data-correct="gå" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="gå">gå</option>
+                    <option value="går">går</option>
+                </select>`,
+                    translation: "go"
+                },
+                {
+                    word: "hem!",
+                    translation: "home"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Ge",
+                    translation: "Give"
+                },
+                {
+                    word: "mig",
+                    translation: "me"
+                },
+                {
+                    word: "fem",
+                    translation: "five"
+                },
+                {
+                    word: "minuter",
+                    translation: "minutes"
+                },
+                {
+                    word: "till.",
+                    translation: "more"
+                },
+                {
+                    word: "Nej,",
+                    translation: "No"
+                },
+                {
+                    word: `<select data-correct="kom" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="kom">kom</option>
+                    <option value="komma">komma</option>
+                </select>`,
+                    translation: "come"
+                },
+                {
+                    word: "nu!",
+                    translation: "now"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Vilken",
+                    translation: "Which (one)"
+                },
+                {
+                    word: "ska",
+                    translation: "shall"
+                },
+                {
+                    word: "jag",
+                    translation: "I"
+                },
+                {
+                    word: "ta?",
+                    translation: "take"
+                },
+                {
+                    word: `<select data-correct="B: Ta" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Tar">B: Tar</option>
+                    <option value="B: Ta">B: Ta</option>
+                </select>`,
+                    translation: "Take"
+                },
+                {
+                    word: "den här!",
+                    translation: "this (one)"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Jag",
+                    translation: "I"
+                },
+                {
+                    word: "ska",
+                    translation: "will"
+                },
+                {
+                    word: "äta",
+                    translation: "eat"
+                },
+                {
+                    word: "pizza",
+                    translation: "a pizza"
+                },
+                {
+                    word: "ikväll.",
+                    translation: "tonight"
+                },
+                {
+                    word: `<select data-correct="B: Gör" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Göra">B: Göra</option>
+                    <option value="B: Gör">B: Gör</option>
+                </select>`,
+                    translation: "Do"
+                },
+                {
+                    word: "inte",
+                    translation: "not"
+                },
+                {
+                    word: "det!",
+                    translation: "that"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Jag",
+                    translation: "I"
+                },
+                {
+                    word: "förstår",
+                    translation: "understand"
+                },
+                {
+                    word: "inte",
+                    translation: "not"
+                },
+                {
+                    word: "honom.",
+                    translation: "him"
+                },
+				{
+                    word: "B: Men",
+                    translation: "But"
+                },
+				{
+                    word: "du,",
+                    translation: "you (hey)"
+                },
+                {
+                    word: `<select data-correct="se" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ser">ser</option>
+                    <option value="se">se</option>
+                </select>`,
+                    translation: "look"
+                },
+                {
+                    word: "på",
+                    translation: "on (at)"
+                },
+                {
+                    word: "det",
+                    translation: "it"
+                },
+                {
+                    word: "såhär",
+                    translation: "this way"
+                },
+                {
+                    word: "istället...",
+                    translation: "instead..."
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Jag",
+                    translation: "I"
+                },
+                {
+                    word: "hatar",
+                    translation: "hate"
+                },
+                {
+                    word: "mitt",
+                    translation: "my"
+                },
+                {
+                    word: "arbete.",
+                    translation: "job"
+                },
+                {
+                    word: `<select data-correct="B: Säg" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Säg">B: Säg</option>
+                    <option value="B: Säga">B: Säga</option>
+                </select>`,
+                    translation: "Say"
+                },
+                {
+                    word: "inte",
+                    translation: "not"
+                },
+                {
+                    word: "så!",
+                    translation: "so"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Titta,",
+                    translation: "Look"
+                },
+                {
+                    word: "vad",
+                    translation: "what"
+                },
+                {
+                    word: "jag",
+                    translation: "I"
+                },
+                {
+                    word: "har,",
+                    translation: "have"
+                },
+                {
+                    word: "hittat!",
+                    translation: "found"
+                },
+                {
+                    word: `<select data-correct="B: Ge" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Ger">B: Ger</option>
+                    <option value="B: Ge">B: Ge</option>
+                </select>`,
+                    translation: "Give"
+                },
+                {
+                    word: "mig",
+                    translation: "me"
+                },
+                {
+                    word: "den!",
+                    translation: "that"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Åh,",
+                    translation: "Oh"
+                },
+                {
+                    word: "jag",
+                    translation: "I"
+                },
+                {
+                    word: "kan",
+                    translation: "can"
+                },
+                {
+                    word: "inte",
+                    translation: "not"
+                },
+                {
+                    word: "sluta",
+                    translation: "stop"
+                },
+                {
+                    word: "tänka",
+                    translation: "thinking"
+                },
+                {
+                    word: "på",
+                    translation: "on (about)"
+                },
+                {
+                    word: "det.",
+                    translation: "it"
+                },
+                {
+                    word: `<select data-correct="B: Var" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Var">B: Var</option>
+                    <option value="B: Vara">B: Vara</option>
+                </select>`,
+                    translation: "Be (Stay)"
+                },
+                {
+                    word: "lugn!",
+                    translation: "calm"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Vi ",
+                    translation: "We"
+                },
+                {
+                    word: "ses",
+                    translation: "see (each other)"
+                },
+                {
+                    word: "nästa",
+                    translation: "next"
+                },
+                {
+                    word: "vecka.",
+                    translation: "week"
+                },
+                {
+                    word: "B: Ja,",
+                    translation: "Yes"
+                },
+                {
+                    word: `<select data-correct="ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="har">har</option>
+                    <option value="ha">ha</option>
+                </select>`,
+                    translation: "have"
+                },
+				{
+                    word: "det",
+                    translation: "it"
+                },
+				{
+                    word: "bra!",
+                    translation: "nice"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Jag",
+                    translation: "I"
+                },
+                {
+                    word: "är",
+                    translation: "am"
+                },
+                {
+                    word: "trött",
+                    translation: "tired"
+                },
+                {
+                    word: "på",
+                    translation: "of"
+                },
+                {
+                    word: "den här,",
+                    translation: "this"
+                },
+                {
+                    word: "låten.",
+                    translation: "song"
+                },
+                {
+                    word: "B: Men",
+                    translation: "But"
+                },
+                {
+                    word: `<select data-correct="lyssna" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="lyssna">lyssna</option>
+                    <option value="lyssn">lyssn</option>
+                </select>`,
+                    translation: "listen"
+                },
+                {
+                    word: "på",
+                    translation: "on (to)"
+                },
+                {
+                    word: "den här,",
+                    translation: "this one"
+                },
+                {
+                    word: "då.",
+                    translation: "then"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Jag",
+                    translation: "I"
+                },
+                {
+                    word: "måste",
+                    translation: "have"
+                },
+                {
+                    word: "gå",
+                    translation: "to go"
+                },
+                {
+                    word: "nu.",
+                    translation: "now"
+                },
+                {
+                    word: `<select data-correct="B: Vänta" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Vänta">B: Vänta</option>
+                    <option value="B: Vänt">B: Vänt</option>
+                </select>`,
+                    translation: "Wait"
+                },
+                {
+                    word: "lite!",
+                    translation: "a little"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Kan",
+                    translation: "Can"
+                },
+                {
+                    word: "jag",
+                    translation: "I"
+                },
+                {
+                    word: "fråga",
+                    translation: "ask"
+                },			
+                {
+                    word: "dig",
+                    translation: "you"
+                },
+                {
+                    word: "en sak?",
+                    translation: "something"
+                },
+                {
+                    word: `<select data-correct="B: Fråga" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Fråg">B: Fråg</option>
+                    <option value="B: Fråga">Fråga</option>
+                </select>`,
+                    translation: "Ask"
+                },
+                {
+                    word: "på!",
+                    translation: "on"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Jag",
+                    translation: "The apartment"
+                },
+                {
+                    word: "har",
+                    translation: "was"
+                },
+                {
+                    word: "inget",
+                    translation: "messy"
+                },
+                {
+                    word: "att",
+                    translation: "already"
+                },
+                {
+                    word: "göra.",
+                    translation: "before"
+                },
+                {
+                    word: `<select data-correct="B: Läs" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Läs">B: Läs</option>
+                    <option value="B: Läsa">B: Läsa</option>
+                </select>`,
+                    translation: "Read"
+                },
+                {
+                    word: "en",
+                    translation: "a"
+                },
+                {
+                    word: "bok!",
+                    translation: "book"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Jag",
+                    translation: "I"
+                },
+                {
+                    word: "har",
+                    translation: "have"
+                },
+                {
+                    word: "inte",
+                    translation: "not"
+                },
+                {
+                    word: "sett",
+                    translation: "seen"
+                },
+                {
+                    word: "honom",
+                    translation: "him"
+                },
+                {
+                    word: "på",
+                    translation: "on (for)"
+                },
+                {
+                    word: "en",
+                    translation: "a"
+                },
+                {
+                    word: "helt",
+                    translation: "whole"
+                },
+                {
+                    word: "år.",
+                    translation: "year"
+                },
+                {
+                    word: `<select data-correct="B: Skriv" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="B: Skriva">B: Skriva</option>
+                    <option value="B: Skriv">B: Skriv</option>
+                </select>`,
+                    translation: "Write"
+                },
+                {
+                    word: "ett",
+                    translation: "a"
+                },
+                {
+                    word: "brev",
+                    translation: "letter"
+                },
+                {
+                    word: "till",
+                    translation: "to"
+                },
+                {
+                    word: "honom!",
+                    translation: "him"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Gå",
+                    translation: "Go"
+                },
+                {
+                    word: "din",
+                    translation: "your"
+                },
+                {
+                    word: "väg!",
+                    translation: "way!"
+                },
+                {
+                    word: `<select data-correct="B: Öppna" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Öppn">B: Öppn</option>
+                    <option value="B: Öppna">B: Öppna</option>
+                </select>`,
+                    translation: "Open"
+                },
+                {
+                    word: "dörren,",
+                    translation: "the door"
+                },
+                {
+                    word: "vi",
+                    translation: "we"
+                },
+                {
+                    word: "behöver",
+                    translation: "need"
+                },
+                {
+                    word: "prata!",
+                    translation: "to talk"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Hejdå,",
+                    translation: "Buy,"
+                },
+                {
+                    word: "nu",
+                    translation: "now"
+                },
+                {
+                    word: "går",
+                    translation: "go"
+                },
+                {
+                    word: "jag,",
+                    translation: "I"
+                },
+                {
+                    word: "till",
+                    translation: "to"
+                },
+                {
+                    word: "jobbet.",
+                    translation: "(the) work"
+                },
+                {
+                    word: `<select data-correct="B: Stäng" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Stänga">B: Stänga</option>
+                    <option value="B: Stäng">B: Stäng</option>
+                </select>`,
+                    translation: "Close"
+                },
+                {
+                    word: "dörren",
+                    translation: "the door"
+                },
+                {
+                    word: "efter",
+                    translation: "after (behind)"
+                },
+                {
+                    word: "dig!",
+                    translation: "you"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Det där",
+                    translation: "That"
+                },
+                {
+                    word: "kommer",
+                    translation: "will"
+                },
+                {
+                    word: "aldrig",
+                    translation: "never"
+                },
+                {
+                    word: "att gå.",
+                    translation: "work"
+                },
+                {
+                    word: "Men,",
+                    translation: "But"
+                },
+                {
+                    word: `<select data-correct="hjälp" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="hjälpa">hjälpa</option>
+                    <option value="hjälp">hjälp</option>
+                </select>`,
+                    translation: "help"
+                },
+                {
+                    word: "mig",
+                    translation: "me"
+                },
+                {
+                    word: "då!",
+                    translation: "then"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Min",
+                    translation: "My"
+                },
+                {
+                    word: "bil",
+                    translation: "car"
+                },
+                {
+                    word: "är",
+                    translation: "is"
+                },
+                {
+                    word: "helt",
+                    translation: "completely"
+                },
+                {
+                    word: "kass",
+                    translation: "rubbish"
+                },
+                {
+                    word: "nu.",
+                    translation: "now"
+                },
+                {
+                    word: `<select data-correct="B: Köp" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Köpa">B: Köpa</option>
+                    <option value="B: Köp">B: Köp</option>
+                </select>`,
+                    translation: "Buy"
+                },
+                {
+                    word: "en",
+                    translation: "a"
+                },
+                {
+                    word: "ny!",
+                    translation: "new (one)"
+                },
+
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Är",
+                    translation: "Is"
+                },
+                {
+                    word: "det",
+                    translation: "it"
+                },
+                {
+                    word: "ledigt",
+                    translation: "free"
+                },
+                {
+                    word: "här?",
+                    translation: "here"
+                },
+                {
+                    word: "B: Absolut,",
+                    translation: "Of course"
+                },
+                {
+                    word: "ta",
+                    translation: "grab"
+                },
+                {
+                    word: "en",
+                    translation: "a"
+                },
+                {
+                    word: "stol",
+                    translation: "chair"
+                },
+                {
+                    word: "och",
+                    translation: "and"
+                },
+                {
+                    word: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="sitt">sitt</option>
+                    <option value="sitta">sitta</option>
+                </select>`,
+                    translation: "sit"
+                },
+                {
+                    word: "ner!",
+                    translation: "down"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Gå",
+                    translation: "Get"
+                },
+                {
+                    word: "upp,",
+                    translation: "up"
+                },
+                {
+                    word: "stå",
+                    translation: "stand"
+                },
+                {
+                    word: "upp!",
+                    translation: "up"
+                },
+                {
+                    word: "B: Exakt!",
+                    translation: "Exactly!"
+                },
+                {
+                    word: `<select data-correct="Stå" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="Stå">Stå</option>
+                    <option value="Står">Står</option>
+                </select>`,
+                    translation: "Stand"
+                },
+                {
+                    word: "upp",
+                    translation: "up"
+                },
+                {
+                    word: "för",
+                    translation: "for"
+                },
+                {
+                    word: "din",
+                    translation: "your"
+                },
+                {
+                    word: "rättigheter!",
+                    translation: "rights"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Vart",
+                    translation: "Where"
+                },
+                {
+                    word: "vill",
+                    translation: "want"
+                },
+                {
+                    word: "du",
+                    translation: "you"
+                },
+                {
+                    word: "åka?",
+                    translation: "to go"
+                },
+                {
+                    word: `<select data-correct="B: Följ" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Följa">B: Följa</option>
+                    <option value="B: Följ">B: Följ</option>
+                </select>`,
+                    translation: "Follow"
+                },
+                {
+                    word: "den där",
+                    translation: "that"
+                },
+                {
+                    word: "svarta",
+                    translation: "black"
+                },
+                {
+                    word: "bilen!",
+                    translation: "car"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Det",
+                    translation: "It"
+                },
+                {
+                    word: "är",
+                    translation: "is"
+                },
+                {
+                    word: "hur",
+                    translation: "how (as)"
+                },
+                {
+                    word: "enkelt",
+                    translation: "simple"
+                },
+                {
+                    word: "som helst.",
+                    translation: "as anything."
+                },
+                {
+                    word: `<select data-correct="B: Visa" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Visa">B: Visa</option>
+                    <option value="B: Vis">B: Vis</option>
+                </select>`,
+                    translation: "Show"
+                },
+                {
+                    word: "mig",
+                    translation: "me"
+                },
+                {
+                    word: "hur",
+                    translation: "how"
+                },
+                {
+                    word: "man",
+                    translation: "one"
+                },
+                {
+                    word: "gör!",
+                    translation: "does (it)"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Nu",
+                    translation: "Now"
+                },
+                {
+                    word: "blev",
+                    translation: "became"
+                },
+                {
+                    word: "det",
+                    translation: "it"
+                },
+                {
+                    word: "fel",
+                    translation: "wrong"
+                },
+                {
+                    word: "igen.",
+                    translation: "again"
+                },
+                {
+                    word: `<select data-correct="B: Börja" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Börj">B: Börj</option>
+                    <option value="B: Börja">B: Börja</option>
+                </select>`,
+                    translation: "Begin (Start)"
+                },
+                {
+                    word: "om",
+                    translation: "over"
+                },
+                {
+                    word: "från",
+                    translation: "from"
+                },
+                {
+                    word: "början!",
+                    translation: "the beginning"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Usch,",
+                    translation: "Ugh,"
+                },
+                {
+                    word: "vilken",
+                    translation: "what a"
+                },
+                {
+                    word: "hosta",
+                    translation: "cough"
+                },
+                {
+                    word: "jag",
+                    translation: "I"
+                },
+                {
+                    word: "har.",
+                    translation: "have"
+                },
+                {
+                    word: `<select data-correct="B: Sluta" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Slut">B: Slut</option>
+                    <option value="B: Sluta">B: Sluta</option>
+                </select>`,
+                    translation: "Stop"
+                },
+                {
+                    word: "röka!",
+                    translation: "smoking"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Förra",
+                    translation: "Last"
+                },
+                {
+                    word: "gången",
+                    translation: "time"
+                },
+                {
+                    word: "var",
+                    translation: "was"
+                },
+                {
+                    word: "pizzan",
+                    translation: "the pizza"
+                },
+                {
+                    word: "jätteäcklig.",
+                    translation: "really disgusting"
+                },
+                {
+                    word: `<select data-correct="B: Välj" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Välja">B: Välja</option>
+                    <option value="B: Välj">B: Välj</option>
+                </select>`,
+                    translation: "Choose"
+                },
+                {
+                    word: "rätt",
+                    translation: "(the) right (one)"
+                },
+                {
+                    word: "den här",
+                    translation: "this"
+                },
+                {
+                    word: "gången!",
+                    translation: "time"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: När",
+                    translation: "What time"
+                },
+                {
+                    word: "sticker",
+                    translation: "leave"
+                },
+                {
+                    word: "vi",
+                    translation: "we"
+                },
+                {
+                    word: "imorgon?",
+                    translation: "tomorrow"
+                },
+                {
+                    word: `<select data-correct="B: Ring" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Ring">B: Ring</option>
+                    <option value="B: Ringa">B: Ringa</option>
+                </select>`,
+                    translation: "Call"
+                },
+                {
+                    word: "mig",
+                    translation: "me"
+                },
+                {
+                    word: "när",
+                    translation: "when"
+                },
+                {
+                    word: "du",
+                    translation: "you"
+                },
+                {
+                    word: "vaknar!",
+                    translation: "wake up"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Nu",
+                    translation: "Now"
+                },
+                {
+                    word: "följer",
+                    translation: "follow"
+                },
+                {
+                    word: "du",
+                    translation: "you"
+                },
+                {
+                    word: "med.",
+                    translation: "with"
+                },
+                {
+                    word: `<select data-correct="B: Rör" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Röra">B: Röra</option>
+                    <option value="B: Rör">B: Rör</option>
+                </select>`,
+                    translation: "Touch"
+                },
+                {
+                    word: "mig",
+                    translation: "me"
+                },
+                {
+                    word: "inte!",
+                    translation: "not"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Pappa,",
+                    translation: "Dad"
+                },
+                {
+                    word: "pappa,",
+                    translation: "dad"
+                },
+                {
+                    word: "pappa,",
+                    translation: "dad"
+                },
+                {
+                    word: "titta,",
+                    translation: "look"
+                },
+                {
+                    word: "titta,",
+                    translation: "look"
+                },
+                {
+                    word: "titta.",
+                    translation: "look"
+                },
+                {
+                    word: `<select data-correct="B: Lek" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Lek">B: Lek</option>
+                    <option value="B: Leka">B: Leka</option>
+                </select>`,
+                    translation: ""
+                },
+                {
+                    word: "inte",
+                    translation: "not"
+                },
+                {
+                    word: "i",
+                    translation: "in"
+                },
+                {
+                    word: "vardagsrummet!",
+                    translation: "the living room"
+                },
+            ]
+        },
+        {
+            words: [{
+                    word: "A: Han",
+                    translation: "The concert"
+                },
+                {
+                    word: "är",
+                    translation: "started"
+                },
+                {
+                    word: "så",
+                    translation: "well"
+                },
+                {
+                    word: "otroligt",
+                    translation: "but"
+                },
+                {
+                    word: "korkad.",
+                    translation: "the sound quality"
+                },
+                {
+                    word: `<select data-correct="B: Tänk" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">B: ...</option>
+                    <option value="B: Tänka">B: Tänka</option>
+                    <option value="B: Tänk">B: Tänk</option>
+                </select>`,
+                    translation: "Think"
+                },
+                {
+                    word: "på",
+                    translation: "on (of)"
+                },
+                {
+                    word: "något",
+                    translation: "something"
+                },
+                {
+                    word: "annat!",
+                    translation: "else"
+                },
+            ]
+        }
+
+
+        // Lägg till fler meningar efter behov
+    ];
+
+    /**
+     * Blanda en array med Fisher-Yates algoritm.
+     * @param {Array} array - Arrayen att blanda.
+     * @returns {Array} - Blandet array.
+     */
+    function generateSentenceHTML(sentence, sentenceIndex) {
+        const processedWords = sentence.words.map((item, wordIndex) => {
+            const {
+                word,
+                translation
+            } = item;
+            return translation ?
+                `<span class="word" aria-describedby="tooltip-${sentenceIndex}-${wordIndex}" tabindex="0">
+                        ${word}
+                        <span class="tooltip" id="tooltip-${sentenceIndex}-${wordIndex}">${translation}</span>
+                    </span>` :
+                word;
+        });
+
+        const sentenceWithTooltips = processedWords.join(' ');
+        const sentenceHTML = sentenceWithTooltips.replace('__.', `<select data-correct="${sentence.correct}" onchange="evaluateAnswer(this)" aria-label="Choose the correct adjective">
+            <option value="">...</option>
+            <option value="värre">värre</option>
+            <option value="sämre">sämre</option>
+        </select>.`);
+
+        return `<div class="sentence" data-state="none"><p>${sentenceHTML}</p></div>`;
+    }
+
+    // Fisher-Yates shuffle algorithm to shuffle an array.
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Render sentences in a shuffled order.
+    function renderSentences() {
+        const shuffledSentences = shuffleArray([...sentences]);
+        const sentencesHTML = shuffledSentences.map((sentence, index) => generateSentenceHTML(sentence, index)).join('');
+        document.getElementById('sentences').innerHTML = sentencesHTML;
+    }
+
+    // Evaluates the user's answer and updates the score and UI accordingly.
+    function evaluateAnswer(selectElement) {
+        const correctAnswer = selectElement.getAttribute('data-correct');
+        const selectedValue = selectElement.value;
+        const parent = selectElement.closest('.sentence');
+
+        // Get the current state and determine the new state
+        const priorState = parent.getAttribute('data-state') || 'none';
+        let newState;
+
+        if (selectedValue === correctAnswer) {
+            newState = 'correct';
+        } else if (selectedValue !== "") {
+            newState = 'incorrect';
+        } else {
+            newState = 'none';
+        }
+
+        let delta = 0;
+        if (priorState === 'none') {
+            delta = newState === 'correct' ? 1 : (newState === 'incorrect' ? -1 : 0);
+        } else if (priorState === 'correct') {
+            delta = newState === 'incorrect' ? -2 : (newState === 'none' ? -1 : 0);
+        } else if (priorState === 'incorrect') {
+            delta = newState === 'correct' ? 2 : (newState === 'none' ? 1 : 0);
+        }
+
+        updateScore(delta);
+
+        // Update the UI with the new state
+        parent.classList.remove('correct', 'incorrect');
+        parent.classList.add(newState);
+        parent.setAttribute('data-state', newState);
+
+        checkAllCorrect();
+    }
+
+
+    // Updates the score display based on value change.
+    function updateScore(value) {
+        score += value;
+        document.getElementById('score').textContent = score;
+        checkForMaxScore(score);
+    }
+
+    // Check if the score has reached max and opens the congratulations modal if so.
+    function checkForMaxScore(currentScore) {
+        if (currentScore >= sentences.length) {
+            openModal('congratulationsModal');
+        }
+    }
+
+    // Checks if all sentences are correctly answered.
+    function checkAllCorrect() {
+        const allCorrect = Array.from(document.querySelectorAll('.sentence')).every(sentence => sentence.classList.contains('correct'));
+        if (allCorrect) {
+            openModal('congratulationsModal');
+        }
+    }
+
+    // Opens a modal by its ID.
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'flex';
+            modal.classList.add('show');
+        }
+    }
+
+    // Closes a modal by its ID.
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        }
+    }
+
+    // Close modal when clicking outside of the modal content.
+    window.addEventListener('click', (event) => {
+        const infoModal = document.getElementById('infoModal');
+        const congratulationsModal = document.getElementById('congratulationsModal');
+
+        if (event.target === infoModal) {
+            closeModal('infoModal');
+        } else if (event.target === congratulationsModal) {
+            closeModal('congratulationsModal');
+        }
+    });
+
+    // Resets the quiz and score, then re-renders sentences.
+    function startOver() {
+        renderSentences();
+        resetScore();
+        closeModal('congratulationsModal');
+    }
+
+    // Resets the score to zero.
+    function resetScore() {
+        score = 0;
+        document.getElementById('score').textContent = score;
+    }
+
+    // Sets dark mode based on enabled status.
+    function setDarkMode(enabled) {
+        if (enabled) {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    }
+
+    // Initializes modals and dark mode toggle.
+    function initializeModalsAndDarkMode() {
+        const darkModeToggle = document.getElementById('darkModeSwitch');
+        const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+        setDarkMode(isDarkModeEnabled);
+        darkModeToggle.checked = isDarkModeEnabled;
+
+        darkModeToggle.addEventListener('change', function() {
+            setDarkMode(this.checked);
+        });
+    }
+
+    // Initialize the application once the DOM is fully loaded.
+    document.addEventListener('DOMContentLoaded', () => {
+        renderSentences();
+        initializeModalsAndDarkMode();
+        resetScore();
+    }); 
+	</script>
+</body>
+</html>
