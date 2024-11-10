@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="sv">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Common imperatives</title>
+
     <!-- Font Awesome CDN for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
     <style>
         /* Reset and Base Styles */
         	*,
@@ -465,16 +468,16 @@
 			}
 			
 			
-			/* Hide elements on mobile */
-			@media (max-width: 600px) {
-				.score-container {
-					display: none;
-				}
+					/* Hide elements on mobile */
+					@media (max-width: 600px) {
+						.score-container {
+							display: none;
+						}
 			
-			.hamburger-menu {
-				display: block;
-				}
-			}
+						.hamburger-menu {
+							display: block;
+						}
+					}
 			
 			/* Menu item styling */
 			.menu-overlay .menu-item {
@@ -574,7 +577,7 @@
     <!-- Menu Items for Desktop -->
     <div class="score-container">
         <!-- Score Display for Desktop -->
-        <div class="score">Score:<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
         <!-- Dark Mode Toggle for Desktop -->
         <div class="dark-mode-toggle">
             <label class="switch">
@@ -1959,49 +1962,47 @@
     }
 
     // Evaluates the user's answer and updates the score and UI accordingly.
-    function evaluateAnswer(selectElement) {
-        const correctAnswer = selectElement.getAttribute('data-correct');
-        const selectedValue = selectElement.value;
-        const parent = selectElement.closest('.sentence');
-
-        // Get the current state and determine the new state
-        const priorState = parent.getAttribute('data-state') || 'none';
-        let newState;
-
-        if (selectedValue === correctAnswer) {
-            newState = 'correct';
-        } else if (selectedValue !== "") {
-            newState = 'incorrect';
-        } else {
-            newState = 'none';
-        }
-
-        let delta = 0;
-        if (priorState === 'none') {
-            delta = newState === 'correct' ? 1 : (newState === 'incorrect' ? -1 : 0);
-        } else if (priorState === 'correct') {
-            delta = newState === 'incorrect' ? -2 : (newState === 'none' ? -1 : 0);
-        } else if (priorState === 'incorrect') {
-            delta = newState === 'correct' ? 2 : (newState === 'none' ? 1 : 0);
-        }
-
-        updateScore(delta);
-
-        // Update the UI with the new state
-        parent.classList.remove('correct', 'incorrect');
-        parent.classList.add(newState);
-        parent.setAttribute('data-state', newState);
-
-        checkAllCorrect();
-    }
-
+	function evaluateAnswer(selectElement) {
+		const correctAnswer = selectElement.getAttribute('data-correct');
+		const selectedValue = selectElement.value;
+		const parent = selectElement.closest('.sentence');
+	
+		// Get the previous state to ensure points are added only once per correct answer
+		const priorState = parent.getAttribute('data-state') || 'none';
+		let newState;
+	
+		if (selectedValue === correctAnswer) {
+			newState = 'correct';
+			// Only add a point if it's a new correct answer
+			if (priorState !== 'correct') {
+				updateScore(1);
+			}
+		} else if (selectedValue !== "") {
+			newState = 'incorrect';
+			// No score change for incorrect answers
+		} else {
+			newState = 'none';
+		}
+	
+		// Update the UI with the new state
+		parent.classList.remove('correct', 'incorrect');
+		parent.classList.add(newState);
+		parent.setAttribute('data-state', newState);
+	
+		checkAllCorrect();
+	}
 
     // Updates the score display based on value change.
-    function updateScore(value) {
-        score += value;
-        document.getElementById('score').textContent = score;
-        checkForMaxScore(score);
-    }
+	function updateScore(value) {
+		score += value;
+	
+		// Update all elements with id="score" to reflect the updated score
+		document.querySelectorAll('#score').forEach((element) => {
+			element.textContent = score;
+		});
+	
+		checkForMaxScore(score);
+	}
 
     // Check if the score has reached max and opens the congratulations modal if so.
     function checkForMaxScore(currentScore) {
@@ -2054,24 +2055,30 @@
 		menuOverlay.classList.toggle('active');
 	}
 	
+	// Update the dark mode toggle to listen for clicks on the entire .dark-mode-toggle div
+	document.querySelector('.dark-mode-toggle').addEventListener('click', () => {
+		// Toggle the checkbox to visually reflect the dark mode state
+		const darkModeSwitch = document.getElementById('darkModeSwitch');
+		darkModeSwitch.checked = !darkModeSwitch.checked;
+	
+		// Toggle dark mode and update localStorage
+		toggleDarkMode();
+	});
+	
 	// Function to toggle dark mode and close the menu
 	function toggleDarkMode() {
-		// Toggle dark mode on the body
-    document.body.classList.toggle('dark-mode');
-
-    // Toggle dark mode on the menu overlay
-    const menuOverlay = document.getElementById('menuOverlay');
-    menuOverlay.classList.toggle('dark-mode-menu');
-
-    // Update dark mode preference in localStorage
-    const isDarkModeEnabled = document.body.classList.contains('dark-mode');
-    localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
-
-    // Update text in the dark mode toggle based on the mode
-    document.getElementById('darkModeText').textContent = isDarkModeEnabled ? "Light mode" : "Dark mode";
-
-    // Close the menu after toggling dark mode
-    toggleMenu();
+		document.body.classList.toggle('dark-mode');
+	
+		// Toggle dark mode on the menu overlay
+		const menuOverlay = document.getElementById('menuOverlay');
+		menuOverlay.classList.toggle('dark-mode-menu');
+	
+		// Update dark mode preference in localStorage
+		const isDarkModeEnabled = document.body.classList.contains('dark-mode');
+		localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
+	
+		// Update text in the dark mode toggle based on the mode
+		document.getElementById('darkModeText').textContent = isDarkModeEnabled ? "Light mode" : "Dark mode";
 	}
 
     // Function to open MenuURL
@@ -2172,4 +2179,5 @@
 	});
     </script>
 </body>
+
 </html>
