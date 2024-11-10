@@ -162,7 +162,7 @@
 
     // Function to open MenuURL
     function openMenuURL() {
-        window.open('https://drive.google.com/file/d/1b8-wswpvxLPSkKlcNMDHX91VFpduhD74/view?usp=sharing', '_blank', 'noopener,noreferrer');
+        window.open('https://i.imghippo.com/files/WOWO5286Co.png', '_blank', 'noopener,noreferrer');
     }
 
 	// Open the Info modal and close the menu
