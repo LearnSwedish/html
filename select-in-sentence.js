@@ -177,16 +177,6 @@
 		toggleMenu(); // Close the menu after starting over
 	}
 	
-	// Ensure dark mode applies to the menu as well
-	function setDarkMode(enabled) {
-		document.body.classList.toggle('dark-mode', enabled);
-		localStorage.setItem('darkMode', enabled ? 'enabled' : 'disabled');
-	
-		// Apply dark mode styling to the menu overlay
-		const menuOverlay = document.getElementById('menuOverlay');
-		menuOverlay.classList.toggle('dark-mode-menu', enabled);
-	}
-	
 	// Initialize the dark mode toggle with stored preference
 	document.addEventListener('DOMContentLoaded', () => {
 		const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
