@@ -202,6 +202,14 @@
         document.getElementById('score').textContent = score;
     }
 
+    function setDarkMode(enabled) {
+	    document.body.classList.toggle('dark-mode', enabled);
+	    localStorage.setItem('darkMode', enabled ? 'enabled' : 'disabled');
+	
+	    // Apply dark mode styling to the menu overlay
+	    const menuOverlay = document.getElementById('menuOverlay');
+	    menuOverlay.classList.toggle('dark-mode-menu', enabled);
+	}
     // Sets dark mode based on enabled status.
     function setDarkMode(enabled) {
         if (enabled) {
