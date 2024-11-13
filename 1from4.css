@@ -1,0 +1,908 @@
+    /* ===========================================================
+       1. Reset and Base Styles
+    ============================================================ */
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --transition-duration: 0.3s;
+        --transition-timing: ease-in-out;
+    }
+
+    /* ===========================================================
+       2. Typography
+    ============================================================ */
+    /* General Underline Styles */
+    u {
+        text-decoration: underline;
+        text-decoration-color: #007bff !important; /* Blue underline */
+        text-decoration-thickness: 3px !important;
+        text-decoration-skip-ink: none !important; /* Ensures underline doesn't skip parts of letters */
+    }
+
+    /* Dark Mode Underline */
+    .dark-mode u {
+        text-decoration-color: yellow !important; /* Yellow underline in dark mode */
+    }
+	
+	#readinfo {
+        margin-bottom: 30px;
+    }
+
+    /* ===========================================================
+       3. Layout Containers
+    ============================================================ */
+    /* Body Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9fafb;
+        color: #2d3748;
+        line-height: 1.6;
+        font-size: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+        background-color: #121212;
+        color: #e2e8f0;
+    }
+
+    /* Main Container */
+    .container {
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        max-width: 790px;
+        width: 100%;
+        text-align: center;
+        position: relative;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        margin-top: 20px;
+    }
+
+    body.dark-mode .container {
+        background-color: #1a202c;
+        box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Page Title */
+    .page-title {
+        text-align: center;
+        color: #333333;
+        font-size: 28px;
+        margin-bottom: 20px;
+        line-height: 1.4;
+        padding-top: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    body.dark-mode .page-title {
+        color: #ffffff;
+    }
+
+    /* ===========================================================
+       4. Desktop Menu
+    ============================================================ */
+    /* Desktop Menu Container */
+    .desktop-menu {
+        display: flex; /* Show the desktop menu on larger screens */
+        position: fixed;
+        top: 20px;
+        right: 40px;
+        flex-direction: column;
+        align-items: stretch;
+        width: 150px;
+        z-index: 1001;
+        gap: 10px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Desktop Menu Buttons */
+    .desktop-menu .score,
+    .desktop-menu .toggle,
+    .desktop-menu .info,
+    .desktop-menu .restart {
+        width: 100%;
+        height: 40px;
+        padding: 0 10px;
+        box-sizing: border-box;
+        font-size: 16px;
+        text-align: center;
+        background-color: #fff;
+        color: #333;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s, color 0.3s;
+        cursor: pointer;
+        border: none;
+    }
+
+    /* Hover Effects for Info and Restart Buttons */
+    .desktop-menu .info:hover,
+    .desktop-menu .restart:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    /* Dark Mode Styles for Desktop Menu Buttons */
+    body.dark-mode .desktop-menu .score,
+    body.dark-mode .desktop-menu .toggle,
+    body.dark-mode .desktop-menu .info,
+    body.dark-mode .desktop-menu .restart {
+        background-color: #444;
+        color: white;
+    }
+
+    body.dark-mode .desktop-menu .info:hover,
+    body.dark-mode .desktop-menu .restart:hover {
+        background-color: #222;
+    }
+
+    /* ===========================================================
+       5. Toggle Switch
+    ============================================================ */
+     #darkModeIcon {
+        margin-right: 5px; /* Adjust as needed */
+    }
+	
+	.switch {
+        position: relative;
+        width: 40px;
+        height: 20px;
+        display: inline-block;
+    }
+
+    .switch input {
+        display: none;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 20px;
+    }
+
+    .slider::before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
+
+    .switch input:checked + .slider {
+        background-color: #007BFF;
+    }
+
+    .switch input:checked + .slider::before {
+        transform: translateX(20px);
+    }
+
+    body.dark-mode .slider {
+        background-color: #666;
+    }
+
+    /* ===========================================================
+       6. Progress Bar
+    ============================================================ */
+    .progress-container {
+        width: 100%;
+        max-width: 400px;
+        background-color: #CCCCCC;
+        border-radius: 20px;
+        margin: 20px 0;
+        height: 20px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        width: 0%;
+        background-color: #4caf50;
+        border-radius: 20px;
+        transition: width 0.5s ease-in-out;
+    }
+
+    body.dark-mode .progress-container {
+        background-color: #333;
+    }
+
+    body.dark-mode .progress-bar {
+        background-color: #4caf50; /* Green progress indicator */
+    }
+
+    /* ===========================================================
+       7. Buttons Container
+    ============================================================ */
+    .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        max-width: 450px;
+        margin: 20px auto;
+        justify-items: center;
+    }
+
+    /* ===========================================================
+       8. Answer Buttons
+    ============================================================ */
+    .answer-button {
+        position: relative;
+        width: 200px;
+        font-size: 1.2em;
+        color: black;
+        background: white;
+        border: 0.08em solid gray;
+        border-radius: 0.35em;
+        padding: 0.6em 0.8em;
+        cursor: pointer;
+        text-align: center;
+        transition: 
+            color 0.2s ease, 
+            background-color 0.2s ease, 
+            border-color 0.2s ease, 
+            box-shadow 0.05s ease 0.05s;
+    }
+
+    /* Layered Border Effects */
+    .answer-button::before,
+    .answer-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 0.08em solid gray;
+        border-radius: 0.3em;
+        transition: transform 0.4s ease, border-color 0.3s ease;
+    }
+
+    .answer-button::before {
+        transform: translate(-0.25em, -0.25em);
+        z-index: 1;
+        width: 200px;
+        height: 46px;       
+    }
+
+    .answer-button::after {
+        transform: translate(0.18em, 0.17em);
+        z-index: 0;
+        width: 200px;
+        height: 47px;
+    }
+
+    /* Hover Effect */
+    .answer-button:hover {
+        border-color: #A0AEC0;
+        color: #1A202C;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .answer-button:hover::before,
+    .answer-button:hover::after {
+        transform: translate(0, 0);
+        border-color: transparent;
+    }
+
+    /* Correct Answer Styling */
+    .answer-button.correct {
+        background-color: #388E3C;
+        color: white;
+        border-color: #388E3C;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .answer-button.correct::before,
+    .answer-button.correct::after {
+        transform: translate(0, 0);
+        border-color: transparent;
+    }
+
+    /* Inner Outline for Correct Answer */
+    .answer-button .inner-outline {
+        position: absolute;
+        top: 0.1em;
+        left: 0.1em;
+        right: 0.1em;
+        bottom: 0.1em;
+        border: 0.125em solid transparent;
+        border-radius: 0.3em;
+        opacity: 0;
+        transition: opacity 0.3s ease 0.5s; /* Delayed appearance of inner outline */
+    }
+
+    .answer-button.correct .inner-outline {
+        opacity: 1;
+        border-color: white;
+    }
+
+    /* Wrong Answer Styling */
+    .answer-button.wrong {
+        background-color: #D32F2F;
+        color: white;
+        border-color: #D32F2F;
+    }
+
+    .answer-button.wrong::before,
+    .answer-button.wrong::after {
+        transform: translate(0, 0);
+        border-color: transparent;
+    }
+
+    /* Dark Mode for Answer Buttons */
+    body.dark-mode .answer-button {
+        background-color: #121212; /* Dark background */
+        color: #e2e8f0; /* Light text */
+        border-color: #555; /* Dark border */
+    }
+    
+    body.dark-mode .answer-button:hover {
+        background-color: #333333;
+        color: #f0f0f0;
+        border-color: #666;
+    }
+    
+    body.dark-mode .answer-button.correct {
+        background-color: #2f8f3c;
+        color: white;
+        border-color: #2f8f3c;
+    }
+    
+    body.dark-mode .answer-button.wrong {
+        background-color: #d32f2f;
+        color: white;
+        border-color: #d32f2f;
+    }
+    
+    body.dark-mode .answer-button .inner-outline {
+        border-color: white; /* Inner outline in dark mode */
+    }
+
+    /* ===========================================================
+       9. Tooltip
+    ============================================================ */
+    .tooltip {
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        z-index: 10;
+    }
+
+    .tooltip.visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Dark Mode Styling for Tooltip */
+    body.dark-mode .tooltip {
+        background-color: #555;
+        color: #f0f0f0;
+    }
+
+    /* ===========================================================
+       10. Modal
+    ============================================================ */
+    .modal {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .modal-content {
+        background: white;
+        color: black;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: left;
+        max-width: 600px;
+        width: 80%;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .modal-content h2,
+    .modal-content p {
+        margin-bottom: 1em; /* Adds space between paragraphs */
+    }
+
+    body.dark-mode .modal-content {
+        background-color: #1a202c;
+        color: #edf2f7;
+        border-color: #2d3748;
+    }
+
+    .modal.show {
+        display: flex;
+        opacity: 1;
+    }
+
+    /* Close Button */
+    .close-button {
+        float: right;
+        padding: 5px;
+        cursor: pointer;
+        font-size: 18px;
+        background-color: #ccc;
+        border: none;
+        border-radius: 50%;
+        line-height: 20px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    body.dark-mode .close-button {
+        background-color: #555;
+        color: #ffcccc;
+    }
+
+    .close-button:hover {
+        background-color: #f44336;
+        transform: scale(1.2) rotate(90deg);
+        color: white;
+    }
+
+    body.dark-mode .close-button:hover {
+        background-color: #ff6666;
+        color: white;
+        transform: scale(1.2) rotate(90deg);
+    }
+
+    /* ===========================================================
+       11. Question Text and Highlights
+    ============================================================ */
+    .question-text {
+        color: #000;
+        transition: color 0.3s;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    .dark-mode .question-text {
+        color: #fff;
+    }
+
+    /* Highlight Styles */
+    .highlight {
+        font-weight: bold;
+        color: #007bff;
+        cursor: pointer;
+    }
+
+    .dark-mode .highlight {
+        font-weight: bold;
+        color: yellow;
+    }
+
+    .gender {
+        font-style: none;
+    }
+
+    /* ===========================================================
+       12. Fade Effects
+    ============================================================ */
+    .fade-out {
+        opacity: 0;
+        transition: opacity 0.4s ease-out;
+    }
+
+    .fade-in {
+        opacity: 1;
+        transition: opacity 0.4s ease-in;
+    }
+
+    /* ===========================================================
+       13. Feedback Text
+    ============================================================ */
+    .feedback {
+        font-size: 30px;
+        margin-top: 30px;
+        color: #333;
+        transition: color 0.3s;
+        text-align: center;
+    }
+
+    body.dark-mode .feedback {
+        color: #ddd;
+    }
+
+    /* ===========================================================
+       14. Hamburger Icon and Mobile Menu
+    ============================================================ */
+    /* Hamburger Icon */
+    .hamburger-icon {
+        display: none; /* Only show on smaller screens */
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1002;
+        transition: color 0.3s ease;
+    }
+
+    /* Hamburger Icon Color */
+    #hamburgerIcon {
+        color: #000000; /* Svart färg som standard */
+    }
+
+    body.dark-mode #hamburgerIcon {
+        color: #ffffff; /* Vit färg när mörkt läge är aktiverat */
+    }
+
+    /* Mobile Menu Styles */
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100%;
+        background-color: #ffffff;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        z-index: 1001;
+        transition: right 0.3s ease;
+    }
+
+    .mobile-menu.show {
+        right: 0;
+    }
+
+    .mobile-menu .score,
+    .mobile-menu .toggle,
+    .mobile-menu .info,
+    .mobile-menu .restart {
+        margin-top: 30px;
+        width: 100%;
+        height: 40px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        background-color: #f0f0f0;
+        color: #333;
+        border-radius: 5px;
+        cursor: pointer;
+        border: none; /* Ta bort eventuella kanter för ett renare utseende */
+    }
+
+    .mobile-menu {
+        padding-top: 60px; /* Öka från tidigare 20px till 60px */
+    }
+
+    /* Dark Mode för Mobile Menu */
+    body.dark-mode .mobile-menu {
+        background-color: #333333; /* Ändrad från #1a202c till #333333 */
+        color: #ffffff; /* Ändrad till vit text för bättre läsbarhet */
+    }
+
+    /* Knappar inom mobilmenyn i mörkt läge */
+    body.dark-mode .mobile-menu .score,
+    body.dark-mode .mobile-menu .toggle,
+    body.dark-mode .mobile-menu .info,
+    body.dark-mode .mobile-menu .restart {
+        background-color: #444444; /* Mörkare bakgrund för knappar */
+        color: #ffffff; /* Vit textfärg */
+        border: none; /* Ta bort eventuella kanter för ett renare utseende */
+    }
+
+    /* Ikon inom toggle i mörkt läge */
+    body.dark-mode .mobile-menu .toggle i {
+        color: #ffeb3b; /* Ställ in färgen på Font Awesome-ikonen till #ffeb3b */
+    }
+
+    /* Hover-effekter för knappar i mörkt läge */
+    body.dark-mode .mobile-menu .info:hover,
+    body.dark-mode .mobile-menu .restart:hover {
+        background-color: #555555; /* Mörkare hover-bakgrund */
+        color: #ffffff; /* Vit text vid hover */
+    }
+
+    /* Textbaserade element inom mobilmenyn i mörkt läge */
+    body.dark-mode .mobile-menu a,
+    body.dark-mode .mobile-menu button {
+        color: #ffffff; /* Vit textfärg för länkar och knappar */
+    }
+
+    /* Hover-effekter för knappar vid mörkt läge */
+    body.dark-mode .mobile-menu button:hover {
+        background-color: #555555; /* Mörkare bakgrund vid hover */
+        color: #ffffff; /* Vit text vid hover */
+    }
+	
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 3px 15px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+/* Add alternating row colors */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+/* Dark Mode Adjustments */
+body.dark-mode table {
+    border: 1px solid #555;
+}
+
+body.dark-mode th {
+    background-color: #444;
+    color: #fff;
+}
+
+body.dark-mode td {
+    border: 1px solid #555;
+}
+
+body.dark-mode tbody tr:nth-child(even) {
+    background-color: #2d3748;
+}
+
+body.dark-mode tbody tr:nth-child(odd) {
+    background-color: #1a202c;
+}	
+
+    /* ===========================================================
+       15. Mobile Overlay Info Div
+    ============================================================ */
+    /* Full-Screen Overlay Styles */
+    .mobile-overlay {
+        display: none; /* Initially hidden */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white; /* Or choose a suitable background */
+        color: black;
+        z-index: 2000; /* Ensure it is above other elements */
+        overflow-y: auto;
+    }
+
+    body.dark-mode .mobile-overlay {
+        background-color: #1a202c;
+        color: #edf2f7;
+    }
+
+    /* Overlay Content */
+    .mobile-overlay .overlay-content {
+        padding: 20px;
+        text-align: left;
+        font-size: 12px; /* Adjust as desired for readability */
+        line-height: 1.5;
+    }
+
+    /* List Styling within Overlay */
+    .mobile-overlay ol {
+        padding-left: 20px; /* Adjust padding to align the list properly */
+        margin-left: 0;
+        list-style-position: inside; /* Ensures list items align with the text */
+        font-size: 12px; /* Adjust font size if needed */
+    }
+
+    .mobile-overlay ol li {
+        margin-bottom: 10px; /* Add space between list items */
+        line-height: 1.4; /* Adjust line height for readability */
+    }
+
+    /* Headings and Paragraphs in Overlay */
+    .mobile-overlay h2 {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .mobile-overlay p {
+        font-size: 12px; /* Size for paragraph text */
+    }
+
+    /* Close Button for Overlay */
+    .close-overlay-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        font-size: 35px;
+        background: none;
+        border: none;
+        color: black;
+        cursor: pointer;
+        z-index: 2001; /* Stay on top */
+    }
+
+    body.dark-mode .close-overlay-button {
+        color: #ffcccc;
+    }
+
+    /* Ensure Close Button visibility with scrolling */
+    .overlay-content {
+        padding: 20px;
+        text-align: left;
+    }
+
+    /* ===========================================================
+       16. Responsive Styles
+    ============================================================ */
+    @media (max-width: 600px) {
+        /* Hide Desktop Menu and Show Hamburger Icon */
+        .desktop-menu {
+            display: none;
+        }
+
+        .hamburger-icon {
+            display: block; /* Show hamburger icon */
+        }
+
+        /* Answer Buttons Adjustments */
+        .answer-button {
+            width: 180px;
+        }
+
+        .answer-button::before,
+        .answer-button::after {
+            display: none; /* Hide layered borders on mobile */
+        }
+
+        /* Question Text Adjustments */
+        .question-text {
+            font-size: 25px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* Hide Specific Elements */
+        #readinfo {
+            display: none;
+        }
+
+        /* Feedback Adjustments */
+        .feedback {
+            font-size: 25px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Progress Container Adjustments */
+        .progress-container {
+            margin-top: 10px;
+            width: 90%;
+            max-width: 90%;
+        }
+
+        /* Tooltip Adjustments */
+        .tooltip {
+            margin-top: 0px;
+        }
+
+        /* Page Title Adjustments */
+        .page-title {
+            text-align: left;
+            font-size: 25px;
+            margin-bottom: 10px; /* Fix typo: margin-bottom */
+        }
+
+        /* Toggle Switch Adjustments */
+        .switch {
+            width: 35px;
+            height: 18px;
+        }
+
+        .slider::before {
+            height: 12px;
+            width: 12px;
+            left: 3px;
+            bottom: 3px;
+        }
+
+        .switch input:checked + .slider::before {
+            transform: translateX(18px);
+        }
+
+        /* Buttons Container Adjustments */
+        .buttons {
+            grid-template-columns: 1fr;
+            gap: 15px;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        /* Mobile Menu Button Adjustments */
+        .mobile-menu .score,
+        .mobile-menu .toggle,
+        .mobile-menu .info,
+        .mobile-menu .restart {
+            width: 100%;
+            height: 40px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background-color: #f0f0f0;
+            color: #333;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none; /* Ta bort eventuella kanter för ett renare utseende */
+        }
+
+        /* Corrected Class Selectors for Answer Buttons */
+        .answer-button::before {
+            transform: translate(-0.25em, -0.25em);
+            z-index: 1;
+            width: 160px;
+            height: 100%;       
+        }
+
+        .answer-button::after {
+            transform: translate(0.18em, 0.17em);
+            z-index: 0;
+            width: 180px;
+            height: 100%;
+        }
+    }
