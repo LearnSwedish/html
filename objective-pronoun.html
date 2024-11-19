@@ -1,0 +1,1464 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objective pronouns</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="objective-pronoun.css">
+	
+    <script>
+
+    const sentences = [
+    {
+        "words": [
+            {
+                "word": "(boken)",
+                "translation": "the book"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "läsa",
+                "translation": "read"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "nu",
+				"translation": "now"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Anna)",
+                "translation": ""
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "ringa",
+                "translation": "call"
+            },
+            {
+                "word": "<select data-correct=\"henne\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "innan",
+				"translation": "before"
+			},
+			{
+			    "word": "det är",
+				"translation": "it's"
+			},
+			{
+			    "word": "för sent",
+				"translation": "too late"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(katten)",
+                "translation": "the cat"
+            },
+            {
+                "word": "Får",
+                "translation": "May"
+            },
+            {
+                "word": "vi",
+                "translation": "we"
+            },
+            {
+                "word": "mata",
+                "translation": "feed"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "med",
+				"translation": "with"
+			},
+			{
+			    "word": "fisk",
+				"translation": "fish"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(brevet)",
+                "translation": "the letter"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "skriva",
+                "translation": "write"
+            },
+            {
+                "word": "<select data-correct=\"det\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "i eftermiddag",
+				"translation": "this afternoon"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(vi)",
+                "translation": "we"
+            },
+            {
+                "word": "Kan",
+                "translation": "Can"
+            },
+            {
+                "word": "du",
+                "translation": "you"
+            },
+            {
+                "word": "hitta",
+                "translation": "find"
+            },
+            {
+                "word": "<select data-correct=\"oss\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "bland",
+				"translation": "among"
+			},
+			{
+			    "word": "alla andra",
+				"translation": "all the others"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Arthur)",
+                "translation": ""
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "hjälpa",
+                "translation": "help"
+            },
+            {
+                "word": "<select data-correct=\"honom\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Lisa och Peter)",
+                "translation": ""
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "besöka",
+                "translation": "visit"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(jag)",
+                "translation": "I"
+            },
+            {
+                "word": "Vill du",
+                "translation": "Do you want to"
+            },
+            {
+                "word": "följa med",
+                "translation": "join"
+            },
+            {
+                "word": "<select data-correct=\"mig\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(huset)",
+                "translation": "the house"
+            },
+            {
+                "word": "Bör",
+                "translation": "Should"
+            },
+            {
+                "word": "vi",
+                "translation": "we"
+            },
+            {
+                "word": "renovera",
+                "translation": "renovate"
+            },
+            {
+                "word": "<select data-correct=\"det\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(bilen)",
+                "translation": "the car"
+            },
+            {
+                "word": "Får",
+                "translation": "May"
+            },
+            {
+                "word": "du",
+                "translation": "you"
+            },
+            {
+                "word": "köra",
+                "translation": "drive"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Susanna)",
+                "translation": ""
+            },
+            {
+                "word": "Kan",
+                "translation": "Can"
+            },
+            {
+                "word": "du",
+                "translation": "you"
+            },
+            {
+                "word": "höra",
+                "translation": "hear"
+            },
+            {
+                "word": "<select data-correct=\"henne\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(skor)",
+                "translation": "shoes"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "köpa",
+                "translation": "buy"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Sofia)",
+                "translation": ""
+            },
+            {
+                "word": "Behöver vi",
+                "translation": "Do we need to"
+            },
+            {
+                "word": "prata med",
+                "translation": "talk to"
+            },
+            {
+                "word": "<select data-correct=\"henne\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(maten)",
+                "translation": "the food"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "äta",
+                "translation": "eat"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(du)",
+                "translation": "you"
+            },
+            {
+                "word": "Kommer",
+                "translation": "Will"
+            },
+            {
+                "word": "hon",
+                "translation": "she"
+            },
+            {
+                "word": "be",
+                "translation": "ask"
+            },
+            {
+                "word": "<select data-correct=\"dig\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "om förlåtelse",
+				"translation": "for forgiveness"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(lampan)",
+                "translation": "the lamp"
+            },
+            {
+                "word": "Kan",
+                "translation": "Can"
+            },
+            {
+                "word": "du",
+                "translation": "you"
+            },
+            {
+                "word": "laga",
+                "translation": "repair"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "idag",
+				"translation": "today"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(väggen)",
+                "translation": "the wall"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "flytta",
+                "translation": "move"
+            },
+            {
+                "word": "<select data-correct=\"det\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "imorgon",
+				"translation": "tomorrow"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(vi)",
+                "translation": "we"
+            },
+            {
+                "word": "Vill han",
+                "translation": "Does he want do"
+            },
+            {
+                "word": "besöka",
+                "translation": "visit"
+            },
+            {
+                "word": "<select data-correct=\"oss\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(tåget)",
+                "translation": "the train"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "vänta på",
+                "translation": "wait for"
+            },
+            {
+                "word": "<select data-correct=\"det\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(John)",
+                "translation": ""
+            },
+            {
+                "word": "Älskar hon",
+                "translation": "Does she love"
+            },
+            {
+                "word": "<select data-correct=\"honom\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "fortfarande",
+				"translation": "still"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(blommor)",
+                "translation": "flowers"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "vattna",
+                "translation": "water"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "varje",
+				"translation": "every"
+			},
+			{
+			    "word": "vecka",
+				"translation": "week"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(pappan)",
+                "translation": "the father"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "fråga",
+                "translation": "ask"
+            },
+            {
+                "word": "<select data-correct=\"honom\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "om lov",
+				"translation": "for permission"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(pennan)",
+                "translation": "the pen"
+            },
+            {
+                "word": "Vill du",
+                "translation": "Do you want to"
+            },
+            {
+                "word": "ge",
+                "translation": "give"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "till",
+				"translation": "to"
+			},
+			{
+			    "word": "mig",
+				"translation": "me"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(presenten)",
+                "translation": "the present"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "öppna",
+                "translation": "open"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(kvinnor)",
+                "translation": "women"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "hälsa på",
+                "translation": "visit"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "på",
+				"translation": "on"
+			},
+			{
+			    "word": "söndag",
+				"translation": "Sunday"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(hunden)",
+                "translation": "the dog"
+            },
+            {
+                "word": "Vill du",
+                "translation": "Do you want to"
+            },
+            {
+                "word": "leka",
+                "translation": "play"
+            },
+            {
+                "word": "med",
+                "translation": "with"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(ni)",
+                "translation": "you (plural)"
+            },
+            {
+                "word": "Kan",
+                "translation": "Can"
+            },
+            {
+                "word": "hon",
+                "translation": "she"
+            },
+            {
+                "word": "se",
+                "translation": "see"
+            },
+            {
+                "word": "<select data-correct=\"er\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(spelet)",
+                "translation": "the game"
+            },
+            {
+                "word": "Vill du",
+                "translation": "Do you want to"
+            },
+            {
+                "word": "spela",
+                "translation": "play"
+            },
+            {
+                "word": "<select data-correct=\"det\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(pappret)",
+                "translation": "the paper"
+            },
+            {
+                "word": "Vill du",
+                "translation": "Do you want to"
+            },
+            {
+                "word": "vika",
+                "translation": "fold"
+            },
+            {
+                "word": "<select data-correct=\"det\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(du)",
+                "translation": "you"
+            },
+            {
+                "word": "Kommer",
+                "translation": "Will"
+            },
+            {
+                "word": "han",
+                "translation": "he"
+            },
+            {
+                "word": "att ringa",
+                "translation": "call"
+            },
+            {
+                "word": "<select data-correct=\"dig\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(hästar)",
+                "translation": "horses"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "mata",
+                "translation": "feed"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Sara)",
+                "translation": ""
+            },
+            {
+                "word": "Vill du",
+                "translation": "Do you want to"
+            },
+            {
+                "word": "träffa",
+                "translation": "meet"
+            },
+            {
+                "word": "<select data-correct=\"henne\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(dörren)",
+                "translation": "the door"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "laga",
+                "translation": "repair"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(jag)",
+                "translation": "I"
+            },
+            {
+                "word": "Kan",
+                "translation": "Can"
+            },
+            {
+                "word": "du",
+                "translation": "you"
+            },
+            {
+                "word": "hjälpa",
+                "translation": "help"
+            },
+            {
+                "word": "<select data-correct=\"mig\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(skjortor)",
+                "translation": "shirts"
+            },
+            {
+                "word": "Behöver du",
+                "translation": "Do you need to"
+            },
+            {
+                "word": "tvätta",
+                "translation": "wash"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(barnen)",
+                "translation": "the children"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "leka",
+                "translation": "play"
+            },
+            {
+                "word": "med",
+                "translation": "with"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(datorn)",
+                "translation": "the computer"
+            },
+            {
+                "word": "Kan",
+                "translation": "Can"
+            },
+            {
+                "word": "du",
+                "translation": "you"
+            },
+            {
+                "word": "stänga av",
+                "translation": "turn"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun (off)"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Tommy)",
+                "translation": ""
+            },
+            {
+                "word": "Vill du",
+                "translation": "Do you want to"
+            },
+            {
+                "word": "fråga",
+                "translation": "ask"
+            },
+            {
+                "word": "<select data-correct=\"honom\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(vi)",
+                "translation": "we"
+            },
+            {
+                "word": "Kommer",
+                "translation": "Will"
+            },
+            {
+                "word": "hon",
+                "translation": "she"
+            },
+            {
+                "word": "komma",
+                "translation": "come"
+            },
+            {
+                "word": "till",
+                "translation": "to"
+            },
+            {
+                "word": "<select data-correct=\"oss\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(musiken)",
+                "translation": "the music"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "lyssna",
+                "translation": "listen"
+            },
+            {
+                "word": "på",
+                "translation": "to"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(fönstret)",
+                "translation": "the window"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "öppna",
+                "translation": "open"
+            },
+            {
+                "word": "<select data-correct=\"det\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Maria)",
+                "translation": ""
+            },
+            {
+                "word": "Kommer",
+                "translation": "Will"
+            },
+            {
+                "word": "du",
+                "translation": "you"
+            },
+            {
+                "word": "förlåta",
+                "translation": "forgive"
+            },
+            {
+                "word": "<select data-correct=\"henne\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(hundar)",
+                "translation": "dogs"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "rasta",
+                "translation": "take (object pronoun) for a walk"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Hanna)",
+                "translation": ""
+            },
+            {
+                "word": "Tänker han ofta",
+                "translation": "Does he often think"
+            },
+            {
+                "word": "på",
+                "translation": "about"
+            },
+            {
+                "word": "<select data-correct=\"henne\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(väskan)",
+                "translation": "the bag"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "bära",
+                "translation": "carry"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "hela vägen",
+				"translation": "all the way"
+			},
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(paketet)",
+                "translation": "the package"
+            },
+            {
+                "word": "Tänker du",
+                "translation": "Will you"
+            },
+            {
+                "word": "öppna",
+                "translation": "open"
+            },
+            {
+                "word": "<select data-correct=\"det\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(Patrik och Annette)",
+                "translation": ""
+            },
+            {
+                "word": "Kan",
+                "translation": "Can"
+            },
+            {
+                "word": "vi",
+                "translation": "we"
+            },
+            {
+                "word": "prata med",
+                "translation": "talk to"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(filmen)",
+                "translation": "the movie"
+            },
+            {
+                "word": "Ska du",
+                "translation": "Are you going to"
+            },
+            {
+                "word": "titta på",
+                "translation": "watch"
+            },
+            {
+                "word": "<select data-correct=\"den\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(jag)",
+                "translation": "I"
+            },
+            {
+                "word": "Vill ni",
+                "translation": "Do you want to"
+            },
+            {
+                "word": "vänta på",
+                "translation": "wait for"
+            },
+            {
+                "word": "<select data-correct=\"mig\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    },
+    {
+        "words": [
+            {
+                "word": "(kläder)",
+                "translation": "clothes"
+            },
+            {
+                "word": "Ska vi",
+                "translation": "Are we going to"
+            },
+            {
+                "word": "tvätta",
+                "translation": "wash"
+            },
+            {
+                "word": "<select data-correct=\"dem\" onchange=\"evaluateAnswer(this)\" aria-label=\"Choose the correct option\"> \n                <option value=\"\">Choose</option> \n                <option value=\"mig\">mig</option> \n                <option value=\"dig\">dig</option>\n                <option value=\"honom\">honom</option>\n                <option value=\"henne\">henne</option>\n                <option value=\"den\">den</option>\n                <option value=\"det\">det</option>\n                <option value=\"oss\">oss</option>\n                <option value=\"er\">er</option>\n                <option value=\"dem\">dem</option> \n                </select>",
+                "translation": "object pronoun"
+            },
+			{
+			    "word": "?",
+				"translation": ""
+			}
+        ]
+    }
+];
+
+    </script>
+	
+	<script src="objective-pronoun.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- URL Imperative Logic Button -->
+        <button class="start-over" id="menu-URL" onclick="openMenuURL()">
+            <i class="fas fa-book" style="margin-right: 8px;"></i> Pronoun table
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Logic chart
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title">Pick the correct objective pronoun</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Information</h2>
+            <p>In this exercise, you will find 50 sentences missing an objective pronoun. Look at the first word (in brackets) 
+			and choose the correct pronoun. If you need guidance, refer to the pronoun table.</p>
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

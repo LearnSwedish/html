@@ -1,0 +1,556 @@
+        /* Reset and Base Styles */
+        	*,
+        	*::before,
+        	*::after {
+        		box-sizing: border-box;
+        		margin: 0;
+        		padding: 0;
+        	}
+        	
+        	body {
+        		font-family: Arial, sans-serif;
+        		background-color: #f9fafb;
+        		color: #2d3748;
+        		line-height: 1.6;
+        		font-size: 16px;
+        		display: flex;
+        		flex-direction: column;
+        		justify-content: flex-start;
+        		align-items: center;
+        		min-height: 100vh;
+        		padding: 20px;
+        		overflow-y: auto;
+        		position: relative;
+        		transition: background-color 0.3s, color 0.3s;
+        	}
+        	
+        	body.dark-mode {
+        		background-color: #121212;
+        		color: #e2e8f0;
+        	}
+        	
+        	/* Close Button Styling */
+        	.close-button {
+        		float: right;
+        		padding: 5px;
+        		cursor: pointer;
+        		font-size: 18px;
+        		background-color: #ccc;
+        		border: none; 
+        		border-radius: 50%;
+        		line-height: 20px;
+        		width: 30px;
+        		height: 30px;
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s, transform 0.3s;
+        	}
+        	
+        	body.dark-mode .close-button {
+        		background-color: #555;
+        		color: #ffcccc;
+        	}
+        	
+        	.close-button:hover {
+        		background-color: #f44336;
+        		transform: scale(1.2) rotate(90deg);
+        		color: white;
+        	}
+        	
+        	body.dark-mode .close-button:hover {
+        		background-color: #ff6666;
+        		color: white;
+        		transform: scale(1.2) rotate(90deg);
+        	}
+        	
+        	/* Container */
+        	.container {
+        		background-color: #ffffff;
+        		padding: 40px 30px;
+        		border-radius: 12px;
+        		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        		max-width: 600px;
+        		width: 100%;
+        		text-align: center;
+        		position: relative;
+        		transition: background-color 0.3s, box-shadow 0.3s;
+        		margin-top: 20px;
+        	}
+        	
+        	body.dark-mode .container {
+        		background-color: #1a202c;
+        		box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        	}
+        	
+        	/* Dark Mode Toggle */
+        	.dark-mode-toggle {
+        		justify-content: flex-start;
+        		padding: 0 10px;
+        		gap: 10px;
+        		cursor: default;
+        	}
+        	
+        	/* Modal */
+        	.modal {
+        		display: none;
+        		position: fixed;
+        		left: 0;
+        		top: 0;
+        		width: 100%;
+        		height: 100%;
+        		background: rgba(0, 0, 0, 0.5);
+        		z-index: 1000;
+        		justify-content: center;
+        		align-items: center;
+        		opacity: 0;
+        		transition: opacity 0.3s ease-in-out;
+        	}
+        	
+        	.modal-content {
+        		background: white;
+        		color: black;
+        		padding: 20px;
+        		border-radius: 8px;
+        		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        		text-align: center;
+        		max-width: 600px;
+        		width: 80%;
+        		transform: translateY(-50px);
+        		transition: transform 0.3s ease-in-out;
+        	}
+        	
+        	body.dark-mode .modal-content {
+        		background-color: #1a202c;
+        		color: #edf2f7;
+        		border-color: #2d3748;
+        	}
+        	
+        	.modal.show {
+        		display: flex;
+        		opacity: 1;
+        	}
+        	
+        	/* Page Title */
+        	.page-title {
+        		text-align: center;
+        		color: #333333;
+        		font-size: 28px;
+        		margin-bottom: 20px;
+        		line-height: 1.4;
+        		padding-top: 10px;
+        		position: relative;
+        		z-index: 1;
+        		transition: color 0.3s ease, background-color 0.3s ease;
+        	}
+        	
+        	body.dark-mode .page-title {
+        		color: #ffffff;
+        	}
+        	
+        	/* Score, Start Over, and Dark Mode Toggle Container */
+        	.score-container {
+        		position: fixed;
+        		top: 20px;
+        		right: 40px;
+        		display: flex;
+        		flex-direction: column;
+        		align-items: stretch;
+        		width: 150px;
+        		z-index: 1001;
+        		gap: 10px;
+        		transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        	}
+        	
+        	/* Sentence Styling */
+        	.sentence {
+        		background-color: #f7fafc;
+        		padding: 20px;
+        		padding-bottom: 5px;
+        		border-radius: 8px;
+        		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        		position: relative;
+        		transition: background-color 0.3s, border 0.3s;
+        		border-left: 6px solid transparent;
+        		text-align: left;
+        		data-state: "none";
+        	}
+        	
+        	body.dark-mode .sentence {
+        		background-color: #2d3748;
+        		box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+        	}
+        	
+        	.sentence.correct {
+        		border-left: 6px solid #38a169;
+        		background-color: #cdffcd;
+        		transition: border 0.3s, background-color 0.3s;
+        	}
+        	
+        	body.dark-mode .sentence.correct {
+        		border-left: 6px solid #38a169;
+        		background-color: #22543d;
+        	}
+        	
+        	.sentence.incorrect {
+        		border-left: 6px solid #e53e3e;
+        		background-color: #FFADB0;
+        		transition: border 0.3s, background-color 0.3s;
+        	}
+        	
+        	body.dark-mode .sentence.incorrect {
+        		border-left: 6px solid #e53e3e;
+        		background-color: #742a2a;
+        	}
+        	
+        	.sentence p {
+        		font-size: 1.1rem;
+        		margin-bottom: 10px;
+        		transition: color 0.3s;
+        	}
+        	
+        	body.dark-mode .sentence p {
+        		color: #edf2f7;
+        	}
+        	
+        	/* Select Element Styling */
+        	.sentence select {
+        		padding: 4px 4px;
+        		font-size: inherit;
+        		border: 1px solid #cbd5e0;
+        		border-radius: 6px;
+        		background-color: #edf2f7;
+        		cursor: pointer;
+        		transition: border-color 0.3s, background-color 0.3s;
+        		width: auto;
+        		appearance: auto;
+        		-webkit-appearance: auto;
+        		-moz-appearance: auto;
+        		background-image: initial;
+        	}
+        	
+        	body.dark-mode .sentence select {
+        		background-color: #4a5568;
+        		color: #edf2f7;
+        		border: 1px solid #718096;
+        	}
+        	
+        	.sentence select:focus {
+        		border-color: #3182ce;
+        		outline: none;
+        		box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        	}
+        	
+        	body.dark-mode .sentence select:focus {
+        		border-color: #63b3ed;
+        		box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+        	}
+        	
+        	/* Sentences */
+        	.sentences {
+        		display: grid;
+        		grid-template-columns: 1fr;
+        		gap: 20px;
+        	}
+        	
+        	/* Slider Container */
+        	.switch {
+        		position: relative;
+        		width: 40px;
+        		height: 20px;
+        		display: inline-block;
+        	}
+        	
+        	/* Hide Default Checkbox */
+        	.switch input {
+        		display: none;
+        	}
+        	
+        	/* Slider Appearance */
+        	.slider {
+        		position: absolute;
+        		cursor: pointer;
+        		top: 0;
+        		left: 0;
+        		right: 0;
+        		bottom: 0;
+        		background-color: #ccc;
+        		transition: 0.4s;
+        		border-radius: 20px;
+        	}
+        	
+        	.slider::before {
+        		position: absolute;
+        		content: "";
+        		height: 14px;
+        		width: 14px;
+        		left: 3px;
+        		bottom: 3px;
+        		background-color: white;
+        		transition: 0.4s;
+        		border-radius: 50%;
+        	}
+        	
+        	/* Slider Active State */
+        	.switch input:checked+.slider {
+        		background-color: #007BFF;
+        	}
+        	
+        	.switch input:checked+.slider::before {
+        		transform: translateX(20px);
+        	}
+        	
+        	/* Start Over Button */
+        	.start-over {
+        		background-color: #007BFF;
+        		color: white;
+        		cursor: pointer;
+        		border: none;
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s ease;
+        	}
+        	
+        	.start-over:hover {
+        		background-color: #0056b3;
+        		color: white;
+        	}
+        	
+        	/* Tooltip Styling */
+        	.tooltip {
+        		position: absolute;
+        		bottom: 125%;
+        		left: 50%;
+        		transform: translateX(-50%);
+        		background-color: #333;
+        		color: #fff;
+        		padding: 6px 10px;
+        		border-radius: 4px;
+        		white-space: nowrap;
+        		font-size: 0.9rem;
+        		opacity: 0;
+        		visibility: hidden;
+        		transition: opacity 0.3s, visibility 0.3s;
+        		z-index: 10;
+        	}
+        	
+        	body.dark-mode .tooltip {
+        		background-color: #555;
+        		color: #fff;
+        	}
+        	
+        	.tooltip::after {
+        		content: '';
+        		position: absolute;
+        		top: 100%;
+        		left: 50%;
+        		transform: translateX(-50%);
+        		border-width: 5px;
+        		border-style: solid;
+        		border-color: #333 transparent transparent transparent;
+        	}
+        	
+        	body.dark-mode .tooltip::after {
+        		border-color: #555 transparent transparent transparent;
+        	}
+        	
+        	.word:hover .tooltip {
+        		opacity: 1;
+        		visibility: visible;
+        	}
+        	
+        	/* Word Styling */
+        	.word {
+        		position: relative;
+        		cursor: pointer;
+        		color: #2d3748;
+        		transition: color 0.3s, background-color 0.3s;
+        		display: inline-block;
+        		border-radius: 4px;
+        	}
+        	
+        	body.dark-mode .word {
+        		color: #edf2f7;
+        	}
+        	
+        	.word::after {
+        		content: '';
+        		position: absolute;
+        		left: 50%;
+        		bottom: -2px;
+        		width: 100%;
+        		height: 3px;
+        		background-color: currentColor;
+        		transform: translateX(-50%) scaleX(0);
+        		transform-origin: center;
+        		transition: transform 0.3s ease;
+        	}
+        	
+        	.word:hover::after,
+        	.word:focus::after {
+        		transform: translateX(-50%) scaleX(1);
+        	}
+        	
+        	.word:hover,
+        	.word:focus {
+        		background-color: rgba(45, 55, 72, 0.1);
+        	}
+        	
+        	body.dark-mode .word:hover,
+        	body.dark-mode .word:focus {
+        		background-color: rgba(226, 232, 240, 0.1);
+        	}
+        	
+        	/* Unified Button Styling */
+        	.score,
+        	.dark-mode-toggle,
+        	.start-over {
+        		width: 100%;
+        		height: 40px;
+        		padding: 0 10px;
+        		box-sizing: border-box;
+        		font-size: 16px;
+        		text-align: center;
+        		background-color: #fff;
+        		color: #333;
+        		border-radius: 5px;
+        		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s, color 0.3s;
+        		cursor: pointer;
+        		border: none;
+        	}
+        	
+        	        /* Hamburger Menu */
+                .hamburger-menu {
+                    display: none;
+                    font-size: 24px;
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    cursor: pointer;
+                    z-index: 1002;
+                }
+        
+			/* Menu Overlay - Slide Animation */
+			.menu-overlay {
+				position: fixed;
+				top: 0;
+				right: 0;
+				width: 250px;
+				height: 100%;
+				background: #fff;
+				color: #333;
+				box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+				z-index: 1003;
+				transform: translateX(100%); /* Start off-screen to the right */
+				transition: transform 0.4s ease; /* Smooth slide effect */
+			}
+			
+			/* Show the Menu Overlay by Sliding In */
+			.menu-overlay.active {
+				transform: translateX(0); /* Slide into view */
+			}
+			
+			
+					/* Hide elements on mobile */
+					@media (max-width: 600px) {
+						.score-container {
+							display: none;
+						}
+			
+						.hamburger-menu {
+							display: block;
+						}
+					}
+			
+			/* Menu item styling */
+			.menu-overlay .menu-item {
+				padding: 15px;
+				font-size: 18px;
+				border-bottom: 1px solid #ccc;
+				text-align: left;
+				cursor: pointer;
+			}
+					
+			/* Close Button styling */
+			.menu-overlay .close-button {
+				position: absolute;
+				top: 20px;
+				right: 20px;
+				font-size: 24px;
+				cursor: pointer;
+			}
+			
+			/* Apply Dark Mode to Menu */
+			.dark-mode-menu {
+				background-color: #333;
+				color: #fff;
+			}
+			.dark-mode-menu .menu-item {
+				border-bottom: 1px solid #555;
+			}
+			
+			#darkModeIcon {
+				font-size: 20px;
+				color: #333; /* Default color for light mode */
+				cursor: pointer;
+			}
+			
+			.dark-mode #darkModeIcon {
+				color: #ffeb3b; /* Bright color for dark mode */
+			}
+			
+            /* Responsive Design */
+            @media (max-width: 600px) {
+                .score-container {
+                    top: 10px;
+                    right: 10px;
+                    width: 120px;
+                    gap: 10px;
+                    /* Reduced gap for smaller screens */
+                }
+        
+                .score,
+                .start-over,
+                .dark-mode-toggle {
+                    font-size: 14px;
+                    height: 45px;
+                    /* Slightly smaller height for smaller screens */
+                    padding: 0 10px;
+                    /* Reduced horizontal padding */
+                }
+        		
+            .modal-content {
+                margin-top: 50px; /* Adjust this value as needed */
+            }		
+        
+                .start-over {
+                    padding: 0 12px;
+                }
+        
+                .dark-mode-toggle {
+                    padding: 0 8px;
+                    gap: 8px;
+                }
+        
+                /* Adjust switch size for smaller screens */
+                .switch {
+                    width: 35px;
+                    height: 18px;
+                }
+        
+                .slider::before {
+                    height: 12px;
+                    width: 12px;
+                    left: 3px;
+                    bottom: 3px;
+                }
+        
+                .switch input:checked+.slider::before {
+                    transform: translateX(18px);
+                }
+            }
