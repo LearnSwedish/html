@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict Plural</title>
+    
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+	
+	<!-- Link to External CSS -->
+    <link rel="stylesheet" href="1from4.css">
+   
+</head>
+<body>
+
+    <!-- Desktop Menu -->
+    <div class="desktop-menu">
+      <!-- Score Counter -->
+      <div class="score">Score:&nbsp; <span id="score">0</span>&nbsp;/&nbsp;<span id="total-score">0</span></div>
+      
+      <!-- Dark Mode Toggle -->
+      <div class="toggle" id="darkModeToggleDiv">
+          <label class="switch">
+              <input type="checkbox" id="darkModeSwitch">
+              <span class="slider"></span>
+          </label>
+          <span style="margin-left: 10px;">Dark mode</span>
+      </div>
+        
+      <!-- Info Button -->
+      <button class="info" id="info-button" onclick="openModal('infoModal')">
+        <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info 
+      </button>
+      
+      <!-- Start Over Button -->
+      <button class="restart" onclick="startOver()">
+        <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over 
+      </button>
+    </div>
+	
+	<!-- Hamburger Icon for Mobile -->
+	<div class="hamburger-icon" onclick="toggleMobileMenu()">
+		<i id="hamburgerIcon" class="fas fa-bars"></i>
+	</div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+		<div class="score">Score:&nbsp; <span id="score">0</span>&nbsp;/&nbsp;<span id="total-score">0</span></div>
+        
+        <!-- Dark Mode Toggle for Mobile -->
+        <div class="toggle" onclick="toggleDarkModeMobile()">
+            <i class="fas fa-lightbulb" id="darkModeIcon"></i>
+            <span id="darkModeText">Dark mode</span>
+        </div>
+        
+        <!-- Info Button for Mobile -->
+        <button class="info" onclick="openOverlay()"> <!-- Call openOverlay here -->
+			<i class="fas fa-info-circle"></i>&nbsp;Info
+		</button>
+        
+        <!-- Start Over Button for Mobile -->
+        <button class="restart" onclick="closeMobileMenu(); startOver()">
+            <i class="fas fa-rotate-left"></i>&nbsp;Start over
+        </button>
+    </div>
+    
+    <!-- Page Title -->
+    <h1 class="page-title">Predict how to pluralise this</h1>
+    <p id="readinfo">Read the "Info" to understand what this exercise is about.</p>
+    
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <!-- Question Text -->
+    <h1 class="question-text" id="question-text">
+        <center><span class="gender" id="gender">(en)</span> <span class="highlight" id="noun">stol</span><br /></center>
+    </h1>
+    
+    <!-- Buttons Container -->
+    <div class="buttons" id="buttons-container">
+        <!-- Answer options will be inserted dynamically here -->
+    </div>
+    
+    <!-- Feedback Text -->
+    <p id="feedback" class="feedback"></p>
+    
+    <!-- Info Modal -->
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Apply these eight prediction rules</h2>
+            <p>For a very large portion of Swedish nouns (over 65 percent), the plural form can be predicted. Here you will become familiar with eight important tools. Keep an eye on (1) the <u>gender</u> of the noun, (2) word <u>stress</u> (underlined), and (3) how the word <u>ends</u>.</p>
+			<p>If you don't know what the word means, you only need to hover it.</p>
+			<p>The symbol | indicates "ends with".</p>
+                <table>
+                    <tr>
+                        <th>Rule</th>
+                        <th>What to do</th>
+                    </tr>
+                    <tr>
+                        <td>1. Final stress (aff<u>ä</u>r, kaf<u>é</u>, anal<u>y</u>s)</td>
+                        <td>Add -er</td>
+                    </tr>
+                    <tr>
+                        <td>2. N gender |unstressed -a (kv<u>i</u>nna, fl<u>i</u>cka)</td>
+                        <td>Drop -a, add -or</td>
+                    </tr>
+                    <tr>
+                        <td>3. N gender |unstressed -e (p<u>o</u>jke, sp<u>a</u>de)</td>
+                        <td>Drop -e, add -ar</td>
+                    </tr>
+                    <tr>
+                        <td>4. T gender |unstressed vowel (<u>ä</u>pple, m<u>ö</u>te)</td>
+                        <td>Add -n</td>
+                    </tr>
+                    <tr>
+                        <td>5. T gender |consonant (h<u>u</u>s, b<u>a</u>rn, tr<u>ä</u>d)</td>
+                        <td>No change (Ø)</td>
+                    </tr>
+                    <tr>
+                        <td>6. |are or |er (h<u>a</u>mb<u>u</u>rgare, <u>i</u>ndier)</td>
+                        <td>No change (Ø)</td>
+                    </tr>
+                    <tr>
+                        <td>7. |(n)ing (t<u>i</u>dn<u>i</u>ng, r<u>ä</u>kn<u>i</u>ng, s<u>a</u>ml<u>i</u>ng)</td>
+                        <td>Add -ar</td>
+                    </tr>
+                    <tr>
+                        <td>8. |het (n<u>y</u>h<u>e</u>t, h<u>e</u>mligh<u>e</u>t, s<u>ä</u>kerh<u>e</u>t)</td>
+                        <td>Add -er</td>
+                    </tr>
+                </table>
+            <!-- Add more informational content as needed -->
+        </div>
+    </div>
+    
+		<!-- Mobile view info div -->
+<div id="mobileOverlay" class="mobile-overlay">
+    <button class="close-overlay-button" onclick="closeOverlay()">×</button>
+    <div class="overlay-content">
+        <h2 id="infoModalTitle">Apply these eight<br />prediction rules</h2>
+        <p>For a very large portion of Swedish nouns (over 65 percent), the plural form can be predicted. Here you will become familiar with eight important tools. Keep an eye on:</p><br />
+        <ol>
+            <li>The <u>gender</u> of the noun</li>
+            <li>Word <u>stress</u> (underlined)</li>
+            <li>How the word <u>ends</u></li>
+        </ol>
+		<p>If you don't know what the word means, you only need to click on it.</p>
+        <br />
+		<p>The symbol | indicates "ends with".</p><br />
+		<p style="font-size:14px;"><strong>Rules</strong></p>
+        <ol start="1" style="list-style-type: decimal;">
+            <li><strong>Final stress</strong> (kaf<u>é</u>, anal<u>y</u>s).<br />Solution: add -er.</li>
+            <li><strong>N gen. |unstressed -a</strong> (kv<u>i</u>nna).<br />Solution: drop -a, add -or.</li>
+            <li><strong>N gen. |unstressed -e</strong> (p<u>o</u>jke).<br />Solution: drop -e, add -ar.</li>
+            <li><strong>T gen. |vowel</strong> (<u>ä</u>pple, m<u>i</u>nne).<br />Solution: add -n.</li>
+            <li><strong>T gen. |consonant</strong> (h<u>u</u>s, b<u>a</u>rn).<br />Solution: no change (Ø).</li>
+            <li><strong>|are or |er</strong> (h<u>a</u>mb<u>u</u>rgare, <u>i</u>ndier).<br />Solution: no change (Ø).</li>
+            <li><strong>|(n)ing</strong> (t<u>i</u>dn<u>i</u>ng, s<u>a</u>ml<u>i</u>ng).<br />Solution: add -ar.</li>
+            <li><strong>|het</strong> (n<u>y</u>h<u>e</u>t, h<u>e</u>mligh<u>e</u>t).<br />Solution: add -er.</li>
+        </ol>
+    </div>
+</div>
+
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Grattis!</h2>
+            <p>Du har svarat rätt på alla frågor!</p>
+        </div>
+    </div>
+    
+    <!-- Tooltip element -->
+    <div class="tooltip" id="custom-tooltip"></div>
+
+<script>
+// Array of questions with tooltips
+    const questions = [
+	{ gender: "(en)", noun: "vänskap", options: ["vänskapen", "vänskapn", "vänskapet", "vänskapan"], correctAnswer: 0, tooltip: "friendship" },
+	{ gender: "(en)", noun: "kompis", options: ["kompisen", "kompisn", "kompiset", "kompisan"], correctAnswer: 0, tooltip: "friend" },
+	{ gender: "(en)", noun: "dagbok", options: ["dagboken", "dagbokn", "dagboket", "dagbokan"], correctAnswer: 0, tooltip: "diary" },
+	{ gender: "(en)", noun: "status", options: ["statusen", "statusn", "statuset", "statusan"], correctAnswer: 0, tooltip: "status" },
+	{ gender: "(en)", noun: "atlas", options: ["atlasen", "atlasn", "atlaset", "atlasan"], correctAnswer: 0, tooltip: "atlas" },
+	{ gender: "(en)", noun: "cirkus", options: ["cirkusen", "cirkusn", "cirkuset", "cirkusan"], correctAnswer: 0, tooltip: "circus" },
+	{ gender: "(en)", noun: "leksak", options: ["leksaken", "leksakn", "leksaket", "leksakan"], correctAnswer: 0, tooltip: "toy" },
+	{ gender: "(en)", noun: "faktor", options: ["faktorn", "faktorn", "faktoret", "faktoran"], correctAnswer: 0, tooltip: "factor" },
+	{ gender: "(en)", noun: "medlem", options: ["medlemmen", "medlemn", "medlemet", "medleman"], correctAnswer: 0, tooltip: "member" },
+	{ gender: "(en)", noun: "månad", options: ["månaden", "månadn", "månadet", "månadan"], correctAnswer: 0, tooltip: "month" },
+	{ gender: "(en)", noun: "förmiddag", options: ["förmiddagen", "förmiddagn", "förmiddaget", "förmiddagan"], correctAnswer: 0, tooltip: "forenoon/morning" },
+	{ gender: "(en)", noun: "trädgård", options: ["trädgården", "trädgårdn", "trädgårdet", "trädgårdan"], correctAnswer: 0, tooltip: "garden" },
+	{ gender: "(en)", noun: "marknad", options: ["marknaden", "marknadn", "marknadet", "marknadan"], correctAnswer: 0, tooltip: "market" },
+	{ gender: "(en)", noun: "förutsättning", options: ["förutsättningen", "förutsättningn", "förutsättninget", "förutsättningan"], correctAnswer: 0, tooltip: "prerequisite" },
+	{ gender: "(en)", noun: "bedömning", options: ["bedömningen", "bedömningn", "bedömninget", "bedömningan"], correctAnswer: 0, tooltip: "assessment" },
+	{ gender: "(en)", noun: "fredag", options: ["fredagen", "fredagn", "fredaget", "fredagan"], correctAnswer: 0, tooltip: "Friday" },
+	{ gender: "(en)", noun: "inkomst", options: ["inkomsten", "inkomstn", "inkomstet", "inkomstan"], correctAnswer: 0, tooltip: "income" },
+	{ gender: "(en)", noun: "konstnär", options: ["konstnären", "konstnärn", "konstnäret", "konstnäran"], correctAnswer: 0, tooltip: "artist" },
+	{ gender: "(en)", noun: "mångfald", options: ["mångfalden", "mångfaldn", "mångfaldet", "mångfaldan"], correctAnswer: 0, tooltip: "diversity" },
+	{ gender: "(en)", noun: "välfärd", options: ["välfärden", "välfärdn", "välfärdet", "välfärdan"], correctAnswer: 0, tooltip: "welfare, well-being" },
+	{ gender: "(en)", noun: "politiker", options: ["politikern", "politikeren", "politikeret", "politikeran"], correctAnswer: 0, tooltip: "politician" },
+	{ gender: "(en)", noun: "förälder", options: ["föräldern", "förälderen", "förälderet", "förälderan"], correctAnswer: 0, tooltip: "parent" },
+	{ gender: "(en)", noun: "fader", options: ["fadern", "faderen", "faderet", "faderan"], correctAnswer: 0, tooltip: "father" },
+	{ gender: "(en)", noun: "ålder", options: ["åldern", "ålderen", "ålderet", "ålderan"], correctAnswer: 0, tooltip: "age" },
+	{ gender: "(en)", noun: "meter", options: ["metern", "meteren", "meteret", "meteran"], correctAnswer: 0, tooltip: "metre (BE), meter (AE)" },
+	{ gender: "(en)", noun: "dotter", options: ["dottern", "dotteren", "dotteret", "dotteran"], correctAnswer: 0, tooltip: "daughter" },
+	{ gender: "(en)", noun: "moder", options: ["modern", "moderen", "moderet", "moderan"], correctAnswer: 0, tooltip: "mother" },
+	{ gender: "(en)", noun: "broder", options: ["brodern", "broderen", "broderet", "broderan"], correctAnswer: 0, tooltip: "brother" },
+	{ gender: "(en)", noun: "lever", options: ["levern", "leveren", "leveret", "leveran"], correctAnswer: 0, tooltip: "liver" },
+	{ gender: "(en)", noun: "palestinier", options: ["palestiniern", "palestinieren", "palestinieret", "palestinieran"], correctAnswer: 0, tooltip: "Palestinian" },
+	{ gender: "(en)", noun: "minister", options: ["ministern", "ministeren", "ministeret", "ministeran"], correctAnswer: 0, tooltip: "minister" },
+	{ gender: "(en)", noun: "kilometer", options: ["kilometern", "kilometeren", "kilometeret", "kilometeran"], correctAnswer: 0, tooltip: "kilometre (BE), kilometer (AE)" },
+	{ gender: "(en)", noun: "seger", options: ["segern", "segeren", "segeret", "segeran"], correctAnswer: 0, tooltip: "victory" },
+	{ gender: "(en)", noun: "syster", options: ["systern", "systeren", "systeret", "systeran"], correctAnswer: 0, tooltip: "sister" },
+	{ gender: "(en)", noun: "vänster", options: ["vänstern", "vänsteren", "vänsteret", "vänsteran"], correctAnswer: 0, tooltip: "left" },
+	{ gender: "(en)", noun: "vinter", options: ["vintern", "vinteren", "vinteret", "vinteran"], correctAnswer: 0, tooltip: "winter" },
+	{ gender: "(en)", noun: "statsminister", options: ["statsministern", "statsministeren", "statsministeret", "statsministeran"], correctAnswer: 0, tooltip: "prime minister" },
+	{ gender: "(en)", noun: "utrikesminister", options: ["utrikesministern", "utrikesministeren", "utrikesministeret", "utrikesministeran"], correctAnswer: 0, tooltip: "foreign minister" },
+	{ gender: "(en)", noun: "semester", options: ["semestern", "semesteren", "semesteret", "semesteran"], correctAnswer: 0, tooltip: "vacation, holiday" },
+	{ gender: "(en)", noun: "order", options: ["ordern", "orderen", "orderet", "orderan"], correctAnswer: 0, tooltip: "order" },
+	{ gender: "(en)", noun: "artikel", options: ["artikeln", "artikelen", "artikelet", "artikelan"], correctAnswer: 0, tooltip: "article" },
+	{ gender: "(en)", noun: "regel", options: ["regeln", "regelen", "regelet", "regelan"], correctAnswer: 0, tooltip: "rule" },
+	{ gender: "(en)", noun: "himmel", options: ["himmeln", "himmelen", "himmelet", "himmelan"], correctAnswer: 0, tooltip: "sky, heaven" },
+	{ gender: "(en)", noun: "handel", options: ["handeln", "handelen", "handelet", "handelan"], correctAnswer: 0, tooltip: "trade" },
+	{ gender: "(en)", noun: "titel", options: ["titeln", "titelen", "titelet", "titelan"], correctAnswer: 0, tooltip: "title" },
+	{ gender: "(en)", noun: "bibel", options: ["bibeln", "bibelen", "bibelet", "bibelan"], correctAnswer: 0, tooltip: "Bible" },
+	{ gender: "(en)", noun: "fågel", options: ["fågeln", "fågelen", "fågelet", "fågelan"], correctAnswer: 0, tooltip: "bird" },
+	{ gender: "(en)", noun: "cykel", options: ["cykeln", "cykelen", "cykelet", "cykelan"], correctAnswer: 0, tooltip: "bicycle" },
+	{ gender: "(en)", noun: "ängel", options: ["ängeln", "ängelen", "ängelet", "ängelan"], correctAnswer: 0, tooltip: "angel" },
+	{ gender: "(en)", noun: "nyckel", options: ["nyckeln", "nyckelen", "nyckelet", "nyckelan"], correctAnswer: 0, tooltip: "key" },
+	{ gender: "(en)", noun: "axel", options: ["axeln", "axelen", "axelet", "axelan"], correctAnswer: 0, tooltip: "shoulder, axle" },
+	{ gender: "(en)", noun: "debattartikel", options: ["debattartikeln", "debattartikelen", "debattartikelet", "debattartikelan"], correctAnswer: 0, tooltip: "opinion piece, debate article" },
+	{ gender: "(en)", noun: "vinkel", options: ["vinkeln", "vinkelen", "vinkelet", "vinkelan"], correctAnswer: 0, tooltip: "angle, perspective" },
+	{ gender: "(en)", noun: "misshandel", options: ["misshandeln", "misshandelen", "misshandelet", "misshandelan"], correctAnswer: 0, tooltip: "assault, abuse" },
+	{ gender: "(en)", noun: "apostel", options: ["aposteln", "apostelen", "apostelet", "apostelan"], correctAnswer: 0, tooltip: "apostle" },
+	{ gender: "(en)", noun: "synvinkel", options: ["synvinkeln", "synvinkelen", "synvinkelet", "synvinkelan"], correctAnswer: 0, tooltip: "viewpoint, perspective" },
+	{ gender: "(en)", noun: "muskel", options: ["muskeln", "muskelen", "muskelet", "muskelan"], correctAnswer: 0, tooltip: "muscle" },
+	{ gender: "(en)", noun: "cirkel", options: ["cirkeln", "cirkelen", "cirkelet", "cirkelan"], correctAnswer: 0, tooltip: "circle" },
+	{ gender: "(en)", noun: "konstapel", options: ["konstapeln", "konstapelen", "konstapelet", "konstapelan"], correctAnswer: 0, tooltip: "constable" },
+	{ gender: "(en)", noun: "adel", options: ["adeln", "adelen", "adelet", "adelan"], correctAnswer: 0, tooltip: "nobility" },
+	{ gender: "(en)", noun: "dator", options: ["datorn", "datoren", "datoret", "datoran"], correctAnswer: 0, tooltip: "computer" },
+	{ gender: "(en)", noun: "faktor", options: ["faktorn", "faktoren", "faktoret", "faktoran"], correctAnswer: 0, tooltip: "factor" },
+	{ gender: "(en)", noun: "sektor", options: ["sektorn", "sektoren", "sektoret", "sektoran"], correctAnswer: 0, tooltip: "sector" },
+	{ gender: "(en)", noun: "professor", options: ["professorn", "professoren", "professoret", "professoran"], correctAnswer: 0, tooltip: "professor" },
+	{ gender: "(en)", noun: "doktor", options: ["doktorn", "doktoren", "doktoret", "doktoran"], correctAnswer: 0, tooltip: "doctor" },
+	{ gender: "(en)", noun: "motor", options: ["motorn", "motoren", "motoret", "motoran"], correctAnswer: 0, tooltip: "engine, motor" },
+	{ gender: "(en)", noun: "humor", options: ["humorn", "humoren", "humoret", "humoran"], correctAnswer: 0, tooltip: "humour (BE), humor (AE)" },
+	{ gender: "(en)", noun: "rektor", options: ["rektorn", "rektoren", "rektoret", "rektoran"], correctAnswer: 0, tooltip: "principal, rector" },
+	{ gender: "(en)", noun: "pastor", options: ["pastorn", "pastoren", "pastoret", "pastoran"], correctAnswer: 0, tooltip: "pastor, priest." },
+	{ gender: "(en)", noun: "diktator", options: ["diktatorn", "diktatoren", "diktatoret", "diktatoran"], correctAnswer: 0, tooltip: "dictator" },
+	{ gender: "(en)", noun: "indikator", options: ["indikatorn", "indikatoren", "indikatoret", "indikatoran"], correctAnswer: 0, tooltip: "indicator" },
+	{ gender: "(en)", noun: "korridor", options: ["korridorn", "korridoren", "korridoret", "korridoran"], correctAnswer: 0, tooltip: "corridor" },
+	{ gender: "(en)", noun: "alligator", options: ["alligatorn", "alligatoren", "alligatoret", "alligatoran"], correctAnswer: 0, tooltip: "alligator" },
+	{ gender: "(en)", noun: "metafor", options: ["metaforn", "metaforen", "metaforet", "metaforan"], correctAnswer: 0, tooltip: "metaphor" },
+	{ gender: "(en)", noun: "revisor", options: ["revisorn", "revisoren", "revisoret", "revisoran"], correctAnswer: 0, tooltip: "auditor" },
+	{ gender: "(en)", noun: "major", options: ["majorn", "majoren", "majoret", "majoran"], correctAnswer: 0, tooltip: "major" },
+	{ gender: "(en)", noun: "terror", options: ["terrorn", "terroren", "terroret", "terroran"], correctAnswer: 0, tooltip: "terror" },
+	{ gender: "(en)", noun: "sponsor", options: ["sponsorn", "sponsoren", "sponsoret", "sponsoran"], correctAnswer: 0, tooltip: "sponsor" },
+	{ gender: "(en)", noun: "kommentator", options: ["kommentatorn", "kommentatoren", "kommentatoret", "kommentatoran"], correctAnswer: 0, tooltip: "commentator" },
+	{ gender: "(en)", noun: "reaktor", options: ["reaktorn", "reaktoren", "reaktoret", "reaktoran"], correctAnswer: 0, tooltip: "reactor" },
+	{ gender: "(en)", noun: "bror (broder)", options: ["brodern", "broderen", "broderet", "broderan"], correctAnswer: 0, tooltip: "brother" },
+	{ gender: "(en)", noun: "mor (moder)", options: ["modern", "moderen", "moderet", "moderan"], correctAnswer: 0, tooltip: "mother" },
+	{ gender: "(ett)", noun: "exempel", options: ["exemplet", "exempelet", "exempelen", "exempelan"], correctAnswer: 0, tooltip: "example" },
+	{ gender: "(ett)", noun: "nummer", options: ["numret", "nummeret", "nummeren", "nummeran"], correctAnswer: 0, tooltip: "number" },
+	{ gender: "(ett)", noun: "medel", options: ["medlet", "medelet", "medelen", "medelan"], correctAnswer: 0, tooltip: "means, medium" },
+	{ gender: "(ett)", noun: "kapitel", options: ["kapitlet", "kapitelet", "kapitelen", "kapitelan"], correctAnswer: 0, tooltip: "chapter" },
+	{ gender: "(ett)", noun: "väder", options: ["vädret", "väderet", "väderen", "väderan"], correctAnswer: 0, tooltip: "weather" },
+	{ gender: "(ett)", noun: "hinder", options: ["hindret", "hinderet", "hinderen", "hinderan"], correctAnswer: 0, tooltip: "obstacle" },
+	{ gender: "(ett)", noun: "fönster", options: ["fönstret", "fönsteret", "fönsteren", "fönsteran"], correctAnswer: 0, tooltip: "window" },
+	{ gender: "(ett)", noun: "papper", options: ["pappret", "papperet", "papperen", "papperan"], correctAnswer: 0, tooltip: "paper" },
+	{ gender: "(ett)", noun: "mörker", options: ["mörkret", "mörkeret", "mörkeren", "mörkeran"], correctAnswer: 0, tooltip: "darkness" },
+	{ gender: "(ett)", noun: "mönster", options: ["mönstret", "mönsteret", "mönsteren", "mönsteran"], correctAnswer: 0, tooltip: "pattern, model" },
+	{ gender: "(ett)", noun: "finger", options: ["fingret", "fingeret", "fingeren", "fingeran"], correctAnswer: 0, tooltip: "finger" },
+	{ gender: "(ett)", noun: "läger", options: ["lägret", "lägeret", "lägeren", "lägeran"], correctAnswer: 0, tooltip: "camp" },
+	{ gender: "(ett)", noun: "register", options: ["registret", "registeret", "registeren", "registeran"], correctAnswer: 0, tooltip: "register, record" },
+	{ gender: "(ett)", noun: "bekymmer", options: ["bekymret", "bekymmeret", "bekymmeren", "bekymmeran"], correctAnswer: 0, tooltip: "concern, worry" },
+	{ gender: "(ett)", noun: "socker", options: ["sockret", "sockeret", "sockeren", "sockeran"], correctAnswer: 0, tooltip: "sugar" },
+	{ gender: "(ett)", noun: "sekel", options: ["seklet", "sekelet", "sekelen", "sekelan"], correctAnswer: 0, tooltip: "century" },
+	{ gender: "(ett)", noun: "kloster", options: ["klostret", "klosteret", "klosteren", "klosteran"], correctAnswer: 0, tooltip: "monastery" },
+	{ gender: "(ett)", noun: "monster", options: ["monstret", "monsteret", "monsteren", "monsteran"], correctAnswer: 0, tooltip: "monster" },
+	{ gender: "(ett)", noun: "buller", options: ["bullret", "bulleret", "bulleren", "bulleran"], correctAnswer: 0, tooltip: "noise" },
+	{ gender: "(ett)", noun: "offer", options: ["offret", "offeret", "offeren", "offeran"], correctAnswer: 0, tooltip: "victim" },
+
+        ];
+</script>
+<script src="1from4.js"></script>
+</body>
+</html>
