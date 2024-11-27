@@ -27,13 +27,17 @@ toggleSwitch.addEventListener('change', () => {
 // Open Modal Function
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal.classList.add('show');
+    if (modal) {
+        modal.classList.add('show');
+    }
 }
 
 // Close Modal Function
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal.classList.remove('show');
+    if (modal) {
+        modal.classList.remove('show');
+    }
 }
 
 // Close the modal when clicking outside of the modal content
@@ -50,8 +54,10 @@ window.addEventListener('click', (event) => {
 
 // Calculate the total number of questions
 const totalQuestions = questions.length;
-// Display the total number of questions in the total score element
-document.getElementById('total-score').textContent = totalQuestions;
+// Display the total number of questions in all elements with class "total-score-value"
+document.querySelectorAll('.total-score-value').forEach(el => {
+    el.textContent = totalQuestions;
+});
 
 // State tracking
 let usedQuestions = [];
@@ -118,7 +124,18 @@ handleResize();
 
 // Close Mobile Menu
 function closeMobileMenu() {
-    document.querySelector('.mobile-menu').classList.remove('show');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    if (mobileMenu) {
+        mobileMenu.classList.remove('show');
+    }
+    // Reset hamburger icon to bars
+    const hamburgerIcon = document.getElementById('hamburgerIcon');
+    hamburgerIcon.classList.remove('fa-times');
+    hamburgerIcon.classList.add('fa-bars');
+    // Ensure desktop menu is visible if window is resized
+    if (window.innerWidth > 600) {
+        document.querySelector('.desktop-menu').style.display = 'flex';
+    }
 }
 
 // Toggle Dark Mode in Mobile Menu
@@ -259,8 +276,8 @@ function checkAnswer(button, answerIndex, questionIndex) {
         incorrectCount++;
     }
 
-    // Update the score display in all elements with id="score"
-    document.querySelectorAll('#score').forEach(scoreElement => {
+    // Update the score display in all elements with class "score-value"
+    document.querySelectorAll('.score-value').forEach(scoreElement => {
         scoreElement.textContent = correctCount;
     });
 
@@ -275,18 +292,6 @@ function checkAnswer(button, answerIndex, questionIndex) {
     setTimeout(() => {
         changeQuestion();
     }, 2500);
-}
-
-// Updates the score display based on value change.
-function updateScore(value) {
-    score += value;
-
-    // Update all elements with id="score" to reflect the updated score
-    document.querySelectorAll('#score').forEach((element) => {
-        element.textContent = score;
-    });
-
-    checkForMaxScore(score);
 }
 
 // Function to update progress bar
@@ -305,7 +310,7 @@ function initializeQuestion() {
     // Reset counts
     correctCount = 0;
     incorrectCount = 0;
-    document.getElementById('score').textContent = correctCount;
+    document.querySelectorAll('.score-value').forEach(el => el.textContent = correctCount);
 
     // Reset progress bar
     progressBar.style.width = '0%';
@@ -362,7 +367,7 @@ function startOver() {
     usedQuestions = [];
     correctCount = 0;
     incorrectCount = 0;
-    document.getElementById('score').textContent = '0';
+    document.querySelectorAll('.score-value').forEach(el => el.textContent = '0');
     progressBar.style.width = '0%';
     initializeQuestion();
     */
