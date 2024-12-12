@@ -1,0 +1,2781 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participle</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #2d3748;
+            line-height: 1.6;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #e2e8f0;
+        }
+
+        /* Close Button Styling */
+        .close-button {
+            float: right;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            background-color: #ccc;
+            border: none;
+            border-radius: 50%;
+            line-height: 20px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        body.dark-mode .close-button {
+            background-color: #555;
+            color: #ffcccc;
+        }
+
+        .close-button:hover {
+            background-color: #f44336;
+            transform: scale(1.2) rotate(90deg);
+            color: white;
+        }
+
+        body.dark-mode .close-button:hover {
+            background-color: #ff6666;
+            color: white;
+            transform: scale(1.2) rotate(90deg);
+        }
+
+        /* Container */
+        .container {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 850px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+
+        body.dark-mode .container {
+            background-color: #1a202c;
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            justify-content: flex-start;
+            padding: 0 10px;
+            gap: 10px;
+            cursor: default;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-content {
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 80%;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #1a202c;
+            color: #edf2f7;
+            border-color: #2d3748;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            color: #333333;
+            font-size: 28px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            padding-top: 10px;
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+
+        body.dark-mode .page-title {
+            color: #ffffff;
+        }
+
+        /* Score, Start Over, and Dark Mode Toggle Container */
+        .score-container {
+            position: fixed;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 150px;
+            z-index: 1001;
+            gap: 10px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Sentence Styling */
+        .sentence {
+            background-color: #f7fafc;
+            padding: 20px;
+            padding-bottom: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            transition: background-color 0.3s, border 0.3s;
+            border-left: 6px solid transparent;
+            text-align: left;
+            /* Removed invalid data-state property */
+        }
+
+        body.dark-mode .sentence {
+            background-color: #2d3748;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+        }
+
+        .sentence.correct {
+            border-left: 6px solid #38a169;
+            background-color: #cdffcd;
+            transition: border 0.3s, background-color 0.3s;
+        }
+
+        body.dark-mode .sentence.correct {
+            border-left: 6px solid #38a169;
+            background-color: #22543d;
+        }
+
+        .sentence.incorrect {
+            border-left: 6px solid #e53e3e;
+            background-color: #FFADB0;
+            transition: border 0.3s, background-color 0.3s;
+        }
+
+        body.dark-mode .sentence.incorrect {
+            border-left: 6px solid #e53e3e;
+            background-color: #742a2a;
+        }
+
+        .sentence p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .sentence p {
+            color: #edf2f7;
+        }
+
+        /* Select Element Styling */
+        .sentence select {
+            padding: 4px 4px;
+            font-size: inherit;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            background-color: #edf2f7;
+            cursor: pointer;
+            transition: border-color 0.3s, background-color 0.3s;
+            width: auto;
+            appearance: auto;
+            -webkit-appearance: auto;
+            -moz-appearance: auto;
+            background-image: initial;
+			margin-left: 3px;  /* Adjust this value as needed */
+			margin-right: 3px; /* Adjust this value as needed */
+        }
+
+        body.dark-mode .sentence select {
+            background-color: #4a5568;
+            color: #edf2f7;
+            border: 1px solid #718096;
+        }
+
+        .sentence select:focus {
+            border-color: #3182ce;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        }
+
+        body.dark-mode .sentence select:focus {
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+        }
+
+        /* Sentences */
+        .sentences {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* Slider Container */
+        .switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            display: inline-block;
+        }
+
+        /* Hide Default Checkbox */
+        .switch input {
+            display: none;
+        }
+
+        /* Slider Appearance */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        /* Slider Active State */
+        .switch input:checked+.slider {
+            background-color: #007BFF;
+        }
+
+        .switch input:checked+.slider::before {
+            transform: translateX(20px);
+        }
+
+        /* Start Over Button */
+        .start-over {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .start-over:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        /* Word Styling */
+        .word {
+            position: relative;
+            cursor: pointer;
+            color: #2d3748;
+            transition: color 0.3s, background-color 0.3s;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        body.dark-mode .word {
+            color: #edf2f7;
+        }
+
+        .word::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -2px;
+            width: 100%;
+            height: 3px;
+            background-color: currentColor;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+
+        .word:hover::after,
+        .word:focus::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .word:hover,
+        .word:focus {
+            background-color: rgba(45, 55, 72, 0.1);
+        }
+
+        body.dark-mode .word:hover,
+        body.dark-mode .word:focus {
+            background-color: rgba(226, 232, 240, 0.1);
+        }
+
+        /* Unified Button Styling */
+        .score,
+        .dark-mode-toggle,
+        .start-over {
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: center;
+            background-color: #fff;
+            color: #333;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, color 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            display: none;
+            font-size: 24px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        /* Menu Overlay - Slide Animation */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 250px;
+            height: 100%;
+            background: #fff;
+            color: #333;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 1003;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.4s ease; /* Smooth slide effect */
+        }
+
+        /* Show the Menu Overlay by Sliding In */
+        .menu-overlay.active {
+            transform: translateX(0); /* Slide into view */
+        }
+
+        /* Hide elements on mobile */
+        @media (max-width: 600px) {
+            .score-container {
+                display: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+        }
+
+        /* Menu item styling */
+        .menu-overlay .menu-item {
+            padding: 15px;
+            font-size: 18px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        /* Close Button styling */
+        .menu-overlay .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Apply Dark Mode to Menu */
+        .dark-mode-menu {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-mode-menu .menu-item {
+            border-bottom: 1px solid #555;
+        }
+
+        #darkModeIcon {
+            font-size: 20px;
+            color: #333; /* Default color for light mode */
+            cursor: pointer;
+        }
+
+        body.dark-mode #darkModeIcon {
+            color: #ffeb3b; /* Bright color for dark mode */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .score-container {
+                top: 10px;
+                right: 10px;
+                width: 120px;
+                gap: 10px;
+                /* Reduced gap for smaller screens */
+            }
+
+            .sentence p {
+                line-height: 1.8;
+            }
+
+            .score,
+            .start-over,
+            .dark-mode-toggle {
+                font-size: 14px;
+                height: 45px;
+                /* Slightly smaller height for smaller screens */
+                padding: 0 10px;
+                /* Reduced horizontal padding */
+            }
+
+            .modal-content {
+                margin-top: 50px; /* Adjust this value as needed */
+            }
+
+            .start-over {
+                padding: 0 12px;
+            }
+
+            .dark-mode-toggle {
+                padding: 0 8px;
+                gap: 8px;
+            }
+
+            /* Adjust switch size for smaller screens */
+            .switch {
+                width: 35px;
+                height: 18px;
+            }
+
+            .slider::before {
+                height: 12px;
+                width: 12px;
+                left: 3px;
+                bottom: 3px;
+            }
+
+            .switch input:checked+.slider::before {
+                transform: translateX(18px);
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span class="score-display">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- URL Imperative Logic Button -->
+        <button class="start-over" id="menu-URL" onclick="openMenuURL()">
+            <i class="fas fa-book" style="margin-right: 8px;"></i> The logic
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span class="score-display">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+            <i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+        </div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> The logic
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title">Complete with the correct participle form</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Information</h2>
+            <p>This exercise focuses on learning to correctly identify and use Swedish participles. 
+			Participants must select the appropriate participle form – either present or perfect – 
+			based on the context of each sentence. The activity includes indefinite and definite forms, 
+			offering practice with grammar rules such as gender and 
+			number agreement, vowel changes in strong verbs and recognising the nuances between present participles (-ande or -ende) 
+			and perfect participles in various contexts.</p>
+        </div>
+    </div>
+
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+    <script>
+
+const sentences = [
+    {
+        words: [
+            {
+                sentencePart: "Bilen var",
+            },
+            {
+                sentencePart: `<select data-correct="körd" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="körd">körd</option>
+                <option value="körde">körde</option>
+                <option value="körade">körade</option>		
+                <option value="körda">kört</option>
+                </select>`,
+            },
+            {
+                sentencePart: "i diket.",
+            },
+        ]
+    },
+{
+    "words": [
+        {
+            "sentencePart": "Boken är redan"
+        },
+        {
+            "sentencePart": `<select data-correct="läst" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="läst">läst</option>
+                <option value="läset">läset</option>
+                <option value="läsad">läsad</option>
+                <option value="läsd">läsd</option>
+            </select>`
+        },
+        {
+            "sentencePart": "."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Klänningen är"
+        },
+        {
+            "sentencePart": `<select data-correct="sydd" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="sydd">sydd</option>
+                <option value="syddad">syddad</option>
+                <option value="syddade">syddade</option>
+                <option value="syddande">syddande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "av mormor."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Den"
+        },
+        {
+            "sentencePart": `<select data-correct="läsande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="läsande">läsande</option>
+                <option value="läsende">läsende</option>
+                <option value="läste">läste</option>
+                <option value="läsade">läsade</option>
+            </select>`
+        },
+        {
+            "sentencePart": "eleven var mycket koncentrerad."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hon satt där,"
+        },
+        {
+            "sentencePart": `<select data-correct="syende" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="syende">syende</option>
+                <option value="syande">syande</option>
+                <option value="sydande">sydande</option>
+                <option value="syndende">syndende</option>
+            </select>`
+        },
+        {
+            "sentencePart": "på sin broderade duk."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det är en"
+        },
+        {
+            "sentencePart": `<select data-correct="nyskriven" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="nyskriven">nyskriven</option>
+                <option value="nyskreven">nyskreven</option>
+                <option value="nyskrivande">nyskrivande</option>
+                <option value="nyskrivet">nyskrivet</option>
+            </select>`
+        },
+        {
+            "sentencePart": "pjäs som ska uppföras."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Cykeln blev"
+        },
+        {
+            "sentencePart": `<select data-correct="stulen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="stulen">stulen</option>
+                <option value="stulad">stulad</option>
+                <option value="stulade">stulade</option>
+                <option value="stylet">stylet</option>
+            </select>`
+        },
+        {
+            "sentencePart": "i helgen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Ladugården var"
+        },
+        {
+            "sentencePart": `<select data-correct="brunnen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="brunnen">brunnen</option>
+                <option value="brunnad">brunnad</option>
+                <option value="brunnade">brunnade</option>
+                <option value="brunnet">brunnet</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och allt foder hade förstörts."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "En"
+        },
+        {
+            "sentencePart": `<select data-correct="stjälande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="stjälande">stjälande</option>
+                <option value="stjälende">stjälende</option>
+                <option value="stulen">stulen</option>
+                <option value="stjälnande">stjälnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "skata tog smycket från bordet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Vi såg en"
+        },
+        {
+            "sentencePart": `<select data-correct="brinnande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="brinnande">brinnande</option>
+                <option value="brinnende">brinnende</option>
+                <option value="brunnet">brunnet</option>
+                <option value="brinnade">brinnade</option>
+            </select>`
+        },
+        {
+            "sentencePart": "ladugård på håll."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Nyckeln är"
+        },
+        {
+            "sentencePart": `<select data-correct="försvunnen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="försvunnen">försvunnen</option>
+                <option value="försvunnad">försvunnad</option>
+                <option value="försvann">försvann</option>
+                <option value="försvunnet">försvunnet</option>
+            </select>`
+        },
+        {
+            "sentencePart": "sedan igår."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Frågan är"
+        },
+        {
+            "sentencePart": `<select data-correct="besvarad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="besvarad">besvarad</option>
+                <option value="besvarade">besvarade</option>
+                <option value="besvuren">besvuren</option>
+                <option value="besvarat">besvarat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "på ett utförligt sätt."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Frågan är"
+        },
+        {
+            "sentencePart": `<select data-correct="berättigad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="berättigad">berättigad</option>
+                <option value="berättigade">berättigade</option>
+                <option value="berättigande">berättigande</option>
+                <option value="berättigende">berättigende</option>
+            </select>`
+        },
+        {
+            "sentencePart": "i denna situation."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Han är"
+        },
+        {
+            "sentencePart": `<select data-correct="rasande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="rasande">rasande</option>
+                <option value="rasende">rasende</option>
+                <option value="rasade">rasade</option>
+                <option value="rasnande">rasnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "över beslutet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Saften är"
+        },
+        {
+            "sentencePart": `<select data-correct="serverad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="serverad">serverad</option>
+                <option value="serverade">serverade</option>
+                <option value="serverande">serverande</option>
+                <option value="servernad">servernad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "till gästerna."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Saften är"
+        },
+        {
+            "sentencePart": `<select data-correct="koncentrerad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="koncentrerad">koncentrerad</option>
+                <option value="koncentrerade">koncentrerade</option>
+                <option value="koncentrerande">koncentrerande</option>
+                <option value="koncentrernad">koncentrernad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och behöver spädas ut."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Vinden är"
+        },
+        {
+            "sentencePart": `<select data-correct="avtagande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="avtagande">avtagande</option>
+                <option value="avtagende">avtagende</option>
+                <option value="avtagna">avtagna</option>
+                <option value="avtagnande">avtagnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "mot kvällen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det var en"
+        },
+        {
+            "sentencePart": `<select data-correct="strålande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="strålande">strålande</option>
+                <option value="strålende">strålende</option>
+                <option value="strålade">strålade</option>
+                <option value="strålnande">strålnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "dag i solen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Avtalet är"
+        },
+        {
+            "sentencePart": `<select data-correct="bindande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="bindande">bindande</option>
+                <option value="bindende">bindende</option>
+                <option value="bundit">bundit</option>
+                <option value="bindnande">bindnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "för båda parter."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Gärningsmannen är"
+        },
+        {
+            "sentencePart": `<select data-correct="gripen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="gripen">gripen</option>
+                <option value="grepen">grepen</option>
+                <option value="gripande">gripande</option>
+                <option value="grupen">grupen</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och förhörs just nu."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hon är"
+        },
+        {
+            "sentencePart": `<select data-correct="rubbad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="rubbad">rubbad</option>
+                <option value="rubbade">rubbade</option>
+                <option value="rubbande">rubbande</option>
+                <option value="rubbat">rubbat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "efter den traumatiska händelsen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Flickan blev"
+        },
+        {
+            "sentencePart": `<select data-correct="biten" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="biten">biten</option>
+                <option value="beten">beten</option>
+                <option value="bitande">bitande</option>
+                <option value="bitad">bitad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "av en hund."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Han gav en"
+        },
+        {
+            "sentencePart": `<select data-correct="träffande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="träffande">träffande</option>
+                <option value="träffende">träffende</option>
+                <option value="träffade">träffade</option>
+                <option value="träffnande">träffnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "kommentar om problemet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Priset blev"
+        },
+        {
+            "sentencePart": `<select data-correct="tilldelat" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="tilldelat">tilldelat</option>
+                <option value="tilldelade">tilldelade</option>
+                <option value="tilldelande">tilldelande</option>
+                <option value="tilldelad">tilldelad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "min bror i torsdags."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Där satt han,"
+        },
+        {
+            "sentencePart": `<select data-correct="betraktande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="betraktande">betraktande</option>
+                <option value="betraktende">betraktende</option>
+                <option value="betraktade">betraktade</option>
+                <option value="betraktnande">betraktnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "oss med skarpa ögon."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Soffan blev"
+        },
+        {
+            "sentencePart": `<select data-correct="tvättad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="tvättad">tvättad</option>
+                <option value="tvättade">tvättade</option>
+                <option value="tvättande">tvättande</option>
+                <option value="tvättat">tvättat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och är nu ren."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hon blev"
+        },
+        {
+            "sentencePart": `<select data-correct="sittande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="sittande">sittande</option>
+                <option value="sittende">sittende</option>
+                <option value="sutten">sutten</option>
+                <option value="sittnande">sittnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "stum i flera timmar efter beskedet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hon var ganska"
+        },
+        {
+            "sentencePart": `<select data-correct="överraskad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="överraskad">överraskad</option>
+                <option value="överraskade">överraskade</option>
+                <option value="överraskande">överraskande</option>
+                <option value="överraskende">överraskende</option>
+            </select>`
+        },
+        {
+            "sentencePart": "av det varma mottagandet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Ledande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="Ledande">Ledande</option>
+                <option value="Ledende">Ledende</option>
+                <option value="Ledd">Ledd</option>
+                <option value="Leddande">Leddande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "cykeln gick jag fram på vägen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Ankommen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="Ankommen">Ankommen</option>
+                <option value="Ankom">Ankom</option>
+                <option value="Ankommande">Ankommande</option>
+                <option value="Ankommet">Ankommet</option>
+            </select>`
+        },
+        {
+            "sentencePart": "till Stockholm gick jag genast till hotellet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hans bror var"
+        },
+        {
+            "sentencePart": `<select data-correct="anklagad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="anklagad">anklagad</option>
+                <option value="anklagade">anklagade</option>
+                <option value="anklagat">anklagat</option>
+                <option value="anklagnad">anklagnad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "för överlagt mord i tingsrätten."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Detta är"
+        },
+        {
+            "sentencePart": `<select data-correct="förödande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="förödande">förödande</option>
+                <option value="förödende">förödende</option>
+                <option value="förödat">förödat</option>
+                <option value="förödnande">förödnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "för henne och hennes familj."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hon fick en"
+        },
+        {
+            "sentencePart": `<select data-correct="välgörande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="välgörande">välgörande</option>
+                <option value="välgörende">välgörende</option>
+                <option value="välgjort">välgjort</option>
+                <option value="välgörnande">välgörnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "behandling för sin rygg."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det är"
+        },
+        {
+            "sentencePart": `<select data-correct="förbjudet" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="förbjudet">förbjudet</option>
+                <option value="förbjöd">förbjöd</option>
+                <option value="förbjuden">förbjuden</option>
+                <option value="förbjudat">förbjudat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "att röka här enligt lagen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Han är"
+        },
+        {
+            "sentencePart": `<select data-correct="berömd" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="berömd">berömd</option>
+                <option value="berömde">berömde</option>
+                <option value="berömt">berömt</option>
+                <option value="berömmad">berömmad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "för sina vackra målningar."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Vapnet är"
+        },
+        {
+            "sentencePart": `<select data-correct="laddat" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="laddat">laddat</option>
+                <option value="laddade">laddade</option>
+                <option value="laddad">laddad</option>
+                <option value="laddnat">laddnat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och redo att användas."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hon är"
+        },
+        {
+            "sentencePart": `<select data-correct="förlovad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="förlovad">förlovad</option>
+                <option value="förlovade">förlovade</option>
+                <option value="förlovat">förlovat</option>
+                <option value="förlovnad">förlovnad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "med honom sedan i somras."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hon är"
+        },
+        {
+            "sentencePart": `<select data-correct="bosatt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="bosatt">bosatt</option>
+                <option value="bosatte">bosatte</option>
+                <option value="bosittande">bosittande</option>
+                <option value="bosutten">bosutten</option>
+            </select>`
+        },
+        {
+            "sentencePart": "i New York sedan tio år tillbaka."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Jennifer blev"
+        },
+        {
+            "sentencePart": `<select data-correct="erbjuden" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="erbjuden">erbjuden</option>
+                <option value="erbjud">erbjud</option>
+                <option value="erbjudet">erbjudet</option>
+                <option value="erbjudad">erbjudad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "jobbet efter intervjun."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Huset blev"
+        },
+        {
+            "sentencePart": `<select data-correct="visat" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="visat">visat</option>
+                <option value="visade">visade</option>
+                <option value="visad">visad</option>
+                <option value="vistat">vistat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "för två spekulanter i helgen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Vi blev"
+        },
+        {
+            "sentencePart": `<select data-correct="fråntagna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="fråntagna">fråntagna</option>
+                <option value="fråntog">fråntog</option>
+                <option value="fråntagen">fråntagen</option>
+                <option value="fråntagnad">fråntagnad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "våra rättigheter utan förklaring."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Denna planta är"
+        },
+        {
+            "sentencePart": `<select data-correct="vuxen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="vuxen">vuxen</option>
+                <option value="växte">växte</option>
+                <option value="vuxet">vuxet</option>
+                <option value="vuxna">vuxna</option>
+            </select>`
+        },
+        {
+            "sentencePart": "i mager jord och blommar nu."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Jag såg en"
+        },
+        {
+            "sentencePart": `<select data-correct="avskydd" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="avskydd">avskydd</option>
+                <option value="avskydde">avskydde</option>
+                <option value="avskytt">avskytt</option>
+                <option value="avskyddande">avskyddande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "lärare på skolgården."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Den"
+        },
+        {
+            "sentencePart": `<select data-correct="ökade" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="ökade">ökade</option>
+                <option value="ökad">ökad</option>
+                <option value="ökande">ökande</option>
+                <option value="ökat">ökat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "efterfrågan gläder oss alla i teamet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Jag åt alla"
+        },
+        {
+            "sentencePart": `<select data-correct="stekta" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="stekta">stekta</option>
+                <option value="stekte">stekte</option>
+                <option value="stekade">stekade</option>
+                <option value="stekande">stekande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "köttbullar på tallriken."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Johan tog fram ett"
+        },
+        {
+            "sentencePart": `<select data-correct="gulnat" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="gulnat">gulnat</option>
+                <option value="gulnade">gulnade</option>
+                <option value="gulnad">gulnad</option>
+                <option value="gulande">gulande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "pappersark ur lådan."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Dörren är fortfarande"
+        },
+        {
+            "sentencePart": `<select data-correct="stängd" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="stängd">stängd</option>
+                <option value="stängde">stängde</option>
+                <option value="stängande">stängande</option>
+                <option value="stängt">stängt</option>
+            </select>`
+        },
+        {
+            "sentencePart": "trots att klockan är mycket."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Sofia är fortfarande"
+        },
+        {
+            "sentencePart": `<select data-correct="övertygad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="övertygad">övertygad</option>
+                <option value="övertygade">övertygade</option>
+                <option value="övertygat">övertygat</option>
+                <option value="övertygande">övertygande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "om att hon har rätt i frågan."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Räkningen är"
+        },
+        {
+            "sentencePart": `<select data-correct="betald" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="betald">betald</option>
+                <option value="betalde">betalde</option>
+                <option value="beltalt">beltalt</option>
+                <option value="betalande">betalande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "för länge sedan och allt är ordnat."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Kläderna är helt"
+        },
+        {
+            "sentencePart": `<select data-correct="oanvända" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="oanvända">oanvända</option>
+                <option value="oanvände">oanvände</option>
+                <option value="oanvänd">oanvänd</option>
+                <option value="oanvänt">oanvänt</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och ligger fortfarande i förpackningen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det var ett"
+        },
+        {
+            "sentencePart": `<select data-correct="långsökt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="långsökt">långsökt</option>
+                <option value="långsökte">långsökte</option>
+                <option value="långsökad">långsökad</option>
+                <option value="långsökat">långsökat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "svar på en enkel fråga."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Jag är"
+        },
+        {
+            "sentencePart": `<select data-correct="nybadad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="nybadad">nybadad</option>
+                <option value="nybadade">nybadade</option>
+                <option value="nybadat">nybadat</option>
+                <option value="nybadande">nybadande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och redo för dagen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Nu är hon"
+        },
+        {
+            "sentencePart": `<select data-correct="återanställd" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="återanställd">återanställd</option>
+                <option value="återanställde">återanställde</option>
+                <option value="återanställt">återanställt</option>
+                <option value="återanställad">återanställad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "på företaget efter ett års frånvaro."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det är en"
+        },
+        {
+            "sentencePart": `<select data-correct="olycksdrabbad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="olycksdrabbad">olycksdrabbad</option>
+                <option value="olycksdrabbade">olycksdrabbade</option>
+                <option value="olycksdrabbat">olycksdrabbat</option>
+                <option value="olycksdrabbande">olycksdrabbande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "väg med många kurvor."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "En"
+        },
+        {
+            "sentencePart": `<select data-correct="finklädd" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="finklädd">finklädd</option>
+                <option value="finklädde">finklädde</option>
+                <option value="finklätt">finklätt</option>
+                <option value="finklädat">finklädat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "dam hälsade oss välkomna."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Jag åt ett"
+        },
+        {
+            "sentencePart": `<select data-correct="löskokt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="löskokt">löskokt</option>
+                <option value="löskokte">löskokte</option>
+                <option value="löskokat">löskokat</option>
+                <option value="löskokande">löskokande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "ägg till frukost."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "En"
+        },
+        {
+            "sentencePart": `<select data-correct="nymålad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="nymålad">nymålad</option>
+                <option value="nymålade">nymålade</option>
+                <option value="nymålat">nymålat</option>
+                <option value="nymålnad">nymålnad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "vägg gav rummet ett fräscht intryck."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "En"
+        },
+        {
+            "sentencePart": `<select data-correct="avsatt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="avsatt">avsatt</option>
+                <option value="avsatte">avsatte</option>
+                <option value="avsuttad">avsuttad</option>
+                <option value="avsittad">avsittad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "diktator lever nu i exil."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Herbert blev"
+        },
+        {
+            "sentencePart": `<select data-correct="uppsökt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="uppsökt">uppsökt</option>
+                <option value="uppsökte">uppsökte</option>
+                <option value="uppsökad">uppsökad</option>
+                <option value="uppsökat">uppsökat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "av poliserna sent på kvällen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Stolarna är"
+        },
+        {
+            "sentencePart": `<select data-correct="hemkörda" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="hemkörda">hemkörda</option>
+                <option value="hemkörde">hemkörde</option>
+                <option value="hemkört">hemkört</option>
+                <option value="hemkörat">hemkörat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och monterade i vardagsrummet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Saken är"
+        },
+        {
+            "sentencePart": `<select data-correct="omtvistad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="omtvistad">omtvistad</option>
+                <option value="omtvistade">omtvistade</option>
+                <option value="omtvistat">omtvistat</option>
+                <option value="omtvistande">omtvistande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och diskuteras i media."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hon är"
+        },
+        {
+            "sentencePart": `<select data-correct="efterlängtad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="efterlängtad">efterlängtad</option>
+                <option value="efterlängtade">efterlängtade</option>
+                <option value="efterlängtat">efterlängtat</option>
+                <option value="efterlängtande">efterlängtande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "av oss alla i familjen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Vi blev alla tre"
+        },
+        {
+            "sentencePart": `<select data-correct="stående" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="stående">stående</option>
+                <option value="stående">stående</option>
+                <option value="ståndat">ståndat</option>
+                <option value="ståndade">ståndade</option>
+            </select>`
+        },
+        {
+            "sentencePart": ", iakttagande varandra med misstänksamhet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Lite"
+        },
+        {
+            "sentencePart": `<select data-correct="uppgivet" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="uppgivet">uppgivet</option>
+                <option value="uppgiven">uppgiven</option>
+                <option value="uppgivat">uppgivat</option>
+                <option value="uppgivande">uppgivande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "satte han sig framför datorn och började skriva."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Han blev"
+        },
+        {
+            "sentencePart": `<select data-correct="avskedad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="avskedad">avskedad</option>
+                <option value="avskedade">avskedade</option>
+                <option value="avskedat">avskedat</option>
+                <option value="avskeddad">avskeddad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "från sitt jobb efter flera varningar."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Den nya ordningen är"
+        },
+        {
+            "sentencePart": `<select data-correct="älskad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="älskad">älskad</option>
+                <option value="älskade">älskade</option>
+                <option value="älskat">älskat</option>
+                <option value="älskande">älskande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "av alla som bor här."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Han blev"
+        },
+        {
+            "sentencePart": `<select data-correct="övergiven" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="övergiven">övergiven</option>
+                <option value="övergivne">övergivne</option>
+                <option value="övergivet">övergivet</option>
+                <option value="övergivad">övergivad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "av kamraterna efter händelsen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Johansson var"
+        },
+        {
+            "sentencePart": `<select data-correct="hatad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="hatad">hatad</option>
+                <option value="hatade">hatade</option>
+                <option value="hatat">hatat</option>
+                <option value="hatande">hatande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "av personalen på grund av sitt beteende."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Dagen är"
+        },
+        {
+            "sentencePart": `<select data-correct="kommen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="kommen">kommen</option>
+                <option value="kommet">kommet</option>
+                <option value="komen">komen</option>
+                <option value="kommad">kommad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "för avresan."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Elden är"
+        },
+        {
+            "sentencePart": `<select data-correct="slocknad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="slocknad">slocknad</option>
+                <option value="slocknade">slocknade</option>
+                <option value="slocknat">slocknat</option>
+                <option value="slockad">slockad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och huset är säkert igen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Veckan är"
+        },
+        {
+            "sentencePart": `<select data-correct="gången" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="gången">gången</option>
+                <option value="gångne">gångne</option>
+                <option value="gånget">gånget</option>
+                <option value="gångad">gångad</option>
+            </select>`
+        },
+        {
+            "sentencePart": ", och helgen närmar sig."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hunden är"
+        },
+        {
+            "sentencePart": `<select data-correct="bortsprungen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="bortsprungen">bortsprungen</option>
+                <option value="bortsprungne">bortsprungne</option>
+                <option value="bortspringad">bortspringad</option>
+                <option value="bortsprungad">bortsprungad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och vi letar efter den."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Pelargonian är"
+        },
+        {
+            "sentencePart": `<select data-correct="utblommad" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="utblommad">utblommad</option>
+                <option value="utblommade">utblommade</option>
+                <option value="utblommande">utblommande</option>
+                <option value="utblommat">utblommat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och behöver skäras ner."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Fågeln är"
+        },
+        {
+            "sentencePart": `<select data-correct="utflugen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="utflugen">utflugen</option>
+                <option value="utflugne">utflugne</option>
+                <option value="utfluget">utfluget</option>
+                <option value="utflugad">utflugad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och ses inte längre i boet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hans är en"
+        },
+        {
+            "sentencePart": `<select data-correct="erfaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="erfaren">erfaren</option>
+                <option value="erfarne">erfarne</option>
+                <option value="erfaret">erfaret</option>
+                <option value="erfuren">erfuren</option>
+            </select>`
+        },
+        {
+            "sentencePart": "körledare med många års erfarenhet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Sjön är helt"
+        },
+        {
+            "sentencePart": `<select data-correct="frusen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="frusen">frusen</option>
+                <option value="frusna">frusna</option>
+                <option value="fruset">fruset</option>
+                <option value="frisen">frisen</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och redo för skridskoåkning."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Jag är mycket"
+        },
+        {
+            "sentencePart": `<select data-correct="nöjd" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="nöjd">nöjd</option>
+                <option value="nöjde">nöjde</option>
+                <option value="nöjt">nöjt</option>
+                <option value="nöjdad">nöjdad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "med resultatet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Är jag"
+        },
+        {
+            "sentencePart": `<select data-correct="vuxen" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="vuxen">vuxen</option>
+                <option value="vuxne">vuxne</option>
+                <option value="vuxet">vuxet</option>
+                <option value="vuxad">vuxad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "nu efter att ha fyllt arton?"
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det var ett"
+        },
+        {
+            "sentencePart": `<select data-correct="oförskämt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="oförskämt">oförskämt</option>
+                <option value="oförskämde">oförskämde</option>
+                <option value="oförskämd">oförskämd</option>
+                <option value="oförskämmande">oförskämmande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "svar som gjorde alla upprörda."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Han talade med en"
+        },
+        {
+            "sentencePart": `<select data-correct="leende" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="leende">leende</option>
+                <option value="leande">leande</option>
+                <option value="ledande">ledande</option>
+                <option value="lenande">lenande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "hovmästare om bokningen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Jag minns den"
+        },
+        {
+            "sentencePart": `<select data-correct="jublande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="jublande">jublande</option>
+                <option value="jublende">jublende</option>
+                <option value="jublad">jublad</option>
+                <option value="jublat">jublat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "publiken efter konserten."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hans bad om"
+        },
+        {
+            "sentencePart": `<select data-correct="kokande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="kokande">kokande</option>
+                <option value="kokende">kokende</option>
+                <option value="kokad">kokad</option>
+                <option value="kokade">kokade</option>
+            </select>`
+        },
+        {
+            "sentencePart": "vatten för att göra te."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det var ett"
+        },
+        {
+            "sentencePart": `<select data-correct="ansträngande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="ansträngande">ansträngande</option>
+                <option value="ansträngende">ansträngende</option>
+                <option value="ansträngd">ansträngd</option>
+                <option value="ansträngt">ansträngt</option>
+            </select>`
+        },
+        {
+            "sentencePart": "träningspass som lämnade mig helt slut."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det var en"
+        },
+        {
+            "sentencePart": `<select data-correct="förbluffande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="förbluffande">förbluffande</option>
+                <option value="förbluffende">förbluffende</option>
+                <option value="förbluffad">förbluffad</option>
+                <option value="förbluffat">förbluffat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "konsert med enastående musiker."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Ett mycket"
+        },
+        {
+            "sentencePart": `<select data-correct="kränkande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="kränkande">kränkande</option>
+                <option value="kränkende">kränkende</option>
+                <option value="kränkt">kränkt</option>
+                <option value="kränkat">kränkat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "svar gjorde henne ledsen."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Det var en"
+        },
+        {
+            "sentencePart": `<select data-correct="uppskakande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="uppskakande">uppskakande</option>
+                <option value="uppskakende">uppskakende</option>
+                <option value="uppskakad">uppskakad</option>
+                <option value="uppskakat">uppskakat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "berättelse om överlevnad."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Han höll ett"
+        },
+        {
+            "sentencePart": `<select data-correct="övertygande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="övertygande">övertygande</option>
+                <option value="övertygende">övertygende</option>
+                <option value="övertygad">övertygad</option>
+                <option value="övertygat">övertygat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "tal som imponerade på alla."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Temperaturen var"
+        },
+        {
+            "sentencePart": `<select data-correct="fallande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="fallande">fallande</option>
+                <option value="fallende">fallende</option>
+                <option value="fallnad">fallnad</option>
+                <option value="fallad">fallad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och natten blev kylig."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Vi såg en"
+        },
+        {
+            "sentencePart": `<select data-correct="skrämmande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="skrämmande">skrämmande</option>
+                <option value="skrämmende">skrämmende</option>
+                <option value="skrämd">skrämd</option>
+                <option value="skrämmad">skrämmad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "film och kunde knappt sova efteråt."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Min chef är"
+        },
+        {
+            "sentencePart": `<select data-correct="krävande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="krävande">krävande</option>
+                <option value="krävende">krävende</option>
+                <option value="krävd">krävd</option>
+                <option value="krävad">krävad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "men rättvis."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Han är"
+        },
+        {
+            "sentencePart": `<select data-correct="överbeskyddande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="överbeskyddande">överbeskyddande</option>
+                <option value="överbeskyddende">överbeskyddende</option>
+                <option value="överbeskydden">överbeskydden</option>
+                <option value="överbeskyddad">överbeskyddad</option>
+            </select>`
+        },
+        {
+            "sentencePart": "mot sin bror och låter honom aldrig ta risker."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hennes sätt var"
+        },
+        {
+            "sentencePart": `<select data-correct="vinnande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="vinnande">vinnande</option>
+                <option value="vinnende">vinnende</option>
+                <option value="vunnet">vunnet</option>
+                <option value="vunnat">vunnat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och fick alla att le."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Hennes beteende var"
+        },
+        {
+            "sentencePart": `<select data-correct="avvikande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="avvikande">avvikande</option>
+                <option value="avvikende">avvikende</option>
+                <option value="avviket">avviket</option>
+                <option value="avvikat">avvikat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och väckte misstankar."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Situationen är"
+        },
+        {
+            "sentencePart": `<select data-correct="oroande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="oroande">oroande</option>
+                <option value="oroende">oroende</option>
+                <option value="orodat">orodat</option>
+                <option value="oroat">oroat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "och kräver omedelbara åtgärder."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Barnen kom"
+        },
+        {
+            "sentencePart": `<select data-correct="springande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="springande">springande</option>
+                <option value="springende">springende</option>
+                <option value="springna">springna</option>
+                <option value="sprungade">sprungade</option>
+            </select>`
+        },
+        {
+            "sentencePart": "fram ur buskaget med skratt och rop."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "De iakttogs"
+        },
+        {
+            "sentencePart": `<select data-correct="smygande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="smygande">smygande</option>
+                <option value="smygende">smygende</option>
+                <option value="smugna">smugna</option>
+                <option value="smygna">smygna</option>
+            </select>`
+        },
+        {
+            "sentencePart": "omkring bakom slottet av vakterna."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "En flock måsar kom"
+        },
+        {
+            "sentencePart": `<select data-correct="flygande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="flygande">flygande</option>
+                <option value="flygende">flygende</option>
+                <option value="flugna">flugna</option>
+                <option value="flygna">flygna</option>
+            </select>`
+        },
+        {
+            "sentencePart": "över vågorna mot land."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Vi blev"
+        },
+        {
+            "sentencePart": `<select data-correct="sittande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="sittande">sittande</option>
+                <option value="sittende">sittende</option>
+                <option value="sittna">sittna</option>
+                <option value="suttna">suttna</option>
+            </select>`
+        },
+        {
+            "sentencePart": "på restaurangen resten av eftermiddagen och pratade."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Allt blev"
+        },
+        {
+            "sentencePart": `<select data-correct="hängande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="hängande">hängande</option>
+                <option value="hängende">hängende</option>
+                <option value="hängna">hängna</option>
+                <option value="hängnat">hängnat</option>
+            </select>`
+        },
+        {
+            "sentencePart": "i luften efter det oväntade beskedet."
+        }
+    ]
+},
+{
+    "words": [
+        {
+            "sentencePart": "Vi promenerade i en"
+        },
+        {
+            "sentencePart": `<select data-correct="förtjusande" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+                <option value="">Välj</option>
+                <option value="förtjusande">förtjusande</option>
+                <option value="förtjusende">förtjusende</option>
+                <option value="förtjusta">förtjusta</option>
+                <option value="förtjusnande">förtjusnande</option>
+            </select>`
+        },
+        {
+            "sentencePart": "trädgård full av blommor."
+        }
+    ]
+}
+
+    // Lägg till fler meningar efter behov
+];
+
+    let score = 0;
+
+    // Fisher-Yates shuffle algorithm to shuffle an array.
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Function to generate HTML for a single sentence
+    function generateSentenceHTML(sentence, index) {
+        const sentenceHTML = sentence.words.map(item => item.sentencePart).join(' ');
+        return `<div class="sentence" data-state="none"><p>${sentenceHTML}</p></div>`;
+    }
+
+    // Render sentences in a shuffled order.
+    function renderSentences() {
+        const shuffledSentences = shuffleArray([...sentences]);
+        const sentencesHTML = shuffledSentences.map((sentence, index) => generateSentenceHTML(sentence, index)).join('');
+        document.getElementById('sentences').innerHTML = sentencesHTML;
+    }
+
+    // Evaluates the user's answer and updates the score and UI accordingly.
+	function evaluateAnswer(selectElement) {
+		const correctAnswer = selectElement.getAttribute('data-correct');
+		const selectedValue = selectElement.value;
+		const parent = selectElement.closest('.sentence');
+	
+		// Get the previous state to ensure points are added or subtracted correctly
+		const priorState = parent.getAttribute('data-state') || 'none';
+		let newState;
+	
+		if (selectedValue === correctAnswer) {
+			newState = 'correct';
+			if (priorState === 'incorrect') {
+				// Switching from incorrect to correct
+				updateScore(2); // +1 for correct, +1 to cancel previous -1
+			} else if (priorState === 'none') {
+				// New correct selection
+				updateScore(1);
+			}
+		} else if (selectedValue === "") {
+			// Reset to default selection
+			if (priorState === 'correct') {
+				// Resetting from correct
+				updateScore(-1);
+			} else if (priorState === 'incorrect') {
+				// Resetting from incorrect
+				updateScore(1);
+			}
+			newState = 'none';
+		} else {
+			// Incorrect selection
+			if (priorState === 'correct') {
+				// Switching from correct to incorrect
+				updateScore(-2); // -1 for incorrect, -1 to cancel previous +1
+			} else if (priorState === 'none') {
+				// New incorrect selection
+				updateScore(-1);
+			}
+			newState = 'incorrect';
+		}
+	
+		// Update UI with the new state
+		parent.classList.remove('correct', 'incorrect');
+		if (newState !== 'none') {
+			parent.classList.add(newState);
+		}
+		parent.setAttribute('data-state', newState);
+	
+		checkAllCorrect();
+	}
+
+
+    // Updates the score display based on value change.
+	function updateScore(value) {
+		score += value;
+	
+		// Prevent score from exceeding boundaries
+		if (score > 25) {
+			score = 25;
+		} else if (score < -25) {
+			score = -25;
+		}
+	
+		// Update all elements with the class "score-display" to reflect the updated score
+		document.querySelectorAll('.score-display').forEach((element) => {
+			element.textContent = score;
+		});
+	
+		checkForMaxScore(score);
+	}
+
+    // Check if the score has reached max and opens the congratulations modal if so.
+    function checkForMaxScore(currentScore) {
+        if (currentScore >= sentences.length) {
+            openModal('congratulationsModal');
+        }
+    }
+
+    // Checks if all sentences are correctly answered.
+    function checkAllCorrect() {
+        const allCorrect = Array.from(document.querySelectorAll('.sentence')).every(sentence => sentence.classList.contains('correct'));
+        if (allCorrect) {
+            openModal('congratulationsModal');
+        }
+    }
+
+    // Opens a modal by its ID.
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'flex';
+            modal.classList.add('show');
+        }
+    }
+
+    // Closes a modal by its ID.
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        }
+    }
+
+    // Close modal when clicking outside of the modal content
+    window.addEventListener('click', (event) => {
+        const infoModal = document.getElementById('infoModal');
+        const congratulationsModal = document.getElementById('congratulationsModal');
+
+        if (event.target === infoModal) {
+            closeModal('infoModal');
+        } else if (event.target === congratulationsModal) {
+            closeModal('congratulationsModal');
+        }
+    });
+
+    // Function to toggle mobile menu
+    function toggleMenu() {
+        const menuOverlay = document.getElementById('menuOverlay');
+        menuOverlay.classList.toggle('active');
+    }
+
+    // Function to toggle dark mode
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+
+        // Toggle dark mode on the menu overlay
+        const menuOverlay = document.getElementById('menuOverlay');
+        menuOverlay.classList.toggle('dark-mode-menu');
+
+        // Update dark mode preference in localStorage
+        const isDarkModeEnabled = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
+
+        // Uppdatera texten i dark mode toggle baserat på läget
+        document.getElementById('darkModeText').textContent = isDarkModeEnabled ? "Light mode" : "Dark mode";
+    }
+
+    // Function to open MenuURL
+    function openMenuURL() {
+        window.open('https://learnswedish.github.io/html/participle-logic.html', '_blank', 'noopener,noreferrer');
+    }
+
+    // Open the Info modal and close the menu
+    function showInfo() {
+        openModal('infoModal');
+        toggleMenu(); // Stäng menyn efter att ha visat info
+    }
+
+    // Start over and close the menu
+    function startOverAndCloseMenu() {
+        startOver();
+        toggleMenu(); // Stäng menyn efter att ha startat om
+    }
+
+    // Initialize the dark mode toggle with stored preference
+    function initializeModalsAndDarkMode() {
+        const darkModeToggle = document.getElementById('darkModeSwitch');
+        const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+        if (isDarkModeEnabled) {
+            document.body.classList.add('dark-mode');
+            document.getElementById('menuOverlay').classList.add('dark-mode-menu');
+            document.getElementById('darkModeText').textContent = "Light mode";
+            darkModeToggle.checked = true;
+        } else {
+            document.getElementById('darkModeText').textContent = "Dark mode";
+            darkModeToggle.checked = false;
+        }
+
+        darkModeToggle.addEventListener('change', function () {
+            toggleDarkMode();
+        });
+    }
+
+    // Function to update the maximum score in the HTML
+    function updateMaxScore() {
+        const maxScore = sentences.length;
+        document.querySelectorAll('.score-max').forEach((element) => {
+            element.textContent = maxScore;
+        });
+    }
+
+    // Resets the quiz and score, then re-renders sentences.
+    function startOver() {
+        renderSentences();
+        resetScore();
+        closeModal('congratulationsModal');
+    }
+
+    // Resets the score to zero.
+    function resetScore() {
+        score = 0;
+        document.querySelectorAll('.score-display').forEach((element) => {
+            element.textContent = score;
+        });
+
+        // Återställ alla meningars tillstånd
+        document.querySelectorAll('.sentence').forEach(sentence => {
+            sentence.classList.remove('correct', 'incorrect');
+            sentence.setAttribute('data-state', 'none');
+        });
+    }
+
+	// Function to shuffle options in a select element
+	function shuffleOptions(selectElement) {
+		const options = Array.from(selectElement.options); // Get all options
+		const placeholder = options.shift(); // Keep the placeholder option (e.g., "Välj")
+		const shuffledOptions = shuffleArray(options); // Shuffle the rest of the options
+		selectElement.innerHTML = ""; // Clear current options
+		selectElement.appendChild(placeholder); // Append the placeholder option
+		shuffledOptions.forEach(option => selectElement.appendChild(option)); // Append shuffled options
+	}
+	
+	// Shuffle options for all select elements in the document
+	function shuffleAllOptions() {
+		const allSelectElements = document.querySelectorAll('select');
+		allSelectElements.forEach(select => shuffleOptions(select));
+	}
+
+    // Initialize the application once the DOM is fully loaded.
+	document.addEventListener('DOMContentLoaded', () => {
+		renderSentences();
+		initializeModalsAndDarkMode();
+		shuffleAllOptions(); // New function to shuffle options in all <select> elements
+		resetScore();
+		updateMaxScore();
+	});
+    </script>
+
+</body>
+
+</html>
