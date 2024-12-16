@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Types</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Grundläggande stil */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 20px 20px 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-right: 0; /* Adjust spacing for the right column */
+        }
+
+        .sticky-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 200px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .counter {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        .reset-button {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+
+        .reset-button:hover {
+            background-color: #c0392b;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        p.description {
+            text-align: center;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .sentence {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .word {
+            position: relative;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+            display: inline-block;
+        }
+
+        .word:hover {
+            background-color: #eef2f3;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 80%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 100;
+            width: 170px;
+            margin-top: 5px;
+        }
+
+        .word:hover .dropdown,
+        .word .dropdown:hover {
+            display: block;
+        }
+
+        .dropdown select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            appearance: none;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .dropdown i {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .dropdown select option[value="io"] {
+            color: #e74c3c;
+        }
+
+        .dropdown select option[value="do"] {
+            color: #27ae60;
+        }
+
+        .word.do {
+            color: #27ae60;
+        }
+
+        .word.io {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 15px 15px 15px;
+                margin-right: 0;
+            }
+
+            .sticky-container {
+                position: static;
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .counter {
+                font-size: 1em;
+                padding: 8px 16px;
+            }
+
+            .reset-button {
+                font-size: 1em;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Identify Object Types</h1>
+        <p class="description">
+            In each sentence below, there is both a direct object and an indirect object.<br />
+			Your challenge is to determine which object is which!<br /><br />
+			<strong>How to:</strong><br />
+            Hover over an object and assign its type. The moment you select a type,<br />
+            the other object in the sentence is automatically assigned the opposite type<br />
+            (again, there is one of each type in every sentence).<br /><br />
+            <span style="color: #e74c3c;"><strong>RED indicates indirect object</strong></span>.<br />
+            <span style="color: #27ae60;"><strong>GREEN indicates direct object</strong></span>.<br /><br />
+            Try to complete all 30 sentences without making a single mistake.
+        </p>
+
+        <div id="sentences">
+            <div class="sentence">
+                Hon gav <span class="word" data-word="honom" data-correct="io">honom
+                    <div class="dropdown">
+                        <select onchange="setObjectType(this, 'honom')">
+                            <option value="">Pick correct type</option>
+                            <option value="do">Direct object</option>
+                            <option value="io">Indirect object</option>
+                        </select>
+                        <i class="fa fa-solid fa-bars"></i>
+                    </div>
+                </span> <span class="word" data-word="boken" data-correct="do">boken
+                    <div class="dropdown">
+                        <select onchange="setObjectType(this, 'boken')">
+                            <option value="">Pick correct type</option>
+                            <option value="do">Direct object</option>
+                            <option value="io">Indirect object</option>
+                        </select>
+                        <i class="fa fa-solid fa-bars"></i>
+                    </div>
+                </span>. <em>(She gave him the book.)</em>
+            </div>
+
+            <div class="sentence">
+                Läraren visade <span class="word" data-word="oss" data-correct="io">oss
+                    <div class="dropdown">
+                        <select onchange="setObjectType(this, 'oss')">
+                            <option value="">Pick correct type</option>
+                            <option value="do">Direct object</option>
+                            <option value="io">Indirect object</option>
+                        </select>
+                        <i class="fa fa-solid fa-bars"></i>
+                    </div>
+                </span> <span class="word" data-word="vägen" data-correct="do">vägen
+                    <div class="dropdown">
+                        <select onchange="setObjectType(this, 'vägen')">
+                            <option value="">Pick correct type</option>
+                            <option value="do">Direct object</option>
+                            <option value="io">Indirect object</option>
+                        </select>
+                        <i class="fa fa-solid fa-bars"></i>
+                    </div>
+                </span>. <em>(The teacher showed us the way.)</em>
+            </div>
+
+			<div class="sentence">
+				De skickade <span class="word" data-word="henne" data-correct="io">henne
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'henne')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="ett brev" data-correct="do">ett brev
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'ett brev')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(They sent her a letter.)</em>
+			</div>
+		
+			<div class="sentence">
+				Jag köpte <span class="word" data-word="honom" data-correct="io">honom
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'honom')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="en ny tröja" data-correct="do">en ny tröja
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en ny tröja')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(I bought him a new sweater.)</em>
+			</div>
+		
+			<div class="sentence">
+				Hon berättade för <span class="word" data-word="oss" data-correct="io">oss
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'oss')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="en hemlighet" data-correct="do">en hemlighet
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en hemlighet')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(She told us a secret.)</em>
+			</div>
+		
+			<div class="sentence">
+				Vi visade <span class="word" data-word="dem" data-correct="io">dem
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'dem')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="våra nya bilder" data-correct="do">våra nya bilder
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'våra nya bilder')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(We showed them our new pictures.)</em>
+			</div>
+		
+			<div class="sentence">
+				Han gav <span class="word" data-word="mig" data-correct="io">mig
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'mig')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="ett glas vatten" data-correct="do">ett glas vatten
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'ett glas vatten')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(He gave me a glass of water.)</em>
+			</div>
+		
+			<div class="sentence">
+				Hon skickade <span class="word" data-word="honom" data-correct="io">honom
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'honom')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="en inbjudan" data-correct="do">en inbjudan
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en inbjudan')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(She sent him an invitation.)</em>
+			</div>
+		
+			<div class="sentence">
+				De sålde <span class="word" data-word="oss" data-correct="io">oss
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'oss')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="huset" data-correct="do">huset
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'huset')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(They sold us the house.)</em>
+			</div>
+		
+			<div class="sentence">
+				Jag lämnade <span class="word" data-word="dig" data-correct="io">dig
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'dig')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="nyckeln" data-correct="do">nyckeln
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'nyckeln')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(I left you the key.)</em>
+			</div>
+			<div class="sentence">
+				Vi berättade för <span class="word" data-word="barnen" data-correct="io">barnen
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'barnen')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="en saga" data-correct="do">en saga
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en saga')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(We told the children a story.)</em>
+			</div>
+			
+			<div class="sentence">
+				Hon visade <span class="word" data-word="honom" data-correct="io">honom
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'honom')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="sitt pass" data-correct="do">sitt pass
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'sitt pass')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(She showed him her passport.)</em>
+			</div>
+			
+			<div class="sentence">
+				Han köpte <span class="word" data-word="sin syster" data-correct="io">sin syster
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'sin syster')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="en present" data-correct="do">en present
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en present')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(He bought his sister a present.)</em>
+			</div>
+			
+			<div class="sentence">
+				De skickade <span class="word" data-word="sina grannar" data-correct="io">sina grannar
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'sina grannar')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="en hälsning" data-correct="do">en hälsning
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en hälsning')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(They sent their neighbours a greeting.)</em>
+			</div>
+			
+			<div class="sentence">
+				Jag gav <span class="word" data-word="katten" data-correct="io">katten
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'katten')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> <span class="word" data-word="lite mat" data-correct="do">lite mat
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'lite mat')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(I gave the cat some food.)</em>
+			</div>
+			
+			<div class="sentence">
+				Hon gav <span class="word" data-word="boken" data-correct="do">boken
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'boken')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> till <span class="word" data-word="honom" data-correct="io">honom
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'honom')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(She gave the book to him.)</em>
+			</div>
+		
+			<div class="sentence">
+				Läraren visade <span class="word" data-word="vägen" data-correct="do">vägen
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'vägen')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> för <span class="word" data-word="oss" data-correct="io">oss
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'oss')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(The teacher showed the way to us.)</em>
+			</div>
+		
+			<div class="sentence">
+				De skickade <span class="word" data-word="ett brev" data-correct="do">ett brev
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'ett brev')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> till <span class="word" data-word="henne" data-correct="io">henne
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'henne')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(They sent a letter to her.)</em>
+			</div>
+		
+			<div class="sentence">
+				Jag köpte <span class="word" data-word="en ny tröja" data-correct="do">en ny tröja
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en ny tröja')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> åt <span class="word" data-word="honom" data-correct="io">honom
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'honom')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(I bought a new sweater for him.)</em>
+			</div>
+		
+			<div class="sentence">
+				Hon berättade <span class="word" data-word="en hemlighet" data-correct="do">en hemlighet
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en hemlighet')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> för <span class="word" data-word="oss" data-correct="io">oss
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'oss')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(She told a secret to us.)</em>
+			</div>
+		
+			<div class="sentence">
+				Vi visade <span class="word" data-word="våra nya bilder" data-correct="do">våra nya bilder
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'våra nya bilder')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> för <span class="word" data-word="dem" data-correct="io">dem
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'dem')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(We showed our new pictures to them.)</em>
+			</div>
+		
+			<div class="sentence">
+				Han gav <span class="word" data-word="ett glas vatten" data-correct="do">ett glas vatten
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'ett glas vatten')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> till <span class="word" data-word="mig" data-correct="io">mig
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'mig')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(He gave a glass of water to me.)</em>
+			</div>
+		
+			<div class="sentence">
+				Hon skickade <span class="word" data-word="en inbjudan" data-correct="do">en inbjudan
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en inbjudan')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> till <span class="word" data-word="honom" data-correct="io">honom
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'honom')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(She sent an invitation to him.)</em>
+			</div>
+			
+			<div class="sentence">
+				De sålde <span class="word" data-word="huset" data-correct="do">huset
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'huset')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> till <span class="word" data-word="oss" data-correct="io">oss
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'oss')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(They sold the house to us.)</em>
+			</div>
+			
+			<div class="sentence">
+				Jag lämnade <span class="word" data-word="nyckeln" data-correct="do">nyckeln
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'nyckeln')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> till <span class="word" data-word="dig" data-correct="io">dig
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'dig')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(I left the key for you.)</em>
+			</div>
+			
+			<div class="sentence">
+				Vi berättade <span class="word" data-word="en saga" data-correct="do">en saga
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en saga')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> för <span class="word" data-word="barnen" data-correct="io">barnen
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'barnen')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(We told a story to the children.)</em>
+			</div>
+			
+			<div class="sentence">
+				Hon visade <span class="word" data-word="sitt pass" data-correct="do">sitt pass
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'sitt pass')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> för <span class="word" data-word="honom" data-correct="io">honom
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'honom')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(She showed her passport to him.)</em>
+			</div>
+			
+			<div class="sentence">
+				Han köpte <span class="word" data-word="en present" data-correct="do">en present
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en present')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> åt <span class="word" data-word="sin syster" data-correct="io">sin syster
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'sin syster')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(He bought a present for his sister.)</em>
+			</div>
+			
+			<div class="sentence">
+				De skickade <span class="word" data-word="en hälsning" data-correct="do">en hälsning
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'en hälsning')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> till <span class="word" data-word="sina grannar" data-correct="io">sina grannar
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'sina grannar')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(They sent a greeting to their neighbours.)</em>
+			</div>
+			
+			<div class="sentence">
+				Jag gav <span class="word" data-word="lite mat" data-correct="do">lite mat
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'lite mat')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span> till <span class="word" data-word="katten" data-correct="io">katten
+					<div class="dropdown">
+						<select onchange="setObjectType(this, 'katten')">
+							<option value="">Pick correct type</option>
+							<option value="do">Direct object</option>
+							<option value="io">Indirect object</option>
+						</select>
+						<i class="fa fa-solid fa-bars"></i>
+					</div>
+				</span>. <em>(I gave some food to the cat.)</em>
+			</div>
+
+
+    </div>
+
+    <div class="sticky-container">
+        <div id="score-container" class="counter">Correct: <span id="score">0</span></div>
+        <div id="mistakes-container" class="counter">Mistakes: <span id="mistakes">0</span></div>
+        <button class="reset-button" onclick="resetPage()">Reset</button>
+    </div>
+
+    <script>
+        let score = 0;
+        let mistakes = 0;
+        const mistakeTracker = {};
+
+        function updateScoreDisplay() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('mistakes').textContent = mistakes;
+        }
+
+        function calculateScore() {
+            let totalScore = 0;
+            const sentences = document.querySelectorAll('.sentence');
+
+            sentences.forEach(sentence => {
+                const words = sentence.querySelectorAll('.word');
+                let sentenceCorrect = true;
+
+                words.forEach(word => {
+                    const selectedValue = word.querySelector('select').value;
+                    const correctValue = word.getAttribute('data-correct');
+
+                    if (selectedValue !== correctValue) {
+                        sentenceCorrect = false;
+                    }
+                });
+
+                if (sentenceCorrect) {
+                    totalScore += 1;
+                }
+            });
+
+            return totalScore;
+        }
+
+		// Shuffle sentences within the #sentences container
+		function shuffleSentences() {
+			const container = document.getElementById('sentences');
+			const sentences = Array.from(container.children);
+		
+			// Shuffle the array using Fisher-Yates algorithm
+			for (let i = sentences.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[sentences[i], sentences[j]] = [sentences[j], sentences[i]];
+			}
+		
+			// Append shuffled sentences back to the container
+			sentences.forEach(sentence => container.appendChild(sentence));
+		}
+
+        function setObjectType(dropdown, word) {
+            const selectedValue = dropdown.value;
+            const parentWord = dropdown.closest('.word');
+            const sentenceDiv = parentWord.closest('.sentence');
+            const allWords = sentenceDiv.querySelectorAll('.word');
+
+            let otherWord = null;
+            allWords.forEach(function(w) {
+                if (w.getAttribute('data-word') !== word) {
+                    otherWord = w;
+                }
+            });
+
+            if (otherWord) {
+                const otherSelect = otherWord.querySelector('select');
+
+                if (selectedValue === 'do') {
+                    parentWord.classList.add('do');
+                    parentWord.classList.remove('io');
+
+                    otherWord.classList.add('io');
+                    otherWord.classList.remove('do');
+
+                    otherSelect.value = 'io';
+                } else if (selectedValue === 'io') {
+                    parentWord.classList.add('io');
+                    parentWord.classList.remove('do');
+
+                    otherWord.classList.add('do');
+                    otherWord.classList.remove('io');
+
+                    otherSelect.value = 'do';
+                } else {
+                    parentWord.classList.remove('do', 'io');
+                    otherWord.classList.remove('do', 'io');
+                    otherSelect.value = '';
+                }
+            }
+
+            const correctValue = parentWord.getAttribute('data-correct');
+            if (selectedValue !== '' && selectedValue !== correctValue) {
+                if (!mistakeTracker[word]) {
+                    mistakes += 1;
+                    mistakeTracker[word] = true;
+                }
+            }
+
+            score = calculateScore();
+            updateScoreDisplay();
+            saveSelections();
+        }
+
+        function saveSelections() {
+            document.querySelectorAll('.word').forEach(wordElement => {
+                const word = wordElement.getAttribute('data-word');
+                const selectedValue = wordElement.querySelector('select').value;
+                if (selectedValue === 'do' || selectedValue === 'io') {
+                    localStorage.setItem(word, selectedValue);
+                } else {
+                    localStorage.removeItem(word);
+                }
+            });
+
+            localStorage.setItem('mistakeTracker', JSON.stringify(mistakeTracker));
+        }
+
+        window.onload = function() {
+			shuffleSentences();
+            const savedMistakes = localStorage.getItem('mistakeTracker');
+            if (savedMistakes) {
+                Object.assign(mistakeTracker, JSON.parse(savedMistakes));
+                mistakes = Object.keys(mistakeTracker).length;
+            }
+
+            document.querySelectorAll('.word').forEach(wordElement => {
+                const word = wordElement.getAttribute('data-word');
+                const savedValue = localStorage.getItem(word);
+                if (savedValue) {
+                    const select = wordElement.querySelector('select');
+                    select.value = savedValue;
+                    wordElement.classList.add(savedValue);
+
+                    const sentenceDiv = wordElement.closest('.sentence');
+                    const allWords = sentenceDiv.querySelectorAll('.word');
+                    let otherWord = null;
+                    allWords.forEach(w => {
+                        if (w.getAttribute('data-word') !== word) {
+                            otherWord = w;
+                        }
+                    });
+                    if (otherWord) {
+                        const otherSelect = otherWord.querySelector('select');
+                        if (savedValue === 'do') {
+                            otherWord.classList.add('io');
+                            otherWord.classList.remove('do');
+                            otherSelect.value = 'io';
+                        } else if (savedValue === 'io') {
+                            otherWord.classList.add('do');
+                            otherWord.classList.remove('io');
+                            otherSelect.value = 'do';
+                        }
+                    }
+                }
+            });
+
+            score = calculateScore();
+            updateScoreDisplay();
+        };
+
+		function resetPage() {
+			localStorage.clear();
+			shuffleSentences(); // Shuffle sentences before reloading
+			location.reload();
+		}
+    </script>
+</body>
+</html>
