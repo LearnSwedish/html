@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="vocab-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Nine: 2</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dark mode</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Unit Nine: 2</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+    <p id="swedish-word" class="clickable-word" onclick="speakSwedish()">
+        <span id="word-text"></span>
+        <i class="fa-regular fa-circle-play"></i>
+    </p>
+</div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Correct Answers: <span id="correct-counter">0</span></p>
+            <p>Mistakes: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Words missed on first try:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Reset</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Yes</button>
+                <button class="modal-btn" onclick="closeModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        const vocabulary = [
+            { swedish: "(att) må", english: ["feel (of health)", "matter", "feeling", "fearful"], correct: 0 },
+			{ swedish: "idag", english: ["today", "ideal", "tomorrow", "together"], correct: 0 },
+			{ swedish: "sådär", english: ["so-so", "sorry", "solution", "sound"], correct: 0 },
+			{ swedish: "helt", english: ["completely", "help", "completion", "complex"], correct: 0 },
+			{ swedish: "ärlig", english: ["honest", "error", "honesty", "hopeful"], correct: 0 },
+			{ swedish: "(en) huvudvärk", english: ["headache", "human", "heavy", "helpful"], correct: 0 },
+			{ swedish: "illa", english: ["poorly", "illness", "possible", "present"], correct: 0 },
+			{ swedish: "i morse", english: ["this morning", "imagine", "thinking", "thorough"], correct: 0 },
+			{ swedish: "(en) magtablett", english: ["indigestion tablet", "magic", "indifferent", "invisible"], correct: 0 },
+			{ swedish: "visst", english: ["wasn't it", "vision", "wonder", "wishful"], correct: 0 },
+			{ swedish: "skoj", english: ["fun", "sketch", "funny", "functional"], correct: 0 },
+			{ swedish: "verkligen", english: ["really", "verbal", "realistic", "reasonable"], correct: 0 },
+			{ swedish: "inte någon vidare", english: ["not very good", "interest", "negative", "natural"], correct: 0 },
+			{ swedish: "(att) gilla", english: ["like", "gift", "living", "lasting"], correct: 0 },
+			{ swedish: "(en) dansmusik", english: ["dance music", "live music, rock concert", "pop music, classical", "jazz music, blues"], correct: 0 },
+			{ swedish: "förstås", english: ["of course", "fortune", "correctly", "careful"], correct: 0 },
+			{ swedish: "(att) dansa", english: ["dance", "danger", "distant", "groove"], correct: 0 },
+			{ swedish: "(att) föredra", english: ["prefer", "forest", "precious", "choose"], correct: 0 },
+			{ swedish: "går det bra?", english: ["is that OK?", "going", "official", "permitted"], correct: 0 },
+			{ swedish: "hemma", english: ["home, in the flat", "hometown, inside flat", "house, inside flat", "hover, into flat"], correct: 0 },
+			{ swedish: "(en) snabbkaffe", english: ["instant coffee", "snack", "instance", "internal"], correct: 0 },
+			{ swedish: "i vanliga fall", english: ["usually", "initial", "useful", "urgent"], correct: 0 },
+			{ swedish: "(att) avsky", english: ["detest", "avoid", "detailed", "definite"], correct: 0 },
+			{ swedish: "duger allt", english: ["anything goes", "duty", "anywhere", "alert"], correct: 0 },
+			{ swedish: "koffeinfri", english: ["decaffeinated", "kosher", "decent", "delicate"], correct: 0 },
+			{ swedish: "(något att äta) till", english: ["(sth to eat) with it", "timber", "within", "wishful"], correct: 0 },
+			{ swedish: "på tal om", english: ["talking of", "palace", "talkative", "thoughtful"], correct: 0 },
+			{ swedish: "rödhårig", english: ["red-haired", "road", "rugged", "regular"], correct: 0 },
+			{ swedish: "(en) tjej", english: ["girl", "typical", "gentle", "graceful"], correct: 0 },
+			{ swedish: "trevlig", english: ["nice", "trend", "nearby", "natural"], correct: 0 },
+			{ swedish: "(en) kompis", english: ["friend", "knowledge", "formal", "alliance"], correct: 0 },
+			{ swedish: "redan", english: ["already", "arisen, available", "aged, issued", "existed, occurred"], correct: 0 },
+			{ swedish: "trist", english: ["sad", "triple", "gloomy", "serious"], correct: 0 },
+
+        ];
+   </script>
+<script src="vocab-scripts.js"></script>
+<script>
+    window.addEventListener('load', () => {
+        ResponsiveVoice.speak("", "Swedish Female"); // Preload Swedish voice
+    });
+</script>
+</body>
+</html>

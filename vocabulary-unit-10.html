@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="vocab-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Ten: all</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dark mode</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Unit Ten: all</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+    <p id="swedish-word" class="clickable-word" onclick="speakSwedish()">
+        <span id="word-text"></span>
+        <i class="fa-regular fa-circle-play"></i>
+    </p>
+</div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Correct Answers: <span id="correct-counter">0</span></p>
+            <p>Mistakes: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Words missed on first try:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Reset</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Yes</button>
+                <button class="modal-btn" onclick="closeModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        const vocabulary = [
+			{ swedish: "(att) passera", english: ["pass, exceed", "proceed, surpass", "advance, overstep", "push, transcend"], correct: 0 },
+			{ swedish: "(en) befolkning", english: ["population", "better", "political", "possible"], correct: 0 },
+			{ swedish: "(en) gräns", english: ["limit, mark", "zone, region", "district, sector", "area, locality"], correct: 0 },
+			{ swedish: "vanligast", english: ["most common", "variable", "mental", "median"], correct: 0 },
+			{ swedish: "(ett) flicknamn", english: ["girl’s name", "flash", "giving", "generous"], correct: 0 },
+			{ swedish: "(ett) pojknamn", english: ["boy’s name", "possible", "basic", "bright"], correct: 0 },
+			{ swedish: "(ett) efternamn", english: ["surname, family name", "effect", "suffix", "impact"], correct: 0 },
+			{ swedish: "många", english: ["many", "magic", "mindful", "modern"], correct: 0 },
+			{ swedish: "(en) natur", english: ["environment, countryside", "native, entering", "essential, biosphere", "habitat, pastoral region"], correct: 0 },
+			{ swedish: "(en) naturanknytning", english: ["connection with nature", "naval", "connecting", "careful"], correct: 0 },
+			{ swedish: "(en) lind", english: ["lime tree", "light", "living", "lasting"], correct: 0 },
+			{ swedish: "(ett) berg", english: ["rock, mountain", "crag, peak", "stone, summit", "boulder, elevation"], correct: 0 },
+			{ swedish: "(en) kvist", english: ["twig", "quiet", "twisting", "tender"], correct: 0 },
+			{ swedish: "sådan", english: ["such", "soda", "sugar", "sudden"], correct: 0 },
+			{ swedish: "(en) fors", english: ["rapid, waterfall", "torrent, cascade", "rush, plunge", "current, drop"], correct: 0 },
+			{ swedish: "(att) bestå", english: ["consist", "constant", "careful", "control"], correct: 0 },
+			{ swedish: "(en) mamma", english: ["mum", "magic", "mother", "minute"], correct: 0 },
+			{ swedish: "(en) pappa", english: ["dad", "package", "daddy", "direct"], correct: 0 },
+			{ swedish: "(en) son", english: ["son", "sorry", "similar", "sunset"], correct: 0 },
+			{ swedish: "(en) dotter", english: ["daughter", "doctor", "daily", "dramatic"], correct: 0 },
+			{ swedish: "(en) farfar", english: ["(paternal) grandfather", "fancy", "elder", "generous"], correct: 0 },
+			{ swedish: "(en) byggnadsarbetare", english: ["building worker", "business", "building", "bringing"], correct: 0 },
+			{ swedish: "(en) mor", english: ["mother", "morning", "mindful", "mental"], correct: 0 },
+			{ swedish: "(en) farmor", english: ["(paternal) grandmother", "fancy", "graceful", "elder"], correct: 0 },
+			{ swedish: "(en) bonde", english: ["farmer", "bottle", "farming", "friendly"], correct: 0 },
+			{ swedish: "(att) studera till", english: ["train to be, get an education", "develop, explore", "manage, operate", "create, design"], correct: 0 },
+			{ swedish: "(en) ingenjör", english: ["engineer", "instant", "engine", "ideal"], correct: 0 },
+			{ swedish: "(att) bli förälskad i", english: ["fall in love with", "blind", "falling", "friendly"], correct: 0 },
+			{ swedish: "(en) busskö", english: ["bus queue", "business", "busy", "basic"], correct: 0 },
+			{ swedish: "(att) berätta", english: ["tell", "berry", "talking", "taking"], correct: 0 },
+			{ swedish: "skotsk", english: ["Scottish", "sketch", "science", "simple"], correct: 0 },
+			{ swedish: "(att) gifta sig", english: ["get married", "gift", "moment", "celebrate"], correct: 0 },
+			{ swedish: "(ett) barn", english: ["child", "barrier", "careful", "limit"], correct: 0 },
+			{ swedish: "(att) växa", english: ["grow", "water", "wax bean", "genuine"], correct: 0 },
+			{ swedish: "(en) sångerska", english: ["(female) singer", "sample", "Sinhalese", "solid"], correct: 0 },
+			{ swedish: "(en) servitris", english: ["waitress", "serve", "waiting", "writing"], correct: 0 },
+			{ swedish: "(att) sjunga", english: ["sing", "simple", "sung", "silent"], correct: 0 },
+			{ swedish: "(en) nattklubb", english: ["night club", "natural", "night porter", "normal"], correct: 0 },
+			{ swedish: "(att) tröttna", english: ["get tired", "trouble", "trotter", "taken"], correct: 0 },
+			{ swedish: "(att) utbilda sig", english: ["train, get an education", "develop, explore", "manage, operate", "create, design"], correct: 0 },
+			{ swedish: "(en) musiklärare", english: ["music teacher", "multiple", "musical", "mental"], correct: 0 },
+			{ swedish: "(en) förälder", english: ["parent", "forest", "parental", "possible"], correct: 0 },
+			{ swedish: "(en) släkting", english: ["relative", "slide", "reality", "regular"], correct: 0 },
+			{ swedish: "(att) dö", english: ["die", "door", "deadly", "direct"], correct: 0 },
+			{ swedish: "för... sedan", english: ["ago", "for example", "agony", "agile"], correct: 0 },
+			{ swedish: "(en) kusin", english: ["cousin", "culture", "counting", "careful"], correct: 0 },
+			{ swedish: "(att) hälsa på", english: ["visit", "handle", "viewing", "vital"], correct: 0 },
+			{ swedish: "(att) diskutera", english: ["discuss", "distance", "discipline", "disguise"], correct: 0 },
+			{ swedish: "för en gångs skull", english: ["for once", "forget once", "forest", "format"], correct: 0 },
+			{ swedish: "vore", english: ["would be", "wore", "would have", "would go"], correct: 0 },
+			{ swedish: "utmärkt", english: ["excellent", "exhale", "exchange", "exact"], correct: 0 },
+			{ swedish: "(en) idé", english: ["idea", "idle", "identical", "idol"], correct: 0 },
+			{ swedish: "(en) plan", english: ["plan", "plane", "platform", "plant"], correct: 0 },
+			{ swedish: "pengar", english: ["money", "monitor", "monologue", "momentum"], correct: 0 },
+			{ swedish: "(att) vara kvar", english: ["stay", "stash", "stall", "static"], correct: 0 },
+			{ swedish: "(ett) val", english: ["choice", "chalet", "choke", "chorus"], correct: 0 },
+			{ swedish: "(en) släkt", english: ["(extended) family", "famine", "familiar", "famous"], correct: 0 },
+			{ swedish: "hos", english: ["with", "host", "withdraw", "witness"], correct: 0 },
+			{ swedish: "tråkig", english: ["boring", "bromine", "border", "borrow"], correct: 0 },
+			{ swedish: "(att) ge", english: ["give", "gift", "gentle", "gesture"], correct: 0 },
+			{ swedish: "rar", english: ["sweet", "rare", "savory", "serene"], correct: 0 },
+			{ swedish: "(att) låta", english: ["allow, let", "permit, restrict", "authorize, release", "consent, empower"], correct: 0 },
+			{ swedish: "(att) fiska", english: ["fish (for)", "fist", "finish", "filter"], correct: 0 },
+			{ swedish: "(en) abborre", english: ["perch", "abbey", "paper", "perfect"], correct: 0 },
+			{ swedish: "jättetrevlig", english: ["really nice", "jittery", "jovial", "judicial"], correct: 0 },
+			{ swedish: "frågvis", english: ["inquisitive", "fragile", "friction", "frigid"], correct: 0 },
+			{ swedish: "snäll", english: ["please", "snake", "snail", "snap"], correct: 0 },
+			{ swedish: "säker", english: ["certain", "secure", "certify", "celebrate"], correct: 0 },
+			{ swedish: "glad", english: ["happy", "glacier", "glance", "glare"], correct: 0 },
+			{ swedish: "positiv", english: ["positive", "possess", "postage", "postpone"], correct: 0 },
+			{ swedish: "väldigt", english: ["really, very", "somewhat, slightly", "modest, fairly", "slightly, barely"], correct: 0 },
+			{ swedish: "härlig", english: ["lovely", "herd", "helmet", "harmony"], correct: 0 },
+			{ swedish: "irriterad", english: ["irritated", "irony", "island", "isolate"], correct: 0 },
+			{ swedish: "Norrland", english: ["northern region of Sweden", "norm", "northward", "notion"], correct: 0 },
+			{ swedish: "(att) bada", english: ["swim, bathe", "badge", "batter", "balance"], correct: 0 },
+			{ swedish: "lugn", english: ["calm, easy", "lugged", "limpid", "lull"], correct: 0 },
+			{ swedish: "egentlig", english: ["real, actual", "egregious", "precise", "factual, accurate"], correct: 0 },
+			{ swedish: "(ett) förnamn", english: ["first name", "forest", "finish", "fiscal"], correct: 0 },
+			{ swedish: "egentlig", english: ["real, actual", "egregious, precise", "factual, accurate", "reactive, meticulous"], correct: 0 },
+			{ swedish: "(ett) dop", english: ["baptism", "dope", "battery", "battle"], correct: 0 },
+			{ swedish: "(ett) släktnamn", english: ["family name", "slang name", "fantasy", "famine"], correct: 0 },
+			{ swedish: "(att) uppfatta", english: ["regard", "uphold", "regulate", "register"], correct: 0 },
+			{ swedish: "(en) adel", english: ["nobility", "addle", "noble", "nobody"], correct: 0 },
+			{ swedish: "(en) vapensköld", english: ["coat of arms", "vape shield", "coat hanger", "coat color"], correct: 0 },
+			{ swedish: "gyllene", english: ["golden", "gilded", "gorgeous", "golfing"], correct: 0 },
+			{ swedish: "(en) krok", english: ["hook", "crock", "hoop", "hoot"], correct: 0 },
+			{ swedish: "(en) lilja", english: ["lily", "lilac", "limit", "limply"], correct: 0 },
+			{ swedish: "(en) hök", english: ["hawk", "hook", "hobby", "hold"], correct: 0 },
+			{ swedish: "de lärda", english: ["educated people", "the lords", "educate process", "education policy"], correct: 0 },
+			{ swedish: "(att) utbilda", english: ["educate", "develop, explore", "manage, operate", "create, design"], correct: 0 },
+			{ swedish: "(ett) patronymikon", english: ["patronymic", "patronym", "patrol", "patron"], correct: 0 },
+			{ swedish: "s.k. = så kallad(e)", english: ["so-called", "sacred", "social", "solar"], correct: 0 },
+			{ swedish: "(ett) efterled", english: ["second element", "afterload", "secondary element", "secure element"], correct: 0 },
+			{ swedish: "(ett) förled", english: ["first element", "forelock", "first aid", "firstborn"], correct: 0 },
+			{ swedish: "(en) naturbeteckning", english: ["nature description", "nature benefits", "nature detail", "nature design"], correct: 0 },
+
+        ];
+   </script>
+<script src="vocab-scripts.js"></script>
+<script>
+    window.addEventListener('load', () => {
+        ResponsiveVoice.speak("", "Swedish Female"); // Preload Swedish voice
+    });
+</script>
+</body>
+</html>

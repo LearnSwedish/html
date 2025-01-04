@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="vocab-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Ten: 3</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Cqe54MX8"></script>
+</head>
+<body>
+    <div class="toggle-container">
+        <span id="modeLabel">Dark mode</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
+        <h1>Unit Ten: 3</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div class="question-box">
+    <p id="swedish-word" class="clickable-word" onclick="speakSwedish()">
+        <span id="word-text"></span>
+        <i class="fa-regular fa-circle-play"></i>
+    </p>
+</div>
+        <div class="choices">
+            <button class="answer-btn" onclick="checkAnswer(0)" id="choice0"></button>
+            <button class="answer-btn" onclick="checkAnswer(1)" id="choice1"></button>
+            <button class="answer-btn" onclick="checkAnswer(2)" id="choice2"></button>
+            <button class="answer-btn" onclick="checkAnswer(3)" id="choice3"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="counters">
+            <p>Correct Answers: <span id="correct-counter">0</span></p>
+            <p>Mistakes: <span id="mistake-counter">0</span></p>
+        </div>
+
+        <div class="protocol">
+            <p><strong>Words missed on first try:</strong></p>
+            <ul id="missed-words-list"></ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="reset-btn" onclick="resetPage()">Reset</button>
+    </div>
+
+    <!-- Modal for Missed Words -->
+    <div id="missedModal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message">You missed some words on the first try. Do you want to have another go?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="retryMissed()">Yes</button>
+                <button class="modal-btn" onclick="closeModal()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Variables
+        const vocabulary = [
+			{ swedish: "(ett) dop", english: ["baptism", "dope", "battery", "battle"], correct: 0 },
+			{ swedish: "(ett) släktnamn", english: ["family name", "slang name", "fantasy", "famine"], correct: 0 },
+			{ swedish: "(att) uppfatta", english: ["regard", "uphold", "regulate", "register"], correct: 0 },
+			{ swedish: "(en) adel", english: ["nobility", "addle", "noble", "nobody"], correct: 0 },
+			{ swedish: "(en) vapensköld", english: ["coat of arms", "vape shield", "coat hanger", "coat color"], correct: 0 },
+			{ swedish: "gyllene", english: ["golden", "gilded", "gorgeous", "golfing"], correct: 0 },
+			{ swedish: "(en) krok", english: ["hook", "crock", "hoop", "hoot"], correct: 0 },
+			{ swedish: "(en) lilja", english: ["lily", "lilac", "limit", "limply"], correct: 0 },
+			{ swedish: "(en) hök", english: ["hawk", "hook", "hobby", "hold"], correct: 0 },
+			{ swedish: "de lärda", english: ["educated people", "the lords", "educate process", "education policy"], correct: 0 },
+			{ swedish: "(att) utbilda", english: ["educate", "develop, explore", "manage, operate", "create, design"], correct: 0 },
+			{ swedish: "(ett) patronymikon", english: ["patronymic", "patronym", "patrol", "patron"], correct: 0 },
+			{ swedish: "s.k. = så kallad(e)", english: ["so-called", "sacred", "social", "solar"], correct: 0 },
+			{ swedish: "(ett) efterled", english: ["second element", "afterload", "secondary element", "secure element"], correct: 0 },
+			{ swedish: "(ett) förled", english: ["first element", "forelock", "first aid", "firstborn"], correct: 0 },
+			{ swedish: "(en) naturbeteckning", english: ["nature description", "nature benefits", "nature detail", "nature design"], correct: 0 },
+
+        ];
+   </script>
+<script src="vocab-scripts.js"></script>
+<script>
+    window.addEventListener('load', () => {
+        ResponsiveVoice.speak("", "Swedish Female"); // Preload Swedish voice
+    });
+</script>
+</body>
+</html>
