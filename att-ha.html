@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>att ha | to have</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="att-ha.css">
+
+    <script>
+
+        const sentences = [{
+                words: [{
+                        word: "Det",
+                        translation: "It",
+                    },
+                    {
+                        word: "är",
+                        translation: "is",
+                    },
+                    {
+                        word: "viktigt",
+                        translation: "important",
+                    },
+                    {
+                        word: "att",
+                        translation: "to",
+                    },
+                    {
+                        word: `<select data-correct="ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                            <option value="">...</option>
+                            <option value="ha">ha</option>
+                            <option value="har">har</option>
+                            <option value="hade">hade</option>
+                            <option value="har haft">har haft</option>
+                            <option value="ska ha">ska ha</option>
+                        </select>`,
+                        translation: "have",
+                    },
+                    {
+                        word: "bra",
+                        translation: "good",
+                    },
+                    {
+                        word: "kläder.",
+                        translation: "clothes.",
+                    },
+                ],
+            },
+            {
+                words: [{
+                        word: "Det",
+                        translation: "It",
+                    },
+                    {
+                        word: "var",
+                        translation: "was",
+                    },
+                    {
+                        word: "roligt",
+                        translation: "fun",
+                    },
+                    {
+                        word: "att",
+                        translation: "to",
+                    },
+                    {
+                        word: `<select data-correct="ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "have",
+                    },
+                    {
+                        word: "dig",
+                        translation: "you",
+                    },
+                    {
+                        word: "här.",
+                        translation: "here.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Vi",
+                        translation: "We",
+                    },
+                    {
+                        word: "behöver",
+                        translation: "need",
+                    },
+                    {
+                        word: `<select data-correct="ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "to have",
+                    },
+                    {
+                        word: "våra",
+                        translation: "our",
+                    },
+                    {
+                        word: "pass",
+                        translation: "passports",
+                    },
+                    {
+                        word: "när",
+                        translation: "when",
+                    },
+                    {
+                        word: "vi",
+                        translation: "we",
+                    },
+                    {
+                        word: "reser.",
+                        translation: "travel.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Han",
+                        translation: "He",
+                    },
+                    {
+                        word: "vill gärna",
+                        translation: "would like",
+                    },
+                    {
+                        word: `<select data-correct="ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "(to) have",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "ny",
+                        translation: "new",
+                    },
+                    {
+                        word: "bok",
+                        translation: "book",
+                    },
+                    {
+                        word: "att",
+                        translation: "to",
+                    },
+                    {
+                        word: "läsa.",
+                        translation: "read.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Hon",
+                        translation: "She",
+                    },
+                    {
+                        word: "gillar",
+                        translation: "likes",
+                    },
+                    {
+                        word: "att",
+                        translation: "to",
+                    },
+                    {
+                        word: `<select data-correct="ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "have",
+                    },
+                    {
+                        word: "många",
+                        translation: "many",
+                    },
+                    {
+                        word: "växter",
+                        translation: "plants",
+                    },
+                    {
+                        word: "i",
+                        translation: "in",
+                    },
+                    {
+                        word: "sitt",
+                        translation: "her",
+                    },
+                    {
+                        word: "rum.",
+                        translation: "room.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Barnen",
+                        translation: "The children",
+                    },
+                    {
+                        word: "behöver",
+                        translation: "need",
+                    },
+                    {
+                        word: `<select data-correct="ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "(to) have",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "matsäck",
+                        translation: "packed lunch",
+                    },
+                    {
+                        word: "till",
+                        translation: "for",
+                    },
+                    {
+                        word: "utflykten.",
+                        translation: "the trip.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Det",
+                        translation: "It",
+                    },
+                    {
+                        word: "känns",
+                        translation: "feels",
+                    },
+                    {
+                        word: "tryggt",
+                        translation: "comforting",
+                    },
+                    {
+                        word: "att",
+                        translation: "to",
+                    },
+                    {
+                        word: `<select data-correct="ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "have",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "vän",
+                        translation: "friend",
+                    },
+                    {
+                        word: "att",
+                        translation: "to",
+                    },
+                    {
+                        word: "prata",
+                        translation: "talk",
+                    },
+                    {
+                        word: "med.",
+                        translation: "to.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Huset",
+                        translation: "The house",
+                    },
+                    {
+                        word: `<select data-correct="har" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "has",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "vacker",
+                        translation: "beautiful",
+                    },
+                    {
+                        word: "trädgård.",
+                        translation: "garden.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Hon",
+                        translation: "She",
+                    },
+                    {
+                        word: `<select data-correct="har" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "has",
+                    },
+                    {
+                        word: "mycket",
+                        translation: "a lot",
+                    },
+                    {
+                        word: "att",
+                        translation: "to",
+                    },
+                    {
+                        word: "göra",
+                        translation: "do",
+                    },
+                    {
+                        word: "idag.",
+                        translation: "today.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Vi",
+                        translation: "We",
+                    },
+                    {
+                        word: `<select data-correct="har" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "have",
+                    },
+                    {
+                        word: "ett",
+                        translation: "a",
+                    },
+                    {
+                        word: "stort",
+                        translation: "great",
+                    },
+                    {
+                        word: "ansvar.",
+                        translation: "responsibility.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "De",
+                        translation: "They",
+                    },
+                    {
+                        word: `<select data-correct="har" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "have",
+                    },
+                    {
+                        word: "redan",
+                        translation: "already",
+                    },
+                    {
+                        word: "skickat in",
+                        translation: "submitted",
+                    },
+                    {
+                        word: "sin",
+                        translation: "their",
+                    },
+                    {
+                        word: "ansökan.",
+                        translation: "application.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Han",
+                        translation: "He",
+                    },
+                    {
+                        word: `<select data-correct="har" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "has",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "hund",
+                        translation: "dog",
+                    },
+                    {
+                        word: "som",
+                        translation: "that",
+                    },
+                    {
+                        word: "älskar",
+                        translation: "loves",
+                    },
+                    {
+                        word: "att",
+                        translation: "to",
+                    },
+                    {
+                        word: "leka.",
+                        translation: "play.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Han",
+                        translation: "He",
+                    },
+                    {
+                        word: `<select data-correct="hade" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "had",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "cykel",
+                        translation: "bike",
+                    },
+                    {
+                        word: "som",
+                        translation: "that",
+                    },
+                    {
+                        word: "gick sönder.",
+                        translation: "broke.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Vi",
+                        translation: "We",
+                    },
+                    {
+                        word: `<select data-correct="hade" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "had",
+                    },
+                    {
+                        word: "gäster",
+                        translation: "guests",
+                    },
+                    {
+                        word: "hemma",
+                        translation: "at home",
+                    },
+                    {
+                        word: "hela",
+                        translation: "all",
+                    },
+                    {
+                        word: "kvällen.",
+                        translation: "evening.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Hon",
+                        translation: "She",
+                    },
+                    {
+                        word: `<select data-correct="hade" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "had",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "bra",
+                        translation: "good",
+                    },
+                    {
+                        word: "idé",
+                        translation: "idea",
+                    },
+                    {
+                        word: "på",
+                        translation: "at",
+                    },
+                    {
+                        word: "mötet.",
+                        translation: "the meeting.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "De",
+                        translation: "They",
+                    },
+                    {
+                        word: `<select data-correct="hade" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "had",
+                    },
+                    {
+                        word: "mycket",
+                        translation: "a lot of",
+                    },
+                    {
+                        word: "roligt",
+                        translation: "fun",
+                    },
+                    {
+                        word: "på",
+                        translation: "at",
+                    },
+                    {
+                        word: "festen.",
+                        translation: "the party.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Hunden",
+                        translation: "The dog",
+                    },
+                    {
+                        word: `<select data-correct="hade" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "had",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "favoritplats",
+                        translation: "favourite spot",
+                    },
+                    {
+                        word: "i",
+                        translation: "in",
+                    },
+                    {
+                        word: "skuggan.",
+                        translation: "the shade.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Vi",
+                        translation: "We",
+                    },
+                    {
+                        word: `<select data-correct="hade" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "had",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "härlig",
+                        translation: "wonderful",
+                    },
+                    {
+                        word: "dag",
+                        translation: "day",
+                    },
+                    {
+                        word: "på",
+                        translation: "on",
+                    },
+                    {
+                        word: "stranden.",
+                        translation: "the beach.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Jag",
+                        translation: "I",
+                    },
+                    {
+                        word: `<select data-correct="har haft" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "have had",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "fantastisk",
+                        translation: "fantastic",
+                    },
+                    {
+                        word: "helg.",
+                        translation: "weekend.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "De",
+                        translation: "They",
+                    },
+                    {
+                        word: `<select data-correct="har haft" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "have had",
+                    },
+                    {
+                        word: "problem",
+                        translation: "problems",
+                    },
+                    {
+                        word: "med",
+                        translation: "with",
+                    },
+                    {
+                        word: "sin",
+                        translation: "their",
+                    },
+                    {
+                        word: "internetuppkopplingen.",
+                        translation: "internet connection.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Vi",
+                        translation: "We",
+                    },
+                    {
+                        word: `<select data-correct="har haft" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "have had",
+                    },
+                    {
+                        word: "ett",
+                        translation: "a",
+                    },
+                    {
+                        word: "bra",
+                        translation: "great",
+                    },
+                    {
+                        word: "samarbete",
+                        translation: "collaboration",
+                    },
+                    {
+                        word: "i",
+                        translation: "in",
+                    },
+                    {
+                        word: "projektet.",
+                        translation: "the project.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Huset",
+                        translation: "The house",
+                    },
+                    {
+                        word: `<select data-correct="har haft" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "has had",
+                    },
+                    {
+                        word: "samma",
+                        translation: "the same",
+                    },
+                    {
+                        word: "ägare",
+                        translation: "owner",
+                    },
+                    {
+                        word: "i",
+                        translation: "for",
+                    },
+                    {
+                        word: "över",
+                        translation: "over",
+                    },
+                    {
+                        word: "femtio",
+                        translation: "fifty",
+                    },
+                    {
+                        word: "år.",
+                        translation: "years.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Katten",
+                        translation: "The cat",
+                    },
+                    {
+                        word: `<select data-correct="har haft" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "has had",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "favoritfilt",
+                        translation: "favourite blanket",
+                    },
+                    {
+                        word: "sedan",
+                        translation: "since",
+                    },
+                    {
+                        word: "den",
+                        translation: "it",
+                    },
+                    {
+                        word: "var",
+                        translation: "was",
+                    },
+                    {
+                        word: "liten.",
+                        translation: "small.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Vi",
+                        translation: "We",
+                    },
+                    {
+                        word: `<select data-correct="har haft" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "has had",
+                    },
+                    {
+                        word: "ett",
+                        translation: "a",
+                    },
+                    {
+                        word: "bra",
+                        translation: "great",
+                    },
+                    {
+                        word: "samarbete",
+                        translation: "collaboration",
+                    },
+                    {
+                        word: "i",
+                        translation: "in",
+                    },
+                    {
+                        word: "projektet.",
+                        translation: "the project.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Jag",
+                        translation: "I",
+                    },
+                    {
+                        word: `<select data-correct="ska ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "will have",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "ledig dag",
+                        translation: "day off",
+                    },
+                    {
+                        word: "på",
+                        translation: "on",
+                    },
+                    {
+                        word: "fredag.",
+                        translation: "Friday.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "De",
+                        translation: "They",
+                    },
+                    {
+                        word: `<select data-correct="ska ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "will have",
+                    },
+                    {
+                        word: "ett",
+                        translation: "a",
+                    },
+                    {
+                        word: "möte",
+                        translation: "meeting",
+                    },
+                    {
+                        word: "med",
+                        translation: "with",
+                    },
+                    {
+                        word: "chefen",
+                        translation: "the boss",
+                    },
+                    {
+                        word: "nästa",
+                        translation: "next",
+                    },
+                    {
+                        word: "vecka.",
+                        translation: "week.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Katten",
+                        translation: "The cat",
+                    },
+                    {
+                        word: `<select data-correct="ska ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "will have",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "vaccination",
+                        translation: "vaccination",
+                    },
+                    {
+                        word: "på",
+                        translation: "on",
+                    },
+                    {
+                        word: "måndag.",
+                        translation: "Monday.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Vi",
+                        translation: "We",
+                    },
+                    {
+                        word: `<select data-correct="ska ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "will have",
+                    },
+                    {
+                        word: "en",
+                        translation: "a",
+                    },
+                    {
+                        word: "picknick",
+                        translation: "picnic",
+                    },
+                    {
+                        word: "i",
+                        translation: "in",
+                    },
+                    {
+                        word: "parken",
+                        translation: "the park",
+                    },
+                    {
+                        word: "i",
+                        translation: "this",
+                    },
+                    {
+                        word: "helgen.",
+                        translation: "weekend.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "De",
+                        translation: "They",
+                    },
+                    {
+                        word: `<select data-correct="ska ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "will have",
+                    },
+                    {
+                        word: "ett",
+                        translation: "an",
+                    },
+                    {
+                        word: "viktigt",
+                        translation: "important",
+                    },
+                    {
+                        word: "samtal",
+                        translation: "conversation",
+                    },
+                    {
+                        word: "med",
+                        translation: "with",
+                    },
+                    {
+                        word: "läraren.",
+                        translation: "the teacher.",
+                    },
+                ],
+
+            },
+            {
+                words: [{
+                        word: "Han",
+                        translation: "He",
+                    },
+                    {
+                        word: `<select data-correct="ska ha" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="ha">ha</option>
+                    <option value="har">har</option>
+                    <option value="hade">hade</option>
+                    <option value="har haft">har haft</option>
+                    <option value="ska ha">ska ha</option>
+                </select>`,
+                        translation: "will have",
+                    },
+                    {
+                        word: "ett",
+                        translation: "a",
+                    },
+                    {
+                        word: "prov",
+                        translation: "test",
+                    },
+                    {
+                        word: "i",
+                        translation: "in",
+                    },
+                    {
+                        word: "matematik",
+                        translation: "maths",
+                    },
+                    {
+                        word: "nästa",
+                        translation: "next",
+                    },
+                    {
+                        word: "vecka.",
+                        translation: "week.",
+                    },
+                ],
+
+            }
+
+
+            // Lägg till fler meningar efter behov
+        ];
+
+    </script>
+	
+	<script src="att-ha.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- URL Imperative Logic Button -->
+        <button class="start-over" id="menu-URL" onclick="openMenuURL()">
+            <i class="fas fa-book" style="margin-right: 8px;"></i> Key
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title">Ha, har, hade, har haft, ska ha – pick the correct form</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Information</h2>
+            <p>"Att ha" (to have) is an irregular verb in Swedish and essential for constructing compound tenses. It functions as an auxiliary verb, often paired with the supine form of other verbs to express time and aspect. This includes indicating completed actions, hypothetical situations, and future results. Its versatility makes it a cornerstone of Swedish grammar. Understanding "ha" is key to mastering Swedish verb usage. Good luck!</p>
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
