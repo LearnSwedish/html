@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>att ha | to have</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="att-vara.css">
+
+    <!-- Enhanced Input Field Styles -->
+    <style>
+        /* Style for the answer input fields */
+        .answer-input {
+            width: 80px; /* Adjusted width to fit "har haft" */
+            padding-left: 5px; /* Left margin inside the input */
+            height: 30px; /* Increased height */
+            font-size: 18px; /* Larger font size */
+            box-sizing: border-box; /* Ensure padding doesn't affect total width */
+            border: 2px solid #ccc; /* Default border */
+            border-radius: 4px; /* Slightly rounded corners */
+            transition: border-color 0.3s; /* Smooth transition for border color on feedback */
+        }
+
+        /* Style when the answer is correct */
+        .answer-input.correct {
+            border-color: green;
+        }
+
+        /* Style when the answer is incorrect */
+        .answer-input.incorrect {
+            border-color: red;
+        }
+    </style>
+
+    <script>
+        const sentences = [
+            {
+                words: [
+                    { word: "Vem", translation: "Who" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="är" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "is",
+                    },
+                    { word: "det?", translation: "it?" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Jag", "translation": "I" },
+                    { "word": "vet inte", "translation": "don't know" },
+                    { "word": "vad", "translation": "what" },
+                    { "word": "detta", "translation": "this" },
+                     {
+                        word: `<input type="text" class="answer-input" data-correct="är" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "is",
+                    },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Hon", "translation": "She" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="är" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "is",
+                    },
+                    { "word": "student.", "translation": "a student." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Vi", "translation": "We" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="är" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "are",
+                    },
+                    { "word": "klara", "translation": "ready" },
+                    { "word": "nu.", "translation": "now." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "De", "translation": "They" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="är" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "are",
+                    },
+                    { "word": "inte här längre.", "translation": "no longer here." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Det", "translation": "That" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="var" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "was",
+                    },
+                    { "word": "roligt.", "translation": "fun." },
+                ]
+            },
+            {
+                words: [
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="Var" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "Were",
+                    },
+                    { "word": "du", "translation": "you" },
+                    { "word": "i", "translation": "in" },
+                    { "word": "Tyskland", "translation": "Germany" },
+                    { "word": "förra", "translation": "last" },
+                    { "word": "året?", "translation": "year?" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Den", "translation": "That" },
+                    { "word": "efterrätten", "translation": "dessert" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="var" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "was",
+                    },
+                    { "word": "inte", "translation": "not" },
+                    { "word": "god.", "translation": "good." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Vem", "translation": "Who" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="var" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "was",
+                    },
+                    { "word": "det", "translation": "it" },
+                    { "word": "som", "translation": "that" },
+                    { "word": "ringde?", "translation": "called?" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Jag", "translation": "I" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="var" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "was",
+                    },
+                    { "word": "orolig", "translation": "worried" },
+                    { "word": "för", "translation": "about" },
+                    { "word": "dig.", "translation": "you." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Har", "translation": "Have" },
+                    { "word": "du", "translation": "you" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="varit" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "been",
+                    },
+                    { "word": "i", "translation": "to" },
+                    { "word": "Stockholm?", "translation": "Stockholm?" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Vi", "translation": "We" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="har varit" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "has been",
+                    },
+                    { "word": "tillsammans", "translation": "together" },
+                    { "word": "i", "translation": "for" },
+                    { "word": "fem", "translation": "five" },
+                    { "word": "år.", "translation": "years." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Hon", "translation": "She" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="har varit" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "has been",
+                    },
+                    { "word": "anställd", "translation": "employed" },
+                    { "word": "där", "translation": "there" },
+                    { "word": "länge.", "translation": "for a long time." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Katten", "translation": "The cat" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="har varit" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "has been",
+                    },
+                    { "word": "här", "translation": "here" },
+                    { "word": "igen.", "translation": "again." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Bilen", "translation": "The car" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="har varit" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "has been",
+                    },
+                    { "word": "försvunnen", "translation": "missing" },
+                    { "word": "sedan", "translation": "since" },
+                    { "word": "igår.", "translation": "yesterday." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Det", "translation": "There" },
+                    { "word": "finns", "translation": "is" },
+                    { "word": "inget", "translation": "nothing" },
+                    { "word": "att", "translation": "to" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "be",
+                    },
+                    { "word": "rädd", "translation": "afraid" },
+                    { "word": "för.", "translation": "of." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Det", "translation": "It" },
+                    { "word": "känns", "translation": "feels" },
+                    { "word": "skönt", "translation": "good" },
+                    { "word": "att", "translation": "to" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "be",
+                    },
+                    { "word": "klar.", "translation": "ready." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Att", "translation": "To" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "be",
+                    },
+                    { "word": "eller", "translation": "or" },
+                    { "word": "inte", "translation": "not" },
+                    { "word": "vara,", "translation": "to be," },
+                    { "word": "det", "translation": "that" },
+                    { "word": "är", "translation": "is" },
+                    { "word": "frågan.", "translation": "the question." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Låt", "translation": "Let" },
+                    { "word": "det", "translation": "it" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "be",
+                    },
+                    { "word": "!", "translation": "!" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Jag", "translation": "I" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="ska vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "will be",
+                    },
+                    { "word": "där", "translation": "there" },
+                    { "word": "före", "translation": "before" },
+                    { "word": "klockan fem.", "translation": "five o'clock." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Ska", "translation": "Will" },
+                    { "word": "du", "translation": "you" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "be",
+                    },
+                    { "word": "här", "translation": "here" },
+                    { "word": "imorgon?", "translation": "tomorrow?" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "De", "translation": "They" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="ska vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "will be",
+                    },
+                    { "word": "här", "translation": "here" },
+                    { "word": "hela", "translation": "all" },
+                    { "word": "sommaren.", "translation": "summer." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Vi", "translation": "We" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="ska vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "will be",
+                    },
+                    { "word": "klara", "translation": "ready" },
+                    { "word": "nästa", "translation": "next" },
+                    { "word": "vecka.", "translation": "week." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Hon", "translation": "She" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="ska vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "will be",
+                    },
+                    { "word": "här", "translation": "here" },
+                    { "word": "på", "translation": "on" },
+                    { "word": "måndag.", "translation": "Monday." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Italien", "translation": "Italy" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="är" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "is",
+                    },
+                    { "word": "ett", "translation": "a" },
+                    { "word": "vackert", "translation": "beautiful" },
+                    { "word": "land.", "translation": "country." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "De", "translation": "They" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="var" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "were",
+                    },
+                    { "word": "här", "translation": "here" },
+                    { "word": "alldeles nyss.", "translation": "just now." },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Har", "translation": "Have" },
+                    { "word": "du", "translation": "you" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="varit" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "been",
+                    },
+                    { "word": "kär", "translation": "in love" },
+                    { "word": "i", "translation": "with" },
+                    { "word": "honom", "translation": "him" },
+                    { "word": "länge?", "translation": "for a long time?" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Är", "translation": "Is" },
+                    { "word": "det", "translation": "it" },
+                    { "word": "svårt", "translation": "hard" },
+                    { "word": "att", "translation": "to" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "be",
+                    },
+                    { "word": "förälder?", "translation": "a parent?" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Måste", "translation": "Must" },
+                    { "word": "det", "translation": "it" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "be",
+                    },
+                    { "word": "så", "translation": "so" },
+                    { "word": "svårt?", "translation": "hard?" },
+                ]
+            },
+            {
+                words: [
+                    { "word": "Det", "translation": "It" },
+                    { "word": "är", "translation": "is" },
+                    { "word": "viktigt", "translation": "important" },
+                    { "word": "att", "translation": "to" },
+                    {
+                        word: `<input type="text" class="answer-input" data-correct="vara" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+                        translation: "be",
+                    },
+                    { "word": "sig själv.", "translation": "oneself." },
+                ]
+            }
+        ];
+
+    <script src="att-vara.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- URL Imperative Logic Button -->
+        <button class="start-over" id="menu-URL" onclick="openMenuURL()">
+            <i class="fas fa-book" style="margin-right: 8px;"></i> Key
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+            <i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+        </div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title"><i class="fas fa-pen" aria-hidden="true" style="margin-right: 8px;"></i> Write the correct form: ha, har, hade, har haft, ska ha</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+
+    <!-- Information Modal -->
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Information</h2>
+            <p>"Att ha" (to have) is an irregular verb in Swedish and essential for constructing compound tenses. It functions as an auxiliary verb, often paired with the supine form of other verbs to express time and aspect. This includes indicating completed actions, hypothetical situations, and future results. Its versatility makes it a cornerstone of Swedish grammar. Understanding "ha" is key to mastering Swedish verb usage. This exercise focuses on learning how the verb is used in various sentences. You can hover over all the words for a translation into English. When you hover over an input field, you see the English equivalent of the verb's tense and thus which tense you should select for that specific sentence. Good luck!</p>
+        </div>
+    </div>
+
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
