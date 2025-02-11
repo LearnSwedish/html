@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swedish 661</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #333333;
+      --card-bg: #f7f7f7;
+      --card-border: #cccccc;
+      --button-bg: #005b7f;
+      --button-text: #ffffff;
+      --accent-color: #007ea7;
+    }
+
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #e0e0e0;
+      --card-bg: #1e1e1e;
+      --card-border: #444444;
+      --button-bg: #007ea7;
+      --button-text: #e0e0e0;
+      --accent-color: #00aaff;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      padding: 1rem;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .buttons {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, box-shadow 0.3s;
+      width: 80%;
+    }
+
+    button:hover {
+      background-color: var(--accent-color);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .toggle-container {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .toggle-container p {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      color: var(--text-color);
+    }
+
+    .flip-card {
+      background-color: transparent;
+      width: 90%;
+      height: 310px;
+      perspective: 1000px;
+      margin: 1rem auto;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--card-border);
+      border-radius: 15px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background-color: var(--card-bg);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg);
+      overflow-y: auto;
+    }
+
+    h2 {
+      font-size: 2rem;
+      color: var(--accent-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .info-table {
+      width: 100%;
+      text-align: left;
+      margin-top: 1rem;
+      background-color: rgba(0, 123, 167, 0.05);
+      padding: 0.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-table p {
+      margin: 0.4rem 0;
+      font-size: 1rem;
+      padding: 0.3rem 0.6rem;
+      border-left: 4px solid var(--accent-color);
+      background-color: rgba(0, 123, 167, 0.1);
+      border-radius: 5px;
+    }
+
+    @media (max-width: 400px) {
+      .flip-card {
+        height: auto;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .info-table p {
+        font-size: 0.95rem;
+      }
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      margin: auto;
+      padding: 20px;
+      border: 1px solid var(--card-border);
+      width: 90%;
+      height: 55%;
+      border-radius: 15px;
+      position: relative;
+      text-align: left;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: var(--text-color);
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: var(--accent-color);
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="cardContainer"></div>
+
+    <div class="buttons">
+      <button id="flipBtn">Flip</button>
+      <button id="nextBtn">Next</button>
+    </div>
+
+    <div class="toggle-container">
+      <p>Dark mode</p>
+      <label class="switch">
+        <input type="checkbox" id="toggleDarkMode">
+        <span class="slider round"></span>
+      </label>
+    </div>
+
+    <div class="buttons">
+      <button id="infoBtn">Info</button>
+    </div>
+  </div>
+
+  <div id="infoModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>About this exercise</h2>
+      <p>This flip-card exercise features 661 carefully selected words—the most essential ones according to research for language learners. For nouns, you'll learn the gender and plural forms. For verbs, you'll see their conjugations across different tenses. For adjectives, you'll find their forms based on gender and pluralization.</p>
+	  <p>&nbsp;</p>
+	  <p>The card can be flipped either by clicking on it or by clicking the "Flip" button. To proceed to the next word, click the "Next" button</p>
+	  <p>&nbsp;</p>
+	  <p>The words are presented in random order, and during the same session, no word appears twice.</p>
+    </div>
+  </div>
+
+  <script>
+    const words = [
+      {
+        english: 'book',
+        swedish: 'bok',
+        type: 'noun',
+        extra: 'en bok | plural: böcker'
+      },
+      {
+        english: 'to jump',
+        swedish: 'att hoppa',
+        type: 'verb',
+        sense: 'action',
+        tenses: {
+          infinitive: 'att hoppa',
+          present: 'hoppar',
+          past: 'hoppade',
+          perfect: 'har hoppat',
+          future: 'ska hoppa'
+        }
+      },
+      {
+        english: 'good',
+        swedish: 'god',
+        type: 'adjective',
+        sense: 'quality',
+        forms: {
+          en: 'god',
+          ett: 'gott',
+          plural: 'goda'
+        }
+      }
+    ];
+
+    let shuffledWords = [...words];
+    let currentIndex = 0;
+    let currentCard = null;
+
+    const cardContainer = document.getElementById('cardContainer');
+    const flipBtn = document.getElementById('flipBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const toggleDarkMode = document.getElementById('toggleDarkMode');
+    const infoBtn = document.getElementById('infoBtn');
+    const infoModal = document.getElementById('infoModal');
+    const closeModal = document.querySelector('.close');
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function createFlipCard(word) {
+      const card = document.createElement('div');
+      card.className = 'flip-card';
+
+      card.addEventListener('click', () => {
+        card.classList.toggle('flipped');
+      });
+
+      const inner = document.createElement('div');
+      inner.className = 'flip-card-inner';
+
+      const front = document.createElement('div');
+      front.className = 'flip-card-front';
+      front.innerHTML = `<h2>${word.english}</h2><p>${word.type}${word.sense ? ' | sense: ' + word.sense : ''}</p>`;
+
+      const back = document.createElement('div');
+      back.className = 'flip-card-back';
+
+      if (word.type === 'verb') {
+        back.innerHTML = `<h2>${word.swedish}</h2>${generateVerbTable(word.tenses)}`;
+      } else if (word.type === 'adjective') {
+        back.innerHTML = `<h2>${word.swedish}</h2>${generateAdjectiveTable(word.forms)}`;
+      } else {
+        back.innerHTML = `<h2>${word.swedish}</h2><p>${word.extra}</p>`;
+      }
+
+      inner.appendChild(front);
+      inner.appendChild(back);
+      card.appendChild(inner);
+
+      return card;
+    }
+
+    function generateVerbTable(tenses) {
+      return `
+        <div class="info-table">
+          <p><strong>Infinitive:</strong> ${tenses.infinitive}</p>
+          <p><strong>Present:</strong> ${tenses.present}</p>
+          <p><strong>Past:</strong> ${tenses.past}</p>
+          <p><strong>Perfect:</strong> ${tenses.perfect}</p>
+          <p><strong>Future:</strong> ${tenses.future}</p>
+        </div>
+      `;
+    }
+
+    function generateAdjectiveTable(forms) {
+      return `
+        <div class="info-table">
+          <p><strong>en gender:</strong> ${forms.en}</p>
+          <p><strong>ett gender:</strong> ${forms.ett}</p>
+          <p><strong>plural:</strong> ${forms.plural}</p>
+        </div>
+      `;
+    }
+
+    function showCard() {
+      cardContainer.innerHTML = '';
+      currentCard = createFlipCard(shuffledWords[currentIndex]);
+      cardContainer.appendChild(currentCard);
+    }
+
+    function nextCard() {
+      if (currentCard && currentCard.classList.contains('flipped')) {
+        currentCard.classList.remove('flipped');
+      }
+
+      currentIndex++;
+      if (currentIndex >= shuffledWords.length) {
+        shuffleArray(shuffledWords);
+        currentIndex = 0;
+      }
+
+      showCard();
+    }
+
+    shuffleArray(shuffledWords);
+    showCard();
+
+    flipBtn.addEventListener('click', () => {
+      if (currentCard) {
+        currentCard.classList.toggle('flipped');
+      }
+    });
+
+    nextBtn.addEventListener('click', nextCard);
+
+    toggleDarkMode.addEventListener('change', () => {
+      document.body.classList.toggle('dark', toggleDarkMode.checked);
+    });
+
+    infoBtn.addEventListener('click', () => {
+      infoModal.style.display = 'flex';
+    });
+
+    closeModal.addEventListener('click', () => {
+      infoModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === infoModal) {
+        infoModal.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
