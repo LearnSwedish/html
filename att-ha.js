@@ -41,43 +41,40 @@
     }
 
     // Evaluates the user's answer and updates the score and UI accordingly.
-function evaluateAnswer(selectElement) {
-    const correctAnswer = selectElement.getAttribute('data-correct');
-    const selectedValue = selectElement.value;
-    const parent = selectElement.closest('.sentence');
-
-    // Get the previous state to ensure points are adjusted correctly
-    const priorState = parent.getAttribute('data-state') || 'none';
-    let newState;
-
-    if (selectedValue === correctAnswer) {
-        newState = 'correct';
-        // Only add a point if it wasn't already correct
-        if (priorState !== 'correct') {
-            updateScore(1);
-        }
-    } else if (selectedValue !== "") {
-        newState = 'incorrect';
-        // Only deduct a point if it was previously correct
-        if (priorState === 'correct') {
-            updateScore(-1);
-        }
-    } else {
-        newState = 'none';
-        // No score changes for empty selection
-        if (priorState === 'correct') {
-            updateScore(-1);
-        }
-    }
-
-    // Update the UI with the new state
-    parent.classList.remove('correct', 'incorrect');
-    parent.classList.add(newState);
-    parent.setAttribute('data-state', newState);
-
-    checkAllCorrect();
-}
-
+	function evaluateAnswer(selectElement) {
+	    const correctAnswers = selectElement.getAttribute('data-correct').split(',').map(answer => answer.trim());
+	    const selectedValue = selectElement.value.trim();
+	    const parent = selectElement.closest('.sentence');
+	
+	    // Get the previous state to ensure points are adjusted correctly
+	    const priorState = parent.getAttribute('data-state') || 'none';
+	    let newState;
+	
+	    // Check if the selected value matches any of the correct answers
+	    if (correctAnswers.includes(selectedValue)) {
+	        newState = 'correct';
+	        if (priorState !== 'correct') {
+	            updateScore(1);
+	        }
+	    } else if (selectedValue !== "") {
+	        newState = 'incorrect';
+	        if (priorState === 'correct') {
+	            updateScore(-1);
+	        }
+	    } else {
+	        newState = 'none';
+	        if (priorState === 'correct') {
+	            updateScore(-1);
+	        }
+	    }
+	
+	    // Update the UI with the new state
+	    parent.classList.remove('correct', 'incorrect');
+	    parent.classList.add(newState);
+	    parent.setAttribute('data-state', newState);
+	
+	    checkAllCorrect();
+	}
 
     // Updates the score display based on value change.
 	function updateScore(value) {
