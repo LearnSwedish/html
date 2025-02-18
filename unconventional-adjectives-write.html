@@ -4,25 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odd adjectives: write</title>
+    <title>Odd adjectives: pick</title>
 
     <!-- Font Awesome CDN for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="select-in-sentence.css">
 
 <style>
-	.modal-content {
-	    text-align: center; /* Centers inline-block children */
-	}
+		.sentences select {
+			margin: 0 5px; /* 0px uppe/ner, 5px höger/vänster */
+		}
 		
-	.modal-content ul {
-	    display: inline-block;
-	    text-align: left;   /* Ensures list items are left-aligned */
-	}
+		.modal-content {
+			text-align: center; /* Centers inline-block children */
+		}
+		
+		.modal-content ul {
+			display: inline-block;
+			text-align: left;   /* Ensures list items are left-aligned */
+		}
+
+		.modal-content a,
+		.modal-content a:visited,
+		.modal-content a:hover,
+		.modal-content a:active {
+		color: #fff; /* eller 'white' */
+		}		
 		
         /* Style for the answer input fields */
         .answer-input {
-            width: 100px; /* Adjusted width to fit "har haft" */
+            width: 110px;
             padding-left: 5px; /* Left margin inside the input */
             height: 30px; /* Increased height */
             font-size: 18px; /* Larger font size */
@@ -30,7 +41,7 @@
             border: 2px solid #ccc; /* Default border */
             border-radius: 4px; /* Slightly rounded corners */
             transition: border-color 0.3s; /* Smooth transition for border color on feedback */
-	    margin: 0 5px; /* Add space before and after the input field */
+			margin: 0 5px; /* 0px uppe/ner, 5px höger/vänster */
         }
 
         /* Style when the answer is correct */
@@ -46,597 +57,911 @@
     <script>
 
     const sentences = [
-		{
-            words: [
-                { word: "Hon", translation: "She" },
-                { word: "har", translation: "has" },
-                { word: "en", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="ny" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "new" },
-                { word: "bil.", translation: "car." },
-            ]
-        },
-        {
-            words: [
-                { word: "De", translation: "They" },
-                { word: "bor", translation: "live" },
-                { word: "i", translation: "in" },
-                { word: "ett", translation: "a" },				
-                { word: `<input type="text" class="answer-input" data-correct="nytt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "new" },
-                { word: "hus.", translation: "house." },
-            ]
-        },
-        {
-            words: [
-                { word: "Hon", translation: "She" },
-                { word: "behöver verkligen", translation: "really needs" },
-                { word: `<input type="text" class="answer-input" data-correct="nya" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "new" },
-                { word: "skor.", translation: "shoes." },
-            ]
-        },
-        {
-            words: [
-                { word: "Himlen", translation: "The sky" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="blå" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "blue" },
-                { word: "idag.", translation: "today." },
-            ]
-        },
-        {
-            words: [
-                { word: "Havet", translation: "The sea" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="blått" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "blue." },
-            ]
-        },
-        {
-            words: [
-                { word: "Jag", translation: "I" },
-                { word: "gillar", translation: "like" },
-                { word: `<input type="text" class="answer-input" data-correct="blåa,blå" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "blue" },
-                { word: "blommor.", translation: "flowers." },
-            ]
-        },
-		{
-            words: [
-                { word: "Katten", translation: "The cat" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="grå" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "grey" },
-            ]
-        },		
-        {
-            words: [
-                { word: "Det där", translation: "That" },
-                { word: "är", translation: "is" },
-                { word: "ett", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="grått" oninput="evaluateAnswer(this)" aria-label=""Type the correct form">`,
-                    translation: "grey" },
-                { word: "moln.", translation: "cloud." },
-            ]
-        },
-        {
-            words: [
-                { word: `<input type="text" class="answer-input" data-correct="Gråa,Grå" oninput="evaluateAnswer(this)" aria-label=""Type the correct form">`,
-                    translation: "Grey" },
-                { word: "dagar", translation: "days" },
-                { word: "kan", translation: "can" },
-                { word: "vara", translation: "be" },
-                { word: "mysiga.", translation: "cosy." },
-            ]
-        },
-		{
-            words: [
-                { word: "Fågeln", translation: "The bird" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="fri" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "free." },
-            ]
-        },		
-        {
-            words: [
-                { word: "Detta", translation: "This" },
-                { word: "är", translation: "is" },
-                { word: "ett", translation: "a" },	
-                { word: `<input type="text" class="answer-input" data-correct="fritt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "free" },
-                { word: "land.", translation: "country." },
-            ]
-        },
-        {
-            words: [
-                { word: "Vi", translation: "We" },
-                { word: "har", translation: "have" },
-                { word: `<input type="text" class="answer-input" data-correct="fria" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "free" },
-                { word: "val.", translation: "elections." },
-            ]
-        },
-        {
-            words: [
-                { word: "Gatan", translation: "The street" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="bred" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "wide." },
-            ]
-        },
-        {
-            words: [
-                { word: "Han", translation: "He" },
-                { word: "har", translation: "has" },
-                { word: "ett", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="brett" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "wide" },
-                { word: "leende.", translation: "smile." },
-            ]
-        },
-        {
-            words: [
-                { word: `<input type="text" class="answer-input" data-correct="Breda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "Broad" },
-                { word: "axlar", translation: "shoulders" },
-                { word: "är", translation: "are" },
-                { word: "starka.", translation: "strong." },
-            ]
-        },
-        {
-            words: [
-                { word: "Han", translation: "He" },
-                { word: "är", translation: "is" },
-                { word: "en", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="god" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "good" },
-                { word: "vän.", translation: "friend." },
-            ]
-        },
-		{
-            words: [
-                { word: "Äpplet", translation: "The apple" },
-                { word: "smakar", translation: "tastes" },
-                { word: `<input type="text" class="answer-input" data-correct="gott" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "good." },
-            ]
-        },		
-        {
-            words: [
-                { word: "De", translation: "They" },
-                { word: "bakade", translation: "baked" },
-                { word: `<input type="text" class="answer-input" data-correct="goda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "good" },
-                { word: "kakor.", translation: "cookies." },
-            ]
-        },
-		{
-            words: [
-                { word: "Hon", translation: "She" },
-                { word: "är", translation: "is" },
-                { word: "en", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="glad" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "happy" },
-                { word: "flicka.", translation: "girl." },
-            ]
-        },		
-		{
-            words: [
-                { word: "Han", translation: "He" },
-                { word: "har", translation: "has" },
-                { word: "ett", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="glatt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "cheerful" },
-                { word: "humör.", translation: "demeanour." },
-            ]
-        },		
-		{
-            words: [
-                { word: "Barnen", translation: "The children" },
-                { word: "är", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="glada" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "happy." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Rosen", translation: "The rose" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="röd" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "red." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Huset", translation: "The house" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="rött" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "red." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Bären", translation: "The berries" },
-                { word: "är", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="röda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "red." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Det", translation: "It" },
-                { word: "är", translation: "is" },
-                { word: "en", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="mild" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "mild" },
-                { word: "bris.", translation: "breeze." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Klimatet", translation: "The climate" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="milt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "mild." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Orden", translation: "The words" },
-                { word: "är", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="milda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "mild." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Hästen", translation: "The horse" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="vild" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "wild." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Det", translation: "It" },
-                { word: "är", translation: "is" },
-                { word: "ett", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="vilt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "wild" },
-                { word: "djur.", translation: "animal." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Blommorna", translation: "The flowers" },
-                { word: "är", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="vilda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "wild." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Han", translation: "is" },
-                { word: "är", translation: "is" },
-                { word: "en", translation: "an" },
-                { word: `<input type="text" class="answer-input" data-correct="ond" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "evil" },
-                { word: "man.", translation: "man." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Hon", translation: "She" },
-                { word: "gav", translation: "gave" },
-                { word: "honom", translation: "him" },
-                { word: "ett", translation: "an" },
-                { word: `<input type="text" class="answer-input" data-correct="ont" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "evil" },
-                { word: "öga.", translation: "eye." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Det", translation: "There" },
-                { word: "finns", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="onda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "evil" },
-                { word: "andar.", translation: "spirits." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Blomman", translation: "The flower" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="vacker" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "beautiful." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Tavlorna", translation: "The paintings" },
-                { word: "är", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="vackra" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "beautiful." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Landskapet", translation: "The landscape" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="vackert" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "beautiful." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Hunden", translation: "The dog" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="mager" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "thin." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Han", translation: "He" },
-                { word: "har", translation: "has" },
-                { word: "ett", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="magert" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "thin" },
-                { word: "ansikte.", translation: "face." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Hon", translation: "She" },
-                { word: "har", translation: "has" },
-                { word: `<input type="text" class="answer-input" data-correct="magra" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "thin" },
-                { word: "armar.", translation: "arms." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Han", translation: "He" },
-                { word: "är", translation: "is" },
-                { word: "en", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="nykter" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "sober" },
-                { word: "alkoholist.", translation: "alcoholic." },
-            ]
-        },	
-		{
-            words: [
-                { word: "De", translation: "They" },
-                { word: "hade", translation: "had" },
-                { word: "ett", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="nyktert" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "sober" },
-                { word: "samtal.", translation: "conversation." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Ungdomarna", translation: "The young ones" },
-                { word: "är", translation: "are" },
-                { word: "äntligen", translation: "finally" },
-                { word: `<input type="text" class="answer-input" data-correct="nyktra" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "sober." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Vägen", translation: "The road" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="säker" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "safe." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Huset", translation: "The house" },
-                { word: "var", translation: "was" },
-                { word: `<input type="text" class="answer-input" data-correct="säkert" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "safe." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Dörrarna", translation: "The doors" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="säkra" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "safe." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Lösningen", translation: "The solution" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="acceptabel" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "acceptable." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Resultatet", translation: "The result" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="acceptabelt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "acceptable." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Villkoren", translation: "The conditions" },
-                { word: "är", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="acceptabla" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "acceptable." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Schemat", translation: "The schedule" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="flexibelt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "flexible." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Reglerna", translation: "The rules" },
-                { word: "är", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="flexibla" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "flexible." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Hon", translation: "She" },
-                { word: "är", translation: "is" },
-                { word: "en", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="flexibel" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "flexible" },
-                { word: "person.", translation: "person." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Dörren", translation: "The door" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="öppen" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "open." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Frågorna", translation: "The questions" },
-                { word: "var", translation: "were" },
-                { word: `<input type="text" class="answer-input" data-correct="öppna" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "open." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Han", translation: "He" },
-                { word: "har", translation: "has" },
-                { word: "ett", translation: "an" },
-                { word: `<input type="text" class="answer-input" data-correct="öppet" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "open" },
-                { word: "sinne.", translation: "mind." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Det", translation: "It" },
-                { word: "är", translation: "is" },
-                { word: "hans", translation: "his" },
-                { word: `<input type="text" class="answer-input" data-correct="egen" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "own" },
-                { word: "bil.", translation: "car." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Det där", translation: "That" },
-                { word: "är", translation: "is" },
-                { word: "mitt", translation: "my" },
-                { word: `<input type="text" class="answer-input" data-correct="eget" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "own" },
-                { word: "hus.", translation: "house." },
-            ]
-        },	
-		{
-            words: [
-                { word: "De", translation: "They" },
-                { word: "har", translation: "have" },
-                { word: "sina", translation: "their" },
-                { word: `<input type="text" class="answer-input" data-correct="egna" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "own" },
-                { word: "idéer.", translation: "ideas." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Pojken", translation: "The boy" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="ledsen" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "sad." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Hon", translation: "She" },
-                { word: "hade", translation: "had" },
-                { word: "ett", translation: "a" },
-                { word: `<input type="text" class="answer-input" data-correct="ledset" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "sad" },
-                { word: "leende.", translation: "smile." },
-            ]
-        },	
-		{
-            words: [
-                { word: "De", translation: "They" },
-                { word: "är", translation: "are" },
-                { word: "väldigt", translation: "very" },
-                { word: `<input type="text" class="answer-input" data-correct="ledsna" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "sad." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Katten", translation: "The cat" },
-                { word: "är", translation: "is" },
-                { word: "så", translation: "so" },
-                { word: `<input type="text" class="answer-input" data-correct="liten" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "small." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Huset", translation: "The house" },
-                { word: "är", translation: "is" },
-                { word: "inte", translation: "not" },
-                { word: "särskilt", translation: "particularly" },
-                { word: `<input type="text" class="answer-input" data-correct="litet" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "small." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Herre gud,", translation: "Good Lord," },
-                { word: "så", translation: "such" },
-                { word: "löjligt", translation: "ridiculously" },
-                { word: `<input type="text" class="answer-input" data-correct="små" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "small" },
-                { word: "kakor.", translation: "cookies." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Mannen", translation: "The man" },
-                { word: "var", translation: "was" },
-                { word: "väldigt", translation: "very" },
-                { word: `<input type="text" class="answer-input" data-correct="gammal" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "old." },
-            ]
-        },	
-		{
-            words: [
-                { word: "Trädet", translation: "The tree" },
-                { word: "är", translation: "is" },
-                { word: `<input type="text" class="answer-input" data-correct="gammalt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "old." },
-            ]
-        },	
-		{
-            words: [
-                { word: "De här", translation: "These" },
-                { word: "böckerna", translation: "books" },
-                { word: "är", translation: "are" },
-                { word: `<input type="text" class="answer-input" data-correct="gamla" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
-                    translation: "old." },
-            ]
-        },	
+			{
+				words: [
+					{ word: "Jag", translation: "I" },
+					{ word: "har", translation: "have" },
+					{ word: "köpt", translation: "bought" },
+					{ word: "en", translation: "a" },
+					{ word: `<input type="text" class="answer-input" data-correct="ny" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+						translation: "new"
+					},
+					{ word: "bil.", translation: "car." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "bär", translation: "is wearing" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="blå" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "blue"
+				},
+				{ word: "klänning.", translation: "dress." }
+				]
+			},
+			{
+				words: [
+				{ word: "Katten", translation: "The cat" },
+				{ word: "har", translation: "has" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="grå" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "grey"
+				},
+				{ word: "päls.", translation: "coat." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "lever", translation: "lives" },
+				{ word: "i", translation: "in" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="fri" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "free"
+				},
+				{ word: "stad.", translation: "city." }
+				]
+			},
+			{
+				words: [
+				{ word: "Staden", translation: "The city" },
+				{ word: "har", translation: "has" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="bred" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "wide"
+				},
+				{ word: "gata.", translation: "street." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "lagar", translation: "is cooking" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="god" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "good"
+				},
+				{ word: "middag.", translation: "dinner." }
+				]
+			},
+			{
+				words: [
+				{ word: "Barnen", translation: "The children" },
+				{ word: "leker", translation: "are playing" },
+				{ word: "med", translation: "with" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="glad" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "happy"
+				},
+				{ word: "hund.", translation: "dog." }
+				]
+			},
+			{
+				words: [
+				{ word: "Jag", translation: "I" },
+				{ word: "köpte", translation: "bought" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="röd" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "red"
+				},
+				{ word: "tröja.", translation: "jumper." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "slog", translation: "struck" },
+				{ word: "med", translation: "with" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="hård" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "hard"
+				},
+				{ word: "knytnäve.", translation: "fist." }
+				]
+			},
+			{
+				words: [
+				{ word: "Kocken", translation: "The chef" },
+				{ word: "gör", translation: "is making" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="mild" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "mild"
+				},
+				{ word: "sås.", translation: "sauce." }
+				]
+			},
+			{
+				words: [
+				{ word: "Djuret", translation: "The animal" },
+				{ word: "är", translation: "is" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="vild" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "wild"
+				},
+				{ word: "katt.", translation: "cat." }
+				]
+			},
+			{
+				words: [
+				{ word: "Det", translation: "That" },
+				{ word: "var", translation: "was" },
+				{ word: "en", translation: "an" },
+				{ word: `<input type="text" class="answer-input" data-correct="ond" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "evil"
+				},
+				{ word: "skurk.", translation: "villain." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "har", translation: "has" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="vacker" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "beautiful"
+				},
+				{ word: "röst.", translation: "voice." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "åt", translation: "ate" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="mager" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "lean"
+				},
+				{ word: "måltid.", translation: "meal." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "är", translation: "is" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="nykter" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "sober"
+				},
+				{ word: "alkoholist.", translation: "alcoholic." }
+				]
+			},
+			{
+				words: [
+				{ word: "Huset", translation: "The house" },
+				{ word: "har", translation: "has" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="säker" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "secure"
+				},
+				{ word: "grund.", translation: "foundation." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "åt", translation: "had" },
+				{ word: "en", translation: "an" },
+				{ word: `<input type="text" class="answer-input" data-correct="acceptabel" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "acceptable"
+				},
+				{ word: "lunch.", translation: "lunch." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "är", translation: "is" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="flexibel" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "flexible"
+				},
+				{ word: "lärare.", translation: "teacher." }
+				]
+			},
+			{
+				words: [
+				{ word: "Det", translation: "It" },
+				{ word: "var", translation: "was" },
+				{ word: "en", translation: "an" },
+				{ word: `<input type="text" class="answer-input" data-correct="öppen" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "open"
+				},
+				{ word: "fråga.", translation: "question." }
+				]
+			},
+			{
+				words: [
+				{ word: "Varje", translation: "Every" },
+				{ word: "barn", translation: "child" },
+				{ word: "har", translation: "has" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="egen" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "own"
+				},
+				{ word: "cykel.", translation: "bike." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "gick", translation: "walked" },
+				{ word: "iväg", translation: "away" },
+				{ word: "med", translation: "with" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="ledsen" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "sad"
+				},
+				{ word: "min.", translation: "expression." }
+				]
+			},
+			{
+				words: [
+				{ word: "Katten", translation: "The cat" },
+				{ word: "fångade", translation: "caught" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="liten" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "small"
+				},
+				{ word: "mus.", translation: "mouse." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "berättade", translation: "told" },
+				{ word: "en", translation: "an" },
+				{ word: `<input type="text" class="answer-input" data-correct="gammal" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "old"
+				},
+				{ word: "historia.", translation: "story." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "betraktade", translation: "observed" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="naken" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "naked"
+				},
+				{ word: "staty.", translation: "statue." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "löste", translation: "solved" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="enkel" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "simple"
+				},
+				{ word: "uppgift.", translation: "task." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "ritade", translation: "drew" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="rund" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "round"
+				},
+				{ word: "cirkel.", translation: "circle." }
+				]
+			},
+			{
+				words: [
+				{ word: "Boken", translation: "The book" },
+				{ word: "har", translation: "has" },
+				{ word: "en", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="sliten" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "worn"
+				},
+				{ word: "pärm.", translation: "cover." }
+				]
+			},
+			{
+				words: [
+				{ word: "Jag", translation: "I" },
+				{ word: "har", translation: "have" },
+				{ word: "köpt", translation: "bought" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="nytt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "new"
+				},
+				{ word: "hus.", translation: "house." }
+				]
+			},
+			{
+				words: [
+				{ word: "Jag", translation: "I" },
+				{ word: "ser", translation: "see" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="blått" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "blue"
+				},
+				{ word: "fönster.", translation: "window." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "bor", translation: "live" },
+				{ word: "i", translation: "in" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="grått" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "grey"
+				},
+				{ word: "hus.", translation: "house." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "lever", translation: "lives" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="fritt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "free"
+				},
+				{ word: "liv.", translation: "life." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "ritade", translation: "drew" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="brett" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "wide"
+				},
+				{ word: "diagram.", translation: "diagram." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "åt", translation: "ate" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="gott" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "good"
+				},
+				{ word: "äpple.", translation: "apple." }
+				]
+			},
+			{
+				words: [
+				{ word: "Det", translation: "It" },
+				{ word: "var", translation: "was" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="glatt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "happy"
+				},
+				{ word: "ögonblick.", translation: "moment." }
+				]
+			},
+			{
+				words: [
+				{ word: "Jag", translation: "I" },
+				{ word: "såg", translation: "saw" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="rött" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "red"
+				},
+				{ word: "ljus.", translation: "light." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "slog", translation: "struck" },
+				{ word: "med", translation: "with" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="hårt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "hard"
+				},
+				{ word: "slag.", translation: "blow." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "provade", translation: "tried" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="milt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "mild"
+				},
+				{ word: "vin.", translation: "wine." }
+				]
+			},
+			{
+				words: [
+				{ word: "De", translation: "They" },
+				{ word: "observerade", translation: "observed" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="vilt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "wild"
+				},
+				{ word: "djur.", translation: "animal." }
+				]
+			},
+			{
+				words: [
+				{ word: "Det", translation: "It" },
+				{ word: "var", translation: "was" },
+				{ word: "ett", translation: "an" },
+				{ word: `<input type="text" class="answer-input" data-correct="ont" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "evil"
+				},
+				{ word: "beslut.", translation: "decision." }
+				]
+			},
+			{
+				words: [
+				{ word: "De", translation: "They" },
+				{ word: "beundrade", translation: "admired" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="vackert" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "beautiful"
+				},
+				{ word: "landskap.", translation: "landscape." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "hade", translation: "hade" },
+				{ word: `<input type="text" class="answer-input" data-correct="magert" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "lean"
+				},
+				{ word: "kött", translation: "meat" },
+				{ word: "i", translation: "in" },
+				{ word: "soppan.", translation: "the soup." }
+				]
+			},
+			{
+				words: [
+				{ word: "Det", translation: "It" },
+				{ word: "var", translation: "was" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="nyktert" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "sober"
+				},
+				{ word: "party.", translation: "party." }
+				]
+			},
+			{
+				words: [
+				{ word: "Jag", translation: "I" },
+				{ word: "bor", translation: "live" },
+				{ word: "i", translation: "in" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="säkert" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "secure"
+				},
+				{ word: "område.", translation: "area." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "fick", translation: "received" },
+				{ word: "ett", translation: "an" },
+				{ word: `<input type="text" class="answer-input" data-correct="acceptabelt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "acceptable"
+				},
+				{ word: "svar.", translation: "answer." }
+				]
+			},
+			{
+				words: [
+				{ word: "Det", translation: "It" },
+				{ word: "var", translation: "was" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="flexibelt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "flexible"
+				},
+				{ word: "schema.", translation: "schedule." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "deltog", translation: "attended" },
+				{ word: "i", translation: "in" },
+				{ word: "ett", translation: "an" },
+				{ word: `<input type="text" class="answer-input" data-correct="öppet" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "open"
+				},
+				{ word: "möte.", translation: "meeting." }
+				]
+			},
+			{
+				words: [
+				{ word: "Barnet", translation: "The child" },
+				{ word: "har", translation: "has" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="eget" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "own"
+				},
+				{ word: "rum.", translation: "room." }
+				]
+			},
+			{
+				words: [
+				{ word: "Det", translation: "It" },
+				{ word: "var", translation: "was" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="ledset" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "sad"
+				},
+				{ word: "barn.", translation: "child." }
+				]
+			},
+			{
+				words: [
+				{ word: "Jag", translation: "I" },
+				{ word: "hittade", translation: "found" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="litet" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "small"
+				},
+				{ word: "problem.", translation: "problem." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "renoverade", translation: "renovated" },
+				{ word: "ett", translation: "an" },
+				{ word: `<input type="text" class="answer-input" data-correct="gammalt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "old"
+				},
+				{ word: "hus.", translation: "house." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "beundrade", translation: "admired" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="naket" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "naked"
+				},
+				{ word: "konstverk.", translation: "artwork." }
+				]
+			},
+			{
+				words: [
+				{ word: "Det", translation: "It" },
+				{ word: "var", translation: "was" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="enkelt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "simple"
+				},
+				{ word: "exempel.", translation: "example." }
+				]
+			},
+			{
+				words: [
+				{ word: "De", translation: "They" },
+				{ word: "formade", translation: "shaped" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="runt" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "round"
+				},
+				{ word: "föremål.", translation: "object." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "bodde", translation: "lived" },
+				{ word: "i", translation: "in" },
+				{ word: "ett", translation: "a" },
+				{ word: `<input type="text" class="answer-input" data-correct="slitet" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "worn-out"
+				},
+				{ word: "rum.", translation: "room." }
+				]
+			},
+			{
+				words: [
+				{ word: "Jag", translation: "I" },
+				{ word: "har", translation: "have" },
+				{ word: "köpt", translation: "bought" },
+				{ word: "flera", translation: "several" },
+				{ word: `<input type="text" class="answer-input" data-correct="nya" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "new"
+				},
+				{ word: "bilar.", translation: "cars." }
+				]
+			},
+			{
+				words: [
+				{ word: "Hon", translation: "She" },
+				{ word: "bar", translation: "wore" },
+				{ word: `<input type="text" class="answer-input" data-correct="blåa,blå" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "blue"
+				},
+				{ word: "klänningar.", translation: "dresses." }
+				]
+			},
+			{
+				words: [
+				{ word: "Katterna", translation: "The cats" },
+				{ word: "har", translation: "have" },
+				{ word: `<input type="text" class="answer-input" data-correct="gråa,grå" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "grey"
+				},
+				{ word: "pälsar.", translation: "coats." }
+				]
+			},
+			{
+				words: [
+				{ word: "De", translation: "They" },
+				{ word: "lever", translation: "live" },
+				{ word: "i", translation: "in" },
+				{ word: `<input type="text" class="answer-input" data-correct="fria" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "free"
+				},
+				{ word: "samhällen.", translation: "societies." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "såg", translation: "saw" },
+				{ word: `<input type="text" class="answer-input" data-correct="breda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "wide"
+				},
+				{ word: "vägar", translation: "roads" },
+				{ word: "under", translation: "during" },
+				{ word: "resan.", translation: "the journey." }
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "lagade", translation: "prepared" },
+				{ word: `<input type="text" class="answer-input" data-correct="goda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "good"
+				},
+				{ word: "måltider.", translation: "meals." }
+				]
+			},
+			{
+				words: [
+				{ word: "Barnen", translation: "The children" },
+				{ word: "var", translation: "were" },
+				{ word: `<input type="text" class="answer-input" data-correct="glada" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "happy"
+				},
+				{ word: "hela", translation: "the whole" },
+				{ word: "dagen.", translation: "day." }
+				]
+			},
+			{
+				words: [
+				{ word: "Jag", translation: "I" },
+				{ word: "köpte", translation: "bought" },
+				{ word: `<input type="text" class="answer-input" data-correct="röda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "red"
+				},
+				{ word: "äpplen.", translation: "apples." }
+				]
+			},
+			{
+				words: [
+				{ word: "De", translation: "They" },
+				{ word: "mötte", translation: "faced" },
+				{ word: `<input type="text" class="answer-input" data-correct="hårda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "hard"
+				},
+				{ word: "utmaningar.", translation: "challenges." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "drack", translation: "drank" },
+				{ word: `<input type="text" class="answer-input" data-correct="milda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "mild"
+				},
+				{ word: "viner.", translation: "wines." }
+				]
+			},
+			{
+				words: [
+				{ word: "Forskare", translation: "Scientists" },
+				{ word: "studerar", translation: "study" },
+				{ word: `<input type="text" class="answer-input" data-correct="vilda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "wild"
+				},
+				{ word: "djur.", translation: "animals." }
+				]
+			},
+			{
+				words: [
+				{ word: "Filmen", translation: "The film" },
+				{ word: "handlade om", translation: "was about" },
+				{ word: `<input type="text" class="answer-input" data-correct="onda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "evil"
+				},
+				{ word: "krafter.", translation: "forces." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "beundrade", translation: "admired" },
+				{ word: "de", translation: "the" },
+				{ word: `<input type="text" class="answer-input" data-correct="vackra" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "beautiful"
+				},
+				{ word: "trädgårdarna.", translation: "gardens." }
+				]
+			},
+			{
+				words: [
+				{ word: "Idrottare", translation: "Athletes" },
+				{ word: "äter", translation: "eat" },
+				{ word: `<input type="text" class="answer-input" data-correct="magra" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "lean"
+				},
+				{ word: "måltider.", translation: "meals." }
+				]
+			},
+			{
+				words: [
+				{ word: "Nu", translation: "Now" },
+				{ word: "är", translation: "are" },
+				{ word: "ungdomarna", translation: "the young ones" },
+				{ word: "äntligen", translation: "finally" },
+				{ word: `<input type="text" class="answer-input" data-correct="nyktra" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "sober"
+				},
+				{ word: "igen.", translation: "again." },
+				]
+			},
+			{
+				words: [
+				{ word: "Föräldrar", translation: "Parents" },
+				{ word: "vill", translation: "want" },
+				{ word: "ha", translation: "to have" },
+				{ word: `<input type="text" class="answer-input" data-correct="säkra" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "safe"
+				},
+				{ word: "skolor.", translation: "schools." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "fick", translation: "received" },
+				{ word: `<input type="text" class="answer-input" data-correct="acceptabla" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "acceptable"
+				},
+				{ word: "resultat.", translation: "results." }
+				]
+			},
+			{
+				words: [
+				{ word: "Företaget", translation: "The company" },
+				{ word: "erbjuder", translation: "offers" },
+				{ word: `<input type="text" class="answer-input" data-correct="flexibla" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "flexible"
+				},
+				{ word: "arbetstider.", translation: "working hours." }
+				]
+			},
+			{
+				words: [
+				{ word: "De", translation: "They" },
+				{ word: "deltog", translation: "participated" },
+				{ word: "i", translation: "in" },
+				{ word: `<input type="text" class="answer-input" data-correct="öppna" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "open"
+				},
+				{ word: "diskussioner.", translation: "discussions." }
+				]
+			},
+			{
+				words: [
+				{ word: "Varje", translation: "Each" },
+				{ word: "student", translation: "student" },
+				{ word: "fick", translation: "received" },
+				{ word: `<input type="text" class="answer-input" data-correct="egna" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "own"
+				},
+				{ word: "uppgifter.", translation: "tasks." }
+				]
+			},
+			{
+				words: [
+				{ word: "De", translation: "The" },
+				{ word: "blev", translation: "became" },
+				{ word: "väldigt", translation: "very" },
+				{ word: `<input type="text" class="answer-input" data-correct="ledsna" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "sad"
+				},
+				{ word: "efter", translation: "after" },
+				{ word: "begravningen.", translation: "the accident." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "hittade", translation: "found" },
+				{ word: `<input type="text" class="answer-input" data-correct="små" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "small"
+				},
+				{ word: "skatter", translation: "treasures" },
+				{ word: "i", translation: "in" },
+				{ word: "parken.", translation: "the park." }
+				]
+			},
+			{
+				words: [
+				{ word: "I", translation: "In" },
+				{ word: "biblioteket", translation: "the library" },
+				{ word: "fanns det", translation: "there were" },
+				{ word: "många", translation: "many" },
+				{ word: `<input type="text" class="answer-input" data-correct="gamla" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "old"
+				},
+				{ word: "böcker.", translation: "books." }
+				]
+			},
+			{
+				words: [
+				{ word: "Konstnären", translation: "The artist" },
+				{ word: "målade", translation: "painted" },
+				{ word: `<input type="text" class="answer-input" data-correct="nakna" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "naked"
+				},
+				{ word: "figurer.", translation: "figures." }
+				]
+			},
+			{
+				words: [
+				{ word: "Vi", translation: "We" },
+				{ word: "löste", translation: "solved" },
+				{ word: `<input type="text" class="answer-input" data-correct="enkla" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "simple"
+				},
+				{ word: "problem", translation: "problems" },
+				{ word: "tillsammans.", translation: "together." }
+				]
+			},
+			{
+				words: [
+				{ word: "Borden", translation: "The tables" },
+				{ word: "i", translation: "in" },
+				{ word: "salen", translation: "the hall" },
+				{ word: "var", translation: "were" },
+				{ word: `<input type="text" class="answer-input" data-correct="runda" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "round"
+				},
+				{ word: "och", translation: "and" },
+			    { word: "gjorda", translation: "made" },
+			    { word: "av", translation: "of" },
+				{ word: "ek.", translation: "oak." },
+				]
+			},
+			{
+				words: [
+				{ word: "Han", translation: "He" },
+				{ word: "hittade", translation: "found" },
+				{ word: `<input type="text" class="answer-input" data-correct="slitna" oninput="evaluateAnswer(this)" aria-label="Type the correct form">`,
+					translation: "worn-out"
+				},
+				{ word: "stolar, translation: "chairs" },
+				{ word: "överallt", translation: "everywhere" },
+				{ word: "i", translation: "in" },
+				{ word: "huset.", translation: "the house." }
+				]
+			},
         // Lägg till fler meningar efter behov
     ];
 
@@ -699,7 +1024,7 @@
 
 
     <!-- Page Title -->
-    <h1 class="page-title"><i class="fas fa-pen" aria-hidden="true" style="margin-right: 8px;"></i>  Unconventional adjectives: write the correct form</h1>
+    <h1 class="page-title"><i class="fas fa-list-ol list-icon" aria-hidden="true" style="margin-right: 8px;"></i> Unconventional adjectives: pick the correct form</h1>
     <p>Read the "Info" to understand what this exercise is about.</p>
 	
     <!-- Main Content Container -->
@@ -710,15 +1035,24 @@
         <div class="modal-content">
             <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
             <h2 id="infoModalTitle">Information</h2>
-            <p>This exercise is the "big brother" of <a href="https://learnswedish.github.io/html/unconventional-adjectives-pick.html" target="_blank">another exercise</a>, 
-	    which focuses on 22 adjectives that deviate from the typical pattern of how Swedish adjectives are normally inflected – either in their T-gender form, 
-	    their plural form, or both. In that other exercise, you have the opportunity to familiarise yourself with these adjectives. In <strong>this exercise</strong>, it’s the real deal! :)</p> 
+            <p>In this exercise, you will familiarise yourself with 27<br />
+	       unconventional Swedish adjectives like <em>ny</em> (new), <em>röd</em> (red),<br />
+	       <em>glad</em> (happy) and <em>hård</em> (hard) – unconventional in the sense<br />
+	       that they do not follow the standard pattern of inflection,<br /> 
+   	       which is for <em>härlig</em> (lovely), <em>grön</em> (green), <em>ljus</em> (light) etc:</p>
+		<br />
+		    <ul>
+			    <li>N gender: härlig, which equals the base form</li>
+			    <li>T gender: base form +t » härligt</li>
+			    <li>Plural: base form +a » härliga</li>
+		    </ul>
+		<p>&nbsp;</p>
+	    <p>Instead, we see patterns such as (new) "ny, <strong>NYTT</strong>, nya" and<br />
+	       (beautiful) "vacker, vackert, <strong>VACKRA</strong>". You'll get used to it! :)<br />Good luck!</p>
 	    <p>&nbsp;</p>
-	    <p>Simply fill in the correct adjective (and its correct form). If you need help, hover over the input field to see which adjective you should use.</p>
+	    <p>A tip! Once you feel really comfortable with these adjectives, why not try <a href="https://learnswedish.github.io/html/unconventional-adjectives-write.html" target="_blank">another exercise</a> where you don’t see the options? Now we’re talking!</p>
 	    <p>&nbsp;</p>
-	    <p>Good luck!</p>
-	    <p>&nbsp;</p>
-	    <p>For an exercise with a primary focus on the inflection of regular adjectives, <a href="https://learnswedish.github.io/html/practice-adjective-form.html" target="_blank">go here</a>.</p>
+	    <p>For an exercise with a primary focus on<br />the inflection of regular adjectives, <a href="https://learnswedish.github.io/html/practice-adjective-form.html" target="_blank">go here</a>.</p>
         </div>
     </div>
 	
