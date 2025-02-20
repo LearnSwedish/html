@@ -1,0 +1,3102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swedish Pitch Accent Flip Card</title>
+ <style> 
+/* Basic styling from your original code */
+ body {
+     margin: 0;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     height: 100vh;
+     background-color: #f4f4f4;
+     font-family: Arial, sans-serif;
+     position: relative;
+}
+/* Score counter */
+ .score-counter {
+     position: absolute;
+     width: 160px;
+     top: 20px;
+     text-align: center;
+     right: 20px;
+     font-size: 18px;
+     background: white;
+     padding: 10px;
+     border-radius: 5px;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+/* Container for the three new buttons */
+ .action-buttons {
+     position: absolute;
+     top: 70px;
+    /* adjust as needed to place below the .score-counter */
+     right: 20px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     gap: 10px;
+    /* spacing between buttons */
+}
+/* Each individual button, same style as .score-counter (100px wide) */
+ .action-button {
+     width: 160px;
+     text-align: center;
+     background: white;
+     padding: 10px;
+     border-radius: 5px;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+     font-size: 16px;
+     cursor: pointer;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+    /* Optional hover effect */
+}
+ .action-button:hover {
+     background-color: #ececec;
+}
+/* Simple modal styling */
+ .modal {
+     display: none;
+    /* hidden by default */
+     position: fixed;
+     z-index: 999;
+     left: 0;
+     top: 0;
+     width: 100%;
+     height: 100%;
+     overflow: auto;
+     background-color: rgba(0,0,0,0.4);
+    /* Black overlay */
+}
+ .modal-content {
+     background-color: #fff;
+     margin: 10% auto;
+    /* center the modal */
+     padding: 20px;
+     width: 400px;
+     border-radius: 5px;
+     position: relative;
+}
+ .close {
+     position: absolute;
+     right: 10px;
+     top: 10px;
+     font-size: 24px;
+     font-weight: bold;
+     cursor: pointer;
+}
+ .card-container {
+     perspective: 1000px;
+}
+ .card {
+     width: 600px;
+     height: 300px;
+     position: relative;
+     transform-style: preserve-3d;
+     transition: transform 0.6s;
+     cursor: pointer;
+}
+ .card.flip {
+     transform: rotateY(180deg);
+}
+ .card .side {
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     backface-visibility: hidden;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     border-radius: 10px;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+     background: white;
+}
+ .front {
+     font-size: 32px;
+     font-weight: bold;
+     text-align: center;
+}
+ .back {
+     width: 100%;
+     height: 100%;
+     transform: rotateY(180deg);
+     padding: 20px;
+     box-sizing: border-box;
+}
+/* Improved styling for the table on the backside */
+.back table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden; /* Ensures the rounded corners are respected */
+}
+.back table th,
+.back table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.back table th {
+  background-color: #0a4f74;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.back table td {
+  font-size: 14px;
+  background-color: #fff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.back table tr:nth-child(even) td {
+  background-color: #f9f9f9;
+}
+
+.back table tr:hover td {
+  background-color: #f1f1f1;
+}
+
+.back table tr:last-child td {
+  border-bottom: none;
+}
+.quiz {
+  position: relative;           /* Make this container the positioning context */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+    transition: opacity 0.6s ease;
+  /* Remove any gap if previously set */
+}
+#left-options {
+  margin-right: 50px;           /* 50px space to the center separator */
+}
+
+#right-options {
+  margin-left: 50px;            /* 50px space from the separator */
+}
+ .hidden {
+     opacity: 0;
+     pointer-events: none;
+    /* So user can’t click invisible buttons */
+}
+ .quiz-section {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+}
+ .quiz-section p {
+     font-size: 16px;
+     font-weight: bold;
+     margin-bottom: 10px;
+}
+ .quiz-section button {
+     width: 150px;
+     margin: 5px 0;
+     padding: 8px 12px;
+     font-size: 14px;
+     cursor: pointer;
+     border: 1px solid #000;
+     background-color: white;
+     border-radius: 5px;
+     text-align: center;
+     transition: transform 0.2s, background-color 0.3s;
+}
+/* Hover effect for buttons */
+ .quiz-section button:hover {
+     transform: scale(1.1);
+     background-color: #ddd;
+}
+/* Disabled button styling */
+ .quiz-section button.disabled-button:hover {
+     transform: none;
+     background-color: white;
+     cursor: default;
+}
+/* Remove .separator from the flex flow and position it absolutely */
+.separator {
+margin-top: 20px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background-color: black;
+  height: 230px;
+}
+ table {
+     width: 100%;
+     border-collapse: collapse;
+}
+ th, td {
+     border: 1px solid #ccc;
+     padding: 12px;
+     text-align: left;
+}
+ th {
+     background-color: #0a4f74;
+     color: white;
+     vertical-align: middle;
+}
+ td.meaning {
+     font-size: 14px;
+}
+ td.example {
+     font-size: 14px;
+     vertical-align: top;
+     text-align: left;
+}
+/* Answer button color changes */
+ .correct-answer {
+     background-color: green !important;
+     color: white !important;
+}
+ .wrong-answer {
+     background-color: red !important;
+     color: white !important;
+}
+#next-container {
+  /* Keep the container in the layout from the start: */
+  visibility: hidden;        /* Hides it but still occupies space */
+  margin-top: 20px;          /* or whatever spacing you like */
+  text-align: center;        /* center the button horizontally */
+}
+ .next-button {
+     padding: 10px 20px;
+     font-size: 16px;
+     background-color: #007BFF;
+     color: white;
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+}
+ .next-button:hover {
+     background-color: #0056b3;
+}
+.front-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Position the left image in the top left corner */
+.top-left {
+  position: absolute;
+  top: 10px;   /* adjust as needed */
+  left: 10px;  /* adjust as needed */
+  width: 115px; /* or whatever size works best */
+  height: auto;
+}
+
+/* Position the right image in the top right corner */
+.top-right {
+  position: absolute;
+  top: 10px;    /* adjust as needed */
+  right: 10px;  /* adjust as needed */
+  width: 115px;  /* or whatever size works best */
+  height: auto;
+}
+
+.top-left,
+.top-right {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Ensure the overlaid text is centered */
+.front-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000; /* change from #fff to #000 for black text */
+  font-size: 32px;
+  font-weight: bold;
+  /* You may remove or adjust text-shadow if needed */
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
+}
+.score-counter .score-value {
+  display: inline-block;
+  width: 30px;      /* Adjust the width to suit the maximum number of digits */
+  text-align: right;
+}
+.page-header {
+  position: absolute;
+  top: 20px;              /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: 100%;            /* So the header spans the full width */
+  pointer-events: none;   /* Optional: lets clicks pass through if desired */
+  z-index: 1000;          /* Make sure it stays on top */
+}
+
+.page-title {
+  margin: 0;
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+}
+
+.page-subtitle {
+  margin: 0;
+  margin-top: 10px;
+  font-size: 16px;
+  color: #555;
+}
+ </style>
+</head>
+<body>
+<div class="page-header">
+  <h1 class="page-title">Swedish Pitch Accent Drill</h1>
+  <p class="page-subtitle">Read the "Info" to understand what this exercise is about.</p>
+</div>
+
+  <!-- Score Counter -->
+<div class="score-counter" id="score-counter">
+  Score: <span class="score-value">0</span> / 122
+</div>
+
+<!-- New container with vertical buttons -->
+<div class="action-buttons">
+  <div class="action-button" onclick="openModal()">Info</div>
+  <div class="action-button" onclick="openAccentPage()">Accent</div>
+  <div class="action-button" onclick="startOver()">Start over</div>
+</div>
+
+  <div class="card-container" onclick="flipCard()">
+    <div class="card" id="flip-card">
+<div class="side front">
+  <div class="front-inner">
+    <img src="https://learnswedish.github.io/html/acute.png" alt="Image Left" class="top-left" />
+    <img src="https://learnswedish.github.io/html/grave.png" alt="Image Right" class="top-right" />
+    <div class="front-text">almen | allmän</div>
+  </div>
+</div>
+      <div class="side back">Placeholder Back</div>
+    </div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-section" id="left-options">
+      <p>Accent 1 word meaning:</p>
+    </div>
+    <div class="separator"></div>
+    <div class="quiz-section" id="right-options">
+      <p>Accent 2 word meaning:</p>
+    </div>
+  </div>
+
+<!-- Next button container placed AFTER the quiz -->
+<div id="next-container">
+  <button class="next-button" id="next-button">Next</button>
+</div>
+
+  <!-- Modal for Info -->
+<div id="info-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <p>
+      <strong>About this exercise</strong>
+      <br /><br />
+      In this exercise, there is a set of 61 word pairs where the only difference – apart from differences in meaning – is that one word is pronounced with Accent 1 and the other with Accent 2. 
+	  <br /><br />To understand the difference between pitch accents, click the Accent button in the right-hand menu.
+	  <br /><br />On the back of each card, you get information on word class along with an example of each word's usage.
+	  <br /><br />This exercise also serves as a traditional vocabulary drill, as you must supply the correct meaning for each word to progress to the next card. If you select the correct meaning without having flipped the card, you earn 1 point; otherwise, you receive only half a point for a correct answer.
+	  <br /><br />Good luck!
+    </p>
+  </div>
+</div>
+
+<script>
+      // Define your flashcard data
+      const cards = [{
+              "frontText": "akter | akter",
+              "backContent": `
+    <table>
+      <tr>
+        <th>Accent 1</th>
+        <th>Accent 2</th>
+      </tr>
+      <tr>
+        <td><strong>noun, sg.</strong></td>
+        <td><strong>noun, pl.</strong></td>
+      </tr>
+      <tr>
+        <td class="meaning">stern</td>
+        <td class="meaning">acts</td>
+      </tr>
+      <tr>
+        <td class="example">Båtens akter hade skadats. (The boat’s stern had been damaged.)</td>
+        <td class="example">Pjäsen består av tre akter och spelas på en timme. (The play consists of three acts and is performed in one hour.)</td>
+      </tr>
+    </table>
+  `,
+              "quiz": {
+                  "left": {
+                      "correct": "stern",
+                      "incorrect": [
+                          "actor",
+                          "cabin",
+                          "bow"
+                      ]
+                  },
+                  "right": {
+                      "correct": "acts",
+                      "incorrect": [
+                          "sequences",
+                          "instalments",
+                          "sections"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "almen | allmän",
+              "backContent": `
+    <table>
+      <tr>
+        <th>Accent 1</th>
+        <th>Accent 2</th>
+      </tr>
+      <tr>
+        <td><strong>noun, sg.</strong></td>
+        <td><strong>adjective</strong></td>
+      </tr>
+      <tr>
+        <td class="meaning">the elm tree</td>
+        <td class="meaning">general</td>
+      </tr>
+      <tr>
+        <td class="example">Almen i parken behöver beskäras innan våren. (The elm tree in the park needs pruning before spring.)</td>
+        <td class="example">Det är en allmän åsikt att regelbunden motion är bra för hälsan. (It is a general opinion that regular exercise is good for one’s health.)</td>
+      </tr>
+    </table>
+  `,
+              "quiz": {
+                  "left": {
+                      "correct": "the elm tree",
+                      "incorrect": [
+                          "the almond tree",
+                          "the ash tree",
+                          "the beech tree"
+                      ]
+                  },
+                  "right": {
+                      "correct": "general",
+                      "incorrect": [
+                          "all-mains",
+                          "uncommon",
+                          "focused"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "anden | anden",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the duck</td>
+          <td class="meaning">the spirit</td>
+        </tr>
+        <tr>
+          <td class="example">Anden simmade lugnt i dammen. (The duck swam calmly in the pond.)</td>
+          <td class="example">Anden svävade genom rummet när klockan slog midnatt. (The spirit drifted through the room as the clock struck midnight.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the duck",
+                      "incorrect": [
+                          "the cormorant",
+                          "the androgen",
+                          "the pigeon"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the spirit",
+                      "incorrect": [
+                          "the figure",
+                          "the andante",
+                          "the object"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "backen | backen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the reverse gear</td>
+          <td class="meaning">the slope</td>
+        </tr>
+        <tr>
+          <td class="example">Jag lade i backen och backade försiktigt ut ur garaget. (I put it into reverse and carefully reversed out of the garage.)</td>
+          <td class="example">Backen var brant och lockade många skidåkare. (The slope was steep and attracted many skiers.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the reverse gear",
+                      "incorrect": [
+                          "the accelerator",
+                          "the backache",
+                          "the brake pedal"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the slope",
+                      "incorrect": [
+                          "the peak",
+                          "the gorge",
+                          "the backbiter"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "biten | biten",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the piece</td>
+          <td class="meaning">bitten</td>
+        </tr>
+        <tr>
+          <td class="example">Den där biten av brödet är min. (That piece of bread is mine.)</td>
+          <td class="example">Hunden hade blivit biten av en orm. (The dog had been bitten by a snake.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the piece",
+                      "incorrect": [
+                          "the segment",
+                          "the slice",
+                          "the biter"
+                      ]
+                  },
+                  "right": {
+                      "correct": "bitten",
+                      "incorrect": [
+                          "bitchy",
+                          "chosen",
+                          "written"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "breven | brevvän",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the letters</td>
+          <td class="meaning">pen pal</td>
+        </tr>
+        <tr>
+          <td class="example">Breven låg utspridda på köksbordet. (The letters were scattered across the kitchen table.)</td>
+          <td class="example">Min brevvän och jag har skrivit till varandra i flera år. (My pen pal and I have been writing to each other for several years.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the letters",
+                      "incorrect": [
+                          "the breviers",
+                          "the notes",
+                          "the posters"
+                      ]
+                  },
+                  "right": {
+                      "correct": "pen pal",
+                      "incorrect": [
+                          "messenger",
+                          "brevity",
+                          "friend"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "brister | brister",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>verb, present</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">breaks</td>
+          <td class="meaning">flaws</td>
+        </tr>
+        <tr>
+          <td class="example">Snöret brister när jag drar för hårt. (The string breaks when I pull too hard.)</td>
+          <td class="example">Alla har sina brister, ingen är perfekt. (Everyone has their flaws; nobody is perfect.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "breaks",
+                      "incorrect": [
+                          "shatters",
+                          "bristles",
+                          "collapses"
+                      ]
+                  },
+                  "right": {
+                      "correct": "flaws",
+                      "incorrect": [
+                          "weaknesses",
+                          "bristle worms",
+                          "pitfalls"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "brunnen | brunnen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the well</td>
+          <td class="meaning">burnt-out</td>
+        </tr>
+        <tr>
+          <td class="example">Brunnen på gården är flera hundra år gammal. (The well in the yard is several hundred years old.)</td>
+          <td class="example">Vid vägkanten stod en brunnen bil. (There was a burnt-out car by the side of the road.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the well",
+                      "incorrect": [
+                          "the reservoir",
+                          "the brunette",
+                          "the tank"
+                      ]
+                  },
+                  "right": {
+                      "correct": "burnt-out",
+                      "incorrect": [
+                          "extinguished",
+                          "consumed",
+                          "brushed"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "buren | buren",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the cage</td>
+          <td class="meaning">carried</td>
+        </tr>
+        <tr>
+          <td class="example">Det satt tre chimpanser i buren. (There were three chimpanzees in the cage.)</td>
+          <td class="example">Hon blev buren in i ambulansen. (She was carried into the ambulance.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the cage",
+                      "incorrect": [
+                          "the kennel",
+                          "the bureau",
+                          "the box"
+                      ]
+                  },
+                  "right": {
+                      "correct": "carried",
+                      "incorrect": [
+                          "borne",
+                          "burgled",
+                          "transferred"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "dragen | dragen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the lures</td>
+          <td class="meaning">tipsy</td>
+        </tr>
+        <tr>
+          <td class="example">På en vägg i fiskarens bod hängde alla dragen. (On a wall in the fisherman’s shed hung all the lures.)</td>
+          <td class="example">Efter två glas vin var han lite dragen. (After two glasses of wine, he was a bit tipsy.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the lures",
+                      "incorrect": [
+                          "the reels",
+                          "the lines",
+                          "the dragons"
+                      ]
+                  },
+                  "right": {
+                      "correct": "tipsy",
+                      "incorrect": [
+                          "drained",
+                          "amused",
+                          "startled"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "fallen | fallen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the cases</td>
+          <td class="meaning">fallen</td>
+        </tr>
+        <tr>
+          <td class="example">I de här fallen skulle jag vara försiktig att uttala mig. (In these cases, I would be cautious about expressing myself.)</td>
+          <td class="example">Fiendens starke man är nu fallen! (The enemy’s strong man has now fallen!)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the cases",
+                      "incorrect": [
+                          "the channels",
+                          "the fallbacks",
+                          "the rivers"
+                      ]
+                  },
+                  "right": {
+                      "correct": "fallen",
+                      "incorrect": [
+                          "lingered",
+                          "drifted",
+                          "falling"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "fäster | fester",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>verb, present</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">fastens</td>
+          <td class="meaning">parties</td>
+        </tr>
+        <tr>
+          <td class="example">Han fäster kroken i väggen med en borr. (He fastens the hook to the wall with a drill.)</td>
+          <td class="example">Det var många fester i stan under festivalhelgen. (There were many parties in town during the festival weekend.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "fastens",
+                      "incorrect": [
+                          "unclips",
+                          "detaches",
+                          "disengages"
+                      ]
+                  },
+                  "right": {
+                      "correct": "parties",
+                      "incorrect": [
+                          "rallies",
+                          "gatherings",
+                          "assemblies"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "festen | fästen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the party</td>
+          <td class="meaning">mounts</td>
+        </tr>
+        <tr>
+          <td class="example">Festen varade långt in på småtimmarna. (The party lasted well into the early hours.)</td>
+          <td class="example">Deras fästen passar inte alla teveapparater. (Their mounts do not fit all television sets.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the party",
+                      "incorrect": [
+                          "the fez",
+                          "the occasion",
+                          "the function"
+                      ]
+                  },
+                  "right": {
+                      "correct": "mounts",
+                      "incorrect": [
+                          "clamps",
+                          "festers",
+                          "anchors"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "gifter | gifter",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>verb, present</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">marries</td>
+          <td class="meaning">poisons</td>
+        </tr>
+        <tr>
+          <td class="example">Han gifter sig med sin barndomsvän i sommar. (He marries his childhood friend this summer.)</td>
+          <td class="example">Vissa gifter är dödliga även i små mängder. (Some poisons are lethal even in small amounts.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "marries",
+                      "incorrect": [
+                          "avoids",
+                          "spurns",
+                          "rejects"
+                      ]
+                  },
+                  "right": {
+                      "correct": "poisons",
+                      "incorrect": [
+                          "chemicals",
+                          "germs",
+                          "hazards"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "ljusen | gjusen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the candles</td>
+          <td class="meaning">the osprey</td>
+        </tr>
+        <tr>
+          <td class="example">Ljusen flämtade svagt i den dragiga stugan. (The candles flickered faintly in the draughty cabin.)</td>
+          <td class="example">Gjusen kretsade över sjön på jakt efter fisk. (The osprey circled above the lake in search of fish.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the candles",
+                      "incorrect": [
+                          "the lanterns",
+                          "the flames",
+                          "the lights"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the osprey",
+                      "incorrect": [
+                          "the kite",
+                          "the buzzard",
+                          "the vulture"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "gripen | gripen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the griffin</td>
+          <td class="meaning">moved</td>
+        </tr>
+        <tr>
+          <td class="example">Gripen i stadsvapnet symboliserar styrka och mod. (The griffin in the city coat of arms symbolises strength and courage.)</td>
+          <td class="example">Han blev väldigt gripen av musikstycket. (He was very moved by the piece of music.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the griffin",
+                      "incorrect": [
+                          "the manticore",
+                          "the sphinx",
+                          "the centaur"
+                      ]
+                  },
+                  "right": {
+                      "correct": "moved",
+                      "incorrect": [
+                          "impressed",
+                          "impacted",
+                          "affected"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "gången | gången",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the passage</td>
+          <td class="meaning">passed</td>
+        </tr>
+        <tr>
+          <td class="example">Gången mellan husen var smal och gyttjig. (The passage between the houses was narrow and muddy.)</td>
+          <td class="example">Veckan är gången och nu är det helg. (The week has passed and now it’s the weekend.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the passage",
+                      "incorrect": [
+                          "the channel",
+                          "the hallway",
+                          "the crossing"
+                      ]
+                  },
+                  "right": {
+                      "correct": "passed",
+                      "incorrect": [
+                          "elapsed",
+                          "departed",
+                          "retreated"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "huggen | huggen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the cuts (axe)</td>
+          <td class="meaning">chopped</td>
+        </tr>
+        <tr>
+          <td class="example">Huggen i stammen visade att någon hade försökt fälla eken. (The axe cuts in the trunk showed that someone had tried to fell the oak.)</td>
+          <td class="example">Veden var redan huggen och redo att bäras in. (The wood was already chopped and ready to be carried inside.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the cuts",
+                      "incorrect": [
+                          "the notches",
+                          "the incisions",
+                          "the carvings"
+                      ]
+                  },
+                  "right": {
+                      "correct": "chopped",
+                      "incorrect": [
+                          "cut",
+                          "sliced",
+                          "hewed"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "inför | inför",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>preposition</strong></td>
+          <td><strong>verb, present/imperative</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">before</td>
+          <td class="meaning">introduces, introduce</td>
+        </tr>
+        <tr>
+          <td class="example">Inför examen var alla studenter mycket nervösa. (Before the exam, all the students were very nervous.)</td>
+          <td class="example">Regeringen inför nya restriktioner nästa vecka. (The government introduces new restrictions next week.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "before",
+                      "incorrect": [
+                          "beneath",
+                          "within",
+                          "against"
+                      ]
+                  },
+                  "right": {
+                      "correct": "introduces",
+                      "incorrect": [
+                          "eliminates",
+                          "abolishes",
+                          "repeals"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "ljuden | juden",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the sounds</td>
+          <td class="meaning">the Jew</td>
+        </tr>
+        <tr>
+          <td class="example">Ljuden från byggarbetsplatsen var öronbedövande. (The sounds from the construction site were deafening.)</td>
+          <td class="example">Juden berättade om sin familjs historia under ceremonin. (The Jew spoke about his family’s history during the ceremony.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the sounds",
+                      "incorrect": [
+                          "the echoes",
+                          "the vibrations",
+                          "the murmurs"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the Jew",
+                      "incorrect": [
+                          "the Sikh",
+                          "the Buddhist",
+                          "the Atheist"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "katten | katten",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>swearword</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the cat</td>
+          <td class="meaning">Damn it!</td>
+        </tr>
+        <tr>
+          <td class="example">Katten låg och sov i solstrimman på köksgolvet. (The cat lay sleeping in the sunbeam on the kitchen floor.)</td>
+          <td class="example">Katten också! Jag glömde att posta brevet. (Damn it! I forgot to post the letter.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the cat",
+                      "incorrect": [
+                          "the ferret",
+                          "the parrot",
+                          "the rat"
+                      ]
+                  },
+                  "right": {
+                      "correct": "Damn it!",
+                      "incorrect": [
+                          "What?",
+                          "Oh no!",
+                          "Come again!"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "knuten | knuten",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the knot</td>
+          <td class="meaning">tied</td>
+        </tr>
+        <tr>
+          <td class="example">Hon var hårt bunden och jag fick inte upp knuten. (She was tightly bound and I couldn't undo the knot.)</td>
+          <td class="example">Påsen var knuten och inget kunde ramla ut. (The bag was tied and nothing could fall out.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the knot",
+                      "incorrect": [
+                          "the coil",
+                          "the tangle",
+                          "the link"
+                      ]
+                  },
+                  "right": {
+                      "correct": "tied",
+                      "incorrect": [
+                          "secured",
+                          "strapped",
+                          "attached"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "kullen | kullen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the litter</td>
+          <td class="meaning">the hill</td>
+        </tr>
+        <tr>
+          <td class="example">Missan har fött igen, det blev fem kattungar i den här kullen. (Missan has given birth again; there were five kittens in this litter.)</td>
+          <td class="example">Kullen vid skolan var perfekt för kälkåkning. (The hill by the school was perfect for sledging.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the litter",
+                      "incorrect": [
+                          "the pack",
+                          "the group",
+                          "the swarm"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the hill",
+                      "incorrect": [
+                          "the dune",
+                          "the ridge",
+                          "the hummock"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "leder | leder",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>verb, present</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">leads</td>
+          <td class="meaning">joints</td>
+        </tr>
+        <tr>
+          <td class="example">Hon leder gruppen med trygg hand. (She leads the group with a reassuring hand.)</td>
+          <td class="example">Mina leder värker alltid när vädret slår om. (My joints always ache when the weather changes.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "leads",
+                      "incorrect": [
+                          "ignores",
+                          "chases",
+                          "evades"
+                      ]
+                  },
+                  "right": {
+                      "correct": "joints",
+                      "incorrect": [
+                          "nerves",
+                          "ligaments",
+                          "tendons"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "modet | modet",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the courage</td>
+          <td class="meaning">the fashion</td>
+        </tr>
+        <tr>
+          <td class="example">Skräcken förföljde honom natt och dag, men modet svek honom aldrig. (The terror haunted him day and night, but his courage never deserted him.)</td>
+          <td class="example">Modet i år präglas av starka färger och djärva mönster. (This year’s fashion is characterised by bright colours and bold patterns.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the courage",
+                      "incorrect": [
+                          "the cowardice",
+                          "the anxiety",
+                          "the panic"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the fashion",
+                      "incorrect": [
+                          "the shape",
+                          "the pattern",
+                          "the outfit"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "moppen | moppen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the mop</td>
+          <td class="meaning">the moped</td>
+        </tr>
+        <tr>
+          <td class="example">Efter storstädningen behövde moppen sköljas av. (After the thorough cleaning, the mop needed to be rinsed off.)</td>
+          <td class="example">Moppen stod parkerad utanför skolan. (The moped was parked outside the school.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the mop",
+                      "incorrect": [
+                          "the rag",
+                          "the sponge",
+                          "the cloth"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the moped",
+                      "incorrect": [
+                          "the car",
+                          "the van",
+                          "the taxi"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "normen | norrmän",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the norm</td>
+          <td class="meaning">Norwegians</td>
+        </tr>
+        <tr>
+          <td class="example">Normen i många arbetskulturer är att komma i tid. (The norm in many work cultures is to arrive on time.)</td>
+          <td class="example">Idag firar alla norrmän nationaldag. (Today, all Norwegians are celebrating their national day.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the norm",
+                      "incorrect": [
+                          "the aspect",
+                          "the detail",
+                          "the sample"
+                      ]
+                  },
+                  "right": {
+                      "correct": "Norwegians",
+                      "incorrect": [
+                          "the Poles",
+                          "the Germans",
+                          "the French"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "nubben | nubben",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the tacks</td>
+          <td class="meaning">the shot (alcohol)</td>
+        </tr>
+        <tr>
+          <td class="example">Vi behövde nubben för att fästa mattan mot golvet. (We needed the tacks to fasten the carpet to the floor.)</td>
+          <td class="example">Nubben serverades iskall till sillen. (The shot was served ice-cold with the herring.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the tacks",
+                      "incorrect": [
+                          "the rivets",
+                          "the screws",
+                          "the hooks"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the shot (alcohol)",
+                      "incorrect": [
+                          "the tot",
+                          "the draught",
+                          "the measure"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "pajas | pajas",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>verb, present passive</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">clown</td>
+          <td class="meaning">be destroyed</td>
+        </tr>
+        <tr>
+          <td class="example">Han var en riktig pajas och fick alla att skratta. (He was a real clown and made everyone laugh.)</td>
+          <td class="example">Om du tappar datorn i golvet kanske den pajas. (If you drop the computer on the floor, it might be destroyed.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "clown",
+                      "incorrect": [
+                          "comedian",
+                          "buffoon",
+                          "fool"
+                      ]
+                  },
+                  "right": {
+                      "correct": "be destroyed",
+                      "incorrect": [
+                          "be formed",
+                          "be improved",
+                          "be mended"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "panter | panter",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">panther</td>
+          <td class="meaning">pledges</td>
+        </tr>
+        <tr>
+          <td class="example">En panter kan röra sig ljudlöst genom djungeln. (A panther can move silently through the jungle.)</td>
+          <td class="example">Vi var på banken igår och löste in alla våra panter. (We were at the bank yesterday and redeemed all our pledges.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "panther",
+                      "incorrect": [
+                          "cheetah",
+                          "jaguar",
+                          "cougar"
+                      ]
+                  },
+                  "right": {
+                      "correct": "pledges",
+                      "incorrect": [
+                          "mortgages",
+                          "warranties",
+                          "securities"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "perser | pärser",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">Persians</td>
+          <td class="meaning">ordeals</td>
+        </tr>
+        <tr>
+          <td class="example">Många perser togs till fånga av de grekiska styrkorna. (Many Persians were captured by the Greek forces.)</td>
+          <td class="example">Projektet var fullt av pärser, men vi klarade det till slut. (The project was full of ordeals, but we managed it in the end.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "Persians",
+                      "incorrect": [
+                          "Greeks",
+                          "Armenians",
+                          "Georgians"
+                      ]
+                  },
+                  "right": {
+                      "correct": "ordeals",
+                      "incorrect": [
+                          "amusements",
+                          "successes",
+                          "persons"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "Polen | pålen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>proper name</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">Poland</td>
+          <td class="meaning">the pole</td>
+        </tr>
+        <tr>
+          <td class="example">Polen ligger i Centraleuropa och gränsar till Tyskland i väster. (Poland is located in Central Europe and borders Germany to the west.)</td>
+          <td class="example">Pålen slogs ner i marken för att staketet skulle stå stadigt. (The pole was driven into the ground so the fence would stand firmly.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "Poland",
+                      "incorrect": [
+                          "Panama",
+                          "Peru",
+                          "Palestine"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the pole",
+                      "incorrect": [
+                          "the staff",
+                          "the beam",
+                          "the bar"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "pollen | pållen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">pollen</td>
+          <td class="meaning">the horsey</td>
+        </tr>
+        <tr>
+          <td class="example">Det är mycket pollen i luften nu. (There is a lot of pollen in the air right now.)</td>
+          <td class="example">Pållen gnäggade otåligt i stallet. (The horsey neighed impatiently in the stable.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "pollen",
+                      "incorrect": [
+                          "flecks",
+                          "crumbs",
+                          "scraps"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the horsey",
+                      "incorrect": [
+                          "the nag",
+                          "the charger",
+                          "the steed"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "radar | radar",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>verb, present</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">radar</td>
+          <td class="meaning">lists</td>
+        </tr>
+        <tr>
+          <td class="example">Flygledartornet är utrustat med radar för att övervaka luftrummet. (The control tower is equipped with radar to monitor the airspace.)</td>
+          <td class="example">Hon radar upp alla problem som vi har haft i vår relation. (She lists all the problems we’ve had in our relationship.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "radar",
+                      "incorrect": [
+                          "monitor",
+                          "camera",
+                          "locator"
+                      ]
+                  },
+                  "right": {
+                      "correct": "lists",
+                      "incorrect": [
+                          "records",
+                          "arranges",
+                          "evaluates"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "regel | regel",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">rule</td>
+          <td class="meaning">bolt</td>
+        </tr>
+        <tr>
+          <td class="example">En enkel regel är att alltid säga tack när du får hjälp. (A simple rule is always to say thank you when you receive help.)</td>
+          <td class="example">Dörren hade en rostig regel som behövde smörjas. (The door had a rusty bolt that needed greasing.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "rule",
+                      "incorrect": [
+                          "trick",
+                          "formula",
+                          "statement"
+                      ]
+                  },
+                  "right": {
+                      "correct": "bolt",
+                      "incorrect": [
+                          "handle",
+                          "catch",
+                          "lock"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "roller | roller",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">roller</td>
+          <td class="meaning">roles</td>
+        </tr>
+        <tr>
+          <td class="example">Jag köpte en roller för att måla om vardagsrummet. (I bought a roller to repaint the living room.)</td>
+          <td class="example">Skådespelarna diskuterade sina roller i pjäsen. (The actors discussed their roles in the play.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "roller",
+                      "incorrect": [
+                          "pipe",
+                          "barrel",
+                          "disc"
+                      ]
+                  },
+                  "right": {
+                      "correct": "roles",
+                      "incorrect": [
+                          "levels",
+                          "modes",
+                          "statuses"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "rutten | rutten",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the route</td>
+          <td class="meaning">rotten</td>
+        </tr>
+        <tr>
+          <td class="example">Jag planerade rutten noggrant innan avfärd. (I planned the route carefully before departure.)</td>
+          <td class="example">Gurkan är rutten och går inte att äta. (The cucumber is rotten and not fit to eat.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the route",
+                      "incorrect": [
+                          "the way",
+                          "the lane",
+                          "the rotten"
+                      ]
+                  },
+                  "right": {
+                      "correct": "rotten",
+                      "incorrect": [
+                          "putrid",
+                          "mouldy",
+                          "perished"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "sabbat | sabbat",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>verb, perfect</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">Sabbath</td>
+          <td class="meaning">ruined</td>
+        </tr>
+        <tr>
+          <td class="example">Var sjunde dag firar judarna sabbat. (Every seventh day, Jews observe the Sabbath.)</td>
+          <td class="example">Han har sabbat hela mötet med sitt dåliga humör. (He has ruined the entire meeting with his bad mood.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "Sabbath",
+                      "incorrect": [
+                          "vigil",
+                          "feast",
+                          "weekend"
+                      ]
+                  },
+                  "right": {
+                      "correct": "ruined",
+                      "incorrect": [
+                          "mended",
+                          "erected",
+                          "designed"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "ceder | seder",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">cedar</td>
+          <td class="meaning">customs</td>
+        </tr>
+        <tr>
+          <td class="example">Ceder är ett träslag med en karakteristisk doft. (Cedar is a type of wood with a distinctive scent.)</td>
+          <td class="example">I alla kulturer förekommer återkommande högtider och seder. (All cultures feature recurring festivals and customs.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "cedar",
+                      "incorrect": [
+                          "oak",
+                          "beech",
+                          "willow"
+                      ]
+                  },
+                  "right": {
+                      "correct": "customs",
+                      "incorrect": [
+                          "fees",
+                          "rates",
+                          "tolls"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "skallen | skallen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the barking</td>
+          <td class="meaning">the skull</td>
+        </tr>
+        <tr>
+          <td class="example">Skallen från löshundarna i stan hördes hela natten. (The barking from the stray dogs in town could be heard all night.)</td>
+          <td class="example">Skallen på skelettet var delvis trasig. (The skull of the skeleton was partly damaged.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the barking",
+                      "incorrect": [
+                          "the purrs",
+                          "the neighs",
+                          "the squeals"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the skull",
+                      "incorrect": [
+                          "the pelvis",
+                          "the scapula",
+                          "the sternum"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "skeden | skeden",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the spoon</td>
+          <td class="meaning">the stages</td>
+        </tr>
+        <tr>
+          <td class="example">Skeden låg bredvid tallriken på bordet. (The spoon lay next to the plate on the table.)</td>
+          <td class="example">Återvinning av förpackningsplast är en process i flera skeden. (Recycling plastic packaging is a process carried out in several stages.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the spoon",
+                      "incorrect": [
+                          "the spork",
+                          "the tongs",
+                          "the scoop"
+                      ]
+                  },
+                  "right": {
+                      "correct": "stages",
+                      "incorrect": [
+                          "theatres",
+                          "dais",
+                          "platforms"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "skiftet | skiftet",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the shift</td>
+          <td class="meaning">the change</td>
+        </tr>
+        <tr>
+          <td class="example">Redan klockan sex på morgonen började skiftet. (The shift started at six o’clock in the morning.)</td>
+          <td class="example">Alla överraskades av det plötsliga skiftet i vädret. (Everyone was taken by surprise by the sudden change in the weather.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the shift",
+                      "incorrect": [
+                          "the substitution",
+                          "the shuffle",
+                          "the offset"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the change",
+                      "incorrect": [
+                          "the stasis",
+                          "the freeze",
+                          "the default"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "skotten | skotten",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the shots</td>
+          <td class="meaning">the Scotsman</td>
+        </tr>
+        <tr>
+          <td class="example">Skotten hördes i hela kvarteret. (The shots were heard throughout the neighbourhood.)</td>
+          <td class="example">Skotten berättade stolt om släktens traditioner. (The Scotsman proudly spoke of his family’s traditions.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the shots",
+                      "incorrect": [
+                          "the fires",
+                          "the rounds",
+                          "the hits"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the Scotsman",
+                      "incorrect": [
+                          "the Viking",
+                          "the Briton",
+                          "the Highlander"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "skuren | skuren",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the rain shower</td>
+          <td class="meaning">cut</td>
+        </tr>
+        <tr>
+          <td class="example">Skuren drog in över staden och blötte ner gatorna. (The rain shower swept over the city and soaked the streets.)</td>
+          <td class="example">Salamikorven var redan skuren i tunna skivor. (The salami was already cut into thin slices.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the rain shower",
+                      "incorrect": [
+                          "the squall",
+                          "the hail",
+                          "the storm"
+                      ]
+                  },
+                  "right": {
+                      "correct": "cut",
+                      "incorrect": [
+                          "carved",
+                          "severed",
+                          "trimmed"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "slagen | slagen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the battles</td>
+          <td class="meaning">defeat</td>
+        </tr>
+        <tr>
+          <td class="example">Det är de stora slagen i historien som har format landets gränser. (The great battles in history have shaped the country’s borders.)</td>
+          <td class="example">På det sista varvet fick den favorittippade löparen erkänna sig slagen. (On the final lap, the favourite runner had to admit defeat.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the battles",
+                      "incorrect": [
+                          "the clashes",
+                          "the engagements",
+                          "the skirmishes"
+                      ]
+                  },
+                  "right": {
+                      "correct": "defeat",
+                      "incorrect": [
+                          "flourished",
+                          "won",
+                          "conquered"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "slaget | slaget",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the battle</td>
+          <td class="meaning">beaten</td>
+        </tr>
+        <tr>
+          <td class="example">Slaget vid Poltava är välkänt i svensk historia. (The battle of Poltava is well-known in Swedish history.)</td>
+          <td class="example">Ägget var slaget och redo att vispas in i smeten. (The egg was beaten and ready to be whisked into the batter.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the battle",
+                      "incorrect": [
+                          "the conflict",
+                          "the contest",
+                          "the war"
+                      ]
+                  },
+                  "right": {
+                      "correct": "beaten",
+                      "incorrect": [
+                          "featured",
+                          "mixed",
+                          "boiled"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "slutet | slutet",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the end</td>
+          <td class="meaning">closed</td>
+        </tr>
+        <tr>
+          <td class="example">Slutet på filmen var riktigt överraskande. (The end of the film was truly surprising.)</td>
+          <td class="example">Kuvertet var slutet och förseglat med ett sigill. (The envelope was closed and sealed with a seal.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the end",
+                      "incorrect": [
+                          "the opening",
+                          "the inception",
+                          "the exit"
+                      ]
+                  },
+                  "right": {
+                      "correct": "closed",
+                      "incorrect": [
+                          "ajar",
+                          "exposed",
+                          "revealed"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "släkten | släkten",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the extended family</td>
+          <td class="meaning">genera</td>
+        </tr>
+        <tr>
+          <td class="example">Släkten samlades för att fira farmors 90-årsdag. (The extended family gathered to celebrate Grandma’s 90th birthday.)</td>
+          <td class="example">Vaktel är ett sammanfattande namn på flera släkten av de minsta fälthönsen. (Quail is a collective term for several genera of the smallest game birds.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the extended family",
+                      "incorrect": [
+                          "the company",
+                          "the staff",
+                          "the slaughter"
+                      ]
+                  },
+                  "right": {
+                      "correct": "genera",
+                      "incorrect": [
+                          "phyla",
+                          "tribes",
+                          "subfamilies"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "stegen | stegen",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the steps</td>
+          <td class="meaning">the ladder</td>
+        </tr>
+        <tr>
+          <td class="example">Strax innan 10 månader tog barnet de första stegen. (Just before turning ten months old, the baby took its first steps.)</td>
+          <td class="example">Du får hämta stegen så att jag kan ta mig upp på taket. (You’ll need to fetch the ladder so I can get up onto the roof.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the steps",
+                      "incorrect": [
+                          "the stages",
+                          "the increments",
+                          "the paces"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the ladder",
+                      "incorrect": [
+                          "the scaffold",
+                          "the platform",
+                          "the stepladder"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "strider | strider",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>verb, present</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">fights</td>
+          <td class="meaning">battles</td>
+        </tr>
+        <tr>
+          <td class="example">Han strider för sanningen oavsett konsekvenserna. (He fights for the truth regardless of the consequences.)</td>
+          <td class="example">Flera strider utkämpades kring fästningen under medeltiden. (Several battles were fought around the fortress in the Middle Ages.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "fights",
+                      "incorrect": [
+                          "hides",
+                          "surrenders",
+                          "negotiates"
+                      ]
+                  },
+                  "right": {
+                      "correct": "battles",
+                      "incorrect": [
+                          "alliances",
+                          "reunions",
+                          "partnerships"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "tanken | tanken",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the fuel tank</td>
+          <td class="meaning">the thought</td>
+        </tr>
+        <tr>
+          <td class="example">Vi stannade bilen eftersom tanken nästan var helt tom på bensin. (We stopped the car because the fuel tank was almost completely empty.)</td>
+          <td class="example">Tanken slog mig när jag såg solnedgången. (The thought struck me when I saw the sunset.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the fuel tank",
+                      "incorrect": [
+                          "the radiator",
+                          "the cylinder",
+                          "the gearbox"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the thought",
+                      "incorrect": [
+                          "the result",
+                          "the plan",
+                          "the problem"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "toner | toner",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">toner</td>
+          <td class="meaning">notes</td>
+        </tr>
+        <tr>
+          <td class="example">Jag köpte en ny toner till skrivaren. (I bought a new toner cartridge for the printer.)</td>
+          <td class="example">I symfonins huvudtema återkommer vissa toner. (In the main theme of the symphony, certain notes recur.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "toner",
+                      "incorrect": [
+                          "ribbon",
+                          "spool",
+                          "solution"
+                      ]
+                  },
+                  "right": {
+                      "correct": "notes",
+                      "incorrect": [
+                          "tunes",
+                          "songs",
+                          "harmonies"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "tomten | tomten",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the plot</td>
+          <td class="meaning">Santa Claus</td>
+        </tr>
+        <tr>
+          <td class="example">Tomten var över 1 000 kvadratmeter och gränsade till en skog. (The plot was over 1,000 square metres and bordered a forest.)</td>
+          <td class="example">Vid 19-tiden på julafton såg vi tomten smyga omkring i trädgården. (Around seven o’clock on Christmas Eve, we saw Santa Claus sneaking around the garden.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the plot",
+                      "incorrect": [
+                          "the field",
+                          "the corner",
+                          "the yard"
+                      ]
+                  },
+                  "right": {
+                      "correct": "Santa Claus",
+                      "incorrect": [
+                          "Bogeyman",
+                          "Jack Frost",
+                          "Leprechaun"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "tecken | täcken",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">signs</td>
+          <td class="meaning">(bed) covers</td>
+        </tr>
+        <tr>
+          <td class="example">Flera tecken tydde på att ovädret var nära. (Several signs indicated that the storm was near.)</td>
+          <td class="example">Vi bytte alla täcken inför vintern. (We changed all the bed covers for winter.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "signs",
+                      "incorrect": [
+                          "plaques",
+                          "plates",
+                          "technologists"
+                      ]
+                  },
+                  "right": {
+                      "correct": "covers",
+                      "incorrect": [
+                          "towels",
+                          "cushions",
+                          "clothes"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "uppför | uppför",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>preposition</strong></td>
+          <td><strong>verb, present/imperative</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">up (uphill)</td>
+          <td class="meaning">behaves, behave</td>
+        </tr>
+        <tr>
+          <td class="example">Vi gick uppför backen i morgonsolen. (We walked up the hill in the morning sun.)</td>
+          <td class="example">Han uppför sig alltid artigt mot sina gäster. (He always behaves politely towards his guests.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "up",
+                      "incorrect": [
+                          "through",
+                          "beyond",
+                          "around"
+                      ]
+                  },
+                  "right": {
+                      "correct": "behaves",
+                      "incorrect": [
+                          "gossips",
+                          "taunts",
+                          "sulks"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "utför | utför",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>preposition</strong></td>
+          <td><strong>verb, present/imperative</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">down (downhill)</td>
+          <td class="meaning">carries out, carry out</td>
+        </tr>
+        <tr>
+          <td class="example">Hon åkte snabbt utför den branta skidbacken. (She went quickly down the steep ski slope.)</td>
+          <td class="example">Hon utför sitt arbete med stor noggrannhet. (She carries out her work with great precision.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "down",
+                      "incorrect": [
+                          "behind",
+                          "under",
+                          "beside"
+                      ]
+                  },
+                  "right": {
+                      "correct": "carries out",
+                      "incorrect": [
+                          "delays",
+                          "stops",
+                          "ignores"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "viken | viken",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>participle</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the bay</td>
+          <td class="meaning">folded</td>
+        </tr>
+        <tr>
+          <td class="example">Viken låg spegelblank i gryningsljuset. (The bay lay mirror-like in the dawn light.)</td>
+          <td class="example">Servetten är viken och ligger redo på bordet. (The napkin is folded and lies ready on the table.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the bay",
+                      "incorrect": [
+                          "the lagoon",
+                          "the harbour",
+                          "the creek"
+                      ]
+                  },
+                  "right": {
+                      "correct": "folded",
+                      "incorrect": [
+                          "wrinkled",
+                          "tucked",
+                          "pressed"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "viner | viner",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>verb, present</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">whistles</td>
+          <td class="meaning">wines</td>
+        </tr>
+        <tr>
+          <td class="example">Vinden viner genom den trasiga fönsterkarmen. (The wind whistles through the broken window frame.)</td>
+          <td class="example">Han har samlat på dyra viner hela sitt liv. (He has been collecting expensive wines his entire life.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "whistles",
+                      "incorrect": [
+                          "hums",
+                          "hisses",
+                          "rumbles"
+                      ]
+                  },
+                  "right": {
+                      "correct": "wines",
+                      "incorrect": [
+                          "spirits",
+                          "sodas",
+                          "tonics"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "vreden | vreden",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, pl.</strong></td>
+          <td><strong>noun, sg.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the knobs</td>
+          <td class="meaning">the rage</td>
+        </tr>
+        <tr>
+          <td class="example">Vreden på spisen behövde bytas ut. (The knobs on the cooker needed replacing.)</td>
+          <td class="example">Vreden i hans röst var uppenbar för alla i rummet. (The rage in his voice was obvious to everyone in the room.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the knobs",
+                      "incorrect": [
+                          "the switches",
+                          "the catches",
+                          "the levers"
+                      ]
+                  },
+                  "right": {
+                      "correct": "the rage",
+                      "incorrect": [
+                          "the joy",
+                          "the delight",
+                          "the contentment"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "värden | värden",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>noun, sg.</strong></td>
+          <td><strong>noun, pl.</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">the host</td>
+          <td class="meaning">values</td>
+        </tr>
+        <tr>
+          <td class="example">Värden bjöd på en utsökt middag. (The host offered a delicious dinner.)</td>
+          <td class="example">I tabellen finns det värden som visar en uppåtgående trend. (In the table, there are values indicating an upward trend.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "the host",
+                      "incorrect": [
+                          "the user",
+                          "the owner",
+                          "the occupant"
+                      ]
+                  },
+                  "right": {
+                      "correct": "values",
+                      "incorrect": [
+                          "calculations",
+                          "totals",
+                          "results"
+                      ]
+                  }
+              }
+          },
+          {
+              "frontText": "Oskar | åskar",
+              "backContent": `
+      <table>
+        <tr>
+          <th>Accent 1</th>
+          <th>Accent 2</th>
+        </tr>
+        <tr>
+          <td><strong>proper name</strong></td>
+          <td><strong>verb, present</strong></td>
+        </tr>
+        <tr>
+          <td class="meaning">Oskar</td>
+          <td class="meaning">is thundering</td>
+        </tr>
+        <tr>
+          <td class="example">Igår kom Oskar förbi på en kopp te och en pratstund. (Yesterday, Oskar dropped by for a cup of tea and a chat.)</td>
+          <td class="example">Det åskar kraftigt över sjön i kväll. (It is thundering heavily over the lake this evening.)</td>
+        </tr>
+      </table>
+    `,
+              "quiz": {
+                  "left": {
+                      "correct": "Oskar",
+                      "incorrect": [
+                          "Owen",
+                          "Orson",
+                          "Oswald"
+                      ]
+                  },
+                  "right": {
+                      "correct": "is thundering",
+                      "incorrect": [
+                          "is storming",
+                          "is drizzling",
+                          "is shining"
+                      ]
+                  }
+              }
+          }
+
+          // Add more card objects here if needed
+      ];
+
+  // Shuffle the flashcards using the Fisher–Yates algorithm
+  function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+  }
+
+  // Shuffle the cards array so that flashcards appear in random order
+  shuffleArray(cards);
+
+  let currentCardIndex = 0;
+  let score = 0;
+  // We'll use 'hasFlipped' to record if the card was ever flipped
+  let hasFlipped = false;
+  const maxScore = cards.length * 2; // 2 points per card if answered without flipping
+  let leftAnswered = false;
+  let rightAnswered = false;
+
+  // Flip the card on click and record that it was flipped
+function flipCard() {
+  const card = document.getElementById("flip-card");
+  card.classList.toggle("flip");
+  hasFlipped = true;
+  
+  const quizContainer = document.querySelector(".quiz");
+  setTimeout(() => {
+    quizContainer.classList.toggle("hidden");
+  }, 50);
+}
+
+  // Update the score counter display
+function updateScoreDisplay() {
+  document.querySelector(".score-counter .score-value").innerText = score;
+}
+
+  // Check answer and update button styling
+  function checkAnswer(button, correct, group) {
+      let buttons;
+      if (group === "left") {
+          buttons = document.querySelectorAll("#left-options button");
+          leftAnswered = true;
+      } else {
+          buttons = document.querySelectorAll("#right-options button");
+          rightAnswered = true;
+      }
+
+      buttons.forEach((btn) => {
+          btn.disabled = true;
+          btn.classList.add("disabled-button");
+      });
+
+      if (correct === "wrong") {
+          button.classList.add("wrong-answer");
+          // Highlight the correct answer
+          buttons.forEach((btn) => {
+              if (
+                  btn.innerText ===
+                  (group === "left" ?
+                      cards[currentCardIndex].quiz.left.correct :
+                      cards[currentCardIndex].quiz.right.correct)
+              ) {
+                  btn.classList.add("correct-answer");
+              }
+          });
+      } else {
+          button.classList.add("correct-answer");
+          // Use 'hasFlipped' to determine whether to award full or half point
+          score += hasFlipped ? 0.5 : 1;
+          updateScoreDisplay();
+      }
+
+      if (leftAnswered && rightAnswered) {
+          document.getElementById("next-container").style.visibility = "visible";
+      }
+  }
+
+  // Create answer buttons dynamically for each quiz section
+  function createButtons(sectionId, correctAnswer, incorrectAnswers, group) {
+      const section = document.getElementById(sectionId);
+      // Shuffle answer options
+      const answers = shuffleArray([correctAnswer, ...incorrectAnswers]);
+
+      answers.forEach((answer) => {
+          const button = document.createElement("button");
+          button.innerText = answer;
+          button.onclick = () =>
+              checkAnswer(
+                  button,
+                  answer === correctAnswer ? correctAnswer : "wrong",
+                  group
+              );
+          section.appendChild(button);
+      });
+  }
+
+  // Load a flashcard based on the current index
+function loadCard(index) {
+    // Reset flip state and answer flags
+    hasFlipped = false;
+    leftAnswered = false;
+    rightAnswered = false;
+    document.getElementById("next-container").style.visibility = "hidden";
+
+    const card = document.getElementById("flip-card");
+    // Ensure the card is not visually flipped
+    card.classList.remove("flip");
+
+    // Make sure the quiz container is visible
+    document.querySelector(".quiz").classList.remove("hidden");
+
+    // Update front and back content
+    card.querySelector(".front .front-text").innerText = cards[index].frontText;
+    card.querySelector(".back").innerHTML = cards[index].backContent;
+
+    // Clear out old quiz buttons
+    document.getElementById("left-options").innerHTML = "<p>Accent 1 word meaning:</p>";
+    document.getElementById("right-options").innerHTML = "<p>Accent 2 word meaning:</p>";
+
+    // Create new buttons for both quiz sections
+    createButtons("left-options", cards[index].quiz.left.correct, cards[index].quiz.left.incorrect, "left");
+    createButtons("right-options", cards[index].quiz.right.correct, cards[index].quiz.right.incorrect, "right");
+}
+
+  // Load the next flashcard
+  function nextCard() {
+      currentCardIndex++;
+      if (currentCardIndex >= cards.length) {
+          alert("No more cards!");
+          // Optionally, reset the flashcards:
+          // currentCardIndex = 0;
+          // score = 0;
+          // updateScoreDisplay();
+          // loadCard(currentCardIndex);
+      } else {
+          loadCard(currentCardIndex);
+      }
+  }
+
+  // 1) Info button = open the modal
+  function openModal() {
+      document.getElementById("info-modal").style.display = "block";
+  }
+
+  // 2) Close modal (called by the close "X")
+  function closeModal() {
+      document.getElementById("info-modal").style.display = "none";
+  }
+
+  // 3) Accent button = open a URL in a new tab
+  function openAccentPage() {
+      window.open("https://i.imgur.com/qbqBwMO.png", "_blank");
+  }
+
+  // 4) Start over = reload the entire page
+  function startOver() {
+      location.reload();
+  }
+
+  // Initialize on page load
+  window.onload = () => {
+      loadCard(currentCardIndex);
+      updateScoreDisplay();
+      document
+          .getElementById("next-button")
+          .addEventListener("click", nextCard);
+  }; 
+</script>
+</body>
+</html>
