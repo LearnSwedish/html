@@ -1,0 +1,5610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress pattern exercise</title>
+
+    <!-- ✅ Font Awesome Free Version -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+
+    <style>
+	body {
+		font-family: Arial, sans-serif;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		background-color: #f8f9fa;
+		text-align: center;
+		position: relative;
+	}
+	
+	h1 {
+		font-size: 34px;
+		margin-top: 15px;
+	}
+	
+	h2 {
+		font-size: 18px;
+		color: #555;
+		margin-top: 5px;
+	}
+	
+	#score-counter {
+		position: absolute;
+		width: 140px;
+		top: 20px;
+		right: 30px;
+		font-size: 15px;
+		color: #333;
+		background: white;
+		padding: 10px 15px;
+		border: 2px solid #333;
+		border-radius: 10px;
+	}
+	
+	#total-correct-counter {
+		position: absolute;
+		width: 140px;
+		top: 75px; /* Positioned below the first counter */
+		right: 30px;
+		font-size: 15px;
+		color: #333;
+		background: white;
+		padding: 10px 15px;
+		border: 2px solid #333;
+		border-radius: 10px;
+	}
+	
+	#incorrect-counter {
+		position: absolute;
+		width: 140px;
+		top: 130px; /* Positioned below the first counter */
+		right: 30px;
+		font-size: 15px;
+		color: #333;
+		background: white;
+		padding: 10px 15px;
+		border: 2px solid #333;
+		border-radius: 10px;
+	}
+	
+	#info-div {
+		position: absolute;
+		width: 140px;
+		top: 185px;
+		right: 30px;
+		font-size: 16px;
+		color: #333;
+		background: white;
+		padding: 10px 15px;
+		border: 2px solid #333;
+		border-radius: 10px;
+		cursor: pointer;
+	}
+	
+	/* Modal styles */
+	#modal-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		display: none;
+		justify-content: center;
+		align-items: center;
+		z-index: 2000;
+	}
+	#modal-content {
+		background: #fff;
+		padding: 20px;
+		max-width: 700px;
+		width: 90%;
+		border-radius: 8px;
+		text-align: left;
+		position: relative;
+	}
+	#modal-content h2 {
+		margin-top: 0;
+	}
+	#modal-close {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		cursor: pointer;
+		font-size: 20px;
+		background: none;
+		border: none;
+	}
+	
+	#dark-toggle-div {
+		position: absolute;
+		width: 140px;
+		top: 240px;
+		right: 30px;
+		font-size: 16px;
+		color: #333;
+		background: white;
+		padding: 10px 15px;
+		border: 2px solid #333;
+		border-radius: 10px;
+	}
+	
+	#dropdowns-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 35px;
+	}
+	
+	.dropdown-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		width: auto;
+	}
+	
+	.word-label {
+		text-align: right;
+		font-size: 30px;
+		cursor: pointer;
+		position: relative;
+		white-space: nowrap;
+	}
+	
+	/* Tooltip Styling */
+	.word-label::after {
+		content: attr(data-tooltip);
+		position: absolute;
+		bottom: 130%;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: rgba(0, 0, 0, 0.8);
+		color: white;
+		padding: 6px 10px;
+		border-radius: 5px;
+		font-size: 14px;
+		white-space: nowrap;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+	}
+	
+	.word-label:hover::after {
+		opacity: 1;
+		visibility: visible;
+		transform: translateX(-50%) translateY(-5px);
+	}
+	
+	.custom-dropdown {
+		position: relative;
+		display: inline-block;
+	}
+	
+	.dropdown-btn {
+		background: #f0f0f0;
+		padding: 5px;
+		border: 1px solid #ccc;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 13px;
+		text-align: center;
+		font-weight: bold;
+		min-width: 100px;
+		height: 20px; /* ✅ Fixed height */
+	}
+	
+	.dropdown-menu {
+		display: none;
+		position: absolute;
+		background: white;
+		border: 1px solid #ccc;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		z-index: 1000;
+		min-width: max-content;
+	}
+	
+	.dropdown-menu li {
+		height: 25px; /* or however tall you need */
+		display: flex; /* if you want vertical centering of text/icons */
+		align-items: center; /* center them vertically */
+		/* optional: add padding or line-height for more space */
+		padding: 5px 8px;
+	}
+	
+	.dark-mode .custom-dropdown .dropdown-menu li:hover {
+		background: #ddd !important;
+	}
+	.dropdown-menu li:hover {
+		background: #ddd;
+	}
+	
+	.error-message {
+		color: red;
+		font-size: 16px;
+		margin-top: 10px;
+		display: none;
+	}
+	
+	/* Dropdown button styling */
+	.dropdown-btn {
+		background: #f0f0f0;
+		padding: 5px;
+		border: 1px solid #ccc;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 13px;
+		text-align: center;
+		font-weight: bold;
+		box-sizing: border-box;
+		width: 130px; /* fixed width */
+		height: 40px; /* fixed height */
+		border-radius: 4px;
+		transition: background 0.3s ease, border-color 0.3s ease;
+	}
+	
+	.dropdown-btn:hover {
+		background: #e9e9e9;
+		border-color: #b3b3b3;
+	}
+	
+	/* Dropdown menu styling */
+	.dropdown-menu {
+		display: none;
+		position: absolute;
+		background: white;
+		border: 1px solid #ccc;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		z-index: 1000;
+		box-sizing: border-box;
+		width: 130px; /* fixed width */
+		border-radius: 4px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	}
+	
+	/* Dropdown menu items */
+	.dropdown-menu li {
+		padding: 10px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 13px;
+		transition: background 0.3s ease;
+	}
+	
+	.dropdown-menu li:hover {
+		background: #ddd;
+	}
+	
+	#next-button {
+		margin-top: 20px;
+		padding: 10px 15px;
+		font-size: 16px;
+		cursor: pointer;
+		background-color: #007bff;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		display: none;
+	}
+	
+	#next-button:hover {
+		background-color: #0056b3;
+	}
+	
+	#filter-options {
+		text-align: left; /* override the center alignment from body */
+		margin-bottom: 20px;
+		max-width: 400px;
+		font-family: Arial, sans-serif;
+		font-size: 14px;
+	}
+	
+	/* Remove the default list bullets */
+	#filter-options ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+	#filter-options li {
+		display: flex;
+		align-items: center;
+		margin-bottom: 8px;
+		/* If needed, force text to be left-aligned again: */
+		text-align: left;
+	}
+	
+	/* CSS for modern radio buttons */
+	input[type="radio"] {
+		--s: 1.3em; /* control the size */
+		--c: #28a745; /* the active color */
+	
+		height: var(--s);
+		aspect-ratio: 1;
+		border: calc(var(--s) / 8) solid #939393;
+		padding: calc(var(--s) / 8);
+		background: radial-gradient(farthest-side, var(--c) 94%, #0000) 50%/0 0
+			no-repeat content-box;
+		border-radius: 50%;
+		outline-offset: calc(var(--s) / 10);
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		cursor: pointer;
+		font-size: inherit;
+		transition: 0.3s;
+	}
+	
+	input[type="radio"]:checked {
+		border-color: var(--c);
+		background-size: 100% 100%;
+	}
+	
+	input[type="radio"]:disabled {
+		background: linear-gradient(#939393 0 0) 50%/100% 20% no-repeat content-box;
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+	
+	@media print {
+		input[type="radio"] {
+			-webkit-appearance: auto;
+			-moz-appearance: auto;
+			appearance: auto;
+			background: none;
+		}
+	}
+	
+	label {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		margin: 5px 0;
+		cursor: pointer;
+	}
+	
+	.icon {
+		width: 35px;
+		height: 35px;
+		display: inline-block;
+	}
+	
+	/* Check mark animation */
+	.checkmark {
+		stroke: #fff; /* white check mark */
+		stroke-width: 4;
+		fill: none;
+		stroke-dasharray: 48;
+		stroke-dashoffset: 48;
+		animation: drawCheck 0.4s ease-out 0.4s forwards;
+	}
+	@keyframes drawCheck {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+	
+	/* X mark animation */
+	.xmark {
+		stroke: #fff; /* white X */
+		stroke-width: 4;
+		fill: none;
+		stroke-dasharray: 28;
+		stroke-dashoffset: 28;
+		animation: drawX 0.4s ease-out forwards;
+	}
+	.xmark.second {
+		animation-delay: 0.3s;
+	}
+	@keyframes drawX {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+	
+	/* Dark mode wrapper */
+	.dark-mode {
+		/* A dark background for the page */
+		background-color: #121212;
+		color: #e3e3e3;
+	}
+	
+	/* Headings in dark mode */
+	.dark-mode h1,
+	.dark-mode h2 {
+		color: #f1f1f1;
+	}
+	
+	/* The scoreboard counters in dark mode */
+	.dark-mode #score-counter,
+	.dark-mode #total-correct-counter,
+	.dark-mode #incorrect-counter,
+	.dark-mode #info-div {
+		background: #333; /* a darker background */
+		color: #eee; /* lighter text */
+		border-color: #555; /* slightly darker border */
+	}
+	
+	/* Buttons in dark mode (optional) */
+	.dark-mode button {
+		background: #444;
+		color: #ddd;
+		border-color: #555;
+	}
+	
+	/* Except the dropdown menu remains white. We'll re-override it: */
+	.dark-mode .dropdown-menu {
+		background-color: #fff !important;
+		color: #000 !important;
+		border-color: #ccc !important;
+	}
+	
+	/* Keep the entire dropdown widget light in dark mode */
+	.dark-mode .custom-dropdown,
+	.dark-mode .custom-dropdown .dropdown-btn,
+	.dark-mode .custom-dropdown .dropdown-menu,
+	.dark-mode .custom-dropdown .dropdown-menu li {
+		background-color: #fff !important;
+		color: #000 !important;
+		border-color: #ccc !important;
+	}
+	
+	.dark-mode .custom-dropdown .dropdown-btn {
+		background: #f0f0f0 !important;
+		color: #000 !important;
+		border-color: #ccc !important;
+	}
+	
+	.dark-mode #modal-content {
+		background: #444; /* Brighter than #333 */
+		color: #f1f1f1; /* A brighter off-white */
+		border-color: #666;
+	}
+	.dark-mode #modal-close {
+		color: #f1f1f1;
+	}
+	
+	.dark-mode .word-label::after {
+		background-color: rgba(255, 255, 255, 0.9);
+		color: #333;
+	}
+	
+	.symbols-grid {
+		display: grid;
+		grid-template-columns: 50px 1fr;
+		gap: 10px;
+		align-items: center;
+		grid-auto-rows: minmax(40px, auto);
+	}
+	
+	.symbol-col {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.desc-col {
+		display: flex;
+		align-items: center;
+	}
+	
+	/* Prevent dark mode from overriding the symbol colours */
+	.dark-mode #modal-content .modal-symbol {
+		color: initial; /* or simply omit this rule if inline styles take precedence */
+	}
+</style>
+
+</head>
+
+<body>
+
+<h1>Stress pattern exercise</h1>
+
+<div id="filter-options">
+    <br />
+    <h2 style="text-align:left;">Edit exercise</h2>
+    <ul>
+        <li>
+            <input type="radio" id="filter-all" name="filter" value="all" checked>
+            <label for="filter-all">&nbsp;All words (794)</label>
+        </li>
+        <li>
+            <input type="radio" id="filter-an" name="filter" value="an">
+            <label for="filter-an">&nbsp;Words starting with "an-"</label>
+        </li>
+        <li>
+            <input type="radio" id="filter-ar" name="filter" value="ar">
+            <label for="filter-ar">&nbsp;Words starting with "ar-"</label>
+        </li>
+        <li>
+            <input type="radio" id="filter-be" name="filter" value="be">
+            <label for="filter-be">&nbsp;Words starting with "be-"</label>
+        </li>
+        <li>
+            <input type="radio" id="filter-for" name="filter" value="for">
+            <label for="filter-for">&nbsp;Words starting with "för-"</label>
+        </li>
+        <li>
+            <input type="radio" id="filter-i" name="filter" value="i">
+            <label for="filter-i">&nbsp;Words ending with "-i"</label>
+        </li>
+        <li>
+            <input type="radio" id="filter-random" name="filter" value="random">
+            <label for="filter-random">&nbsp;Random 100</label>
+        </li>
+    </ul>
+</div>
+
+<div id="score-counter">1st try correct: 0</div>
+<div id="total-correct-counter">Progress: 0 / 0</div>
+<div id="incorrect-counter">Mistakes: 0</div>
+<div id="dark-toggle-div" style="cursor: pointer; padding: 10px 15px; border: 2px solid #333; border-radius: 10px; background: #333; color: #fff;">Dark mode</div>
+<div id="info-div">Info</div>
+
+<!-- Modal structure -->
+<div id="modal-overlay">
+    <div id="modal-content">
+        <button id="modal-close">&times;</button>
+        <h2>About this exercise</h2>
+        <p>
+            Among the 10,000 most frequently used Swedish words, there are nearly 800 that feature a rather distinctive stress pattern. In this exercise, these words have been gathered together so you can learn their proper pronunciation.
+        </p>
+        <p><strong>Some symbols you need to know:</strong></p>
+        <div class="symbols-grid">
+            <div class="symbol-col">
+                <span class="modal-symbol" style="font-size: 10px; color: black; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>
+            </div>
+            <div class="desc-col">
+                indicates an unstressed syllable
+            </div>
+            <div class="symbol-col">
+                <span class="modal-symbol" style="font-size: 18px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>
+            </div>
+            <div class="desc-col">
+                indicates a weak onset (light stress)
+            </div>
+            <div class="symbol-col">
+                <span class="modal-symbol" style="font-size: 28px; color: red; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>
+            </div>
+            <div class="desc-col">
+                indicates the second pitch level in words with Accent 2
+            </div>
+            <div class="symbol-col">
+                <span class="modal-symbol" style="font-size: 24px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#11044;</span>
+            </div>
+            <div class="desc-col">
+                indicates primary stress
+            </div>
+        </div>
+        <p>
+            Remember (1) that in multi‐syllable words (three or more syllables) with a late primary stress (on the third or a later syllable), the word is often preceded by a weak onset — that is, by the second symbol in the list. Conversely, there is never a weak
+            onset in two‐syllable words. You can find many examples of this among words ending in "-i".
+        </p>
+        <p>
+            Remember (2) that almost all words beginning with "an-" have Accent 2, which means you must select a pattern that includes the red symbol.
+        </p>
+        <p>
+            <strong>A recommendation</strong>: before you go through all the words (or a random 100), start by familiarising yourself with how certain words (those that begin or end in a particular way) are typically pronounced. Of course, there are exceptions,
+            but you'll learn them.
+        </p>
+        <p>If you hover over the word, you will get its English translation, and you will also see information about its part of speech.</p>
+
+    </div>
+</div>
+
+<div id="dropdowns-container"></div>
+<div id="error-message" class="error-message">Wrong pattern. Try again!</div>
+<button id="next-button">Next</button>
+
+    <script>
+    	document.addEventListener("DOMContentLoaded", function() {
+    		const dropdownsContainer = document.getElementById("dropdowns-container");
+    		const nextButton = document.getElementById("next-button");
+    		const errorMessage = document.getElementById("error-message");
+    		const scoreCounter = document.getElementById("score-counter");
+    		const incorrectCounter = document.getElementById("incorrect-counter");
+    		const totalCorrectCounter = document.getElementById("total-correct-counter"); // ✅ Added counter
+
+    		const words = [{
+    				"word": "annonsera",
+    				"translation": "(verb) to advertise",
+    				"options": ["1 0 3 0", "0 1 0 0", "1 0 0 0", "0 0 0 1"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "annullering",
+    				"translation": "(noun) cancellation (BE), cancelation (AE)",
+    				"options": ["1 0 3 0", "0 1 0 1", "1 0 0 1", "0 0 0 2"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "arkiv",
+    				"translation": "(noun) archive",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "encyklopedi",
+    				"translation": "(noun) encyclopaedia (BE), encyclopedia (AE)",
+    				"options": ["0 1 0 0 3", "1 0 0 0 3", "0 3 0 0 0", "1 0 0 3 0"],
+    				"correct": "0 1 0 0 3"
+    			},
+    			{
+    				"word": "bedrägeri",
+    				"translation": "(noun) fraud",
+    				"options": ["0 1 0 3", "1 0 3 0", "1 0 0 3", "3 2 0 0"],
+    				"correct": "0 1 0 3"
+    			},
+    			{
+    				"word": "fyrverkeri",
+    				"translation": "(noun) fireworks",
+    				"options": ["0 1 0 3", "1 0 3 0", "1 0 0 3", "3 2 0 0"],
+    				"correct": "0 1 0 3"
+    			},
+    			{
+    				"word": "förräderi",
+    				"translation": "(noun) treason",
+    				"options": ["0 1 0 3", "1 0 3 0", "1 0 0 3", "3 2 0 0"],
+    				"correct": "0 1 0 3"
+    			},
+    			{
+    				"word": "annons",
+    				"translation": "(noun) advertisement",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "antenn",
+    				"translation": "(noun) antenna",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "antik",
+    				"translation": "(adj) antique",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "arab",
+    				"translation": "(noun) Arab [person]",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "armé",
+    				"translation": "(noun) army",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "arrest",
+    				"translation": "(noun) arrest",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "artist",
+    				"translation": "(noun) artist",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bebo",
+    				"translation": "(verb) to inhabit",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bedra",
+    				"translation": "(verb) to deceive",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bedrift",
+    				"translation": "(noun) achievement",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "befäl",
+    				"translation": "(noun) command",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bege (sig av)",
+    				"translation": "(verb) to go (away)",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "begravd",
+    				"translation": "(adj) buried",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "begrepp",
+    				"translation": "(noun) concept",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "begå",
+    				"translation": "(verb) to commit",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "begär",
+    				"translation": "(noun) desire",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "behag",
+    				"translation": "(noun) pleasure",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "behov",
+    				"translation": "(noun) need",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bekant",
+    				"translation": "(adj) familiar",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bekväm",
+    				"translation": "(adj) comfortable",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "belopp",
+    				"translation": "(noun) amount",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "belägg",
+    				"translation": "(noun) evidence",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bensin",
+    				"translation": "(noun) petrol (BE), gasoline (AE)",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "beredd",
+    				"translation": "(adj) prepared",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bero (på något)",
+    				"translation": "(verb) to be due (to sth)",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "beröm",
+    				"translation": "(noun) praise",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "berömd",
+    				"translation": "(adj) famous",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "berörd",
+    				"translation": "(adj) affected",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "besatt",
+    				"translation": "(adj) obsessed",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "besked",
+    				"translation": "(noun) message",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "beskydd",
+    				"translation": "(noun) protection",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "beslag",
+    				"translation": "(noun) seizure",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "beslut",
+    				"translation": "(noun) decision",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bestick",
+    				"translation": "(noun) cutlery",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bestå",
+    				"translation": "(verb) to consist",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bestånd",
+    				"translation": "(noun) stock",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bestämd",
+    				"translation": "(adj) definite",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "besvär",
+    				"translation": "(noun) trouble",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "besök",
+    				"translation": "(noun) visit",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "betong",
+    				"translation": "(noun) concrete",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "betyg",
+    				"translation": "(noun) grade",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "bevis",
+    				"translation": "(noun) proof",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förakt",
+    				"translation": "(noun) contempt",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förband",
+    				"translation": "(noun) bandage",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förbi",
+    				"translation": "(prep) beyond",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förbli",
+    				"translation": "(verb) to remain",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förbud",
+    				"translation": "(noun) ban",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förbund",
+    				"translation": "(noun) federation",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "fördrag",
+    				"translation": "(noun) treaty",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "fördärv",
+    				"translation": "(noun) destruction",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förfall",
+    				"translation": "(noun) decay",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förföljd",
+    				"translation": "(participle) persecuted",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förhör",
+    				"translation": "(noun) interrogation",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förlag",
+    				"translation": "(noun) publishing house",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förlopp",
+    				"translation": "(noun) process",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förlust",
+    				"translation": "(noun) loss",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förlåt",
+    				"translation": "(interj) sorry",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förmå",
+    				"translation": "(verb) to enable",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förnuft",
+    				"translation": "(noun) reason",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förråd",
+    				"translation": "(noun) storage",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förse",
+    				"translation": "(verb) to provide",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förslag",
+    				"translation": "(noun) proposal",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förstå",
+    				"translation": "(verb) to understand",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förstånd",
+    				"translation": "(noun) intellect",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förstås",
+    				"translation": "(adv) of course",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förstörd",
+    				"translation": "(adj) destroyed",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "försvar",
+    				"translation": "(noun) defence (BE), defense (AE)",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "försyn",
+    				"translation": "(noun) providence",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "försök",
+    				"translation": "(noun) attempt",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förtal",
+    				"translation": "(noun) defamation",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förtjust",
+    				"translation": "(adv) delighted",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förtjänst",
+    				"translation": "(noun) merit",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förtryck",
+    				"translation": "(noun) oppression",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förut",
+    				"translation": "(adv) before",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "förvärv",
+    				"translation": "(noun) acquisition",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "geni",
+    				"translation": "(noun) genius",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "kansli",
+    				"translation": "(noun) chancellery",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "kemi",
+    				"translation": "(noun) chemistry",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "logi",
+    				"translation": "(noun) lodging",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "magi",
+    				"translation": "(noun) magic",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "parti",
+    				"translation": "(noun) party",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "regi",
+    				"translation": "(noun) management",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "remi",
+    				"translation": "(noun) (chess) draw",
+    				"options": ["0 3", "3 3", "3 2", "3 0"],
+    				"correct": "0 3"
+    			},
+    			{
+    				"word": "antiken",
+    				"translation": "(noun) antiquity",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "arabisk",
+    				"translation": "(adj) Arab",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "artikel",
+    				"translation": "(noun) article",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "augusti",
+    				"translation": "(noun) August",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beakta",
+    				"translation": "(verb) to consider",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bedriva",
+    				"translation": "(verb) to conduct",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bedrövad",
+    				"translation": "(adj) sad",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bedöma",
+    				"translation": "(verb) to assess",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bedömning",
+    				"translation": "(noun) assessment",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befalla",
+    				"translation": "(verb) to command",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befallning",
+    				"translation": "(noun) command",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befara",
+    				"translation": "(verb) to fear",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befattning",
+    				"translation": "(noun) (job) position",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befinna",
+    				"translation": "(verb) to be located",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befintlig",
+    				"translation": "(adj) existing",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befolkning",
+    				"translation": "(noun) population",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befordra",
+    				"translation": "(verb) to promote",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befordran",
+    				"translation": "(noun) promotion (advancement in position)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befria",
+    				"translation": "(verb) to liberate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befriad",
+    				"translation": "(adj) liberated",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befruktning",
+    				"translation": "(noun) fertilisation (BE), fertilization (AE)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "befästa",
+    				"translation": "(verb) to fortify",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begagnad",
+    				"translation": "(adj) used (pre-owned)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begeistring",
+    				"translation": "(noun) enthusiasm",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begrava",
+    				"translation": "(verb) to bury",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begraven",
+    				"translation": "(adj) buried",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begravning",
+    				"translation": "(noun) funeral",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begripa",
+    				"translation": "(verb) to understand",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begriplig",
+    				"translation": "(adj) understandable",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begrunda",
+    				"translation": "(verb) to contemplate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begränsa",
+    				"translation": "(verb) to limit",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begränsad",
+    				"translation": "(participle) limited",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begränsning",
+    				"translation": "(noun) limitation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begåvad",
+    				"translation": "(adj) talented",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begåvning",
+    				"translation": "(noun) talent",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begära",
+    				"translation": "(verb) to request",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "begäran",
+    				"translation": "(noun) request",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behaga",
+    				"translation": "(verb) to please",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behaglig",
+    				"translation": "(adj) pleasant",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behandla",
+    				"translation": "(verb) to treat",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behandling",
+    				"translation": "(noun) treatment",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behålla",
+    				"translation": "(verb) to keep",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behärska",
+    				"translation": "(verb) to master",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behörig",
+    				"translation": "(adj) authorised (BE), authorized (AE)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behöva",
+    				"translation": "(verb) to nee",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "behövas",
+    				"translation": "(verb) to be needed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekanta (sig med ngt)",
+    				"translation": "(verb) to acquaint (oneself with sth)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beklaga (sig över ngt)",
+    				"translation": "(verb) to complain (about sth)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beklaglig",
+    				"translation": "(adj) regrettable",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekostnad",
+    				"translation": "(noun) expense",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekräfta",
+    				"translation": "(verb) to confirm",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekräftad",
+    				"translation": "(adj) confirmed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekymmer",
+    				"translation": "(noun) concern",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekymra (sig över ngt)",
+    				"translation": "(verb) to trouble (oneself about sth)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekymrad",
+    				"translation": "(adj) worried",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekämpa",
+    				"translation": "(verb) to combat",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bekänna",
+    				"translation": "(verb) to confess",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "belasta",
+    				"translation": "(verb) to burden",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "belastning",
+    				"translation": "(noun) burden",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "belysa",
+    				"translation": "(verb) to illuminate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "belysning",
+    				"translation": "(noun) lighting",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "belägen",
+    				"translation": "(adj) located",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "belöna",
+    				"translation": "(verb) to reward",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "belönad",
+    				"translation": "(adj) rewarded",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "belöning",
+    				"translation": "(noun) reward",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bemanna",
+    				"translation": "(verb) to man",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bemanning",
+    				"translation": "(noun) staffing",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bemästra",
+    				"translation": "(verb) to master",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bemöta",
+    				"translation": "(verb) to respond to",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "benägen",
+    				"translation": "(adj) inclined",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "benämna",
+    				"translation": "(verb) to name",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "benämning",
+    				"translation": "(noun) denomination",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beordra",
+    				"translation": "(verb) to order",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bereda",
+    				"translation": "(verb) to prepare",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beredning",
+    				"translation": "(noun) preparation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beredskap",
+    				"translation": "(noun) readiness",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "berika",
+    				"translation": "(verb) to enrich",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "berusad",
+    				"translation": "(adj) intoxicated",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beräkna",
+    				"translation": "(verb) to calculate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beräknad",
+    				"translation": "(adj) calculated",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beräkning",
+    				"translation": "(noun) calculation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "berätta",
+    				"translation": "(verb) to tell",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "berömma",
+    				"translation": "(verb) to praise",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beröra",
+    				"translation": "(verb) to touch",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beröring",
+    				"translation": "(noun) touch",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beröva",
+    				"translation": "(verb) to deprive",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besannas",
+    				"translation": "(verb) to come true",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besegra",
+    				"translation": "(verb) to defeat",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besegrad",
+    				"translation": "(adj) defeated",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besiktning",
+    				"translation": "(noun) inspection",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besitta",
+    				"translation": "(verb) to possess",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besittning",
+    				"translation": "(noun) possession",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beskatta",
+    				"translation": "(verb) to tax",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beskattning",
+    				"translation": "(noun) taxation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beskriva",
+    				"translation": "(verb) to describe",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beskrivning",
+    				"translation": "(noun) description",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beskydda",
+    				"translation": "(verb) to protect",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beskylla",
+    				"translation": "(verb) to accuse",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beskåda",
+    				"translation": "(verb) to regard",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besluta",
+    				"translation": "(verb) to decide",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besläktad",
+    				"translation": "(adj) related",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besparing",
+    				"translation": "(noun) saving",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bestiga",
+    				"translation": "(verb) to climb",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bestraffa",
+    				"translation": "(verb) to punish",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bestraffning",
+    				"translation": "(noun) punishment",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bestrida",
+    				"translation": "(verb) to contest",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beställa",
+    				"translation": "(verb) to order",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beställning",
+    				"translation": "(noun) order",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bestämma (sig för ngt)",
+    				"translation": "(verb) to decide (sth)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besvara",
+    				"translation": "(verb) to answer",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besviken",
+    				"translation": "(adj) disappointed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besvära",
+    				"translation": "(verb) to bother",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besvärad",
+    				"translation": "(adj) troubled",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besvärlig",
+    				"translation": "(adj) troublesome",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besätta",
+    				"translation": "(verb) to occupy",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besättning",
+    				"translation": "(noun) crew",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "besöka",
+    				"translation": "(verb) to visit",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betala",
+    				"translation": "(verb) to pay",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betalning",
+    				"translation": "(noun) payment",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beteckna",
+    				"translation": "(verb) to denote",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beteckning",
+    				"translation": "(noun) label",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betinga",
+    				"translation": "(verb) to condition",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betjäna",
+    				"translation": "(verb) to serve",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betjäning",
+    				"translation": "(noun) service",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betona",
+    				"translation": "(verb) to emphasize",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betoning",
+    				"translation": "(noun) emphasis",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betrakta",
+    				"translation": "(verb) to consider",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betvivla",
+    				"translation": "(verb) to doubt",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betyda",
+    				"translation": "(verb) to mean",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betydlig",
+    				"translation": "(adj) significant",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betydligt",
+    				"translation": "(adv) considerably",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "betäckning",
+    				"translation": "(noun) designation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beundra",
+    				"translation": "(verb) to admire",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beundran",
+    				"translation": "(noun) admiration",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bevaka",
+    				"translation": "(verb) to monitor",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bevakad",
+    				"translation": "(adj) watched",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bevakning",
+    				"translation": "(noun) surveillance",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bevara",
+    				"translation": "(verb) to preserve",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bevilja",
+    				"translation": "(verb) to grant",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bevisa",
+    				"translation": "(verb) to prove",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "bevittna",
+    				"translation": "(verb) to witness",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beväpna",
+    				"translation": "(verb) to arm",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beväpnad",
+    				"translation": "(participle) armed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beväpning",
+    				"translation": "(noun) armament",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förakta",
+    				"translation": "(verb) to despise",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förankring",
+    				"translation": "(noun) anchoring",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbanna",
+    				"translation": "(verb) to curse (make something cursed)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbannad",
+    				"translation": "(adj) cursed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbannat",
+    				"translation": "(adv) damned",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbinda",
+    				"translation": "(verb) to bind",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbittring",
+    				"translation": "(noun) resentment",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbjuda",
+    				"translation": "(verb) to forbid",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbjuden",
+    				"translation": "(adj) forbidden",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbluffa",
+    				"translation": "(verb) to astonish",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förblöda",
+    				"translation": "(verb) to bleed death",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbruka",
+    				"translation": "(verb) to consume",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbrukning",
+    				"translation": "(noun) consumption",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbrylla",
+    				"translation": "(verb) to perplex",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbränning",
+    				"translation": "(noun) combustion",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbättra",
+    				"translation": "(verb) to improve",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förbättring",
+    				"translation": "(noun) improvement",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördela",
+    				"translation": "(verb) to distribute",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördelad",
+    				"translation": "(participle) distributed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördelning",
+    				"translation": "(noun) distribution",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördjupa",
+    				"translation": "(verb) to deepen",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördjupning",
+    				"translation": "(noun) specialisation (BE), specialization (AE)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördriva",
+    				"translation": "(verb) to expel",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördubbla",
+    				"translation": "(verb) to double",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördärva",
+    				"translation": "(verb) to spoil",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördärvad",
+    				"translation": "(participle) corrupted",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "fördöma",
+    				"translation": "(verb) to condemn",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förena",
+    				"translation": "(verb) to unite",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förening",
+    				"translation": "(noun) association",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förenkla",
+    				"translation": "(verb) to simplify",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förenkling",
+    				"translation": "(noun) simplification",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förenlig",
+    				"translation": "(adj) compatible",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förfalla",
+    				"translation": "(verb) to decay",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förfalskning",
+    				"translation": "(noun) forgery",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "författa",
+    				"translation": "(verb) to author",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "författning",
+    				"translation": "(noun) constitution",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förfluten",
+    				"translation": "(adj) past",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förflyta",
+    				"translation": "(verb) to move",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förflytta",
+    				"translation": "(verb) to move",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förflyttning",
+    				"translation": "(noun) relocation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förfoga (över ngt)",
+    				"translation": "(verb) to have (sth at one's disposal)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förfrågan",
+    				"translation": "(noun) inquiry",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förfärlig",
+    				"translation": "(adj) dreadful",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förfärligt",
+    				"translation": "(adv) terribly",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förfölja",
+    				"translation": "(verb) to pursue",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förföra",
+    				"translation": "(verb) to seduce",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förgifta",
+    				"translation": "(verb) to poison",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förgiftad",
+    				"translation": "(participle) poisoned",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förgäves",
+    				"translation": "(adv) in vain",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förgöra",
+    				"translation": "(verb) to destroy",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förhandla",
+    				"translation": "(verb) to negotiate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förhandling",
+    				"translation": "(noun) negotiation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förhasta",
+    				"translation": "(verb) to make a mistake due haste",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förhindra",
+    				"translation": "(verb) to prevent",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förhoppning",
+    				"translation": "(noun) hope",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förhålla (sig)",
+    				"translation": "(verb) to conduct (oneself)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förhöra",
+    				"translation": "(verb) to interrogate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förinta",
+    				"translation": "(verb) to annihilate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förkasta",
+    				"translation": "(verb) to reject",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förklara",
+    				"translation": "(verb) to explain",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förklaring",
+    				"translation": "(noun) explanation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förknippa",
+    				"translation": "(verb) to associate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förkorta",
+    				"translation": "(verb) to shorten",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förkortning",
+    				"translation": "(noun) abbreviation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förkunna",
+    				"translation": "(verb) to proclaim",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förkylning",
+    				"translation": "(noun) cold (illness)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlamad",
+    				"translation": "(adj) paralyzed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlikning",
+    				"translation": "(noun) settlement",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlita (sig på ngt)",
+    				"translation": "(verb) to rely (on sth)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlora",
+    				"translation": "(verb) to lose",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlorad",
+    				"translation": "(adj) lost",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlossning",
+    				"translation": "(noun) childbirth",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlova (sig med ngn)",
+    				"translation": "(verb) to become engaged (with s.o.)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlovning",
+    				"translation": "(noun) engagement",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlåta",
+    				"translation": "(verb) to forgive",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlåten",
+    				"translation": "(participle) forgiven",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlägga",
+    				"translation": "(verb) to misplace",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlänga",
+    				"translation": "(verb) to extend",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förlängning",
+    				"translation": "(noun) extension",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förmedla",
+    				"translation": "(verb) to convey",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förmedling",
+    				"translation": "(noun) agency",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förmoda",
+    				"translation": "(verb) to assume",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förmåga",
+    				"translation": "(noun) ability",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förmögen",
+    				"translation": "(adj) wealthy",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förneka",
+    				"translation": "(verb) to deny",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förnuftig",
+    				"translation": "(adj) sensible",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förnya",
+    				"translation": "(verb) to renew",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förnybar",
+    				"translation": "(adj) renewable",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förordna",
+    				"translation": "(verb) to appoint",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förordning",
+    				"translation": "(noun) regulation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förpackning",
+    				"translation": "(noun) packaging",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förplikta (sig till ngt)",
+    				"translation": "(verb) to bind (oneself to sth)",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förresten",
+    				"translation": "(adv) by the way",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förråda",
+    				"translation": "(verb) to betray",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "församling",
+    				"translation": "(noun) congregation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försegla",
+    				"translation": "(verb) to seal",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försena",
+    				"translation": "(verb) to delay",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försenad",
+    				"translation": "(participle) delayed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försening",
+    				"translation": "(noun) delay",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försiktig",
+    				"translation": "(adj) cautious",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försiktigt",
+    				"translation": "(adv) cautiously",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förskräcklig",
+    				"translation": "(adj) dreadful",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försona",
+    				"translation": "(verb) to reconcile",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försoning",
+    				"translation": "(noun) reconciliation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förstora",
+    				"translation": "(verb) to enlarge",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förstärka",
+    				"translation": "(verb) to strengthen",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förstärkning",
+    				"translation": "(noun) reinforcement",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förstöra",
+    				"translation": "(verb) to destroy",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försumma",
+    				"translation": "(verb) to neglect",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försvaga",
+    				"translation": "(verb) to weaken",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försvara",
+    				"translation": "(verb) to defend",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försvinna",
+    				"translation": "(verb) to disappear",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försvunnen",
+    				"translation": "(participle) missing",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försvåra",
+    				"translation": "(verb) to complicate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försäkra",
+    				"translation": "(verb) to assure",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försäkrad",
+    				"translation": "(participle) insured",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försäkring",
+    				"translation": "(noun) insurance",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försäljning",
+    				"translation": "(noun) sale",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försämra",
+    				"translation": "(verb) to deteriorate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försämring",
+    				"translation": "(noun) deterioration",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försätta",
+    				"translation": "(verb) to put",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försöka",
+    				"translation": "(verb) to try",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försörja",
+    				"translation": "(verb) to support",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "försörjning",
+    				"translation": "(noun) livelihood",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förteckning",
+    				"translation": "(noun) list",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förtjäna",
+    				"translation": "(verb) to deserve",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förtrolig",
+    				"translation": "(adj) confidential",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förtrycka",
+    				"translation": "(verb) to oppress",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förträfflig",
+    				"translation": "(adj) excellent",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förtvivlad",
+    				"translation": "(adj) desperate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förtvivlan",
+    				"translation": "(noun) despair",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvalta",
+    				"translation": "(verb) to manage",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvaltning",
+    				"translation": "(noun) administration",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvandla",
+    				"translation": "(verb) to transform",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvandling",
+    				"translation": "(noun) transformation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvara",
+    				"translation": "(verb) to store",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvaring",
+    				"translation": "(noun) storage",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvirra",
+    				"translation": "(verb) to confuse",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvirrad",
+    				"translation": "(adj) confused",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvirring",
+    				"translation": "(noun) confusion",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvisso",
+    				"translation": "(adv) indeed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvåna",
+    				"translation": "(verb) to surprise",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvånad",
+    				"translation": "(adj) surprised",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvåning",
+    				"translation": "(noun) surprise",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvänta",
+    				"translation": "(verb) to expect",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förväntan",
+    				"translation": "(noun) expectation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förväntning",
+    				"translation": "(noun) expectation",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvärra",
+    				"translation": "(verb) to aggravate",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förvärva",
+    				"translation": "(verb) to acquire",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förväxla",
+    				"translation": "(verb) to confuse",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "föråldrad",
+    				"translation": "(adj) obsolete",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förälder",
+    				"translation": "(noun) parent",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förälskad",
+    				"translation": "(adj) in love",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förändra",
+    				"translation": "(verb) to change",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förändrad",
+    				"translation": "(adj) changed",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "förändring",
+    				"translation": "(noun) change",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "föröka",
+    				"translation": "(verb) to reproduce",
+    				"options": ["0 3 0", "1 0 3", "0 0 3", "3 2 0"],
+    				"correct": "0 3 0"
+    			},
+    			{
+    				"word": "beaktande",
+    				"translation": "(noun) consideration",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bebyggelse",
+    				"translation": "(noun) settlement",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bedragare",
+    				"translation": "(noun) fraudster",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bedårande",
+    				"translation": "(adj) present participle of bedåra",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "befrielse",
+    				"translation": "(noun) liberation",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "begynnelse",
+    				"translation": "(noun) beginning",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "behållare",
+    				"translation": "(noun) container",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "behövande",
+    				"translation": "(adj) (poor and) needy",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bekräftelse",
+    				"translation": "(noun) confirmation",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bekännelse",
+    				"translation": "(noun) confession",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bemärkelse",
+    				"translation": "(noun) sense",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "beroende",
+    				"translation": "(prep) due to",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "berättelse",
+    				"translation": "(noun) story",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "berättiga",
+    				"translation": "(verb) to entitle",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "berättigad",
+    				"translation": "(adj) entitled",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "berömmelse",
+    				"translation": "(noun) fame",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "beskyddare",
+    				"translation": "(noun) protector",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bestående",
+    				"translation": "(adj) lasting",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bestämmelse",
+    				"translation": "(noun) regulation",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "besvikelse",
+    				"translation": "(noun) disappointment",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "besökare",
+    				"translation": "(noun) visitor",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "betecknande",
+    				"translation": "(adj) indicative",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "beteende",
+    				"translation": "(noun) behaviour (BE), behavior (AE)",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "betingelse",
+    				"translation": "(noun) condition",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "betraktelse",
+    				"translation": "(noun) reflection",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "beträffande",
+    				"translation": "(prep) regarding",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "betydande",
+    				"translation": "(adj) significant",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "betydelse",
+    				"translation": "(noun) meaning",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "beundrare",
+    				"translation": "(noun) admirer",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bevarande",
+    				"translation": "(noun) conservation",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "bevisligen",
+    				"translation": "(adv) evidently",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förbannelse",
+    				"translation": "(noun) curse",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förbindelse",
+    				"translation": "(noun) connection",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förbluffande",
+    				"translation": "(adv) astonishingly",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förbrukare",
+    				"translation": "(noun) consumer",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förfarande",
+    				"translation": "(noun) procedure",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "författare",
+    				"translation": "(noun) author",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förfogande",
+    				"translation": "(noun) disposal",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förföljelse",
+    				"translation": "(noun) persecution",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förhoppningsvis",
+    				"translation": "(adv) hopefully",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förhållande",
+    				"translation": "(noun) relationship",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förhållningssätt",
+    				"translation": "(noun) approach",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förintelse",
+    				"translation": "(noun) Holocaust",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förlorare",
+    				"translation": "(noun) loser",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förlåtelse",
+    				"translation": "(noun) forgiveness",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förläggare",
+    				"translation": "(noun) publisher",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förmodligen",
+    				"translation": "(adv) presumably",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förmyndare",
+    				"translation": "(noun) guardian",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förnekande",
+    				"translation": "(noun) denial",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förnyelse",
+    				"translation": "(noun) renewal",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förpliktelse",
+    				"translation": "(noun) obligation",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förrädare",
+    				"translation": "(noun) traitor",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "försakelse",
+    				"translation": "(noun) renunciation",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förståelig",
+    				"translation": "(adj) understandable",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förståelse",
+    				"translation": "(noun) understanding",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förstörelse",
+    				"translation": "(noun) destruction",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "försvarare",
+    				"translation": "(noun) defender",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "försvinnande",
+    				"translation": "(noun) disappearance",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "försäljare",
+    				"translation": "(noun) seller",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "försändelse",
+    				"translation": "(noun) consignment",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förtjusande",
+    				"translation": "(adj) charming",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förtroende",
+    				"translation": "(noun) trust",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förtydliga",
+    				"translation": "(verb) to clarify",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förvaltare",
+    				"translation": "(noun) trustee",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förverkliga",
+    				"translation": "(verb) to realise (BE), realize (AE)",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förvånansvärt",
+    				"translation": "(adv) surprisingly",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "föräldralös",
+    				"translation": "(adj) orphaned",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "förövare",
+    				"translation": "(noun) perpetrator",
+    				"options": ["0 3 0 0", "1 0 0 3", "0 3 2 0", "3 2 0 0"],
+    				"correct": "0 3 0 0"
+    			},
+    			{
+    				"word": "berättigande",
+    				"translation": "(noun) justification",
+    				"options": ["0 3 0 0 0", "0 3 2 0 0", "1 0 0 0 3", "0 1 0 0 3"],
+    				"correct": "0 3 0 0 0"
+    			},
+    			{
+    				"word": "förhållandevis",
+    				"translation": "(adv) comparatively",
+    				"options": ["0 3 0 0 0", "0 3 2 0 0", "1 0 0 0 3", "0 1 0 0 3"],
+    				"correct": "0 3 0 0 0"
+    			},
+    			{
+    				"word": "förkroppsligande",
+    				"translation": "(noun) embodiment",
+    				"options": ["0 3 0 0 0", "0 3 2 0 0", "1 0 0 0 3", "0 1 0 0 3"],
+    				"correct": "0 3 0 0 0"
+    			},
+    			{
+    				"word": "förverkligande",
+    				"translation": "(noun) realisation (BE), realization (AE)",
+    				"options": ["0 3 0 0 0", "0 3 2 0 0", "1 0 0 0 3", "0 1 0 0 3"],
+    				"correct": "0 3 0 0 0"
+    			},
+    			{
+    				"word": "arena",
+    				"translation": "(noun) arena",
+    				"options": ["0 3 2", "3 2 0", "0 3 0", "1 0 3"],
+    				"correct": "0 3 2"
+    			},
+    			{
+    				"word": "förutom",
+    				"translation": "(prep) except for",
+    				"options": ["0 3 2", "3 2 0", "0 3 0", "1 0 3"],
+    				"correct": "0 3 2"
+    			},
+    			{
+    				"word": "betygsätta",
+    				"translation": "(verb) to grade",
+    				"options": ["0 3 2 0", "3 2 0 0", "1 0 0 3", "3 0 2 0"],
+    				"correct": "0 3 2 0"
+    			},
+    			{
+    				"word": "befälhavare",
+    				"translation": "(noun) commander",
+    				"options": ["0 3 2 0 0", "0 1 0 0 3", "3 0 2 0 0", "1 0 0 3 2"],
+    				"correct": "0 3 2 0 0"
+    			},
+    			{
+    				"word": "bibliografi",
+    				"translation": "(noun) bibliography",
+    				"options": ["1 0 0 0 3", "1 0 0 3 0", "1 0 1 0 3", "1 0 1 0 3"],
+    				"correct": "1 0 0 0 3"
+    			},
+    			{
+    				"word": "akademi",
+    				"translation": "(noun) academy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "analogi",
+    				"translation": "(noun) analogy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "animation",
+    				"translation": "(noun) animation",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "antikvitet",
+    				"translation": "(noun) antique",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "arkeolog",
+    				"translation": "(noun) archaeologist (BE), archeologist (AE)",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "arkitektur",
+    				"translation": "(noun) architecture",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "arrangemang",
+    				"translation": "(noun) arrangement",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "artilleri",
+    				"translation": "(noun) artillery",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "autonomi",
+    				"translation": "(noun) autonomy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "biografi",
+    				"translation": "(noun) biography",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "biologi",
+    				"translation": "(noun) biology",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "byråkrati",
+    				"translation": "(noun) bureaucracy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "ceremoni",
+    				"translation": "(noun) ceremony",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "demokrati",
+    				"translation": "(noun) democracy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "diplomati",
+    				"translation": "(noun) diplomacy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "ekologi",
+    				"translation": "(noun) ecology",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "ekonomi",
+    				"translation": "(noun) economy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "epilepsi",
+    				"translation": "(noun) epilepsy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "filosofi",
+    				"translation": "(noun) philosophy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "fotografi",
+    				"translation": "(noun) photograph",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "geografi",
+    				"translation": "(noun) geography",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "geometri",
+    				"translation": "(noun) geometry",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "hierarki",
+    				"translation": "(noun) hierarchy",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "kategori",
+    				"translation": "(noun) category",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "kavalleri",
+    				"translation": "(noun) cavalry",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "maskineri",
+    				"translation": "(noun) machinery",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "ortopedi",
+    				"translation": "(noun) orthopaedics (BE), orthopedics (AE)",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "periferi",
+    				"translation": "(noun) periphery",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "psykiatri",
+    				"translation": "(noun) psychiatry",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "psykologi",
+    				"translation": "(noun) psychology",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "schizofreni",
+    				"translation": "(noun) schizophrenia",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "teknologi",
+    				"translation": "(noun) technology",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "teologi",
+    				"translation": "(noun) theology",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "trakasseri",
+    				"translation": "(noun) harassment",
+    				"options": ["1 0 0 3", "1 0 3 0", "3 2 0 0", "3 0 2 0"],
+    				"correct": "1 0 0 3"
+    			},
+    			{
+    				"word": "analysera",
+    				"translation": "(verb) to show, display",
+    				"options": ["1 0 0 3 0", "1 0 0 0 3", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 0 3 0"
+    			},
+    			{
+    				"word": "argumentera",
+    				"translation": "(verb) to argue",
+    				"options": ["1 0 0 3 0", "1 0 0 0 3", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 0 3 0"
+    			},
+    			{
+    				"word": "arkeologisk",
+    				"translation": "(adj) arceologic",
+    				"options": ["1 0 0 3 0", "1 0 0 0 3", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 0 3 0"
+    			},
+    			{
+    				"word": "arkitektonisk",
+    				"translation": "(adj) architectural",
+    				"options": ["1 0 0 3 0", "1 0 0 0 3", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 0 3 0"
+    			},
+    			{
+    				"word": "artikulera",
+    				"translation": "(verb) to articulate",
+    				"options": ["1 0 0 3 0", "1 0 0 0 3", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 0 3 0"
+    			},
+    			{
+    				"word": "förevändning",
+    				"translation": "(noun) pretext",
+    				"options": ["3 0 2 0", "3 2 0 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "företrädesvis",
+    				"translation": "(adv) preferably",
+    				"options": ["3 0 2 0 0", "1 0 0 3 0", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "antisemitism",
+    				"translation": "(noun) antisemitism",
+    				"options": ["1 0 1 0 3", "1 0 0 3 0", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 1 0 3"
+    			},
+    			{
+    				"word": "argumentation",
+    				"translation": "(noun) argumentation",
+    				"options": ["1 0 1 0 3", "1 0 0 3 0", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 1 0 3"
+    			},
+    			{
+    				"word": "artificiell",
+    				"translation": "(adj) artificial",
+    				"options": ["1 0 1 0 3", "1 0 0 3 0", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 1 0 3"
+    			},
+    			{
+    				"word": "ideologi",
+    				"translation": "(noun) ideology",
+    				"options": ["1 0 1 0 3", "1 0 0 3 0", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 1 0 3"
+    			},
+    			{
+    				"word": "sociologi",
+    				"translation": "(noun) sociology",
+    				"options": ["1 0 1 0 3", "1 0 0 3 0", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 1 0 3"
+    			},
+    			{
+    				"word": "terminologi",
+    				"translation": "(noun) terminology",
+    				"options": ["1 0 1 0 3", "1 0 0 3 0", "1 0 3 0 0", "1 0 0 3 2"],
+    				"correct": "1 0 1 0 3"
+    			},
+    			{
+    				"word": "allergi",
+    				"translation": "(noun) allergy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "amnesti",
+    				"translation": "(noun) amnesty",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "analog",
+    				"translation": "(adj) analogue (BE), analog (AE)",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "analys",
+    				"translation": "(noun) analysis",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "anarki",
+    				"translation": "(noun) anarchy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "anarkist",
+    				"translation": "(noun) anarchist",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "anekdot",
+    				"translation": "(noun) anecdote",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "anonym",
+    				"translation": "(adj) anonymous",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "areal",
+    				"translation": "(noun) area",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "argument",
+    				"translation": "(noun) argument",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "arkitekt",
+    				"translation": "(noun) architect",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "arrangör",
+    				"translation": "(noun) organiser (BE), organizer (AE)",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "arrogans",
+    				"translation": "(noun) arrogance",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "arrogant",
+    				"translation": "(adj) arrogant",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "artefakt",
+    				"translation": "(noun) artifact",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "bageri",
+    				"translation": "(noun) bakery",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "batteri",
+    				"translation": "(noun) battery",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "dynasti",
+    				"translation": "(noun) dynasty",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "empati",
+    				"translation": "(noun) empathy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "energi",
+    				"translation": "(noun) energy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "fantasi",
+    				"translation": "(noun) imagination",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "galleri",
+    				"translation": "(noun) gallery",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "garanti",
+    				"translation": "(noun) guarantee",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "harmoni",
+    				"translation": "(noun) harmony",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "hyckleri",
+    				"translation": "(noun) hypocrisy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "hysteri",
+    				"translation": "(noun) hysteria",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "industri",
+    				"translation": "(noun) industry",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "ironi",
+    				"translation": "(noun) irony",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "kalori",
+    				"translation": "(noun) calorie",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "kirurgi",
+    				"translation": "(noun) surgery",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "koloni",
+    				"translation": "(noun) colony",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "komedi",
+    				"translation": "(noun) comedy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "kompani",
+    				"translation": "(noun) company",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "leukemi",
+    				"translation": "(noun) leukemia",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "lotteri",
+    				"translation": "(noun) lottery",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "mejeri",
+    				"translation": "(noun) dairy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "melodi",
+    				"translation": "(noun) melody",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "monarki",
+    				"translation": "(noun) monarchy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "måleri",
+    				"translation": "(noun) painting",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "onani",
+    				"translation": "(noun) masturbation",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "poesi",
+    				"translation": "(noun) poetry",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "raseri",
+    				"translation": "(noun) rage",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "slaveri",
+    				"translation": "(noun) slavery",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "slöseri",
+    				"translation": "(noun) wastefulness",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "strategi",
+    				"translation": "(noun) strategy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "sympati",
+    				"translation": "(noun) sympathy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "teori",
+    				"translation": "(noun) theory",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "terapi",
+    				"translation": "(noun) therapy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "tragedi",
+    				"translation": "(noun) tragedy",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "utopi",
+    				"translation": "(noun) utopia",
+    				"options": ["1 0 3", "0 3 0", "3 2 0", "3 0 0"],
+    				"correct": "1 0 3"
+    			},
+    			{
+    				"word": "analytisk",
+    				"translation": "(adj) analytic",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "animalisk",
+    				"translation": "(adj) animal",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "animering",
+    				"translation": "(noun) animation",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "annullera",
+    				"translation": "(verb) to cancel",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "aritmetisk",
+    				"translation": "(adj) arithmetic",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "arkivera",
+    				"translation": "(verb) to archive",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "arrangera",
+    				"translation": "(verb) to arrange",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "arrestera",
+    				"translation": "(verb) to arrest",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "arresterad",
+    				"translation": "(participle) arrested",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "arrestering",
+    				"translation": "(noun) arrest",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "februari",
+    				"translation": "(noun) February",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "januari",
+    				"translation": "(noun) January",
+    				"options": ["1 0 3 0", "1 0 0 3", "3 0 2 0", "3 2 0 0"],
+    				"correct": "1 0 3 0"
+    			},
+    			{
+    				"word": "analytiker",
+    				"translation": "(noun) analyst",
+    				"options": ["1 0 3 0 0", "1 0 0 3 0", "1 0 1 0 3", "1 0 0 3 2"],
+    				"correct": "1 0 3 0 0"
+    			},
+    			{
+    				"word": "anamma",
+    				"translation": "(verb) to embrace",
+    				"options": ["1 3 0", "1 3 0", "1 0 3", "3 0 0"],
+    				"correct": "1 3 0"
+    			},
+    			{
+    				"word": "anus",
+    				"translation": "(noun) (anatomy) anus",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "bebis",
+    				"translation": "(noun) baby",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "chili",
+    				"translation": "(noun) chili",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "däri",
+    				"translation": "(adv) therein",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "första",
+    				"translation": "(num) first",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "juli",
+    				"translation": "(noun) July",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "juni",
+    				"translation": "(noun) June",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "sushi",
+    				"translation": "(noun) sushi",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "taxi",
+    				"translation": "(noun) taxi",
+    				"options": ["3 0", "0 3", "3 2", "1 3"],
+    				"correct": "3 0"
+    			},
+    			{
+    				"word": "area",
+    				"translation": "(noun) area",
+    				"options": ["3 0 0", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 0"
+    			},
+    			{
+    				"word": "förtio",
+    				"translation": "(num) forty",
+    				"options": ["3 0 0", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 0"
+    			},
+    			{
+    				"word": "tivoli",
+    				"translation": "(noun) funfair",
+    				"options": ["3 0 0", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 0"
+    			},
+    			{
+    				"word": "förtionde",
+    				"translation": "(num) fortieth",
+    				"options": ["3 0 0 0", "3 2 0 0", "3 0 2 0", "1 0 3 0"],
+    				"correct": "3 0 0 0"
+    			},
+    			{
+    				"word": "förutsägbar",
+    				"translation": "(adj) predictable",
+    				"options": ["3 0 0 2", "3 2 0 0", "3 0 2 0", "1 0 3 0"],
+    				"correct": "3 0 0 2"
+    			},
+    			{
+    				"word": "förundersökning",
+    				"translation": "(noun) preliminary investigation",
+    				"options": ["3 0 0 2 0", "3 0 2 0 0", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 0 2 0"
+    			},
+    			{
+    				"word": "förutbestämma",
+    				"translation": "(verb) to predetermine",
+    				"options": ["3 0 0 2 0", "3 0 2 0 0", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 0 2 0"
+    			},
+    			{
+    				"word": "ananas",
+    				"translation": "(noun) pineapple",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "andetag",
+    				"translation": "(noun) breath",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "anförtro",
+    				"translation": "(verb) to entrust",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "angenäm",
+    				"translation": "(adj) pleasant",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "angenämt",
+    				"translation": "(adv) pleasantly",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "ankare",
+    				"translation": "(noun) anchor",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "annanstans",
+    				"translation": "(adv) elsewhere",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "antingen",
+    				"translation": "(conj) either… or…",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "användbar",
+    				"translation": "(adj) pleasant",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "arbetsam",
+    				"translation": "(adj) industrious",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "arbetsdag",
+    				"translation": "(noun) workday",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "artonde",
+    				"translation": "(num) eighteenth",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "förare",
+    				"translation": "(noun) driver",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "förbehåll",
+    				"translation": "(noun) reservation",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "förberedd",
+    				"translation": "(participle) prepared",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "förebild",
+    				"translation": "(noun) role model",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "föredra",
+    				"translation": "(verb) to prefer",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "föredrag",
+    				"translation": "(noun) lecture",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "föregå",
+    				"translation": "(verb) to precede",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "förekomst",
+    				"translation": "(noun) occurrence",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "föremål",
+    				"translation": "(noun) object",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "föresats",
+    				"translation": "(noun) intention",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "föreskrift",
+    				"translation": "(noun) regulation",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "föreslå",
+    				"translation": "(verb) to suggest",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "förestå",
+    				"translation": "(verb) to be at the head of",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "företa",
+    				"translation": "(verb) to undertake",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "företag",
+    				"translation": "(noun) company",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "förmiddag",
+    				"translation": "(noun) morning",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "förutse",
+    				"translation": "(verb) to foresee",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "inuti",
+    				"translation": "(prep) inside",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "utebli",
+    				"translation": "(verb) to be absent",
+    				"options": ["3 0 2", "1 0 3", "3 2 0", "0 3 0"],
+    				"correct": "3 0 2"
+    			},
+    			{
+    				"word": "angelägen",
+    				"translation": "(adj) eager",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "annorlunda",
+    				"translation": "(adj) different",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "bearbeta",
+    				"translation": "(verb) to process",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "bearbetning",
+    				"translation": "(noun) processing",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förbereda",
+    				"translation": "(verb) to prepare",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "fördelaktig",
+    				"translation": "(adj) advantageous",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förebygga",
+    				"translation": "(verb) to prevent",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "föredöme",
+    				"translation": "(noun) role model",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förefalla",
+    				"translation": "(verb) to seem",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förekomma",
+    				"translation": "(verb) to occur",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "föreligga",
+    				"translation": "(verb) to be present",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "föreläsa",
+    				"translation": "(verb) to lecture",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "föreläsning",
+    				"translation": "(noun) lecture",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "föreskriva",
+    				"translation": "(verb) to prescribe",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förespråka",
+    				"translation": "(verb) to advocate",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "föreställa (sig ngt)",
+    				"translation": "(verb) to imagine (sth)",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "föreställning",
+    				"translation": "(noun) performance",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "företräda",
+    				"translation": "(verb) to represent",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "företräde",
+    				"translation": "(noun) precedence",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förolämpa",
+    				"translation": "(verb) to insult",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förolämpning",
+    				"translation": "(noun) insult",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förorena",
+    				"translation": "(verb) to pollute",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förorening",
+    				"translation": "(noun) pollution",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förorsaka",
+    				"translation": "(verb) to cause",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förutsäga",
+    				"translation": "(verb) to predict",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förutsätta",
+    				"translation": "(verb) to assume",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förutsättning",
+    				"translation": "(noun) precondition",
+    				"options": ["3 0 2 0", "1 0 0 3", "1 0 3 0", "3 2 0 0"],
+    				"correct": "3 0 2 0"
+    			},
+    			{
+    				"word": "förberedelse",
+    				"translation": "(noun) preparation",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "förebyggande",
+    				"translation": "(adj) preventive",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "föregående",
+    				"translation": "(adj) preceding",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "föregångare",
+    				"translation": "(noun) predecessor",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "föreläsare",
+    				"translation": "(noun) lecturer",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "förespråkare",
+    				"translation": "(noun) advocate",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "förestående",
+    				"translation": "(adj) approaching",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "föreståndare",
+    				"translation": "(noun) manager",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "företagare",
+    				"translation": "(noun) entrepreneur",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "företeelse",
+    				"translation": "(noun) phenomenon",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "företrädare",
+    				"translation": "(noun) representative",
+    				"options": ["3 0 2 0 0", "3 0 0 0 2", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "förutsägelse",
+    				"translation": "(noun) prediction",
+    				"options": ["3 0 2 0 0", "3 0 0 2 0", "3 2 0 0 0", "0 3 0 0 0"],
+    				"correct": "3 0 2 0 0"
+    			},
+    			{
+    				"word": "ana",
+    				"translation": "(verb) to sense",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anbud",
+    				"translation": "(noun) bid",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anda",
+    				"translation": "(noun) spirit",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "andas",
+    				"translation": "(verb) to breathe",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "ande",
+    				"translation": "(noun) spirit",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "andel",
+    				"translation": "(noun) share",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "andlig",
+    				"translation": "(adj) spiritual",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "andning",
+    				"translation": "(noun) breathing",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "andra",
+    				"translation": "(num) second",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anfall",
+    				"translation": "(noun) attack",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "ange",
+    				"translation": "(verb) to indicate",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "angrepp",
+    				"translation": "(noun) attack",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "angå",
+    				"translation": "(verb) to concern",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "aning",
+    				"translation": "(noun) hint",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anka",
+    				"translation": "(noun) duck",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "ankomst",
+    				"translation": "(noun) arrival",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anlag",
+    				"translation": "(noun) predisposition",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "annan",
+    				"translation": "(pron) another",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "annars",
+    				"translation": "(adv) otherwise",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anor",
+    				"translation": "(noun) ancestry",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "ansats",
+    				"translation": "(noun) approach",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anse",
+    				"translation": "(verb) to consider",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anslag",
+    				"translation": "(noun) grant",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anslå",
+    				"translation": "(verb) to post",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anspråk",
+    				"translation": "(noun) claim",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anstalt",
+    				"translation": "(noun) institution",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anställd",
+    				"translation": "(noun) employee",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anstöt",
+    				"translation": "(noun) offence (BE), offense (AE)",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "ansvar",
+    				"translation": "(noun) responsibility",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anta",
+    				"translation": "(verb) to assume",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "antal",
+    				"translation": "(noun) number",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "använd",
+    				"translation": "(participle) used",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "ara",
+    				"translation": "(noun) ara (macaw)",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "artig",
+    				"translation": "(adj) polite",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "artigt",
+    				"translation": "(adv) politely",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "arton",
+    				"translation": "(num) eighteen",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "behå",
+    				"translation": "(noun) bra",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "bergig",
+    				"translation": "(adj) mountainous",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "bergskam",
+    				"translation": "(noun) mountain ridge",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "bergstopp",
+    				"translation": "(noun) mountain peak",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "beta",
+    				"translation": "(verb) to graze",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "bete",
+    				"translation": "(noun) bait",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "bitti",
+    				"translation": "(adv) early in the day",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "föra",
+    				"translation": "(verb) to lead",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "fördel",
+    				"translation": "(noun) advantage",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "fördom",
+    				"translation": "(noun) prejudice",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "före",
+    				"translation": "(prep) before",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förgrund",
+    				"translation": "(noun) foreground",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förhand",
+    				"translation": "(noun) in advance",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förman",
+    				"translation": "(noun) foreman",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förmån",
+    				"translation": "(noun) benefit",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förnamn",
+    				"translation": "(noun) first name",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förort",
+    				"translation": "(noun) suburb",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förra",
+    				"translation": "(adj) last",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förrän",
+    				"translation": "(subj) until",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förrätt",
+    				"translation": "(noun) starter (first course of a meal)",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förskott",
+    				"translation": "(noun) advance",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "förspel",
+    				"translation": "(noun) foreplay",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "försprång",
+    				"translation": "(noun) lead",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "gummi",
+    				"translation": "(noun) rubber",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "uti",
+    				"translation": "(prep) (dated) in (location)",
+    				"options": ["3 2", "3 0", "0 3", "1 3"],
+    				"correct": "3 2"
+    			},
+    			{
+    				"word": "anfalla",
+    				"translation": "(verb) to attack",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anföra",
+    				"translation": "(verb) to lead",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "angripa",
+    				"translation": "(verb) to attack",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anhörig",
+    				"translation": "(adj) relative",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anklaga",
+    				"translation": "(verb) to accuse",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anklagad",
+    				"translation": "(participle) accused",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anknyta",
+    				"translation": "(verb) to connect",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anknytning",
+    				"translation": "(noun) connection",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ankomma",
+    				"translation": "(verb) to arrive",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anledning",
+    				"translation": "(noun) reason",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anlita",
+    				"translation": "(verb) to hire",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anlägga",
+    				"translation": "(verb) to construct",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anläggning",
+    				"translation": "(noun) facility",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anlända",
+    				"translation": "(verb) to arrive",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anmäla",
+    				"translation": "(verb) to report",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anmälan",
+    				"translation": "(noun) notification",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anmälning",
+    				"translation": "(noun) notification",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anmärkning",
+    				"translation": "(noun) remark",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anordna",
+    				"translation": "(verb) to arrange",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anordning",
+    				"translation": "(noun) device",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anpassa",
+    				"translation": "(verb) to adapt",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anpassad",
+    				"translation": "(participle) adapted",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anpassning",
+    				"translation": "(noun) adaptation",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansikte",
+    				"translation": "(noun) face",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anskaffa",
+    				"translation": "(verb) to acquire",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anskaffning",
+    				"translation": "(noun) acquisition",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansluta (sig till ngt)",
+    				"translation": "(verb) to attach (oneself to sth)",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansluten",
+    				"translation": "(adj) connected",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anslutning",
+    				"translation": "(noun) connection",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anstränga (sig)",
+    				"translation": "(verb) to exert (oneself)",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansträngning",
+    				"translation": "(noun) effort",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anställa",
+    				"translation": "(verb) to employ",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anställning",
+    				"translation": "(noun) employment",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anständig",
+    				"translation": "(adj) decent",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansvara",
+    				"translation": "(verb) to be responsible",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansvarig",
+    				"translation": "(adj) responsible",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansöka",
+    				"translation": "(verb) to apply",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansökan",
+    				"translation": "(noun) application",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "ansökning",
+    				"translation": "(noun) application",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "antagen",
+    				"translation": "(adj) approved",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anteckna",
+    				"translation": "(verb) to note",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anteckning",
+    				"translation": "(noun) note",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anträffa",
+    				"translation": "(verb) to encounter",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "antyda",
+    				"translation": "(verb) to hint",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "antydning",
+    				"translation": "(noun) hint",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anvisa",
+    				"translation": "(verb) to instruct",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anvisning",
+    				"translation": "(noun) instruction",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "använda",
+    				"translation": "(verb) to use",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "användning",
+    				"translation": "(noun) usage",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "arbeta",
+    				"translation": "(verb) to work",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "arbete",
+    				"translation": "(noun) work",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "arvinge",
+    				"translation": "(noun) heir",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "arvode",
+    				"translation": "(noun) fee",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "förfader",
+    				"translation": "(noun) ancestor",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "förkläde",
+    				"translation": "(noun) apron",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "förskola",
+    				"translation": "(noun) preschool",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "förvarna",
+    				"translation": "(verb) to alert",
+    				"options": ["3 2 0", "3 0 2", "0 3 0", "1 0 3"],
+    				"correct": "3 2 0"
+    			},
+    			{
+    				"word": "anförande",
+    				"translation": "(noun) speech",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "angränsande",
+    				"translation": "(adj) adjacent",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "angående",
+    				"translation": "(prep) regarding",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "anhängare",
+    				"translation": "(noun) supporter",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "anklagelse",
+    				"translation": "(noun) accusation",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "anseende",
+    				"translation": "(noun) reputation",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "antagande",
+    				"translation": "(noun) assumption",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "antagligen",
+    				"translation": "(adv) probably",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "användande",
+    				"translation": "(noun) usage",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "användare",
+    				"translation": "(noun) user",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+    			{
+    				"word": "arbetare",
+    				"translation": "(noun) worker",
+    				"options": ["3 2 0 0", "3 0 2 0", "1 0 3 0", "1 0 0 3"],
+    				"correct": "3 2 0 0"
+    			},
+
+    			// ...
+    		];
+
+    		let shuffledWords = shuffleArray(words);
+    		let currentIndex = 0;
+    		let score = 0;
+    		let incorrect = 0;
+    		let totalCorrect = 0; // ✅ New total correct counter
+    		let maxScore = words.length;
+    		let firstAttempt = true;
+
+    		function shuffleArray(array) {
+    			return array.sort(() => Math.random() - 0.5);
+    		}
+
+    		function filterWords(filterValue) {
+    			let filtered = [];
+    			if (filterValue === "be") {
+    				filtered = words.filter(wordObj => wordObj.word.startsWith("be"));
+    			} else if (filterValue === "for") {
+    				filtered = words.filter(wordObj => wordObj.word.startsWith("för"));
+    			} else if (filterValue === "an") {
+    				filtered = words.filter(wordObj => wordObj.word.startsWith("an"));
+    			} else if (filterValue === "ar") {
+    				filtered = words.filter(wordObj => wordObj.word.startsWith("ar"));
+    			} else if (filterValue === "i") {
+    				filtered = words.filter(wordObj => wordObj.word.endsWith("i"));
+    			} else if (filterValue === "random") {
+    				// Shuffle and take the first 100 words
+    				filtered = shuffleArray(words).slice(0, 100);
+    			} else {
+    				filtered = words;
+    			}
+    			return shuffleArray(filtered);
+    		}
+
+    		// Attach event listeners to radio buttons.
+    		document.querySelectorAll('input[name="filter"]').forEach(radio => {
+    			radio.addEventListener("change", function() {
+    				const filterValue = this.value;
+    				shuffledWords = filterWords(filterValue);
+    				maxScore = shuffledWords.length;
+    				currentIndex = 0;
+    				score = 0;
+    				incorrect = 0;
+    				totalCorrect = 0;
+    				updateScore();
+    				createDropdown(shuffledWords[currentIndex]);
+    			});
+    		});
+
+    		function updateScore() {
+    			scoreCounter.textContent = `1st try correct: ${score}`;
+    			incorrectCounter.textContent = `Mistakes: ${incorrect}`;
+    			totalCorrectCounter.textContent = `Progress: ${totalCorrect} / ${maxScore}`; // ✅ Updated counter
+    		}
+
+    		function convertToSymbols(pattern) {
+    			const symbolMap = {
+    				'0': '<span style="font-size: 10px; color: black; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>',
+    				'1': '<span style="font-size: 18px; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>',
+    				'2': '<span style="font-size: 28px; color: red; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>',
+    				'3': '<span style="font-size: 24px; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#11044;</span>'
+    			};
+
+    			// Split on spaces, map each character to the right <span> snippet
+    			return pattern
+    				.split(" ")
+    				.map(symbol => symbolMap[symbol] || symbol)
+    				.join("&nbsp;&nbsp;&nbsp;");
+    		}
+
+
+    		function createDropdown(wordObj) {
+    			dropdownsContainer.innerHTML = "";
+    			errorMessage.style.display = "none";
+    			nextButton.style.display = "none";
+    			firstAttempt = true;
+
+    			// Create container for the label and the dropdown/animation
+    			const container = document.createElement("div");
+    			container.classList.add("dropdown-container");
+    			container.style.display = "flex";
+    			container.style.alignItems = "center";
+
+    			// Create the label with tooltip
+    			const label = document.createElement("span");
+    			label.classList.add("word-label");
+    			label.setAttribute("data-tooltip", wordObj.translation);
+    			label.innerHTML = wordObj.word + "&nbsp;";
+    			container.appendChild(label);
+
+    			// Create a wrapper that holds the dropdown and the animation container side by side
+    			const dropdownAndAnimWrapper = document.createElement("div");
+    			dropdownAndAnimWrapper.style.display = "flex";
+    			dropdownAndAnimWrapper.style.alignItems = "center";
+
+    			// Create the dropdown wrapper and button
+    			const dropdownWrapper = document.createElement("div");
+    			dropdownWrapper.classList.add("custom-dropdown");
+
+    			const dropdownBtn = document.createElement("div");
+    			dropdownBtn.classList.add("dropdown-btn");
+    			dropdownBtn.textContent = "Select pattern";
+    			dropdownBtn.addEventListener("click", function() {
+    				dropdownMenu.style.display =
+    					dropdownMenu.style.display === "block" ? "none" : "block";
+    			});
+
+    			const dropdownMenu = document.createElement("ul");
+    			dropdownMenu.classList.add("dropdown-menu");
+
+    			dropdownWrapper.appendChild(dropdownBtn);
+    			dropdownWrapper.appendChild(dropdownMenu);
+
+    			// Create an empty container for our animated icon – it will be inserted to the right of the dropdown.
+    			// Create an empty container for our animated icon – it will be inserted to the right of the dropdown.
+    			const animationContainer = document.createElement("div");
+    			animationContainer.style.marginLeft = "10px"; // Adjust spacing as needed
+    			// Pre-allocate space by setting fixed dimensions:
+    			animationContainer.style.width = "35px";
+    			animationContainer.style.height = "35px";
+
+    			// Append the dropdown and animation container so they sit side by side.
+    			dropdownAndAnimWrapper.appendChild(dropdownWrapper);
+    			dropdownAndAnimWrapper.appendChild(animationContainer);
+
+    			container.appendChild(dropdownAndAnimWrapper);
+    			dropdownsContainer.appendChild(container);
+
+    			// Populate the dropdown menu with shuffled options
+    			const optionsShuffled = shuffleArray([...wordObj.options]);
+    			optionsShuffled.forEach(option => {
+    				const li = document.createElement("li");
+    				li.innerHTML = `<span class="icon-group">${convertToSymbols(option)}</span>`;
+    				li.addEventListener("click", function() {
+    					dropdownBtn.innerHTML = li.innerHTML;
+    					dropdownMenu.style.display = "none";
+
+    					if (option !== wordObj.correct) {
+    						// For a wrong answer, update score and insert the red X SVG.
+    						incorrect++;
+    						updateScore();
+    						animationContainer.innerHTML = `
+          <svg class="icon" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="25" fill="#dc3545" />
+            <path class="xmark" d="M16 16 L36 36" />
+            <path class="xmark second" d="M36 16 L16 36" />
+          </svg>
+        `;
+    						firstAttempt = false;
+    					} else {
+    						// For a correct answer, update score, disable further clicks, and insert the green check SVG.
+    						if (firstAttempt) score++;
+    						totalCorrect++;
+    						updateScore();
+    						nextButton.style.display = "block";
+    						dropdownBtn.style.pointerEvents = "none";
+    						animationContainer.innerHTML = `
+          <svg class="icon" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="25" fill="#28a745" />
+            <path class="checkmark" d="M14 27 l7 7 l16 -16" />
+          </svg>
+        `;
+    					}
+    				});
+    				dropdownMenu.appendChild(li);
+    			});
+    		}
+
+    		function loadNextWord() {
+    			currentIndex++;
+    			if (currentIndex < shuffledWords.length) {
+    				createDropdown(shuffledWords[currentIndex]);
+    			} else {
+    				dropdownsContainer.innerHTML = "<h2>Exercise completed! How many did you get right on your first try?</h2>";
+    				nextButton.style.display = "none";
+    			}
+    		}
+
+    		nextButton.addEventListener("click", function() {
+    			nextButton.style.display = "none";
+    			loadNextWord();
+    		});
+
+    		createDropdown(shuffledWords[currentIndex]);
+    		updateScore();
+    	});
+
+    const darkModeToggle = document.getElementById("dark-toggle-div");
+
+    darkModeToggle.addEventListener("click", () => {
+    	document.body.classList.toggle("dark-mode");
+
+    	// When dark mode is enabled: toggle div becomes "dark white"
+    	if (document.body.classList.contains("dark-mode")) {
+    		darkModeToggle.textContent = "Light mode";
+    		darkModeToggle.style.background = "#f8f9fa"; // a light, off-white shade
+    		darkModeToggle.style.color = "#333";
+    		darkModeToggle.style.borderColor = "#333";
+    	} else {
+    		darkModeToggle.textContent = "Dark mode";
+    		darkModeToggle.style.background = "#333";
+    		darkModeToggle.style.color = "#fff";
+    		darkModeToggle.style.borderColor = "#333";
+    	}
+    });
+
+    // Modal functionality for the info div.
+    const infoDiv = document.getElementById("info-div");
+    const modalOverlay = document.getElementById("modal-overlay");
+    const modalClose = document.getElementById("modal-close");
+
+    infoDiv.addEventListener("click", () => {
+    	modalOverlay.style.display = "flex";
+    });
+
+    modalClose.addEventListener("click", () => {
+    	modalOverlay.style.display = "none";
+    });
+
+	</script>
+
+</body>
+</html>
