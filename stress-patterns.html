@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stress pattern exercise</title>
 
-    <!-- ✅ Font Awesome Free Version -->
+    <!-- Font Awesome Free Version -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
 
     <style>
@@ -39,7 +39,7 @@
 		font-size: 15px;
 		color: #333;
 		background: white;
-		padding: 10px 15px;
+		padding: 5px 15px;
 		border: 2px solid #333;
 		border-radius: 10px;
 	}
@@ -47,12 +47,12 @@
 	#total-correct-counter {
 		position: absolute;
 		width: 140px;
-		top: 75px; /* Positioned below the first counter */
+		top: 60px; /* Positioned below the first counter */
 		right: 30px;
 		font-size: 15px;
 		color: #333;
 		background: white;
-		padding: 10px 15px;
+		padding: 5px 15px;
 		border: 2px solid #333;
 		border-radius: 10px;
 	}
@@ -60,12 +60,12 @@
 	#incorrect-counter {
 		position: absolute;
 		width: 140px;
-		top: 130px; /* Positioned below the first counter */
+		top: 100px; /* Positioned below the first counter */
 		right: 30px;
 		font-size: 15px;
 		color: #333;
 		background: white;
-		padding: 10px 15px;
+		padding: 5px 15px;
 		border: 2px solid #333;
 		border-radius: 10px;
 	}
@@ -73,7 +73,7 @@
 	#info-div {
 		position: absolute;
 		width: 140px;
-		top: 185px;
+		top: 140px;
 		right: 30px;
 		font-size: 16px;
 		color: #333;
@@ -82,6 +82,33 @@
 		border: 2px solid #333;
 		border-radius: 10px;
 		cursor: pointer;
+	}
+
+	#dark-toggle-div {
+		position: absolute;
+		width: 140px;
+		top: 190px;
+		right: 30px;
+		font-size: 16px;
+		color: #333;
+		background: white;
+		padding: 10px 15px;
+		border: 2px solid #333;
+		border-radius: 10px;
+	}
+
+	/* New styling for #info-div and #dark-toggle-div */
+	#info-div, 
+	#dark-toggle-div {
+		box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Subtle 3D shadow */
+		transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+	}
+
+	/* Hover state for a raised effect */
+	#info-div:hover, 
+	#dark-toggle-div:hover {
+		box-shadow: 0 6px 10px rgba(0,0,0,0.2); /* Deeper shadow on hover */
+		transform: translateY(-2px); /* Slight upward movement */
 	}
 	
 	/* Modal styles */
@@ -117,19 +144,6 @@
 		font-size: 20px;
 		background: none;
 		border: none;
-	}
-	
-	#dark-toggle-div {
-		position: absolute;
-		width: 140px;
-		top: 240px;
-		right: 30px;
-		font-size: 16px;
-		color: #333;
-		background: white;
-		padding: 10px 15px;
-		border: 2px solid #333;
-		border-radius: 10px;
 	}
 	
 	#dropdowns-container {
@@ -305,8 +319,10 @@
 	}
 	
 	#filter-options {
-		text-align: left; /* override the center alignment from body */
-		margin-bottom: 20px;
+		position: absolute;
+		top: 240px; /* adjust as needed to sit just below dark mode */
+		right: 40px;
+		text-align: left;
 		max-width: 400px;
 		font-family: Arial, sans-serif;
 		font-size: 14px;
@@ -505,6 +521,16 @@
 	.dark-mode #modal-content .modal-symbol {
 		color: initial; /* or simply omit this rule if inline styles take precedence */
 	}
+	
+	/* Default (light mode) */
+	#current-adaptation span {
+		color: #B22222;
+	}
+
+	/* Dark mode */
+	.dark-mode #current-adaptation span {
+		color: #FF7518;
+	}
 </style>
 
 </head>
@@ -512,10 +538,14 @@
 <body>
 
 <h1>Stress pattern exercise</h1>
-
+<h2>Read the "Info" to understand what this exercise is about.</h2>
+<h2>Adapt the exercise to your needs (see the right-hand menu).</h2>
+<br />
+<h2>Current adaptation: <span id="current-adaptation"></span></h2>
+<br /><br />
 <div id="filter-options">
     <br />
-    <h2 style="text-align:left;">Edit exercise</h2>
+    <h2 style="text-align:left;">Adapt exercise</h2>
     <ul>
         <li>
             <input type="radio" id="filter-all" name="filter" value="all" checked>
@@ -523,27 +553,35 @@
         </li>
         <li>
             <input type="radio" id="filter-an" name="filter" value="an">
-            <label for="filter-an">&nbsp;Words starting with "an-"</label>
+            <label for="filter-an">&nbsp;Words starting "an-"</label>
         </li>
         <li>
             <input type="radio" id="filter-ar" name="filter" value="ar">
-            <label for="filter-ar">&nbsp;Words starting with "ar-"</label>
+            <label for="filter-ar">&nbsp;Words starting "ar-"</label>
         </li>
         <li>
             <input type="radio" id="filter-be" name="filter" value="be">
-            <label for="filter-be">&nbsp;Words starting with "be-"</label>
+            <label for="filter-be">&nbsp;Words starting "be-"</label>
         </li>
         <li>
             <input type="radio" id="filter-for" name="filter" value="for">
-            <label for="filter-for">&nbsp;Words starting with "för-"</label>
+            <label for="filter-for">&nbsp;Words starting "för-"</label>
         </li>
         <li>
             <input type="radio" id="filter-i" name="filter" value="i">
-            <label for="filter-i">&nbsp;Words ending with "-i"</label>
+            <label for="filter-i">&nbsp;Words ending "-i"</label>
         </li>
+		<li>
+			<input type="radio" id="filter-correct2" name="filter" value="contains2">
+			<label for="filter-correct2">&nbsp;Words with accent 2</label>
+		</li>
+		<li>
+			<input type="radio" id="filter-correct1" name="filter" value="contains1">
+			<label for="filter-correct1">&nbsp;Words with onset(s)</label>
+		</li>
         <li>
             <input type="radio" id="filter-random" name="filter" value="random">
-            <label for="filter-random">&nbsp;Random 100</label>
+            <label for="filter-random">&nbsp;Random 100 words</label>
         </li>
     </ul>
 </div>
@@ -577,7 +615,7 @@
                 indicates a weak onset (light stress)
             </div>
             <div class="symbol-col">
-                <span class="modal-symbol" style="font-size: 28px; color: red; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>
+                <span class="modal-symbol" style="font-size: 28px; color: #B22222; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>
             </div>
             <div class="desc-col">
                 indicates the second pitch level in words with Accent 2
@@ -594,7 +632,7 @@
             onset in two‐syllable words. You can find many examples of this among words ending in "-i".
         </p>
         <p>
-            Remember (2) that almost all words beginning with "an-" have Accent 2, which means you must select a pattern that includes the red symbol.
+            Remember (2) that almost all words beginning with "an-" have Accent 2, which means you must select a pattern that includes the red symbol.
         </p>
         <p>
             <strong>A recommendation</strong>: before you go through all the words (or a random 100), start by familiarising yourself with how certain words (those that begin or end in a particular way) are typically pronounced. Of course, there are exceptions,
@@ -611,12 +649,40 @@
 
     <script>
     	document.addEventListener("DOMContentLoaded", function() {
+			updateCurrentAdaptation();
     		const dropdownsContainer = document.getElementById("dropdowns-container");
     		const nextButton = document.getElementById("next-button");
     		const errorMessage = document.getElementById("error-message");
     		const scoreCounter = document.getElementById("score-counter");
     		const incorrectCounter = document.getElementById("incorrect-counter");
-    		const totalCorrectCounter = document.getElementById("total-correct-counter"); // ✅ Added counter
+    		const totalCorrectCounter = document.getElementById("total-correct-counter");
+			const currentAdaptationSpan = document.getElementById("current-adaptation");
+		
+			function getAdaptationMapping() {
+			return {
+				all: `<span>All words (794)</span>`,
+				an: `Words beginning with <span>an-</span>`,
+				ar: `Words beginning with <span>ar-</span>`,
+				be: `Words beginning with <span>be-</span>`,
+				for: `Words beginning with <span>för-</span>`,
+				i: `Words ending with <span>-i</span>`,
+				contains2: `Words that contain <span>accent 2</span>`,
+				contains1: `Words that contain <span>weak onset(s)</span>`,
+				random: `<span>Random 100 words</span>`
+			};
+			}
+			
+			function updateCurrentAdaptation() {
+			const selectedRadio = document.querySelector('input[name="filter"]:checked');
+			if (selectedRadio) {
+				const mapping = getAdaptationMapping();
+				const currentText = mapping[selectedRadio.value] || '';
+				document.getElementById('current-adaptation').innerHTML = currentText;
+				}
+			}
+		
+			// Initialize the current adaptation text on page load.
+			updateCurrentAdaptation();
 
     		const words = [{
     				"word": "annonsera",
@@ -5390,7 +5456,7 @@
     		let currentIndex = 0;
     		let score = 0;
     		let incorrect = 0;
-    		let totalCorrect = 0; // ✅ New total correct counter
+    		let totalCorrect = 0;
     		let maxScore = words.length;
     		let firstAttempt = true;
 
@@ -5398,53 +5464,57 @@
     			return array.sort(() => Math.random() - 0.5);
     		}
 
-    		function filterWords(filterValue) {
-    			let filtered = [];
-    			if (filterValue === "be") {
-    				filtered = words.filter(wordObj => wordObj.word.startsWith("be"));
-    			} else if (filterValue === "for") {
-    				filtered = words.filter(wordObj => wordObj.word.startsWith("för"));
-    			} else if (filterValue === "an") {
-    				filtered = words.filter(wordObj => wordObj.word.startsWith("an"));
-    			} else if (filterValue === "ar") {
-    				filtered = words.filter(wordObj => wordObj.word.startsWith("ar"));
-    			} else if (filterValue === "i") {
-    				filtered = words.filter(wordObj => wordObj.word.endsWith("i"));
-    			} else if (filterValue === "random") {
-    				// Shuffle and take the first 100 words
-    				filtered = shuffleArray(words).slice(0, 100);
-    			} else {
-    				filtered = words;
-    			}
-    			return shuffleArray(filtered);
-    		}
+			function filterWords(filterValue) {
+				let filtered = [];
+				if (filterValue === "be") {
+					filtered = words.filter(wordObj => wordObj.word.startsWith("be"));
+				} else if (filterValue === "for") {
+					filtered = words.filter(wordObj => wordObj.word.startsWith("för"));
+				} else if (filterValue === "an") {
+					filtered = words.filter(wordObj => wordObj.word.startsWith("an"));
+				} else if (filterValue === "ar") {
+					filtered = words.filter(wordObj => wordObj.word.startsWith("ar"));
+				} else if (filterValue === "i") {
+					filtered = words.filter(wordObj => wordObj.word.endsWith("i"));
+				} else if (filterValue === "random") {
+					filtered = shuffleArray(words).slice(0, 100);
+				} else if (filterValue === "contains2") {
+					filtered = words.filter(wordObj => wordObj.correct.includes("2"));
+				} else if (filterValue === "contains1") { // New filter option
+					filtered = words.filter(wordObj => wordObj.correct.includes("1"));
+				} else {
+					filtered = words;
+				}
+				return shuffleArray(filtered);
+			}
+
 
     		// Attach event listeners to radio buttons.
     		document.querySelectorAll('input[name="filter"]').forEach(radio => {
-    			radio.addEventListener("change", function() {
-    				const filterValue = this.value;
-    				shuffledWords = filterWords(filterValue);
-    				maxScore = shuffledWords.length;
-    				currentIndex = 0;
-    				score = 0;
-    				incorrect = 0;
-    				totalCorrect = 0;
-    				updateScore();
-    				createDropdown(shuffledWords[currentIndex]);
-    			});
-    		});
+				radio.addEventListener("change", function() {
+					updateCurrentAdaptation();
+					shuffledWords = filterWords(this.value);
+					maxScore = shuffledWords.length;
+					currentIndex = 0;
+					score = 0;
+					incorrect = 0;
+					totalCorrect = 0;
+					updateScore();
+					createDropdown(shuffledWords[currentIndex]);
+				});
+			});
 
     		function updateScore() {
     			scoreCounter.textContent = `1st try correct: ${score}`;
     			incorrectCounter.textContent = `Mistakes: ${incorrect}`;
-    			totalCorrectCounter.textContent = `Progress: ${totalCorrect} / ${maxScore}`; // ✅ Updated counter
+    			totalCorrectCounter.textContent = `Progress: ${totalCorrect} / ${maxScore}`;
     		}
 
     		function convertToSymbols(pattern) {
     			const symbolMap = {
     				'0': '<span style="font-size: 10px; color: black; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>',
     				'1': '<span style="font-size: 18px; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>',
-    				'2': '<span style="font-size: 28px; color: red; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>',
+    				'2': '<span style="font-size: 28px; color: #B22222; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#9679;</span>',
     				'3': '<span style="font-size: 24px; display: inline-block; vertical-align: middle; text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">&#11044;</span>'
     			};
 
@@ -5528,7 +5598,7 @@
     						updateScore();
     						animationContainer.innerHTML = `
           <svg class="icon" viewBox="0 0 52 52">
-            <circle cx="26" cy="26" r="25" fill="#dc3545" />
+            <circle cx="26" cy="26" r="25" fill="#B22222" />
             <path class="xmark" d="M16 16 L36 36" />
             <path class="xmark second" d="M36 16 L16 36" />
           </svg>
@@ -5572,25 +5642,24 @@
     		updateScore();
     	});
 
-    const darkModeToggle = document.getElementById("dark-toggle-div");
+		const darkModeToggle = document.getElementById("dark-toggle-div");
+			darkModeToggle.addEventListener("click", () => {
+			document.body.classList.toggle("dark-mode");
+			
+			if (document.body.classList.contains("dark-mode")) {
+				darkModeToggle.textContent = "Light mode";
+				darkModeToggle.style.background = "#f8f9fa";
+				darkModeToggle.style.color = "#333";
+				darkModeToggle.style.borderColor = "#333";
+			} else {
+				darkModeToggle.textContent = "Dark mode";
+				darkModeToggle.style.background = "#333";
+				darkModeToggle.style.color = "#fff";
+				darkModeToggle.style.borderColor = "#333";
+			}	
 
-    darkModeToggle.addEventListener("click", () => {
-    	document.body.classList.toggle("dark-mode");
-
-    	// When dark mode is enabled: toggle div becomes "dark white"
-    	if (document.body.classList.contains("dark-mode")) {
-    		darkModeToggle.textContent = "Light mode";
-    		darkModeToggle.style.background = "#f8f9fa"; // a light, off-white shade
-    		darkModeToggle.style.color = "#333";
-    		darkModeToggle.style.borderColor = "#333";
-    	} else {
-    		darkModeToggle.textContent = "Dark mode";
-    		darkModeToggle.style.background = "#333";
-    		darkModeToggle.style.color = "#fff";
-    		darkModeToggle.style.borderColor = "#333";
-    	}
-    });
-
+			});
+		
     // Modal functionality for the info div.
     const infoDiv = document.getElementById("info-div");
     const modalOverlay = document.getElementById("modal-overlay");
