@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <!-- Fonts (Lato) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;700&display=swap" 
+      rel="stylesheet"
+    >
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swedish core verbs</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+		
+        /* ==== Dark mode-läge: vi inverterar bakgrund/text ==== */
+        body.dark-mode {
+            background-color: #1b1b1b; 
+            color: #eee; 
+        }
+
+        /* --- HEADER & HAMBURGER --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #eee;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 2000; /* Ensure the header is above everything else */
+        }
+        body.dark-mode header {
+            background-color: #333;
+            color: #fff;
+        }
+		
+		header {
+			text-align: center;
+		}
+		
+        header h1 {
+            margin: 0;
+            padding: 10px 20px;
+            line-height: 40px;
+            display: inline-block;
+            z-index: 4000;
+        }
+
+        .hamburger {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+            pointer-events: auto;
+        }
+		
+        .container.disabled .main-word {
+            cursor: not-allowed;
+        }
+
+        /* === wrapper för sidans huvudinnehåll (header + verbs) === */
+        .main-content {
+            pointer-events: auto;
+            width: 100%;
+            height: 100%;
+        }
+
+        .side-menu {
+            margin-top: 60px;
+            position: fixed;
+            top: 0;
+            right: -300px;  /* gömd initialt */
+            transition: right 0.3s ease, box-shadow 0.3s;
+            box-shadow: none; /* Ingen skugga när menyn är stängd */
+            width: 195px;
+            height: 100%;
+            background-color: #ccc;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+            padding: 20px;
+            transition: right 0.3s ease;
+            z-index: 3000; /* Ligger över .main-content */
+        }
+        .side-menu.open {
+            right: 0;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+        }
+        body.dark-mode .side-menu {
+            background-color: #333;
+            color: #eee;
+        }
+
+        /* ========== KNAPPAR (What's this?, See English, etc.) ========== */
+        .whats-this {
+            display: inline-block;
+            width: 90%;                 /* så alla blir samma bredd */
+            margin-bottom: 10px;         /* liten marginal under */
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: #fff;
+            color: #333;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            font-size: 16px;
+            text-align: center;          /* se till att text är centrerad */
+            font-family: 'Lato', sans-serif; /* Samma font */
+        }
+        .whats-this:hover {
+            background: #eee;
+        }
+        body.dark-mode .whats-this {
+            background: #444;
+            color: #eee;
+        }
+        body.dark-mode .whats-this:hover {
+            background: #555;
+        }
+
+        /* ========== Dark Mode-toggle ========== */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px; /* Liten marginal upptill nu när den flyttas ned */
+        }
+        .dark-mode-toggle input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .container {
+            position: absolute;
+            top: 80px;
+            text-align: center;
+            z-index: 1;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark-mode .container {
+            background-color: transparent;
+            color: #eee;
+        }
+
+        .main-word {
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 26px;
+            font-weight: 500;
+            font-family: 'Lato', sans-serif;
+            letter-spacing: 0.8px;
+            color: #333;
+            text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.08);
+        }
+        body.dark-mode .main-word {
+            color: #eee;
+            text-shadow: 0.5px 0.5px 1px rgba(255, 255, 255, 0.08);
+        }
+
+        .tooltip-word {
+            position: absolute;
+            padding: 5px 10px;
+            background-color: white;
+            font-size: 15px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        body.dark-mode .tooltip-word {
+            background-color: #444;
+            color: #eee;
+            border-color: #555;
+        }
+
+        .tooltip-word::after {
+            content: attr(data-translation);
+            position: absolute;
+            left: 50%;
+            top: -35px;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 15px;
+            white-space: nowrap;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .tooltip-word:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        body.dark-mode .tooltip-word::after {
+            background-color: #eee; 
+            color: #111;
+            border-color: #eee;
+        }
+
+        .conjugation-box {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 20px;
+            padding: 15px 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 16px;
+            line-height: 1.8;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            text-align: left;
+            display: inline-block;
+            width: 170px;
+            font-weight: 500;
+            font-family: 'Lato', sans-serif;
+        }
+        body.dark-mode .conjugation-box {
+            background-color: #444;
+            color: #eee;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            cursor: pointer;
+            color: #ff5c5c;
+            font-weight: bold;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        .close-btn:hover {
+            color: #d00000;
+        }
+
+        /* MODAL-GRUNDFORM */
+        .modal {
+            position: fixed;
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;            /* dold som utgångsläge */
+            justify-content: center;
+            align-items: center;
+            z-index: 5000;            /* över sidomeny & verbs */
+        }
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            color: #333;
+            font-family: 'Lato', sans-serif;
+            border-radius: 10px;
+            padding: 20px 30px;
+            width: 600px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        body.dark-mode .modal-content {
+            background-color: #444;
+            color: #eee;
+        }
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        .modal-content p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            cursor: pointer;
+            color: #ff5c5c;
+            font-weight: bold;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        .modal-close-btn:hover {
+            color: #d00000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-content" id="mainContent">
+    <header>
+        <h1>Swedish core verbs</h1>
+        <div class="hamburger" onclick="toggleSideMenu()">☰</div>
+    </header>
+
+    <div id="wordList"></div>
+</div>
+
+<!-- Sidomeny -->
+<div class="side-menu" id="sideMenu">
+    <button class="whats-this" onclick="whatsThisClick()">What's this?</button>
+    
+    <!-- NYTT: Tre nya knappar under "What's this?" -->
+    <button class="whats-this" onclick="openEnglishModal()">See English</button>
+    <button class="whats-this" onclick="openGermanModal()">See German</button>
+    <button class="whats-this" onclick="openLatinModal()">See Latin</button>
+    
+    <!-- Dark Mode under dessa -->
+    <div class="dark-mode-toggle">
+        <input type="checkbox" id="darkModeCheckbox" onclick="toggleDarkMode()" />
+        <label for="darkModeCheckbox">Dark Mode</label>
+    </div>
+
+</div>
+
+<!-- MODALER -->
+<!-- 1) What's this? -->
+<div class="modal" id="infoModal">
+    <div class="modal-content">
+        <div class="modal-close-btn" onclick="closeModal('infoModal')">✕</div>
+        <h2>What's this?</h2>
+        <p>
+            In Swedish, many verbs – in fact, around 35 per cent of the most frequently used ones – are formed from a smaller number of 
+			<strong>core verbs</strong> by adding a <strong>prefix</strong> to create <strong>compound verbs</strong>. For instance, 
+			the verb <strong>gå</strong> (go, walk) is used to form compounds such as <strong>undgå</strong> (escape) and <strong>pågå</strong> 
+			(be going on). This system is highly productive, meaning that learning the conjugation of the 10 core verbs on this page automatically 
+			provides the conjugation patterns for nearly 140 related verbs. The compound formations are an essential part of Swedish grammar, 
+			allowing for efficient vocabulary expansion. Hover a compound verb, and you will see its English translation.
+        </p>
+    </div>
+</div>
+
+<!-- NYTT: 2) English Modal -->
+<div class="modal" id="englishModal">
+    <div class="modal-content">
+        <div class="modal-close-btn" onclick="closeModal('englishModal')">✕</div>
+        <h2>Compound verbs in English – not so common (anymore)</h2>
+        <p>
+            In modern English, the formation of new verbs by merging a core verb with a prefix is less systematic. Instead, English primarily 
+			relies on <strong>phrasal verbs</strong>, where the verb and the particle remain separate (for example, <strong>look out</strong> 
+			or <strong>take off</strong>). While there are some historical <strong>compound verbs</strong> such as <strong>understand</strong> 
+			and <strong>overcome</strong>, these instances are relatively few and are not produced through a regular, productive process. 
+			Consequently, English speakers often need to learn each new verb individually rather than deducing its structure from a common core.
+        </p>
+    </div>
+</div>
+
+<!-- NYTT: 3) German Modal -->
+<div class="modal" id="germanModal">
+    <div class="modal-content">
+        <div class="modal-close-btn" onclick="closeModal('germanModal')">✕</div>
+        <h2>Compound verbs in German – as in Swedish very common</h2>
+        <p>
+            In German, verb formation is much more akin to the Swedish model. New verbs are created by attaching a <strong>prefix</strong> to 
+			a <strong>core verb</strong>, resulting in highly productive <strong>compound verbs</strong>. For example, the verb <strong>stehen</strong> 
+			(to stand) can combine with prefixes to form verbs such as <strong>aufstehen</strong> (to get up) and <strong>überstehen</strong> (to endure). 
+			This system allows speakers to deduce meanings and conjugation patterns directly from the core element, making it an efficient method for 
+			expanding vocabulary while preserving the connection to the original core verb.
+        </p>
+    </div>
+</div>
+
+<!-- NYTT: 4) Latin Modal -->
+<div class="modal" id="latinModal">
+    <div class="modal-content">
+        <div class="modal-close-btn" onclick="closeModal('latinModal')">✕</div>
+        <h2>Compound verbs in Latin – it was very common</h2>
+        <p>
+            In Latin, verbs were formed by adding <strong>prefixes</strong> to a <strong>core verb</strong> within a highly inflected framework. 
+			A notable example is the verb <strong>gredi</strong> (to go, to step), which appears in compounds such as <strong>regredi</strong> 
+			(to return), <strong>progredi</strong> (to advance), <strong>ingredi</strong> (to enter), and <strong>egredi</strong> (to depart). 
+			Although Latin’s system was not as uniformly productive as the modern systems found in Swedish or German, its use of prefixation laid 
+			the groundwork for many verbal derivations in the Romance languages and has influenced compound verb formation throughout Europe.
+        </p>
+    </div>
+</div>
+
+<script>
+/* === DARK MODE === */
+function toggleDarkMode() {
+    const checkbox = document.getElementById('darkModeCheckbox');
+    document.body.classList.toggle('dark-mode', checkbox.checked);
+}
+
+/* === Globala flaggor === */
+let isOpen = false;       
+let sideMenuOpen = false; 
+
+function toggleSideMenu() {
+    const sideMenu = document.getElementById('sideMenu');
+    sideMenu.classList.toggle('open');
+    sideMenuOpen = sideMenu.classList.contains('open');
+
+    const mainContent = document.getElementById('mainContent');
+    mainContent.style.pointerEvents = sideMenuOpen ? 'none' : 'auto';
+
+    const hamburger = document.querySelector('.hamburger');
+    hamburger.textContent = sideMenuOpen ? '✕' : '☰';
+}
+
+/* === OPEN/CLOSE av modaler === */
+function whatsThisClick() {
+    document.getElementById('infoModal').style.display = 'flex';
+}
+function openEnglishModal() {
+    document.getElementById('englishModal').style.display = 'flex';
+}
+function openGermanModal() {
+    document.getElementById('germanModal').style.display = 'flex';
+}
+function openLatinModal() {
+    document.getElementById('latinModal').style.display = 'flex';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+const verbs = [
+    {word: "sätta", eng: "set, put", forms: ["ser", "såg", "sett"], tooltips: [{sv:"avsätta", en:"remove (from office)"},{sv:"besätta", en:"occupy (military)"},{sv:"betygsätta", en:"mark, grade (school)"},{sv:"bosätta", en:"settle (down)"},{sv:"ersätta", en:"compensate, replace"},{sv:"fortsätta", en:"continue"},{sv:"försätta", en:"set (in motion), set free (at liberty)"},{sv:"förutsätta", en:"presuppose, presume"},{sv:"ifrågasätta", en:"question, call ... in question"},{sv:"tillsätta", en:"appoint, set up, fill"},{sv:"omsätta", en:"convert (transform), turn over (economy)"},{sv:"pantsätta", en:"pawn, pledge"},{sv:"sjösätta", en:"launch"},{sv:"motsätta sig", en:"oppose, go against"},{sv:"utsätta", en:"expose, subject (to criticism)"},{sv:"värdesätta", en:"value, estimate (the value of)"},{sv:"översätta", en:"translate"}]},
+    {word: "ta", eng: "take", forms: ["tar", "tog", "tagit"], tooltips: [{sv:"anta", en:"assume (presume), accept (position)"},{sv:"avta", en:"decrease, diminish"},{sv:"delta", en:"participate"},{sv:"frånta", en:"take sth away from sb, deprive"},{sv:"företa", en:"undertake, carry out"},{sv:"godta", en:"approve (of), accept, agree to"},{sv:"iaktta", en:"observe, notice"},{sv:"inta", en:"occupy (take position), eat, consume"},{sv:"motta", en:"receive, be given"},{sv:"undanta", en:"except, exclude"},{sv:"uppta", en:"take up (space), assimilate (food)"},{sv:"vidta", en:"take (disciplinary action)"},{sv:"våldta", en:"rape"},{sv:"åta", en:"undertake"},{sv:"återta", en:"take back, resume"},{sv:"återuppta", en:"resume, take up ... again"},{sv:"överta", en:"take over"}]},
+    {word: "gå", eng: "go, walk", forms: ["går", "gick", "gått"], tooltips: [{sv:"angå", en:"concern, have reference to"},{sv:"avgå", en:"depart (eg. train), resign"},{sv:"begå", en:"commit"},{sv:"fortgå", en:"go on"},{sv:"framgå", en:"be clear (evident)"},{sv:"föregå", en:"precede"},{sv:"genomgå", en:"go through, cross, undergo"},{sv:"ingå", en:"be an integral part of, be included in"},{sv:"pågå", en:"be going on, last, be in progress"},{sv:"tillgå", en:"to be had, to be obtainable"},{sv:"tillmötesgå", en:"oblige, comply with"},{sv:"umgås", en:"see each other, be on visiting terms"},{sv:"undgå", en:"escape, elude, evade"},{sv:"uppgå", en:"amount to, become merged in"},{sv:"utgå", en:"start out (eg. bus), take ... for granted"},{sv:"återgå", en:"go back, revert"},{sv:"övergå", en:"pass (sb's comprehension), to be grown into (a habit)"}]},
+    {word: "föra", eng: "lead, bring", forms: ["för", "förde", "fört"], tooltips: [{sv:"anföra", en:"be in command, lead"},{sv:"framföra", en:"convey, present, perform"},{sv:"genomföra", en:"carry through, accomplish"},{sv:"hänföra", en:"assign (to), captivate"},{sv:"införa", en:"introduce (into), inaugurate, initiate"},{sv:"jämföra", en:"compare"},{sv:"marknadsföra", en:"market"},{sv:"medföra", en:"involve, entail, result in"},{sv:"sammanföra", en:"bring ... together"},{sv:"slutföra", en:"complete, finish"},{sv:"tillföra", en:"bring (new ideas into), supply (provide)"},{sv:"uppföra sig", en:"behave, conduct oneself"},{sv:"utföra", en:"perform, execute, achieve"},{sv:"överföra", en:"transfer, transmit"}]},
+    {word: "ge", eng: "give", forms: ["ger", "gav", "gett"], tooltips: [{sv:"ange", en:"state, report (inform against) sb"},{sv:"avge", en:"emit, give off"},{sv:"bege", en:"go, proceed, make one's way"},{sv:"formge", en:"design, style"},{sv:"frige", en:"free, set ... free"},{sv:"ge vika", en:"give way (in), yield"},{sv:"inge", en:"hand in, inspire, instil"},{sv:"medge", en:"admit, allow, permit"},{sv:"omge", en:"surround, enclose"},{sv:"tillkännage", en:"make ... known, notify"},{sv:"uppge", en:"state, declare, tell"},{sv:"utge", en:"publish, pass sb (sth) off as"},{sv:"återge", en:"render, reproduce, restore sb to liberty"},{sv:"överge", en:"abandon, desert"}]},
+    {word: "ställa", eng: "place, set", forms: ["ställer", "ställde", "ställt"], tooltips: [{sv:"anställa", en:"employ, take on"},{sv:"beställa", en:"order, book, reserve"},{sv:"fastställa", en:"appoint, fix, establish"},{sv:"framställa", en:"describe, portray, produce"},{sv:"färdigställa", en:"prepare, get ... ready"},{sv:"föreställa", en:"represent, play the part of, imagine"},{sv:"inställa", en:"stop, discontinue, cancel"},{sv:"jämställa", en:"place ... on a level (with sth)"},{sv:"sammanställa", en:"put ... together, collect"},{sv:"säkerställa", en:"guarantee, secure"},{sv:"tillfredsställa", en:"satisfy, content, suit"},{sv:"verkställa", en:"carry out, carry into effect"},{sv:"återställa", en:"restore, re-establish"}]},
+    {word: "komma", eng: "come", forms: ["kommer", "kom", "kommit"], tooltips: [{sv:"ankomma", en:"arrive"},{sv:"framkomma", en:"come up, come out"},{sv:"förekomma", en:"occur, exist, anticipate"},{sv:"inkomma", en:"come in (with sth), be received"},{sv:"omkomma", en:"be killed, die"},{sv:"tillkomma", en:"be sb's due, belong to sb"},{sv:"undkomma", en:"escape, get away"},{sv:"uppkomma", en:"arise (from)"},{sv:"utkomma", en:"come out, emerge, be published"},{sv:"åstadkomma", en:"bring about, cause, make"},{sv:"återkomma", en:"return, come back"}]},
+    {word: "stå", eng: "stand", forms: ["står", "stod", "stått"], tooltips: [{sv:"avstå", en:"give up, abandon, relinquish"},{sv:"bestå", en:"consist of, be composed (made up) of"},{sv:"bistå", en:"aid, assist, help"},{sv:"framstå", en:"stand out (as), appear"},{sv:"förestå", en:"be at the head of, manage"},{sv:"förstå", en:"understand"},{sv:"kvarstå", en:"remain, stay (on)"},{sv:"missförstå", en:"missunderstand, get ... wrong"},{sv:"motstå", en:"resist, withstand, stand"},{sv:"påstå", en:"say, state, assert, claim"},{sv:"uppstå", en:"arise, originate"},{sv:"utstå", en:"endure, suffer"},{sv:"återstå", en:"remain, be left (over)"}]},
+    {word: "göra", eng: "do, make", forms: ["gör", "gjorde", "gjort"], tooltips: [{sv:"avgöra", en:"decide, settle"},{sv:"frigöra", en:"liberate, set ... free"},{sv:"fullgöra", en:"perform, do, discharge"},{sv:"klargöra", en:"make ... clear, elucidate"},{sv:"möjliggöra", en:"make (render) ... possible, facilitate"},{sv:"offentliggöra", en:"announce, make ... public"},{sv:"redogöra", en:"account for, describe (give an account of)"},{sv:"rengöra", en:"clean, wash, polish"},{sv:"tjänstgöra", en:"serve, do duty"},{sv:"tydliggöra", en:"make ... plain, illustrate"},{sv:"utgöra", en:"constitute, make, provide"}]},
+    {word: "se", eng: "see", forms: ["ser", "såg", "sett"], tooltips: [{sv:"anse", en:"think, consider, feel"},{sv:"avse", en:"have ... in view, be intended (designed)"},{sv:"bortse", en:"disregard, leave ... out"},{sv:"förse", en:"provide, furnish, equip"},{sv:"förutse", en:"foresee, anticipate, expect"},{sv:"inse", en:"perceive, understand, realize"},{sv:"tillgodose", en:"meet, satisfy, supply"},{sv:"utse", en:"choose, elect, designate"},{sv:"återse", en:"see ... again"},{sv:"överse", en:"overlook, wink (connive) at"}]},
+];
+
+const container = document.getElementById('wordList');
+
+verbs.forEach((verb, index) => {
+    const div = document.createElement('div');
+    div.className = 'container';
+    div.style.left = `${(100 / verbs.length) * index}%`;
+    div.style.width = `${(100 / verbs.length)}%`;
+
+    div.innerHTML = `<div class="main-word">${verb.word}</div>`;
+
+    div.onclick = () => {
+        if (isOpen) return;
+        isOpen = true;
+
+        document.querySelectorAll('.container').forEach(otherDiv => {
+            if (otherDiv !== div) {
+                otherDiv.classList.add('disabled');
+            }
+        });
+
+        const rect = div.getBoundingClientRect();
+        div.style.position = 'absolute';
+        div.style.width = rect.width + 'px';
+        div.style.height = rect.height + 'px';
+        div.style.transition = 'all 0.75s ease';
+        div.style.left = rect.left + window.scrollX + 'px';
+        div.style.top = rect.top + window.scrollY + 'px';
+        div.style.transform = 'none';
+        div.offsetWidth; // Force reflow
+
+        // Flytta verbet till mitten
+        div.style.left = '50%';
+        div.style.top = '40%';
+        div.style.transform = 'translate(-50%, -50%)';
+
+        setTimeout(() => {
+            const conjugationBox = document.createElement('div');
+            conjugationBox.className = 'conjugation-box';
+            conjugationBox.innerHTML = `
+                <div class="close-btn">✕</div>
+                (Eng. ${verb.eng})<br>
+                infinitive: att <strong>${verb.word}</strong><br>
+                present: Jag <strong>${verb.forms[0]}</strong><br>
+                past: Jag <strong>${verb.forms[1]}</strong><br>
+                perfect: Jag <em>har</em> <strong>${verb.forms[2]}</strong><br>
+                future: Jag <em>ska</em> <strong>${verb.word}</strong>
+            `;
+            div.appendChild(conjugationBox);
+
+            conjugationBox.style.visibility = 'visible';
+            conjugationBox.style.opacity = '1';
+
+            // Stäng verbet (X)
+            conjugationBox.querySelector('.close-btn').onclick = (e) => {
+                e.stopPropagation();
+                conjugationBox.remove();
+                div.querySelectorAll('.tooltip-word').forEach(el => el.remove());
+
+                // Återställ ursprungsläge
+                div.style.position = 'absolute';
+                div.style.width = `${(100 / verbs.length)}%`;
+                div.style.height = 'auto';
+                div.style.top = '80px';
+                div.style.left = `${(100 / verbs.length) * index}%`;
+                div.style.transform = 'none';
+
+                isOpen = false;
+
+                document.querySelectorAll('.container').forEach(otherDiv => {
+                    otherDiv.classList.remove('disabled');
+                });
+            };
+
+            // Rita ut tooltip-ord runt verbet
+            verb.tooltips.forEach((tooltipWord, i) => {
+                const tempTooltipDiv = document.createElement('div');
+                tempTooltipDiv.style.visibility = 'hidden';
+                tempTooltipDiv.style.position = 'absolute';
+                tempTooltipDiv.innerHTML = tooltipWord.sv;
+                document.body.appendChild(tempTooltipDiv);
+                const tooltipWidth = tempTooltipDiv.offsetWidth;
+                document.body.removeChild(tempTooltipDiv);
+
+                const tempVerbDiv = document.createElement('div');
+                tempVerbDiv.style.visibility = 'hidden';
+                tempVerbDiv.style.position = 'absolute';
+                tempVerbDiv.innerHTML = verb.word;
+                document.body.appendChild(tempVerbDiv);
+                const verbWidth = tempVerbDiv.offsetWidth;
+                document.body.removeChild(tempVerbDiv);
+
+                const angle = (360 / verb.tooltips.length * i - 90) * Math.PI / 180;
+                const radius = 250;
+                const x = radius * Math.cos(angle)
+                          + div.offsetWidth / 2
+                          - tooltipWidth / 2
+                          - verbWidth / 2;
+                const y = radius * Math.sin(angle)
+                          + div.offsetHeight / 2
+                          + 90;
+
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip-word';
+                tooltip.style.left = `${x}px`;
+                tooltip.style.top = `${y}px`;
+                tooltip.innerText = tooltipWord.sv;
+                tooltip.setAttribute('data-translation', tooltipWord.en);
+                div.appendChild(tooltip);
+
+                setTimeout(() => {
+                    tooltip.style.visibility = 'visible';
+                    tooltip.style.opacity = '1';
+                }, i * 30);
+            });
+        }, 700);
+    };
+
+    container.appendChild(div);
+});
+</script>
+
+</body>
+</html>
