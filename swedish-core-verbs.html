@@ -544,7 +544,11 @@ verbs.forEach((verb, index) => {
                 document.body.removeChild(tempVerbDiv);
 
                 const angle = (360 / verb.tooltips.length * i - 90) * Math.PI / 180;
-                const radius = 250;
+                const maxRadius = 250;
+		const availableHeight = window.innerHeight;
+		const safeMargin = 240; // Undvik att krocka med header/rubriker
+		const dynamicRadius = Math.min(maxRadius, (availableHeight - safeMargin) / 2);
+		const radius = Math.max(dynamicRadius, 120);
                 const x = radius * Math.cos(angle)
                           + div.offsetWidth / 2
                           - tooltipWidth / 2
