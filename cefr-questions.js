@@ -528,7 +528,6 @@ const questions = [
 {"index":527, "level":"A1","word":"Christian","options":["kristen","nära","medveten","viktig","negativ","judisk"],"correctIndex":0},
 {"index":528, "level":"A1","word":"die","options":["dö","märka","bära","stiga","läsa","berätta"],"correctIndex":0},
 {"index":529, "level":"A1","word":"March","options":["mars","stund","kamp","syssling","tillgång","förklaring"],"correctIndex":0},
-{"index":530, "level":"A1","word":"in expressions like \\"better and better\\"", "options":["allt","där","ute","bara","dock","nu"],"correctIndex":0},
 {"index":531, "level":"A1","word":"evening","options":["kväll","känsel","förening","händelse","forskning","krona"],"correctIndex":0},
 {"index":532, "level":"A1","word":"education, formation","options":["bildning","säkerhet","rad","band","internet","himmel"],"correctIndex":0},
 {"index":533, "level":"A1","word":"link, hyperlink","options":["länk","förhållande","gata","uppgift","avtal","tro"],"correctIndex":0},
