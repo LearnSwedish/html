@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEFR Vocabulary Test</title>
+  <script src="https://learnswedish.github.io/html/cefr-questions.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    h2 {
+      font-weight: normal;
+      font-size: 1em;
+      color: #555;
+      text-align: center;
+      margin-bottom: 30px;
+      max-width: 600px;
+    }
+    .word-display {
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+    button.option {
+      padding: 15px;
+      font-size: 1em;
+      background-color: #ffffff;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    button.option:hover {
+      background-color: #007bff;
+      color: #fff;
+    }
+    #feedback {
+      min-height: 2em;
+      font-weight: bold;
+      font-size: 1.2em;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #infoBtn {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+.modal {
+  background: white;
+  padding: 20px;
+  max-width: 500px;
+  max-height: 90vh;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+    .modal h3 {
+      margin-top: 0;
+    }
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.2em;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>What's your CEFR level?</h1>
+  <h2>This is a highly accurate adaptive test that measures your Swedish vocabulary comprehension, which is one aspect (but not the whole picture) of your current CEFR level. You will be asked <strong>between 20 and 50 questions</strong>. For information about how the test works, click the Info button below.</h2>
+
+  <div class="word-display" id="wordDisplay"></div>
+  <div class="grid" id="optionsContainer"></div>
+  <div id="feedback"></div>
+  <button id="infoBtn">Info</button>
+  <div id="result"></div>
+
+  <div class="modal-overlay" id="modal">
+<div class="modal">
+  <span class="close-modal" id="closeModal">&times;</span>
+  <h3>🧾 <strong>About this test</strong></h3>
+
+  <div style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
+    <p>This is an <strong>adaptive vocabulary test</strong> designed to estimate your current CEFR level of word comprehension. The test adjusts to your ability as you go.</p>
+
+    <p>It begins with a question of moderate difficulty. If you answer correctly, the next word will be slightly more advanced. If you answer incorrectly, the test selects a slightly easier word. This allows the system to quickly zero in on your approximate level.</p>
+
+    <p>You will be asked <strong>between 20 and 50 questions</strong>, depending on how clearly your responses indicate your level.</p>
+
+    <p>Each question consists of:</p>
+    <ul>
+      <li>🟦 An <strong>English word</strong></li>
+      <li>🟨 Six <strong>Swedish alternatives</strong> (same word class)</li>
+      <li>✅ Only one is correct</li>
+    </ul>
+
+    <p>The incorrect alternatives are <strong>real Swedish words</strong> from the <em>same CEFR level and word class</em>, making the task plausible and focused.</p>
+
+    <h4>🎯 <strong>How your result is calculated</strong></h4>
+
+    <p>Each answer is linked to a <strong>frequency-based difficulty index</strong>. This index allows the test not only to track right and wrong, but also to evaluate <em>how advanced</em> the words you respond to are.</p>
+
+    <p>Your result places you on one of <strong>12 levels</strong>:</p>
+    <p>A1/A1+, A2/A2+, B1/B1+,<br />B2/B2+, C1/C1+, C2/C2+</p>
+
+    <p>These mean the following:</p>
+    <ul>
+      <li><strong>A1</strong>: You are on level A1, but do not yet fully master it.</li>
+      <li><strong>A1+</strong>: You fully master A1 and are approaching A2.</li>
+      <li><strong>A2</strong>: You are on level A2, but do not yet fully master it.</li>
+      <li><strong>A2+</strong>: You fully master A2 and are approaching B1.</li>
+      <li>⋯</li>
+      <li><strong>C2</strong>: You are on level C2, but do not yet fully master it.</li>
+      <li><strong>C2+</strong>: You fully master level C2 – the highest level this test measures.</li>
+    </ul>
+
+    <p>This system allows for <strong>more precise placement</strong> than a traditional 6-level CEFR scale.</p>
+
+    <h4>🧠 <strong>How reliable is it?</strong></h4>
+
+    <p>The test is built to be <strong>highly accurate</strong>, assuming you take it seriously and answer to the best of your ability.</p>
+
+    <p>Every question is real, and every alternative is carefully selected. Your level is determined by both your <strong>accuracy</strong> and the <strong>difficulty</strong> of the words you respond to.</p>
+
+    <p><em>Please note:</em> this test measures <strong>only vocabulary comprehension</strong>. Your full CEFR level may also depend on grammar, speaking, listening, and writing.</p>
+
+    <p>However, vocabulary is a strong predictor of overall ability – and this test gives a <strong>solid, evidence-based estimate</strong> of where you currently stand.</p>
+  </div>
+</div>
+
+  </div>
+
+<script>
+  let current = 0;
+  let score = 0;
+
+  shuffleArray(questions); // 'questions' kommer från den externa filen
+  showQuestion();
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  function showQuestion() {
+    const q = questions[current];
+    document.getElementById("wordDisplay").textContent = q.word;
+    const container = document.getElementById("optionsContainer");
+    container.innerHTML = "";
+    document.getElementById("feedback").innerText = "";
+
+    const shuffled = q.options.map((option, index) => ({ option, index }));
+    shuffleArray(shuffled);
+
+    shuffled.forEach(({ option, index }) => {
+      const btn = document.createElement("button");
+      btn.className = "option";
+      btn.textContent = option;
+      btn.onclick = () => checkAnswer(index, shuffled, q.correctIndex);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(selectedIndex, shuffled, correctIndex) {
+    const feedback = document.getElementById("feedback");
+    const selectedOption = shuffled[selectedIndex].option;
+    const actualCorrect = shuffled.find(o => o.index === correctIndex).option;
+
+    if (selectedOption === actualCorrect) {
+      score++;
+      feedback.innerText = "Correct!";
+      feedback.style.color = "green";
+    } else {
+      feedback.innerText = `Incorrect. Correct answer: ${actualCorrect}`;
+      feedback.style.color = "red";
+    }
+
+    setTimeout(() => {
+      current++;
+      if (current < 25 && current < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }, 1200);
+  }
+
+  function showResult() {
+    document.getElementById("wordDisplay").style.display = "none";
+    document.getElementById("optionsContainer").style.display = "none";
+    document.getElementById("feedback").style.display = "none";
+    document.getElementById("infoBtn").style.display = "none";
+    const percent = Math.round((score / current) * 100);
+    let level = "A1";
+    if (percent >= 95) level = "C2+";
+    else if (percent >= 90) level = "C2";
+    else if (percent >= 85) level = "C1+";
+    else if (percent >= 80) level = "C1";
+    else if (percent >= 75) level = "B2+";
+    else if (percent >= 70) level = "B2";
+    else if (percent >= 65) level = "B1+";
+    else if (percent >= 60) level = "B1";
+    else if (percent >= 55) level = "A2+";
+    else if (percent >= 50) level = "A2";
+    else if (percent >= 45) level = "A1+";
+    else level = "A1";
+
+    const result = document.getElementById("result");
+    result.innerHTML = `<h2>Test complete!</h2><p>You got ${score} out of ${current} correct.</p><p>Estimated CEFR level: <strong>${level}</strong></p>`;
+  }
+
+  // Info-modal logik
+  document.getElementById("infoBtn").addEventListener("click", () => {
+    document.getElementById("modal").style.display = "flex";
+  });
+
+  document.getElementById("closeModal").addEventListener("click", () => {
+    document.getElementById("modal").style.display = "none";
+  });
+</script>
+</body>
+</html>
