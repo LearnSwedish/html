@@ -3622,7 +3622,7 @@ const questions = [
 {"index":3629, "level":"B1","word":"lamp","options":["lampa","upplysning","biljett","matematik","skattebetalare","anteckning"],"correctIndex":0},
 {"index":3630, "level":"B1","word":"slope, hill","options":["back","anmälan","kompromiss","uppsättning","rikedom","pryl"],"correctIndex":0},
 {"index":3631, "level":"B1","word":"cousin","options":["kusin","fas","kansli","frälsning","muskel","stress"],"correctIndex":0},
-{"index":3632, "level":"B1","word":"button, switch, know","options":["knapp","utbyggnad","rösträtt","norr","skratt","mån"],"correctIndex":0},
+{"index":3632, "level":"B1","word":"button, switch, knob","options":["knapp","utbyggnad","rösträtt","norr","skratt","mån"],"correctIndex":0},
 {"index":3633, "level":"B1","word":"hurry, rush","options":["skynda","tendera","plugga","reta","rita","sortera"],"correctIndex":0},
 {"index":3634, "level":"B1","word":"private life","options":["privatliv","förekomst","fördom","agent","halvtimme","koloni"],"correctIndex":0},
 {"index":3635, "level":"B1","word":"toilet, restroom","options":["toalett","klyfta","uppskattning","katolik","konstitution","hållning"],"correctIndex":0},
