@@ -5862,7 +5862,7 @@ const questions = [
 {"index":5871, "level":"C1","word":"media","options":["media","mentalitet","närområde","kvantitet","lantbruk","oljepris"],"correctIndex":0},
 {"index":5872, "level":"C1","word":"anytime","options":["när som helst","utanför","explicit","likaledes","bråttom","uppriktigt"],"correctIndex":0},
 {"index":5873, "level":"C1","word":"arrow","options":["pil","lagring","kvitto","täckning","pund","destination"],"correctIndex":0},
-{"index":5874, "level":"C1","word":"rule of law","options":["rättsstat","vykort","högtalare","doktrin","dike","boskap"],"correctIndex":0},
+{"index":5874, "level":"C1","word":"state governed by law","options":["rättsstat","vykort","högtalare","doktrin","dike","boskap"],"correctIndex":0},
 {"index":5875, "level":"C1","word":"mess, mixture","options":["röra","teolog","profit","geografi","konfrontation","fosterland"],"correctIndex":0},
 {"index":5876, "level":"C1","word":"modest, humble","options":["blygsam","resande","solid","enastående","lyxig","förträfflig"],"correctIndex":0},
 {"index":5877, "level":"C1","word":"exposure","options":["exponering","permission","terror","årstid","handbok","användbarhet"],"correctIndex":0},
