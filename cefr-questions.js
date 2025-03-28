@@ -2646,7 +2646,7 @@ const questions = [
 {"index":2646, "level":"A2","word":"supplement, addition","options":["tillägg","tillvaro","kopia","ursäkt","fält","längd"],"correctIndex":0},
 {"index":2647, "level":"A2","word":"vehicle","options":["fordon","mur","tillägg","präst","investering","jämförelse"],"correctIndex":0},
 {"index":2648, "level":"A2","word":"to be satisfied","options":["nöja sig","sticka","stryka","främja","fira","bege sig"],"correctIndex":0},
-{"index":2649, "level":"A2","word":"step, get in","options":["kliva","förhindra","bevilja","gråta","rinna","granska"],"correctIndex":0},
+{"index":2649, "level":"A2","word":"step","options":["kliva","förhindra","bevilja","gråta","rinna","granska"],"correctIndex":0},
 {"index":2650, "level":"A2","word":"bridge","options":["bro","avsikt","fart","omröstning","arbetskraft","cykel"],"correctIndex":0},
 {"index":2651, "level":"A2","word":"mandate","options":["mandat","prövning","blad","genomförande","tävling","anspråk"],"correctIndex":0},
 {"index":2652, "level":"A2","word":"introduction","options":["inledning","trend","integritet","standard","ockupation","väst"],"correctIndex":0},
