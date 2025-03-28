@@ -4,113 +4,156 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CEFR Vocabulary Test</title>
-  <script src="./cefr-questions.js"></script>
-  <style>
+  <script src="https://learnswedish.github.io/html/cefr-questions.js"></script>
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+  }
+
+  h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  h2 {
+    font-weight: normal;
+    font-size: 1em;
+    color: #555;
+    text-align: center;
+    margin-bottom: 30px;
+    max-width: 600px;
+  }
+
+  .word-display {
+    font-size: clamp(1.5em, 5vw, 2.2em); /* 🔄 Responsiv fontstorlek */
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+  }
+
+  button.option {
+    padding: 15px;
+    font-size: 1em;
+    background-color: #ffffff;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    word-wrap: break-word; /* 🔄 Undvik overflow */
+  }
+
+  button.option:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  #feedback {
+    min-height: 2em;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  #infoBtn {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  #result {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal {
+    background: white;
+    padding: 20px;
+    max-width: 500px;
+    max-height: 90vh;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .modal h3 {
+    margin-top: 0;
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5em; /* 🔄 Större för mobil */
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px; /* 🔄 Lättare att klicka */
+  }
+
+  /* 🔽 MOBILANPASSNINGAR 🔽 */
+  @media (max-width: 480px) {
     body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #f9f9f9;
+      padding: 10px;
     }
-    h1 {
-      font-size: 2em;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    h2 {
-      font-weight: normal;
-      font-size: 1em;
-      color: #555;
-      text-align: center;
-      margin-bottom: 30px;
-      max-width: 600px;
-    }
-    .word-display {
-      font-size: 2.2em;
-      margin-bottom: 20px;
-      font-weight: bold;
-      text-align: center;
-    }
+  }
+
+  @media (max-width: 380px) {
     .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      width: 100%;
-      max-width: 400px;
-      margin-bottom: 20px;
+      grid-template-columns: 1fr; /* 🔄 En kolumn på små skärmar */
     }
+
     button.option {
-      padding: 15px;
-      font-size: 1em;
-      background-color: #ffffff;
-      border: 2px solid #007bff;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s;
+      padding: 12px; /* 🔄 Lättare för smala knappar */
     }
-    button.option:hover {
-      background-color: #007bff;
-      color: #fff;
-    }
-    #feedback {
-      min-height: 2em;
-      font-weight: bold;
-      font-size: 1.2em;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    #infoBtn {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #result {
-      margin-top: 40px;
-      text-align: center;
-    }
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
-.modal {
-  background: white;
-  padding: 20px;
-  max-width: 500px;
-  max-height: 90vh;
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-}
-    .modal h3 {
-      margin-top: 0;
-    }
-    .close-modal {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 1.2em;
-      cursor: pointer;
-      font-weight: bold;
-    }
-  </style>
+  }
+
+@media (max-width: 768px) {
+  #desktopIntro {
+    display: none;
+  }
+}  
+  
+</style>
+
 </head>
 <body>
   <h1>What's your CEFR level?</h1>
-  <h2>This is a highly accurate adaptive test that measures your Swedish vocabulary comprehension, which is one aspect (but not the whole picture) of your current CEFR level. You will be asked <strong>between 20 and 50 questions</strong>. For information about how the test works, click the Info button below.</h2>
-
+  <h2 id="desktopIntro">
+  This is a highly accurate adaptive test that measures your Swedish vocabulary comprehension, 
+  which is one aspect (but not the whole picture) of your current CEFR level. You will be asked 
+  <strong>between 40 and 75 questions</strong>. For information about how the test works, click 
+  the Info button below.</h2>
   <div class="word-display" id="wordDisplay"></div>
   <div class="grid" id="optionsContainer"></div>
   <div id="feedback"></div>
@@ -127,23 +170,23 @@
 
     <p>It begins with a question of moderate difficulty. If you answer correctly, the next word will be slightly more advanced. If you answer incorrectly, the test selects a slightly easier word. This allows the system to quickly zero in on your approximate level.</p>
 
-    <p>You will be asked <strong>between 20 and 50 questions</strong>, depending on how clearly your responses indicate your level.</p>
+    <p>You will be asked <strong>between 40 and 75 questions</strong>, depending on how clearly your responses indicate your level.</p>
 
     <p>Each question consists of:</p>
     <ul>
       <li>🟦 An <strong>English word</strong></li>
-      <li>🟨 Six <strong>Swedish alternatives</strong> (same word class)</li>
+      <li>🟨 Six <strong>Swedish alternatives</strong> (same part of speech)</li>
       <li>✅ Only one is correct</li>
     </ul>
 
-    <p>The incorrect alternatives are <strong>real Swedish words</strong> from the <em>same CEFR level and word class</em>, making the task plausible and focused.</p>
+    <p>The incorrect alternatives are <strong>real Swedish words</strong> from the <em>same CEFR level and part of speech</em>, making the task plausible and focused.</p>
 
     <h4>🎯 <strong>How your result is calculated</strong></h4>
 
     <p>Each answer is linked to a <strong>frequency-based difficulty index</strong>. This index allows the test not only to track right and wrong, but also to evaluate <em>how advanced</em> the words you respond to are.</p>
 
     <p>Your result places you on one of <strong>12 levels</strong>:</p>
-    <p>A1/A1+, A2/A2+, B1/B1+,<br />B2/B2+, C1/C1+, C2/C2+</p>
+    <p>A1–A1+, A2–A2+, B1–B1+, B2–B2+, C1–C1+, C2–C2+</p>
 
     <p>These mean the following:</p>
     <ul>
@@ -152,7 +195,6 @@
       <li><strong>A2</strong>: You are on level A2, but do not yet fully master it.</li>
       <li><strong>A2+</strong>: You fully master A2 and are approaching B1.</li>
       <li>⋯</li>
-      <li><strong>C2</strong>: You are on level C2, but do not yet fully master it.</li>
       <li><strong>C2+</strong>: You fully master level C2 – the highest level this test measures.</li>
     </ul>
 
@@ -174,89 +216,233 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    if (typeof questions === "undefined") {
-      console.error("Questions not loaded. Check script path or wait for loading.");
+    if (typeof questions === "undefined" || !Array.isArray(questions)) {
+      console.error("Questions not loaded or in wrong format.");
       return;
     }
 
-    let current = 0;
-    let score = 0;
+    const LEVELS = [
+      { name: "A1", start: 1, end: 1380 },
+      { name: "A2", start: 1381, end: 2780 },
+      { name: "B1", start: 2781, end: 4173 },
+      { name: "B2", start: 4174, end: 5571 },
+      { name: "C1", start: 5572, end: 6974 },
+      { name: "C2", start: 6975, end: 8376 }
+    ];
 
-    shuffleArray(questions);
-    showQuestion();
+    const MIN_QUESTIONS = 40;
+    const MAX_QUESTIONS = 75;
+    const CONTROL_COUNT = 10;
+    const VALIDATION_EARLIEST = 31;
+    const VALIDATION_LATEST = MAX_QUESTIONS - CONTROL_COUNT + 1; // 66
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
+    let state = {
+      phase: "explore",
+      questionCount: 0,
+      history: [],
+      usedIndices: new Set(),
+      levelStats: {},
+      currentLevelIndex: 0,
+      correctStreak: 0,
+      focusLevelIndex: null,
+      verificationIndex: null,
+      finalLevel: null,
+      validating: false,
+      validateType: null,
+      validateLevel: null,
+      validateCorrect: 0,
+      validateCounter: 0
+    };
+
+    LEVELS.forEach(level => {
+      state.levelStats[level.name] = { correct: 0, total: 0 };
+    });
+
+    function getLevelIndex(name) {
+      return LEVELS.findIndex(l => l.name === name);
+    }
+
+    function getRandomQuestionFrom(levelName, hard = false) {
+      const level = LEVELS.find(l => l.name === levelName);
+      let pool = questions.map((q, i) => ({ ...q, idx: i }))
+        .filter(q => q.idx >= level.start && q.idx <= level.end);
+      if (hard) pool = pool.slice(-300);
+      const available = pool.filter(q => !state.usedIndices.has(q.idx));
+      if (available.length === 0) return null;
+      const selected = available[Math.floor(Math.random() * available.length)];
+      state.usedIndices.add(selected.idx);
+      return selected;
     }
 
     function showQuestion() {
-      const q = questions[current];
-      document.getElementById("wordDisplay").textContent = q.word;
+      if (state.questionCount >= MAX_QUESTIONS) return showResult();
+
+      if (!state.validating && state.finalLevel && state.questionCount >= VALIDATION_EARLIEST) {
+        if (state.questionCount >= VALIDATION_LATEST || shouldTriggerValidation()) {
+          return state.finalLevel.includes("+") ? validatePlusLevel() : validateCoreLevel();
+        }
+      }
+
+      let question;
+      if (state.validating) {
+        question = getRandomQuestionFrom(state.validateLevel, state.validateType === "plus");
+      } else {
+        let idx = state.currentLevelIndex;
+        if (state.phase === "focus" && state.focusLevelIndex !== null) idx = state.focusLevelIndex;
+        else if (state.phase === "verify" && state.verificationIndex !== null) idx = state.verificationIndex;
+        question = getRandomQuestionFrom(LEVELS[idx].name);
+      }
+
+      if (!question) return showResult();
+
+      state.currentQuestion = question;
+      state.questionCount++;
+
+      document.getElementById("wordDisplay").textContent = question.word;
       const container = document.getElementById("optionsContainer");
       container.innerHTML = "";
       document.getElementById("feedback").innerText = "";
 
-      const shuffled = q.options.map((option, index) => ({ option, index }));
-      shuffleArray(shuffled);
+      const shuffled = question.options.map((opt, i) => ({ opt, i }))
+        .sort(() => Math.random() - 0.5);
 
-      shuffled.forEach(({ option, index }) => {
+      shuffled.forEach(({ opt }) => {
         const btn = document.createElement("button");
         btn.className = "option";
-        btn.textContent = option;
-        btn.onclick = () => checkAnswer(index, shuffled, q.correctIndex);
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, question);
         container.appendChild(btn);
       });
     }
 
-    function checkAnswer(selectedIndex, shuffled, correctIndex) {
-      const feedback = document.getElementById("feedback");
-      const selectedOption = shuffled[selectedIndex].option;
-      const actualCorrect = shuffled.find(o => o.index === correctIndex).option;
+    function shouldTriggerValidation() {
+      // Future refinement: add confidence calculation
+      return state.questionCount >= 40; // Simple rule: allow validation starting from 40
+    }
 
-      if (selectedOption === actualCorrect) {
-        score++;
-        feedback.innerText = "Correct!";
-        feedback.style.color = "green";
-      } else {
-        feedback.innerText = `Incorrect. Correct answer: ${actualCorrect}`;
-        feedback.style.color = "red";
+    function checkAnswer(selected, q) {
+      const correct = q.options[q.correctIndex];
+      const isCorrect = selected === correct;
+      document.getElementById("feedback").innerText = isCorrect ? "Correct!" : `Incorrect. Correct answer: ${correct}`;
+      document.getElementById("feedback").style.color = isCorrect ? "green" : "red";
+
+      state.history.push({ qIndex: q.idx, correct: isCorrect });
+
+      if (state.validating) {
+        state.validateCorrect += isCorrect ? 1 : 0;
+        state.validateCounter++;
+        if (state.validateCounter >= CONTROL_COUNT) return endValidation();
+        else return setTimeout(showQuestion, 800);
+      }
+
+      const level = LEVELS.find(l => q.idx >= l.start && q.idx <= l.end);
+      if (level) {
+        state.levelStats[level.name].total++;
+        if (isCorrect) state.levelStats[level.name].correct++;
       }
 
       setTimeout(() => {
-        current++;
-        if (current < 25 && current < questions.length) {
-          showQuestion();
-        } else {
-          showResult();
+        if (state.phase === "explore") {
+          if (isCorrect) {
+            state.correctStreak++;
+            if (state.correctStreak >= 3 && state.currentLevelIndex < LEVELS.length - 1) {
+              state.currentLevelIndex++;
+              state.correctStreak = 0;
+            }
+          } else {
+            state.focusLevelIndex = state.currentLevelIndex;
+            state.phase = "focus";
+          }
+        } else if (state.phase === "focus") {
+          const stats = state.levelStats[LEVELS[state.focusLevelIndex].name];
+          if (stats.total >= 5) {
+            const acc = stats.correct / stats.total;
+            if (acc >= 0.8 && state.focusLevelIndex < LEVELS.length - 1) {
+              state.verificationIndex = state.focusLevelIndex + 1;
+              state.phase = "verify";
+            } else {
+              state.finalLevel = LEVELS[state.focusLevelIndex].name;
+            }
+          }
+        } else if (state.phase === "verify") {
+          const stats = state.levelStats[LEVELS[state.verificationIndex].name];
+          if (stats.total >= 5) {
+            const acc = stats.correct / stats.total;
+            if (acc >= 0.6) {
+              state.focusLevelIndex = state.verificationIndex;
+              state.verificationIndex = Math.min(state.focusLevelIndex + 1, LEVELS.length - 1);
+            } else {
+              state.finalLevel = LEVELS[state.focusLevelIndex].name;
+            }
+          }
         }
-      }, 1200);
+        showQuestion();
+      }, 800);
     }
 
-    function showResult() {
+    function validateCoreLevel() {
+      state.validating = true;
+      state.validateType = "core";
+      const idx = getLevelIndex(state.finalLevel);
+      state.validateLevel = LEVELS[Math.max(0, idx - 1)].name;
+      state.validateCorrect = 0;
+      state.validateCounter = 0;
+      showQuestion();
+    }
+
+    function validatePlusLevel() {
+      state.validating = true;
+      state.validateType = "plus";
+      state.validateLevel = state.finalLevel.replace("+", "");
+      state.validateCorrect = 0;
+      state.validateCounter = 0;
+      showQuestion();
+    }
+
+    function endValidation() {
+      state.validating = false;
+      const level = state.finalLevel.replace("+", "");
+      if (state.validateType === "core") {
+        if (state.validateCorrect === 10) showResult(level);
+        else if (state.validateCorrect >= 8) showResult(level + "+");
+        else showResult(LEVELS[getLevelIndex(level) - 1].name);
+      } else {
+        if (state.validateCorrect === 10) showResult(level + "+");
+        else showResult(level);
+      }
+    }
+
+    function showResult(forcedLevel = null) {
+      if (state.questionCount < MIN_QUESTIONS) return showQuestion();
       document.getElementById("wordDisplay").style.display = "none";
       document.getElementById("optionsContainer").style.display = "none";
       document.getElementById("feedback").style.display = "none";
       document.getElementById("infoBtn").style.display = "none";
-      const percent = Math.round((score / current) * 100);
-      let level = "A1";
-      if (percent >= 95) level = "C2+";
-      else if (percent >= 90) level = "C2";
-      else if (percent >= 85) level = "C1+";
-      else if (percent >= 80) level = "C1";
-      else if (percent >= 75) level = "B2+";
-      else if (percent >= 70) level = "B2";
-      else if (percent >= 65) level = "B1+";
-      else if (percent >= 60) level = "B1";
-      else if (percent >= 55) level = "A2+";
-      else if (percent >= 50) level = "A2";
-      else if (percent >= 45) level = "A1+";
-      else level = "A1";
 
-      const result = document.getElementById("result");
-      result.innerHTML = `<h2>Test complete!</h2><p>You got ${score} out of ${current} correct.</p><p>Estimated CEFR level: <strong>${level}</strong></p>`;
+      const correct = state.history.filter(h => h.correct).length;
+      const percent = Math.round((correct / state.questionCount) * 100);
+      const level = forcedLevel || state.finalLevel || "A1";
+
+      const descriptions = {
+        "A1": "You are on level A1, but do not yet fully master it.",
+        "A1+": "You fully master A1 and are approaching A2.",
+        "A2": "You are on level A2, but do not yet fully master it.",
+        "A2+": "You fully master A2 and are approaching B1.",
+        "B1": "You are on level B1, but do not yet fully master it.",
+        "B1+": "You fully master B1 and are approaching B2.",
+        "B2": "You are on level B2, but do not yet fully master it.",
+        "B2+": "You fully master B2 and are approaching C1.",
+        "C1": "You are on level C1, but do not yet fully master it.",
+        "C1+": "You fully master C1 and are approaching C2.",
+        "C2": "You are on level C2, but do not yet fully master it.",
+        "C2+": "You fully master C2 – the highest level this test measures."
+      };
+
+      document.getElementById("result").innerHTML =
+        `<h2>Test complete!</h2>
+         <p>You answered ${state.questionCount} questions and got ${correct} right (${percent}%).</p>
+         <br />
+         <p><strong>${level} :</strong> ${descriptions[level]}</p>`;
     }
 
     document.getElementById("infoBtn").addEventListener("click", () => {
@@ -266,8 +452,9 @@
     document.getElementById("closeModal").addEventListener("click", () => {
       document.getElementById("modal").style.display = "none";
     });
+
+    showQuestion();
   });
 </script>
-
 </body>
 </html>
