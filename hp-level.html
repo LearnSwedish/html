@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ord på HP-nivå</title>
+<style>
+  body {
+    margin: 0;
+    line-height: 1.6;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    background-color: #ffffff;
+    color: black;
+  }
+
+  body.dark-mode {
+    background-color: #121212;
+    color: white;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f0f0f0;
+  }
+
+  body.dark-mode header {
+    background-color: #1e1e1e;
+  }
+
+  .menu-icon {
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    z-index: 10001;
+    pointer-events: auto;
+  }
+
+  .menu-icon span {
+    background: black;
+    display: block;
+    height: 3px;
+    margin: 6px 0;
+    transition: 0.4s;
+  }
+
+  body.dark-mode .menu-icon span {
+    background: white;
+  }
+
+  .menu-icon.open span:nth-child(1) {
+    transform: rotate(45deg) translate(6.3px, 6.3px);
+  }
+
+  .menu-icon.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-icon.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(6.3px, -6.3px);
+  }
+
+  .side-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 250px;
+    max-width: 80%;
+    height: 100vh;
+    background-color: #f0f0f0;
+    padding: 2rem 1rem;
+    transition: right 0.3s ease;
+    z-index: 1000;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+  }
+
+  body.dark-mode .side-menu {
+    background-color: #222;
+  }
+
+  .side-menu.open {
+    right: 0;
+  }
+
+  .toggle-container {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #4caf50;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+  main {
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+
+  #word {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .answer-btn {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 1rem;
+    background-color: #ccc;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-size: 1.2rem;
+  }
+
+  .answer-btn:hover {
+    background-color: #bbb;
+  }
+
+  body.dark-mode .answer-btn {
+    background-color: #333;
+    color: white;
+  }
+
+  body.dark-mode .answer-btn:hover {
+    background-color: #444;
+  }
+
+  #questionSettings {
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  #questionSettings label {
+    display: block;
+    margin: 0.5rem 0 0.2rem;
+  }
+
+  #questionSettings select {
+    width: 100%;
+    background-color: #ccc;
+    color: black;
+    border: none;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  body.dark-mode #questionSettings select {
+    background-color: #333;
+    color: white;
+  }
+
+  #score {
+    font-size: 2rem;
+    margin-top: 2rem;
+    height: 2.5rem;
+    font-weight: bold;
+  }
+
+  #progressBarContainer {
+    width: 100%;
+    height: 12px;
+    background-color: #eee;
+    margin-top: 1rem;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  #progressBar {
+    height: 100%;
+    width: 0%;
+    background-color: #4caf50;
+    transition: width 0.3s ease;
+  }
+
+  .modal {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    position: fixed;
+    z-index: 1100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+  }
+
+  .modal.show {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-content {
+    background-color: white;
+    margin: 20% auto;
+    font-size: 20px;
+    padding: 2rem;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+    position: relative;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+  }
+
+  .modal.show .modal-content {
+    transform: translateY(0);
+  }
+
+  body.dark-mode .modal-content {
+    background-color: #2c2c2c;
+    color: white;
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  #infoButton {
+    display: block;
+    width: 100%;
+    font-size: 1.2rem;
+    padding: 1rem;
+    margin-top: 30px;
+    margin-bottom: 1rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+
+  #infoButton:hover {
+    background-color: #45a049;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      font-size: 1.25rem;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+    }
+
+    #word {
+      font-size: 2rem;
+    }
+
+    .answer-btn {
+      font-size: 1.25rem;
+      padding: 1.2rem;
+    }
+
+    #score {
+      font-size: 1.6rem;
+    }
+
+    .modal-content {
+      font-size: 1.25rem;
+    }
+
+    #infoButton {
+      font-size: 1.1rem;
+      padding: 1.1rem;
+    }
+
+    select, label {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+</head>
+<body>
+  <header>
+    <h1>Ord på HP-nivå</h1>
+  </header>
+
+  <nav class="side-menu" id="sideMenu">
+    <button id="infoButton" onclick="openModal()">Info</button>
+    <div class="toggle-container">
+      <label for="darkModeToggle">Mörkt läge</label>
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div id="questionSettings">
+      <label for="questionSelector">Övningsläge</label>
+      <select id="questionSelector" onchange="handleQuestionSelector()">
+        <option value="30">30 slumpfrågor</option>
+        <option value="50">50 slumpfrågor</option>
+      </select>
+    </div>
+  </nav>
+
+  <main>
+    <div id="word"></div>
+    <div id="answers"></div>
+    <div id="score">0 / 00</div>
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+	
+	<div id="exerciseType" style="margin-top: 1rem; font-style: italic;"></div>
+  </main>
+
+  <div class="menu-icon" id="menuIcon" onclick="toggleMenu(this)">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+<script>
+  // Initialt tillstånd
+  document.body.classList.remove("dark-mode");
+
+  // Växla dark mode
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+  }
+
+  // Växla meny
+  function toggleMenu(icon) {
+    icon.classList.toggle("open");
+    const menu = document.getElementById("sideMenu");
+    menu.classList.toggle("open");
+    document.body.classList.toggle("menu-open");
+  }
+
+  // Visa modal (provisorisk)
+  function openModal() {
+    alert("Här kommer modal senare.");
+  }
+
+  // Alla ORD-frågor
+    const fullData = [
+["våren 2021:1", "mynna ut i", "leda till", "stanna av", "omvandlas till", "blanda in", "fyllas på med"],
+["våren 2021:1", "ornament", "utsmyckning", "aftonsång", "byggnad", "stjärnhimmel", "botemedel"],
+["våren 2021:1", "dedikerad", "hängiven", "stödjande", "beslutsam", "fascinerad", "uppskattad"],
+["våren 2021:1", "övertramp", "olämplig handling", "fysisk påfrestning", "byte av ståndpunkt", "allvarligt missförstånd", "olaga intrång"],
+["våren 2021:1", "få upprättelse", "få sitt anseende återställt", "få hjälp i en krissituation", "få beröm för en prestation", "få möjlighet till självbestämmande", "få vägledning i en svår fråga"],
+["våren 2021:1", "allmänning", "gemensamt ägd mark", "grundläggande kunskap", "vida spritt rykte", "helt vanlig person", "kommunalt bostadsområde"],
+["våren 2021:1", "oaktat", "trots", "på grund av", "knappast", "såsom", "genomgående"],
+["våren 2021:1", "inventarier", "lös egendom", "råvaror", "lämningar", "framgångar", "tillfälliga lösningar"],
+["våren 2021:1", "ohöljd", "öppen", "förnedrad", "sällsynt", "inbjudande", "otymplig"],
+["våren 2021:1", "inackordering", "kost och logi", "beställning", "lön och förmåner", "avslag", "överenskommelse"],
+["våren 2021:1", "alf", "naturväsen", "änglabild", "folksaga", "trollkarl", "skyddshelgon"],
+["våren 2021:1", "delegera", "överlåta beslutsrätt", "stifta lagar", "påbörja ett projekt", "avsluta en anställning", "bevilja undantag"],
+["våren 2021:1", "polaritet", "motsatsförhållande", "ytterlighet", "väderfenomen", "vänskapsband", "klimatzon"],
+["våren 2021:1", "anstötlig", "upprörande", "bristfällig", "hetsig", "ömtålig", "fördomsfull"],
+["våren 2021:1", "dialektik", "argumentationsteknik", "skendemokrati", "uppfostringsprincip", "religionssamverkan", "behandlingsresultat"],
+["våren 2021:1", "vara gripet ur luften", "sakna grund", "vara osynligt", "komma plötsligt", "vara en sista utväg", "sakna innehåll"],
+["våren 2021:1", "inskränkning", "begränsning", "anspelning", "förslappning", "utfrysning", "tillrättavisning"],
+["våren 2021:1", "oöverlagd", "förhastad", "avslöjad", "oslagbar", "påtaglig", "opåverkad"],
+["våren 2021:1", "koral", "kyrkosång", "droppsten", "samlingsrum", "juvelsmycke", "däggdjur"],
+["våren 2021:1", "i sin linda", "i sin början", "i sitt hem", "i sitt sammanhang", "i sin ensamhet", "i sitt slutskede"],
+["våren 2021:2", "implicera", "medföra", "ställa upp", "försvaga", "hålla fast", "undvika"],
+["våren 2021:2", "ypperligt", "utmärkt", "uppenbart", "typiskt", "överdrivet", "värdefullt"],
+["våren 2021:2", "hieroglyf", "skrivtecken", "gravsten", "himlakropp", "bönbok", "väggmålning"],
+["våren 2021:2", "initial", "inledande", "väl insatt", "pådrivande", "sammanhängande", "verkningsfull"],
+["våren 2021:2", "surrogat", "ersättning", "tillsats", "hjälpmedel", "avvikelse", "förmedling"],
+["våren 2021:2", "strandsätta", "överge", "överta", "fullborda", "misslyckas", "säkerställa"],
+["våren 2021:2", "katharsis", "själslig rening", "kraftprov", "undergång", "höjdpunkt", "kärlekssorg"],
+["våren 2021:2", "anseende", "rykte", "hållning", "uttryck", "karaktär", "ståndpunkt"],
+["våren 2021:2", "perplex", "häpen", "envis", "nyfiken", "konstig", "vaken"],
+["våren 2021:2", "utlöpare", "sidogren", "undantag", "felbedömning", "varning", "framkant"],
+["våren 2021:2", "norm", "regel", "förslag", "skala", "lärdom", "handling"],
+["våren 2021:2", "lyhörd", "mottaglig", "förbisedd", "tondöv", "oresonlig", "tålmodig"],
+["våren 2021:2", "föranleda", "orsaka", "övertyga", "tillföra", "godkänna", "senarelägga"],
+["våren 2021:2", "manifestation", "opinionsyttring", "provokation", "stridsrop", "motsättning", "avslöjande"],
+["våren 2021:2", "således", "följaktligen", "dessförinnan", "motsvarande", "visserligen", "däromkring"],
+["våren 2021:2", "tillämpning", "praktisk användning", "kontroll", "grund för bedömning", "justering", "bestämmelse"],
+["våren 2021:2", "vedertagen", "allmänt accepterad", "åsidosatt", "tagen på allvar", "tvingande", "förutbestämd"],
+["våren 2021:2", "sejour", "kortare vistelse", "ögonblick", "omloppsbana", "historisk epok", "rundvandring"],
+["våren 2021:2", "låta undslippa sig", "tanklöst råka säga", "kasta bort", "vägra ta ställning", "ivrigt förneka", "dra sig tillbaka"],
+["våren 2021:2", "farsot", "smittsam sjukdom", "riskfylld aktivitet", "giftutsläpp", "vilseledande information", "missbruk"],
+["hösten 2021", "anekdot", "kort berättelse", "gissning", "diskret gest", "noggrann redogörelse", "motsättning"],
+["hösten 2021", "reklamera", "anmärka på", "prata om", "intyga", "märka ut", "återvinna"],
+["hösten 2021", "avsevärt", "betydligt", "ganska", "korrekt", "välriktat", "fullständigt"],
+["hösten 2021", "koffert", "stor resväska", "sybord", "lång rock", "lastpall", "klädförråd"],
+["hösten 2021", "gastkramande", "spännande", "farlig", "smärtsam", "kallsinnig", "livrädd"],
+["hösten 2021", "korrespondens", "brevväxling", "inbjudan", "enkätsvar", "summering", "överenskommelse"],
+["hösten 2021", "sargad", "skadad", "lurad", "straffad", "upprörd", "trängd"],
+["hösten 2021", "affekt", "stark sinnesrörelse", "stor glädje", "nyfikenhet", "känslokyla", "total förvirring"],
+["hösten 2021", "åtnjuta", "ha", "be", "nå", "ge", "ta"],
+["hösten 2021", "näsbränna", "tillrättavisning", "besvikelse", "felbedömning", "svårighet", "förolämpning"],
+["hösten 2021", "insinuera", "antyda", "gissa", "berömma", "ljuga", "misstänka"],
+["hösten 2021", "mellanting", "uppehåll", "samspel", "anknytning", "motsvarighet", "blandning"],
+["hösten 2021", "otjänlig", "oanvändbar", "otydlig", "orättvis", "obegriplig", "otillgänglig"],
+["hösten 2021", "parkas", "jacka", "tält", "målarduk", "bäddsoffa", "draghund"],
+["hösten 2021", "obstinat", "trotsig", "okunnig", "nyfiken", "slarvig", "högljudd"],
+["hösten 2021", "upptakt", "inledning", "markering", "refräng", "anvisning", "förslag"],
+["hösten 2021", "stävja", "motverka", "påstå", "mjuka upp", "uppmuntra", "röra ihop"],
+["hösten 2021", "pådrag", "insättning av resurser", "sensationell nyhet", "oönskad publicitet", "rättslig följd", "oväntat motstånd"],
+["hösten 2021", "hänryckt", "i extas", "i kris", "i fred", "i konflikt", "i fara"],
+["hösten 2021", "ämbete", "högre befattning", "karriär", "tillfälligt uppdrag", "fin utmärkelse", "administration"],
+["våren 2022:1", "proviant", "färdkost", "ryggsäck", "reskassa", "planering", "regnskydd"],
+["våren 2022:1", "reflektera", "tänka igenom", "betvivla", "säga ifrån", "motbevisa", "återberätta"],
+["våren 2022:1", "foajé", "entréhall", "matsal", "arbetsrum", "klädkammare", "vindsrum"],
+["våren 2022:1", "sekundär", "underordnad", "avvikande", "stödjande", "försämrad", "omedelbar"],
+["våren 2022:1", "inrådan", "uppmaning", "erbjudande", "bestämmelse", "medverkan", "påstående"],
+["våren 2022:1", "hålla låda", "prata oavbrutet", "stå stadigt", "bjuda på fest", "behärska sig", "invänta svar"],
+["våren 2022:1", "hänförd", "förtjust", "utvisad", "tankspridd", "bedragen", "tillfredsställd"],
+["våren 2022:1", "premiss", "förutsättning", "försäkran", "förteckning", "föraning", "förbindelse"],
+["våren 2022:1", "naturtroget", "mycket likt", "enkelspårigt", "oskuldsfullt", "hälsosamt", "variationsrikt"],
+["våren 2022:1", "hedonist", "njutningsmänniska", "sällskapsmänniska", "ordningsmänniska", "vanemänniska", "idealmänniska"],
+["våren 2022:1", "vital", "livskraftig", "hoppfull", "ombytlig", "fullvuxen", "uppmärksam"],
+["våren 2022:1", "späck", "fett", "vagn", "lukt", "hatt", "kruka"],
+["våren 2022:1", "alternera", "turas om", "bygga om", "ersätta", "förnya sig", "erbjuda"],
+["våren 2022:1", "falang", "gruppering", "regelverk", "musikstycke", "utbyggnad", "klädesplagg"],
+["våren 2022:1", "modstulet", "uppgivet", "envist", "sorglöst", "bortglömt", "oförskräckt"],
+["våren 2022:1", "prolog", "inledning", "beskrivning", "sammanfattning", "tillbakablick", "slutord"],
+["våren 2022:1", "emanciperad", "frigjord", "nyfiken", "påhittig", "begåvad", "sällskaplig"],
+["våren 2022:1", "spjuver", "skämtare", "spejare", "luffare", "jägare", "lögnare"],
+["våren 2022:1", "freda sig", "skydda sig", "ge sig", "isolera sig", "behärska sig", "vila upp sig"],
+["våren 2022:1", "bestörtning", "förskräckelse", "aggression", "livsfarlig manöver", "plötslig förändring", "missnöje"],
+["våren 2022:2", "transparens", "öppenhet", "översikt", "utsöndring", "utbredning", "förvandling"],
+["våren 2022:2", "bemöda sig", "anstränga sig", "opponera sig", "utstå kritik", "behärska sig", "vägra lyda"],
+["våren 2022:2", "marodör", "skadegörare", "lögnare", "ensamvarg", "djurtämjare", "ryttare"],
+["våren 2022:2", "koherent", "sammanhängande", "begränsad", "föränderlig", "fördjupad", "användbar"],
+["våren 2022:2", "besinning", "lugn", "nervositet", "tvivel", "känslighet", "obehag"],
+["våren 2022:2", "slagkraftig", "verkningsfull", "stabil", "uthållig", "impulsiv", "svårknäckt"],
+["våren 2022:2", "konstellation", "gruppering", "uppdrag", "påverkan", "förberedelse", "omflyttning"],
+["våren 2022:2", "av hävd", "av tradition", "av intresse", "av lojalitet", "av misstag", "av själviskhet"],
+["våren 2022:2", "fordran", "krav", "förskott", "återbäring", "sparkapital", "inbetalning"],
+["våren 2022:2", "varsko", "förvarna", "upptäcka", "beklaga", "inbilla", "bevara"],
+["våren 2022:2", "baxa", "förflytta", "tynga", "krossa", "hindra", "kasta"],
+["våren 2022:2", "kadaver", "död djurkropp", "missfoster", "rituellt offer", "rovdjur", "mänskligt vrak"],
+["våren 2022:2", "villrådig", "obeslutsam", "driven", "spontan", "krävande", "hjälpsam"],
+["våren 2022:2", "textur", "ytbeskaffenhet", "utfyllnad", "formbarhet", "innehåll", "tjocklek"],
+["våren 2022:2", "substantiell", "väsentlig", "överlägsen", "frikostig", "fördjupad", "omsorgsfull"],
+["våren 2022:2", "arabesk", "utsmyckning", "stjärnhimmel", "spritdryck", "aftonsång", "byggnad"],
+["våren 2022:2", "implementera", "genomföra", "delta i", "avskaffa", "lägga sig i", "strunta i"],
+["våren 2022:2", "nidbild", "elak beskrivning", "fantasifull skildring", "lös sammansättning", "allmän uppfattning", "realistisk framställning"],
+["våren 2022:2", "kopiöst", "enormt", "likartat", "overkligt", "överskattat", "exemplariskt"],
+["våren 2022:2", "avidentifiera", "dölja ursprung", "anmäla", "avsätta", "kartlägga", "kontakta"],
+["hösten 2022", "signifikans", "betydelse", "undantag", "skillnad", "måluppfyllelse", "uppfattning"],
+["hösten 2022", "blottlagd", "synliggjord", "känslosam", "värdelös", "övergiven", "undanröjd"],
+["hösten 2022", "mitos", "celldelning", "uttorkning", "blödning", "sårläkning", "befruktning"],
+["hösten 2022", "revidera", "ändra", "påpeka", "hindra", "ersätta", "förneka"],
+["hösten 2022", "heterogen", "olikartad", "hållbar", "i fast form", "naturell", "dubbelsidig"],
+["hösten 2022", "framsynthet", "förutseende", "förhoppning", "upplysning", "övertygelse", "utveckling"],
+["hösten 2022", "blidka", "göra mer vänligt inställd", "ångra sig bittert", "lämna i fred", "inge förtroende", "be om en tjänst"],
+["hösten 2022", "galax", "stjärnsystem", "himlakropp", "spiralform", "tidsrymd", "planetformation"],
+["hösten 2022", "modest", "blygsam", "snäll", "pålitlig", "utmanande", "populär"],
+["hösten 2022", "som en osalig ande", "orolig och rastlös", "naiv och godtrogen", "sviken och olycklig", "hård och känslokall", "hatisk och hämndlysten"],
+["hösten 2022", "kapabel", "duglig", "självgående", "erfaren", "inlärd", "noggrann"],
+["hösten 2022", "skepsis", "tveksamhet", "rädsla", "oro", "nyfikenhet", "misstänksamhet"],
+["hösten 2022", "nyanserad", "mångsidig", "färglagd", "allvarsam", "finfördelad", "strukturerad"],
+["hösten 2022", "borgen", "garanti", "lån", "fastighet", "skuld", "ränta"],
+["hösten 2022", "artär", "pulsåder", "kroppsådra", "luftstrupe", "kärl", "nerver"],
+["hösten 2022", "banal", "tråkig", "färgglad", "betydelsefull", "allmän", "fantasilös"],
+["hösten 2022", "redovisa", "visa", "beskriva", "erkänna", "återge", "dokumentera"],
+["hösten 2022", "envis", "enveten", "viljestark", "ihärdig", "motsträvig", "självständig"],
+["hösten 2022", "upprymd", "jublande", "lättad", "rastlös", "förundrad", "överraskad"],
+["hösten 2022", "kontrastera", "ställa i motsats", "kombinera", "sammanföra", "blanda", "särskilja"],
+["våren 2023", "förespråka", "rekommendera", "reflektera", "reservera", "resonera", "regissera"],
+["våren 2023", "obefogad", "grundlös", "maktlös", "ansvarslös", "gränslös", "meningslös"],
+["våren 2023", "emballage", "förpackning", "symbol", "underhåll", "avspärrning", "handelsförbud"],
+["våren 2023", "tidvis", "ibland", "ofta", "förut", "punktligt", "numera"],
+["våren 2023", "framfusig", "påträngande", "nytänkande", "självsäker", "uppjagad", "förväntansfull"],
+["våren 2023", "extravagans", "överdåd", "värdighet", "merkostnad", "passion", "övermod"],
+["våren 2023", "ge sig till tåls", "lugnt invänta något", "ta sitt ansvar", "vara i underläge", "fatta ett beslut", "visa sin styrka"],
+["våren 2023", "baryton", "röstläge", "notställ", "pianostycke", "slagverkare", "taktpinne"],
+["våren 2023", "rågad", "överfull", "kraftig", "bristfällig", "åtgärdad", "avslutad"],
+["våren 2023", "maxim", "levnadsregel", "reaktion", "jämvikt", "slutresultat", "förbindelse"],
+["våren 2023", "ihärdig", "envis och uthållig", "snabb och explosiv", "hård och okänslig", "ivrig och hoppfull", "erfaren och duktig"],
+["våren 2023", "hereditet", "ärftlighet", "ensamhet", "vänlighet", "fromhet", "sjuklighet"],
+["våren 2023", "begrunda", "fundera på", "tillägna sig", "instämma i", "ta itu med", "besluta sig för"],
+["våren 2023", "klädsam", "passande", "blyg", "ytlig", "modern", "enkel"],
+["våren 2023", "med nöd och näppe", "nästan inte", "av tvång", "till slut", "på pricken", "utan problem"],
+["våren 2023", "utfall", "resultat", "minskning", "avvikelse", "sannolikhet", "överskott"],
+["våren 2023", "cementera", "göra beständig", "slutföra", "jämna till", "göra avtryck", "stänga inne"],
+["våren 2023", "trollbunden", "fascinerad", "inbillad", "grundlurad", "förvirrad", "överraskad"],
+["våren 2023", "lasyr", "genomskinlig färg", "finslipad yta", "stilfull dekoration", "oönskad beläggning", "förgrenat mönster"],
+["våren 2023", "vag", "obestämd", "avlägsen", "betydelselös", "tillfällig", "ostadig"],
+["hösten 2023", "proper", "välvårdad", "stolt", "måttfull", "allvarlig", "förmögen"],
+["hösten 2023", "galosch", "gummisko", "filthatt", "slipsnål", "högtidsdräkt", "slängkappa"],
+["hösten 2023", "dementera", "förneka", "sörja", "ljuga", "förbjuda", "störa"],
+["hösten 2023", "medaljens baksida", "nackdelen", "orsaken", "undantaget", "motståndet", "resultatet"],
+["hösten 2023", "cerebral", "som gäller hjärnan", "som orsakar smärta", "som rör synen", "som beror på kosten", "som sker reflexmässigt"],
+["hösten 2023", "hemsökelse", "utbredd plåga", "rastlöshet", "formell begäran", "uppståndelse", "personligt erbjudande"],
+["hösten 2023", "tjänlig", "användbar", "lärorik", "begriplig", "tillgänglig", "lättskött"],
+["hösten 2023", "vara avhängig av", "bero på", "stå ut med", "räknas in i", "utsättas för", "ha tilltro till"],
+["hösten 2023", "klander", "ogillande anmärkning", "orimligt antagande", "osann uppgift", "omild behandling", "olyckligt misstag"],
+["hösten 2023", "omsorgsfull", "noggrann", "trevlig", "bekymrad", "tankfull", "inställsam"],
+["hösten 2023", "löpa amok", "få raserianfall", "gå vilse", "vara försenad", "bli överlycklig", "ramla omkull"],
+["hösten 2023", "påtaglig", "märkbar", "bekant", "särskild", "passande", "hastig"],
+["hösten 2023", "uppsåtligen", "med avsikt", "av välvilja", "i förtroende", "på rätt sätt", "utan tvekan"],
+["hösten 2023", "biopsi", "vävnadsprov", "blodgivning", "ärrbildning", "röntgenbild", "transplantation"],
+["hösten 2023", "detronisera", "avsätta", "utmana", "förakta", "avböja", "utvisa"],
+["hösten 2023", "fruktlös", "som inte ger resultat", "mager", "utan innehåll", "utan anledning", "ofullständig"],
+["hösten 2023", "kvintessensen", "det väsentliga", "medelvägen", "det synliga", "den större delen", "avbildningen"],
+["hösten 2023", "enveten", "envis", "exakt", "erfaren", "egoistisk", "enkelriktad"],
+["hösten 2023", "ombesörja", "ordna", "ångra", "tillåta", "tvivla", "upprepa"],
+["hösten 2023", "ingivelse", "plötslig impuls", "oväntad gåva", "tillfällig lättnad", "snabb förändring", "positivt besked"],
+["våren 2024", "dispyt", "gräl", "brist", "tvekan", "besvikelse", "undantag"],
+["våren 2024", "angeläget", "viktigt", "tydligt", "utmanande", "informativt", "noggrant"],
+["våren 2024", "supplement", "tillägg", "överskott", "urval", "innehåll", "understöd"],
+["våren 2024", "aktad", "respekterad", "högtidlig", "artig", "försiktig", "undanskymd"],
+["våren 2024", "rata", "avvisa", "granska", "fastställa", "ifrågasätta", "samordna"],
+["våren 2024", "illa åtgången", "svårt angripen", "helt uttorkad", "nästan slut", "mycket ledsen", "lämnad utanför"],
+["våren 2024", "bärkraft", "hållbarhet", "avlagring", "prestation", "tryck", "försörjning"],
+["våren 2024", "vegetera", "leva i overksamhet", "tala gåtfullt", "vara generös", "besvära i onödan", "sprida oro"],
+["våren 2024", "egalitär", "jämlik", "tillfällig", "obekymrad", "välvillig", "ursprunglig"],
+["våren 2024", "kavalkad", "lång rad", "kort historia", "utvald grupp", "tapper skara", "begränsad mängd"],
+["våren 2024", "försegla", "tillsluta", "upphöra", "undersöka", "avgöra", "omringa"],
+["våren 2024", "autodidakt", "självlärd person", "pålitlig person", "mäktig person", "egoistisk person", "inbunden person"],
+["våren 2024", "gentemot", "i förhållande till", "nära intill", "bortsett från", "som alternativ till", "med tanke på"],
+["våren 2024", "utarmad", "fattig", "fri", "farlig", "förlamad", "feg"],
+["våren 2024", "axplock", "slumpartat urval", "enformigt arbete", "förstahandsval", "kvalificerad gissning", "stor noggrannhet"],
+["våren 2024", "exceptionell", "sällsynt", "nyanserad", "högtidlig", "överdriven", "uttrycksfull"],
+["våren 2024", "tillkännage", "meddela", "anropa", "besvara", "instämma", "efterfråga"],
+["våren 2024", "appell", "vädjan", "löfte", "misstanke", "övertygelse", "intryck"],
+["våren 2024", "intrikat", "invecklad", "intensiv", "inställsam", "intressant", "inåtvänd"],
+["våren 2024", "debacle", "misslyckande", "klarhet", "omröstning", "tillfällighet", "förbättring"],
+["hösten 2024", "dispyt", "gräl", "brist", "tvekan", "besvikelse", "undantag"],
+["hösten 2024", "angeläget", "viktigt", "tydligt", "utmanande", "informativt", "noggrant"],
+["hösten 2024", "supplement", "tillägg", "överskott", "urval", "innehåll", "understöd"],
+["hösten 2024", "aktad", "respekterad", "högtidlig", "artig", "försiktig", "undanskymd"],
+["hösten 2024", "rata", "avvisa", "granska", "fastställa", "ifrågasätta", "samordna"],
+["hösten 2024", "illa åtgången", "svårt angripen", "helt uttorkad", "nästan slut", "mycket ledsen", "lämnad utanför"],
+["hösten 2024", "bärkraft", "hållbarhet", "avlagring", "prestation", "tryck", "försörjning"],
+["hösten 2024", "vegetera", "leva i overksamhet", "tala gåtfullt", "vara generös", "besvära i onödan", "sprida oro"],
+["hösten 2024", "egalitär", "jämlik", "tillfällig", "obekymrad", "välvillig", "ursprunglig"],
+["hösten 2024", "kavalkad", "lång rad", "kort historia", "utvald grupp", "tapper skara", "begränsad mängd"],
+["hösten 2024", "försegla", "tillsluta", "upphöra", "undersöka", "avgöra", "omringa"],
+["hösten 2024", "autodidakt", "självlärd person", "pålitlig person", "mäktig person", "egoistisk person", "inbunden person"],
+["hösten 2024", "gentemot", "i förhållande till", "nära intill", "bortsett från", "som alternativ till", "med tanke på"],
+["hösten 2024", "utarmad", "fattig", "fri", "farlig", "förlamad", "feg"],
+["hösten 2024", "axplock", "slumpartat urval", "enformigt arbete", "förstahandsval", "kvalificerad gissning", "stor noggrannhet"],
+["hösten 2024", "exceptionell", "sällsynt", "nyanserad", "högtidlig", "överdriven", "uttrycksfull"],
+["hösten 2024", "tillkännage", "meddela", "anropa", "besvara", "instämma", "efterfråga"],
+["hösten 2024", "appell", "vädjan", "löfte", "misstanke", "övertygelse", "intryck"],
+["hösten 2024", "intrikat", "invecklad", "intensiv", "inställsam", "intressant", "inåtvänd"],
+["hösten 2024", "debacle", "misslyckande", "klarhet", "omröstning", "tillfällighet", "förbättring"],
+["våren 2025", "basal", "grundläggande", "hållbar", "vardaglig", "genomtänkt", "underförstådd"],
+["våren 2025", "defekt", "brist", "tröghet", "misstag", "obehag", "olycka"],
+["våren 2025", "länsa", "tömma", "lossa", "sänka", "putsa", "fånga"],
+["våren 2025", "gensvar", "respons", "upprepning", "reflektion", "klargörande", "påpekande"],
+["våren 2025", "kontroversiell", "omtvistad", "obegriplig", "kritisk", "omdömeslös", "angelägen"],
+["våren 2025", "eskapader", "äventyr", "drömmar", "förklädnader", "hemligheter", "genvägar"],
+["våren 2025", "förfoga över", "ha", "ge", "få", "ta", "byta"],
+["våren 2025", "diger", "stor", "härlig", "underlig", "djup", "smaklig"],
+["våren 2025", "aversion", "motvilja", "motsats", "bestämdhet", "besvikelse", "förtvivlan"],
+["våren 2025", "bistå", "hjälpa", "stanna kvar", "närvara", "hålla ihop", "vakta"],
+["våren 2025", "olidlig", "omöjlig att uthärda", "osannolik", "bekymmerslös", "oanständig", "svår att förstå"],
+["våren 2025", "återstoden", "resten", "reprisen", "svaret", "slutet", "minnet"],
+["våren 2025", "klandervärt", "förkastligt", "förvånande", "otänkbart", "välgörande", "oskyldigt"],
+["våren 2025", "intervention", "ingripande", "förmedling", "avbrott", "inaktivitet", "stödfunktion"],
+["våren 2025", "parafras", "omskrivning", "överläggning", "inledning", "förkortning", "utvidgning"],
+["våren 2025", "gedigen", "solid", "realistisk", "uppskattad", "effektiv", "konkret"],
+["våren 2025", "hålla till godo med", "nöja sig med", "samtycka till", "roa sig med", "förvänta sig", "ge tillstånd till"],
+["våren 2025", "vånda", "ångest", "saknad", "ansträngning", "avsmak", "uppgivenhet"],
+["våren 2025", "fingerad", "påhittad", "fastställd", "berörd", "praktisk", "reserverad"],
+["våren 2025", "fåfängt", "resultatlös", "imponerande", "resultatlöst", "energiskt", "försiktigt"]
+
+    ];
+
+  // Variabler
+  let filteredData = [...fullData];
+  let current = 0;
+  let total = 0;
+  let scoreCount = 0;
+
+  // Hantera fråga/urval
+  function handleQuestionSelector() {
+    const selector = document.getElementById("questionSelector");
+    const value = selector.value;
+    const allOptions = Array.from(new Set(fullData.map(row => row[0])));
+
+    if (!isNaN(value)) {
+      filteredData = fullData.sort(() => Math.random() - 0.5).slice(0, parseInt(value));
+    } else {
+      filteredData = fullData.filter(row => row[0] === value);
+    }
+
+    document.getElementById("exerciseType").textContent =
+      isNaN(value) ? `Prov: ${value}` : `${value} slumpfrågor`;
+
+    total = filteredData.length;
+    current = 0;
+    scoreCount = 0;
+
+    updateScore();
+    updateProgressBar();
+    loadQuestion();
+
+    // Lägg till val om de inte redan finns
+    if (selector.querySelectorAll("option").length <= 2) {
+      allOptions.forEach(option => {
+        const opt = document.createElement("option");
+        opt.value = option;
+        opt.textContent = option.charAt(0).toUpperCase() + option.slice(1);
+        selector.appendChild(opt);
+      });
+    }
+  }
+
+  // Uppdatera poäng
+  function updateScore() {
+    const score = document.getElementById("score");
+    score.textContent = `${scoreCount} / ${total}`;
+  }
+
+  // Uppdatera framstegsindikator
+  function updateProgressBar() {
+    const bar = document.getElementById("progressBar");
+    const percentage = total > 0 ? (current / total) * 100 : 0;
+    bar.style.width = `${percentage}%`;
+  }
+
+  // Ladda nästa fråga
+  function loadQuestion() {
+    if (current >= filteredData.length) {
+      document.getElementById("word").textContent = "Quiz klar!";
+      document.getElementById("answers").innerHTML = "";
+      updateScore();
+      updateProgressBar();
+      return;
+    }
+
+    const [hp, ord, correct, ...incorrect] = filteredData[current];
+    const wordDiv = document.getElementById("word");
+    const answersDiv = document.getElementById("answers");
+
+    wordDiv.textContent = ord;
+
+    const allAnswers = [...incorrect, correct].sort(() => Math.random() - 0.5);
+    answersDiv.innerHTML = allAnswers
+      .map(ans => `<button class="answer-btn" onclick="checkAnswer(this, '${correct}')">${ans}</button>`)
+      .join("");
+
+    updateScore();
+    updateProgressBar();
+  }
+
+  // Kontrollera svar
+  function checkAnswer(button, correct) {
+    const buttons = document.querySelectorAll(".answer-btn");
+    const lightMode = !document.body.classList.contains("dark-mode");
+
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      if (btn.textContent === correct) {
+        btn.style.backgroundColor = 'green';
+        if (lightMode) btn.style.color = 'white';
+      } else if (btn === button) {
+        btn.style.backgroundColor = 'crimson';
+        if (lightMode) btn.style.color = 'white';
+      }
+    });
+
+    if (button.textContent === correct) {
+      scoreCount++;
+    }
+
+    setTimeout(() => {
+      current++;
+      loadQuestion();
+    }, 1200);
+  }
+
+  // Initiera när sidan laddas
+  window.onload = () => {
+    handleQuestionSelector();
+  };
+
+  // Modalöppning
+  function openModal() {
+    const modal = document.getElementById("infoModal");
+    modal.classList.add("show");
+  }
+
+  // Modalstängning
+  function closeModal() {
+    const modal = document.getElementById("infoModal");
+    modal.classList.remove("show");
+  }
+
+  // Klick utanför modal stänger den
+  window.onclick = function (event) {
+    const modal = document.getElementById("infoModal");
+    if (event.target === modal) {
+      modal.classList.remove("show");
+    }
+  };
+</script>
+  
+  <div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <h2>Om denna övning</h2>
+    <p>
+      Den här övningen är utformad för att träna din ordförståelse på högskoleprovsnivå.
+      Dess primära syfte är att utveckla din förmåga att förstå och använda det svenska språket på en avancerad nivå,
+      med särskilt fokus på ordförråd och begreppsförståelse. Du kommer att presenteras med ett ord eller ett uttryck,
+      och din uppgift blir att välja den korrekta betydelsen bland fem svarsalternativ. Efter varje val får du omedelbar återkoppling.
+      Du har möjligheten att öva på frågor från specifika prov eller välja slumpmässigt genererade frågor.
+    </p>
+  </div>
+</div>
+  
+</body>
+</html>
+
