@@ -443,7 +443,7 @@ body.menu-open #overlayBlocker {
   </nav>
 
   <main>
-  <div id="overlayBlocker"></div>
+  <div id="overlayBlocker" onclick="toggleMenu(document.getElementById('menuIcon'))"></div>
     <div id="word"></div>
     <div id="answers"></div>
     <div id="score">0 / 00</div>
@@ -1043,7 +1043,7 @@ body.menu-open #overlayBlocker {
   // Ladda nästa fråga
   function loadQuestion() {
     if (current >= filteredData.length) {
-      document.getElementById("word").textContent = "Övning klar!";
+      document.getElementById("word").textContent = "Övningen är klar! Ditt resultat:";
       document.getElementById("answers").innerHTML = "";
       updateScore();
       updateProgressBar();
@@ -1070,6 +1070,7 @@ function checkAnswer(button, correct) {
   const buttons = document.querySelectorAll(".answer-btn");
   const lightMode = !document.body.classList.contains("dark-mode");
 
+  // Inaktivera knappar och färgmarkera
   buttons.forEach(btn => {
     btn.disabled = true;
     if (btn.textContent === correct) {
@@ -1081,16 +1082,23 @@ function checkAnswer(button, correct) {
     }
   });
 
-  // Lägg till animation
+  // Animation på vald knapp
   button.classList.add("animate");
   setTimeout(() => button.classList.remove("animate"), 400);
 
+  // Uppdatera poäng direkt
   if (button.textContent === correct) {
     scoreCount++;
   }
+  // Flytta fram "current" direkt
+  current++;
 
+  // Uppdatera progressbar och poäng direkt (ingen fördröjning)
+  updateScore();
+  updateProgressBar();
+
+  // Fördröj själva laddningen av nästa fråga så att färgmarkeringen syns
   setTimeout(() => {
-    current++;
     loadQuestion();
   }, 1200);
 }
@@ -1126,16 +1134,18 @@ function checkAnswer(button, correct) {
   <div class="modal-content">
     <span class="close-modal" onclick="closeModal()">&times;</span>
     <h2>Om denna övning</h2>
-    <p>
-      Välkommen till en övning som inte bara tränar din ordförståelse – den vässar ditt språk, skärper din intuition och 
-	  fördjupar din känsla för nyanser i svenska språket. Alla frågor är hämtade från riktiga högskoleprov och ger dig möjlighet 
-	  att utmana dig själv på en nivå där precision och språklig skärpa gör skillnad.</p>
-	  <p>Du ställs inför ord och uttryck som kräver eftertanke, association och ibland modet att gissa. Fem alternativ presenteras
-          – ett är rätt. Direkt efter varje val får du veta hur det gick.</p>
-	  <p>Du kan välja att öva på ett visst prov eller låta slumpen guida dig genom ett varierat urval. Oavsett vad du väljer, 
-	  stärker du din förmåga att tolka, förstå och använda svenskan på ett mer medvetet och nyanserat sätt.</p>
-      	  <p>Det här kan ses som en övning inför ett prov - men framför allt är det en investering i ditt språk, och i dig själv.</p>
-    </p>
+    <p>Välkommen till en övning som inte bara tränar din ordförståelse, utan också 
+	vässar ditt språk, skärper din intuition och fördjupar din känsla för nyanser 
+	i svenskan. Övningen bygger på ORD-delen från 25 högskoleprov (totalt 500 
+	frågor), vilket erbjuder en bred variation.</p> <p>Du ställs inför ord och 
+	uttryck som kräver eftertanke, association och ibland modet att gissa. Fem 
+	alternativ presenteras – endast ett är korrekt. Efter varje val får du omedelbar 
+	återkoppling. En räknare håller koll på antalet rätt, och en framstegsindikator 
+	visar hur långt du har kommit i övningen.</p> <p>Du kan välja att öva på ett 
+	enskilt prov eller låta slumpen vägleda dig genom ett varierat urval (30 eller 
+	50 ord). Oavsett hur du vill träna, stärker du din förmåga att tolka, förstå och 
+	använda svenskan på ett mer medvetet och nyanserat sätt – en investering i ditt 
+	språk och i dig själv.</p>
   </div>
 </div>
   
