@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -23,7 +24,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0.3rem 1.5rem;
     background-color: #f0f0f0;
   }
 
@@ -148,20 +149,24 @@
 
   #word {
     font-size: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
+  
+ #answers {
+  margin-bottom: 0.3rem;
+}
 
-  .answer-btn {
-    display: block;
-    width: 100%;
-    margin: 0.5rem 0;
-    padding: 1rem;
-    background-color: #ccc;
-    border: none;
-    border-radius: 5px;
-    color: black;
-    font-size: 1.2rem;
-  }
+.answer-btn {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.7rem 1rem; /* justerad höjd */
+  background-color: #ccc;
+  border: none;
+  border-radius: 5px;
+  color: black;
+  font-size: 1.2rem;
+}
 
   .answer-btn:hover {
     background-color: #bbb;
@@ -243,18 +248,21 @@
     pointer-events: auto;
   }
 
-  .modal-content {
-    background-color: white;
-    margin: 20% auto;
-    font-size: 20px;
-    padding: 2rem;
-    border: 1px solid #888;
-    width: 80%;
-    border-radius: 10px;
-    position: relative;
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
-  }
+.modal-content {
+  background-color: white;
+  margin: 20% auto;
+  font-size: 20px;
+  padding: 2rem;
+  border: 1px solid #888;
+  width: 80%;
+  border-radius: 10px;
+  position: relative;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+  max-height: 70vh;        /* Lägg till maxhöjd */
+  overflow-y: auto;        /* Gör den skrollbar */
+  box-sizing: border-box;  /* Så padding inte ökar bredden */
+}
 
   .modal.show .modal-content {
     transform: translateY(0);
@@ -325,6 +333,43 @@
       font-size: 1.2rem;
     }
   }
+  
+#overlayBlocker {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  pointer-events: all;
+}
+body.menu-open #overlayBlocker {
+  display: block;
+}
+
+.answer-btn.animate {
+  animation: bounceScale 0.4s ease;
+}
+
+@keyframes bounceScale {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.2);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+  80% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 </style>
 
 </head>
@@ -352,6 +397,7 @@
   </nav>
 
   <main>
+  <div id="overlayBlocker"></div>
     <div id="word"></div>
     <div id="answers"></div>
     <div id="score">0 / 00</div>
@@ -694,30 +740,35 @@
   }
 
   // Kontrollera svar
-  function checkAnswer(button, correct) {
-    const buttons = document.querySelectorAll(".answer-btn");
-    const lightMode = !document.body.classList.contains("dark-mode");
+function checkAnswer(button, correct) {
+  const buttons = document.querySelectorAll(".answer-btn");
+  const lightMode = !document.body.classList.contains("dark-mode");
 
-    buttons.forEach(btn => {
-      btn.disabled = true;
-      if (btn.textContent === correct) {
-        btn.style.backgroundColor = 'green';
-        if (lightMode) btn.style.color = 'white';
-      } else if (btn === button) {
-        btn.style.backgroundColor = 'crimson';
-        if (lightMode) btn.style.color = 'white';
-      }
-    });
-
-    if (button.textContent === correct) {
-      scoreCount++;
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === correct) {
+      btn.style.backgroundColor = 'green';
+      if (lightMode) btn.style.color = 'white';
+    } else if (btn === button) {
+      btn.style.backgroundColor = 'crimson';
+      if (lightMode) btn.style.color = 'white';
     }
+  });
 
-    setTimeout(() => {
-      current++;
-      loadQuestion();
-    }, 1200);
+  // Lägg till animation
+  button.classList.add("animate");
+  setTimeout(() => button.classList.remove("animate"), 400);
+
+  if (button.textContent === correct) {
+    scoreCount++;
   }
+
+  setTimeout(() => {
+    current++;
+    loadQuestion();
+  }, 1200);
+}
+
 
   // Initiera när sidan laddas
   window.onload = () => {
@@ -761,4 +812,3 @@
   
 </body>
 </html>
-
