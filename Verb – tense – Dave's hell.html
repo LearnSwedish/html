@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tempusövning</title>
+  <style>
+    /* ----- Grundinställningar ----- */
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+	
+	h1 {
+	margin-top: 5px;
+	margin-bottom: 30px;
+	}
+
+    /* ----- Tempusknapparna ----- */
+    .button-group {
+      margin-bottom: 2em;
+    }
+    .button-group button {
+      padding: 0.5em 1em;
+      margin: 0 0.5em;
+      font-size: 1em;
+      cursor: pointer;
+      border: 1px solid #aaa;
+      background-color: #eee;
+      border-radius: 4px;
+    }
+    .button-group button.active {
+      background-color: #333;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* ----- Övningens container ----- */
+    .container {
+      max-width: 950px;
+      width: 100%;
+      text-align: left;
+      line-height: 2.5;
+    }
+    .verb-input {
+      width: 14ch;
+      font-family: inherit;
+      font-size: 1em;
+      padding: 2px 4px;
+      margin: 0 2px;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+    }
+    .verb-input.correct {
+      border-color: green;
+      background-color: #e6ffe6;
+    }
+    .verb-input.incorrect {
+      border-color: red;
+      background-color: #ffe6e6;
+    }
+
+    /* ----- Hamburgerikon ----- */
+    .hamburger {
+      position: fixed;
+      top: 1em;
+      right: 1em;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background-color: #333;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(7px, 7px);
+    }
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    /* ----- Sidomenyn (höger) ----- */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -280px;         /* Börjar utanför skärmen till höger */
+      width: 250px;
+      height: 100vh;
+      background-color: #f9f9f9;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+      overflow-y: auto;
+      transition: right 0.3s ease; /* Animerar 'right' */
+      padding: 4em 1em 1em;
+      z-index: 1000;
+    }
+    .sidebar.active {
+      right: 0; /* Glider in genom att sätta right till 0 */
+    }
+    .sidebar h3 {
+      margin-top: 0;
+    }
+    .sidebar button {
+      display: block;
+      margin: 0.2em 0;
+      background: none;
+      border: none;
+      padding: 0.2em;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.8em;
+      color: #333;
+
+      /* For tooltips, we need a reference container: */
+      position: relative; 
+    }
+    /*
+      The custom tooltip itself: 
+      .sidebar button[data-tooltip]::after is created only on hover
+      using the :hover pseudo-class
+    */
+    .sidebar button[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%) translateX(8px); /* offset a bit to the right */
+      background: #000;   /* black background */
+      color: #fff;        /* white text */
+      padding: 6px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ----- Modal (overlay) ----- */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5); /* Mörkare bakgrund */
+      z-index: 1002;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active {
+      display: flex; /* Visa overlay + centrerad dialog */
+    }
+
+    /* ----- Själva dialogrutan ----- */
+    .modal-content {
+      background: #fff;
+      border: 2px solid #ccc;
+      padding: 1em;
+      width: 200px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: relative; /* For the close icon alignment if needed */
+      border-radius: 8px; /* Rundade hörn */
+    }
+    .modal-close {
+      float: right;
+      cursor: pointer;
+      font-weight: bold;
+    }
+	
+.input-wrapper {
+  position: relative;
+  display: inline-block; /* keeps input & X together */
+}
+
+/* Provide space inside the input so text doesn't run into the X */
+.input-wrapper .verb-input {
+  padding-right: 1.5em;
+}
+
+.clear-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-weight: normal;
+  color: #888;
+  display: none; /* hidden until you hover */
+}
+
+/* Show the X when hovering over the wrapper */
+.input-wrapper:hover .clear-button {
+  display: inline;
+}
+
+/* Add this to your existing .button-group styles */
+.button-group button:active {
+  background-color: #ccc;  /* short, temporary color change */
+  transform: scale(0.95);  /* optional subtle "press" effect */
+}
+  </style>
+</head>
+<body>
+ <h1>Dave's hell – a tense exercise</h1>
+  <!-- Hamburgerikon -->
+  <div class="hamburger" id="hamburger">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <!-- Sidomeny -->
+  <div class="sidebar" id="sidebar">
+    <h3>Verbs - click to study</h3>
+    <div id="verb-list"></div>
+  </div>
+
+  <!-- Modalruta (overlay + box) -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-close" id="modal-close">&times;</div>
+      <h3 id="modal-title"></h3>
+      <p><strong>Infinitive:</strong> <span id="inf"></span></p>
+      <p><strong>Present:</strong> <span id="pres"></span></p>
+      <p><strong>Past:</strong> <span id="pret"></span></p>
+      <p><strong>Perfect:</strong> <span id="perf"></span></p>
+      <p><strong>Future:</strong> <span id="fut"></span></p>
+    </div>
+  </div>
+
+  <!-- Knappar för olika tempus -->
+  <div class="button-group">
+    <button data-tense="present" class="active">Present</button>
+    <button data-tense="past">Past</button>
+    <button data-tense="perfect">Perfect</button>
+	<button id="clear-all-button">Clear all</button>
+  </div>
+
+  <!-- Övningens innehåll -->
+  <div class="container" id="exercise-container">
+    En pojke 
+    <span class="input-wrapper"><input class="verb-input" data-index="0" placeholder="be"><span class="clear-button">x</span></span> ute och 
+    <span class="input-wrapper"><input class="verb-input" data-index="1" placeholder="go"><span class="clear-button">x</span></span> i skogen. Han 
+    <span class="input-wrapper"><input class="verb-input" data-index="2" placeholder="have"><span class="clear-button">x</span></span> en hund med sig. Pojken 
+    <span class="input-wrapper"><input class="verb-input" data-index="3" placeholder="go"><span class="clear-button">x</span></span> vilse. Han 
+    <span class="input-wrapper"><input class="verb-input" data-index="4" placeholder="can"><span class="clear-button">x</span></span> gå samma väg tillbaka, om han 
+    <span class="input-wrapper"><input class="verb-input" data-index="5" placeholder="know"><span class="clear-button">x</span></span> vad "tillbaka" 
+    <span class="input-wrapper"><input class="verb-input" data-index="6" placeholder="be"><span class="clear-button">x</span></span>. Han 
+    <span class="input-wrapper"><input class="verb-input" data-index="7" placeholder="be"><span class="clear-button">x</span></span> rädd och orolig. Solen 
+    <span class="input-wrapper"><input class="verb-input" data-index="8" placeholder="go"><span class="clear-button">x</span></span> ner och det 
+    <span class="input-wrapper"><input class="verb-input" data-index="9" placeholder="become"><span class="clear-button">x</span></span> mörkt. De 
+    <span class="input-wrapper"><input class="verb-input" data-index="10" placeholder="go"><span class="clear-button">x</span></span> fram och tillbaka i flera timmar. De 
+    <span class="input-wrapper"><input class="verb-input" data-index="11" placeholder="be"><span class="clear-button">x</span></span> hungriga och trötta och de 
+    <span class="input-wrapper"><input class="verb-input" data-index="12" placeholder="sit"><span class="clear-button">x</span></span> sig ner. Hunden 
+    <span class="input-wrapper"><input class="verb-input" data-index="13" placeholder="come"><span class="clear-button">x</span></span> till pojken. Pojken 
+    <span class="input-wrapper"><input class="verb-input" data-index="14" placeholder="say"><span class="clear-button">x</span></span>: "Jag 
+    <span class="input-wrapper"><input class="verb-input" data-index="15" placeholder="can"><span class="clear-button">x</span></span> äta upp dig, om du 
+    <span class="input-wrapper"><input class="verb-input" data-index="16" placeholder="be"><span class="clear-button">x</span></span> mindre hårig." Hunden 
+    <span class="input-wrapper"><input class="verb-input" data-index="17" placeholder="answer"><span class="clear-button">x</span></span>: "Du 
+    <span class="input-wrapper"><input class="verb-input" data-index="18" placeholder="be allowed"><span class="clear-button">x</span></span> äta upp mig om du 
+    <span class="input-wrapper"><input class="verb-input" data-index="19" placeholder="want [to]"><span class="clear-button">x</span></span>, men jag 
+    <span class="input-wrapper"><input class="verb-input" data-index="20" placeholder="think"><span class="clear-button">x</span></span> att vi 
+    <span class="input-wrapper"><input class="verb-input" data-index="21" placeholder="find (the way)"><span class="clear-button">x</span></span> hem först." Pojken 
+    <span class="input-wrapper"><input class="verb-input" data-index="22" placeholder="laugh"><span class="clear-button">x</span></span> och 
+    <span class="input-wrapper"><input class="verb-input" data-index="23" placeholder="say"><span class="clear-button">x</span></span>: "Du 
+    <span class="input-wrapper"><input class="verb-input" data-index="24" placeholder="have"><span class="clear-button">x</span></span> rätt, skam den som 
+    <span class="input-wrapper"><input class="verb-input" data-index="25" placeholder="give (up)"><span class="clear-button">x</span></span> sig!". De 
+    <span class="input-wrapper"><input class="verb-input" data-index="26" placeholder="stand"><span class="clear-button">x</span></span> sig upp igen. De 
+    <span class="input-wrapper"><input class="verb-input" data-index="27" placeholder="hear"><span class="clear-button">x</span></span> röster i fjärran – någon 
+    <span class="input-wrapper"><input class="verb-input" data-index="28" placeholder="call"><span class="clear-button">x</span></span> pojkens namn! Pojken och hunden 
+    <span class="input-wrapper"><input class="verb-input" data-index="29" placeholder="see"><span class="clear-button">x</span></span> en grupp människor som 
+    <span class="input-wrapper"><input class="verb-input" data-index="30" placeholder="come"><span class="clear-button">x</span></span> med ficklampor och pannlampor. Det 
+    <span class="input-wrapper"><input class="verb-input" data-index="31" placeholder="be"><span class="clear-button">x</span></span> en sökgrupp från byn. Pojken 
+    <span class="input-wrapper"><input class="verb-input" data-index="32" placeholder="run"><span class="clear-button">x</span></span> mot dem, med hunden vid sin sida. De 
+    <span class="input-wrapper"><input class="verb-input" data-index="33" placeholder="become"><span class="clear-button">x</span></span> hittade och alla 
+    <span class="input-wrapper"><input class="verb-input" data-index="34" placeholder="become"><span class="clear-button">x</span></span> glada! De 
+    <span class="input-wrapper"><input class="verb-input" data-index="35" placeholder="sleep"><span class="clear-button">x</span></span> gott den natten, båda två. Pojken 
+    <span class="input-wrapper"><input class="verb-input" data-index="36" placeholder="dream"><span class="clear-button">x</span></span> om en hamburgare – med päls. Pojken 
+    <span class="input-wrapper"><input class="verb-input" data-index="37" placeholder="wake up"><span class="clear-button">x</span></span> på morgonen med ett leende – tills han 
+    <span class="input-wrapper"><input class="verb-input" data-index="38" placeholder="see"><span class="clear-button">x</span></span> sin hund, som 
+    <span class="input-wrapper"><input class="verb-input" data-index="39" placeholder="lie"><span class="clear-button">x</span></span> bredvid honom i sängen med ett hamburgerbröd på huvudet. Hunden 
+    <span class="input-wrapper"><input class="verb-input" data-index="40" placeholder="say"><span class="clear-button">x</span></span>: "Du 
+    <span class="input-wrapper"><input class="verb-input" data-index="41" placeholder="dream"><span class="clear-button">x</span></span> konstigt, min vän. Men om du 
+    <span class="input-wrapper"><input class="verb-input" data-index="42" placeholder="want [to]"><span class="clear-button">x</span></span> äta mig, då tror jag att du åtminstone 
+    <span class="input-wrapper"><input class="verb-input" data-index="43" placeholder="need"><span class="clear-button">x</span></span> ketchup!".
+  </div>
+
+<script>
+/*********************************************
+ * 1) Sidomenyn & hamburgerikon
+ *********************************************/
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+
+hamburger.addEventListener('click', () => {
+  // Växla klass för både ikonen och menyn
+  hamburger.classList.toggle('active');
+  sidebar.classList.toggle('active');
+});
+
+
+/*********************************************
+ * 2) Rätt/fel-svar i övning
+ *********************************************/
+const answers = {
+  present: ["är", "går", "har", "går", "kan", "vet", "är", "är", "går", "blir", "går", "är", "sätter", "kommer", "säger", "kan", "är", "svarar", "får", "vill", "tycker", "hittar", "skrattar", "säger", "har", "ger", "ställer", "hör", "ropar", "ser", "kommer", "är", "springer", "blir", "blir", "sover", "drömmer", "vaknar", "ser", "ligger", "säger", "drömmer", "vill", "behöver"],
+  past: ["var", "gick", "hade", "gick", "kunde", "visste", "var", "var", "gick", "blev", "gick", "var", "satte", "kom", "sa", "kunde", "var", "svarade", "fick", "ville", "tyckte", "hittade", "skrattade", "sa", "hade", "gav", "ställde", "hörde", "ropade", "såg", "kom", "var", "sprang", "blev", "blev", "sov", "drömde", "vaknade", "såg", "låg", "sa", "drömde", "ville", "behövde"],
+  perfect: ["har varit", "har gått", "har haft", "har gått", "har kunnat", "har vetat", "har varit", "har varit", "har gått", "har blivit", "har gått", "har varit", "har suttit", "har kommit", "har sagt", "har kunnat", "har varit", "har svarat", "har fått", "har velat", "har tyckt", "har hittat", "har skrattat", "har sagt", "har haft", "har gett", "har ställt", "har hört", "har ropat", "har sett", "har kommit", "har varit", "har sprungit", "har blivit", "har blivit", "har sovit", "har drömt", "har vaknat", "har sett", "har legat", "har sagt", "har drömt", "har velat", "har behövt"]
+};
+
+let currentTense = "present";
+const inputs = document.querySelectorAll('.verb-input');
+
+// Mark fields correct/incorrect on input
+inputs.forEach(input => {
+  input.addEventListener('input', function () {
+    const index = parseInt(this.dataset.index);
+    const correct = answers[currentTense][index] || "";
+    const value = this.value.trim();
+    this.classList.remove("correct", "incorrect");
+    if (value === correct) {
+      this.classList.add("correct");
+    } else if (value.length > 0) {
+      this.classList.add("incorrect");
+    }
+  });
+});
+
+
+/*********************************************
+ * 3) Knapp-hantering för Present/Past/Perfect
+ *    och Clear all
+ *********************************************/
+document.querySelectorAll(".button-group button").forEach(button => {
+  button.addEventListener("click", () => {
+
+    // If this button has a data-tense attribute, it's a tense button
+    if (button.dataset.tense) {
+      // Remove "active" from all other tense buttons
+      document.querySelectorAll('.button-group button[data-tense]')
+        .forEach(b => b.classList.remove('active'));
+      // Then add "active" only to this tense button
+      button.classList.add("active");
+
+      // Store the current tense
+      currentTense = button.dataset.tense;
+
+      // Clear all fields for a fresh start
+      inputs.forEach(input => {
+        input.value = "";
+        input.classList.remove("correct", "incorrect");
+      });
+
+    } else {
+      // For "Clear all" – do NOT add .active
+      // Instead, just clear everything
+      inputs.forEach(input => {
+        input.value = "";
+        input.classList.remove("correct", "incorrect");
+      });
+    }
+  });
+});
+
+
+/*********************************************
+ * 4) Verb-lista och modal
+ *********************************************/
+const translations = {
+  "vara": "be",
+  "gå": "go",
+  "ha": "have",
+  "kunna": "can",
+  "veta": "know",
+  "bli": "become",
+  "sätta (sig ner)": "sit",
+  "komma": "come",
+  "säga": "say",
+  "svara": "answer",
+  "få": "be allowed",
+  "vilja": "want",
+  "tycka": "think/be of the opinion",
+  "hitta": "find",
+  "skratta": "laugh",
+  "ge (upp)": "give in",
+  "ställa sig upp": "stand up",
+  "höra": "hear",
+  "ropa": "call out",
+  "se": "see",
+  "springa": "run",
+  "sova": "sleep",
+  "drömma": "dream",
+  "vakna": "wake up",
+  "ligga": "lie",
+  "behöva": "need"
+};
+
+const verbForms = {
+  "vara": ["vara", "är", "var", "har varit", "ska vara"],
+  "gå": ["gå", "går", "gick", "har gått", "ska gå"],
+  "ha": ["ha", "har", "hade", "har haft", "ska ha"],
+  "kunna": ["kunna", "kan", "kunde", "har kunnat", "ska kunna"],
+  "veta": ["veta", "vet", "visste", "har vetat", "ska veta"],
+  "bli": ["bli", "blir", "blev", "har blivit", "ska bli"],
+  "sätta (sig ner)": ["sätta", "sätter", "satte", "har satt", "ska sätta"],
+  "komma": ["komma", "kommer", "kom", "har kommit", "ska komma"],
+  "säga": ["säga", "säger", "sa", "har sagt", "ska säga"],
+  "svara": ["svara", "svarar", "svarade", "har svarat", "ska svara"],
+  "få": ["få", "får", "fick", "har fått", "ska få"],
+  "vilja": ["vilja", "vill", "ville", "har velat", "ska vilja"],
+  "tycka": ["tycka", "tycker", "tyckte", "har tyckt", "ska tycka"],
+  "hitta": ["hitta", "hittar", "hittade", "har hittat", "ska hitta"],
+  "skratta": ["skratta", "skrattar", "skrattade", "har skrattat", "ska skratta"],
+  "ge (upp)": ["ge", "ger", "gav", "har gett", "ska ge"],
+  "ställa": ["ställa", "ställer", "ställde", "har ställt", "ska ställa"],
+  "höra": ["höra", "hör", "hörde", "har hört", "ska höra"],
+  "ropa": ["ropa", "ropar", "ropade", "har ropat", "ska ropa"],
+  "se": ["se", "ser", "såg", "har sett", "ska se"],
+  "springa": ["springa", "springer", "sprang", "har sprungit", "ska springa"],
+  "sova": ["sova", "sover", "sov", "har sovit", "ska sova"],
+  "drömma": ["drömma", "drömmer", "drömde", "har drömt", "ska drömma"],
+  "vakna": ["vakna", "vaknar", "vaknade", "har vaknat", "ska vakna"],
+  "ligga": ["ligga", "ligger", "låg", "har legat", "ska ligga"],
+  "behöva": ["behöva", "behöver", "behövde", "har behövt", "ska behöva"]
+};
+
+// Fill the sidemenu with verb buttons
+const verbList = document.getElementById('verb-list');
+for (const verb in verbForms) {
+  const btn = document.createElement('button');
+  btn.textContent = verb;
+  // Use data-tooltip for custom tooltip
+  btn.setAttribute('data-tooltip', translations[verb] || "");
+
+  btn.addEventListener('click', () => {
+    const [inf, pres, pret, perf, fut] = verbForms[verb];
+    document.getElementById('modal-title').textContent = verb;
+    document.getElementById('inf').textContent = inf;
+    document.getElementById('pres').textContent = pres;
+    document.getElementById('pret').textContent = pret;
+    document.getElementById('perf').textContent = perf;
+    document.getElementById('fut').textContent = fut;
+    document.getElementById('modal').classList.add('active');
+  });
+  verbList.appendChild(btn);
+}
+
+
+/*********************************************
+ * 5) Clear button next to each field
+ *********************************************/
+document.querySelectorAll('.clear-button').forEach(btn => {
+  btn.addEventListener('click', function() {
+    // the input is the previous sibling or
+    // you can use a parent querySelector instead
+    const input = this.parentNode.querySelector('.verb-input');
+
+    // Clear text
+    input.value = "";
+
+    // remove correctness classes
+    input.classList.remove("correct", "incorrect");
+  });
+});
+
+
+/*********************************************
+ * 6) Modal close logic
+ *********************************************/
+// Stäng modal när man klickar på krysset
+document.getElementById('modal-close').addEventListener('click', () => {
+  document.getElementById('modal').classList.remove('active');
+});
+
+// Stäng modal om man klickar utanför dialogrutan
+window.addEventListener('click', e => {
+  const modalEl = document.getElementById('modal');
+  const modalContent = document.querySelector('.modal-content');
+  if (e.target === modalEl && !modalContent.contains(e.target)) {
+    modalEl.classList.remove('active');
+  }
+});
+
+// Stäng modal på Escape
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('modal').classList.remove('active');
+  }
+});
+</script>
+
+</body>
+</html>
