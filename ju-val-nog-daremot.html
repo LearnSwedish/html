@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Övning – Satsadverbial: ju, väl, nog, däremot</title>
+  <style>
+    :root {
+      /* Färger – ljusläge */
+      --bg: #ffffff;
+      --text: #000000;
+      --primary: #1976d2;
+      --select-bg: #ffffff;
+      --select-border: #ccc;
+      --correct-bg: #c8e6c9;
+      --correct-border: #4caf50;
+      --incorrect-bg: #ffcdd2;
+      --incorrect-border: #f44336;
+      --modal-bg: #ffffff;
+    }
+
+    body.dark-mode {
+      /* Färger – mörkt läge */
+      --bg: #121212;
+      --text: #e0e0e0;
+      --primary: #90caf9;
+      --select-bg: #424242;
+      --select-border: #777;
+      --select-hover: #333;
+      --correct-bg: #388e3c;
+      --correct-border: #66bb6a;
+      --incorrect-bg: #d32f2f;
+      --incorrect-border: #e57373;
+      --modal-bg: #1e1e1e;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 900px;
+      margin: 3rem auto;
+      line-height: 1.6;
+      padding: 0 1rem;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Titel */
+    .title {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 40px;
+      font-weight: 600;
+    }
+
+    /* Instruktionstexten */
+    .instructions {
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    /* Dropdowns */
+    select {
+      padding: 0.2rem 0.5rem;
+      font-size: inherit;
+      border-radius: 4px;
+      border: 1px solid var(--select-border);
+      min-width: 7rem;
+      cursor: pointer;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+      background-color: var(--select-bg);
+      color: var(--text);
+    }
+
+    select:hover {
+      background-color: var(--select-hover);
+    }
+
+    select.correct {
+      background-color: var(--correct-bg);
+      border-color: var(--correct-border);
+      color: #000;
+    }
+
+    select.incorrect {
+      background-color: var(--incorrect-bg);
+      border-color: var(--incorrect-border);
+      color: #000;
+    }
+
+    .dialog {
+      margin-bottom: 3rem;
+    }
+
+    .dialog p {
+      margin: 0.4rem 0;
+      font-size: 22px;
+    }
+
+    /* Info‑knappen */
+    .info-btn {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      border: none;
+	  font-size: 18px;
+      border-radius: 4px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 300;
+      cursor: pointer;
+      transition: background 0.25s ease;
+      z-index: 1100;
+    }
+
+    .info-btn:hover { filter: brightness(1.1); }
+
+    /* Dark‑mode toggle */
+    .dark-mode-toggle {
+      position: fixed;
+      top: 4rem;
+      right: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 1100;
+      user-select: none;
+    }
+    .dark-mode-toggle input { display: none; }
+    .slider {
+      width: 46px;
+      height: 24px;
+      background: #ccc;
+      border-radius: 12px;
+      position: relative;
+      transition: background 0.3s ease;
+      cursor: pointer;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+    #themeToggle:checked + .slider { background: #4caf50; }
+    #themeToggle:checked + .slider::before { transform: translateX(22px); }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0,0,0,0.4);
+      z-index: 1000;
+      overflow: auto;
+    }
+    .modal-content {
+      background: var(--modal-bg);
+      color: var(--text);
+      margin: 10% auto;
+      padding: 2rem 3rem;
+	  font-size: 18px;
+      border-radius: 12px;
+      max-width: 675px;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    .close-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Info‑knapp -->
+  <button id="infoBtn" class="info-btn" type="button">Info</button>
+  <!-- Dark‑mode toggle -->
+  <label class="dark-mode-toggle" title="Dark mode">
+    <input type="checkbox" id="themeToggle" aria-label="Växla mörkt läge" />
+    <span class="slider"></span>
+  </label>
+  <!-- Modal -->
+  <div id="infoModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModal" aria-label="Stäng">&times;</span>
+      <h2 id="modalTitle">Instruktioner</h2>
+      <p>Orden "ju", "väl", "nog", och "däremot" är alla <strong>satsadverbial</strong> av en särskild typ: man måste inte säga dem, men de förtydligar vad talaren menar, och <strong>det</strong> är en viktig skillnad.</p>
+	  <p>Här kommer en förklaring vad orden betyder och hur de används:</p>
+      <p><strong>ju</strong> – försanthållande ("som både du och jag vet", "som är självklart [för alla]")<br /> 
+      <strong>väl</strong> – garderat påstående ("eller hur?") / för att visa att man frågar ("jag undrar")<br /> 
+      <strong>nog</strong> – även <em>förmodligen</em>, <em>antagligen</em>, <em>gissningsvis</em> ("jag tror att")<br /> 
+      <strong>däremot</strong> – även <em>dock</em> (som engelskans "however"), betyder ungefär "men"</p> 
+	  <p>Fyll i varje lucka genom att välja rätt satsadverbial. När du har valt ett alternativ färgas det grönt om svaret är rätt och rött om det är fel.</p>
+    </div>
+  </div>
+
+  <h1 class="title">De viktiga orden: ju, väl, nog, däremot</h1>
+  <p class="instructions">Klicka på Info-knappen för instruktioner.</p>
+
+  <!-- Dialog 1 -->
+  <div class="dialog" id="dialog1">
+    <h2>Dialog 1</h2>
+    <p><strong>A:</strong> &nbsp;Ska vi gå ut och äta ikväll? Det är
+      <select class="dropdown" data-correct="ju">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> fredag.
+    </p>
+    <p><strong>B:</strong> &nbsp;Det kan vi göra. Vi måste
+      <select class="dropdown" data-correct="däremot">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> vänta tills efter klockan sju.
+    </p>
+    <p><strong>A:</strong> &nbsp;Varför då?</p>
+    <p><strong>B:</strong> &nbsp;Det vet du
+      <select class="dropdown" data-correct="väl">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> ? Vi har
+      <select class="dropdown" data-correct="ju">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> en tvättid klockan fem.
+    </p>
+    <p><strong>A:</strong> &nbsp;Äh, strunta i det. Vi har
+      <select class="dropdown" data-correct="nog">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> rena kläder så att vi klarar oss.<br/> 
+	  <span style="visibility:hidden"><strong>A:</strong> &nbsp;</span>Vi kan <select class="dropdown" data-correct="väl">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> gå till den nya restaurangen?
+    </p>
+    <p><strong>B:</strong> &nbsp;Det är
+      <select class="dropdown" data-correct="nog">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> fullt där ikväll.
+    </p>
+    <p><strong>A:</strong> &nbsp;Då kan vi
+      <select class="dropdown" data-correct="väl">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> gå till hotellet i stället?
+    </p>
+    <p><strong>B:</strong> &nbsp;Hotellet där vi åt i februari? Det är
+      <select class="dropdown" data-correct="ju">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> jättedyrt där.
+    </p>
+    <p><strong>A:</strong> &nbsp;Jag vet,
+      <select class="dropdown" data-correct="däremot">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> får man gratis efterrätt.
+    </p>
+    <p><strong>B:</strong> &nbsp;Okej då.</p>
+  </div>
+
+  <!-- Dialog 2 -->
+  <div class="dialog" id="dialog2">
+    <h2>Dialog 2</h2>
+    <p><strong>A:</strong> &nbsp;Jag vet inte, men nu är han
+      <select class="dropdown" data-correct="nog">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> arg på mig.
+    </p>
+    <p><strong>B:</strong> &nbsp;Varför tror du det? Du har
+      <select class="dropdown" data-correct="väl">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> pratat med honom?
+    </p>
+    <p><strong>A:</strong> &nbsp;Nej, det har jag inte. Jag har
+      <select class="dropdown" data-correct="däremot">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> försökt ringa honom flera gånger.
+    </p>
+    <p><strong>B:</strong> &nbsp;Men han är
+      <select class="dropdown" data-correct="nog">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> bara upptagen. Han har
+      <select class="dropdown" data-correct="ju">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> sitt jobb, du vet.
+    </p>
+    <p><strong>A:</strong> &nbsp;Jag vet, men han måste
+      <select class="dropdown" data-correct="väl">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> ha sett att jag har ringt?
+    </p>
+    <p><strong>B:</strong> &nbsp;Det har han
+      <select class="dropdown" data-correct="nog">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select>, men ge det lite tid. Du vet
+      <select class="dropdown" data-correct="ju">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> hur han är.
+    </p>
+    <p><strong>A:</strong> &nbsp;Ja, han förstår
+      <select class="dropdown" data-correct="väl">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select> när han tänker efter i lugn och ro?
+    </p>
+    <p><strong>B:</strong> &nbsp;Det gör han
+      <select class="dropdown" data-correct="nog">
+        <option value=""></option><option value="ju">ju</option>
+        <option value="väl">väl</option><option value="nog">nog</option>
+        <option value="däremot">däremot</option>
+      </select>.
+    </p>
+  </div>
+
+  <script>
+    // rätt/fel-markering på dropdowns
+    document.querySelectorAll('select.dropdown').forEach(sel => {
+      sel.addEventListener('change', function () {
+        this.classList.remove('correct', 'incorrect');
+        if (this.value === this.dataset.correct) {
+          this.classList.add('correct');
+        } else if (this.value !== '') {
+          this.classList.add('incorrect');
+        }
+      });
+    });
+
+    // modal-logik
+    const infoBtn   = document.getElementById('infoBtn');
+    const infoModal = document.getElementById('infoModal');
+    const closeBtn  = document.getElementById('closeModal');
+
+    infoBtn.addEventListener('click', () => infoModal.style.display = 'block');
+    closeBtn.addEventListener('click', () => infoModal.style.display = 'none');
+    window.addEventListener('click', e => {
+      if (e.target === infoModal) infoModal.style.display = 'none';
+    });
+
+    // dark-mode-toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('change', () => {
+      document.body.classList.toggle('dark-mode', themeToggle.checked);
+    });
+  </script>
+</body>
+</html>
