@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ska | kommer att</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="att-ha.css">
+
+    <script>
+
+        const sentences = [
+    {
+        words: [
+            { word: "Jag", translation: "I" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "börja", translation: "begin" },
+            { word: "träna", translation: "training" },
+            { word: "på", translation: "at" },
+            { word: "gymmet", translation: "the gym" },
+            { word: "nästa", translation: "next" },
+            { word: "vecka.", translation: "week." }
+        ]
+    },
+    {
+        words: [
+            { word: "Du", translation: "You" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "lägga", translation: "put" },
+            { word: "tillbaka", translation: "back" },
+            { word: "böckerna", translation: "the books" },
+            { word: "på", translation: "on" },
+            { word: "hyllan", translation: "the shelf" },
+            { word: "när", translation: "when" },
+            { word: "du", translation: "you" },
+            { word: "är", translation: "are" },
+            { word: "klar.", translation: "finished." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi", translation: "We" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "fira", translation: "celebrate" },
+            { word: "mammas", translation: "mom's" },
+            { word: "födelsedag", translation: "birthday" },
+            { word: "på", translation: "on" },
+            { word: "lördag.", translation: "Saturday." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han", translation: "He" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "studera", translation: "study" },
+            { word: "till", translation: "to become" },
+            { word: "läkare", translation: "a doctor" },
+            { word: "efter", translation: "after" },
+            { word: "studenten.", translation: "graduation." }
+        ]
+    },
+    {
+        words: [
+            { word: "Ni", translation: "You (pl)" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "skicka in", translation: "submit" },
+            { word: "rapporten", translation: "the report" },
+            { word: "före", translation: "before" },
+            { word: "fredag.", translation: "Friday." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon", translation: "She" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "lära sig", translation: "learn [herself]" },
+            { word: "spela", translation: "to play" },
+            { word: "gitarr", translation: "guitar" },
+            { word: "i sommar", translation: "this summer." },
+        ]
+    },
+    {
+        words: [
+            { word: "Jag", translation: "I" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "ringa", translation: "call" },
+            { word: "dig", translation: "you" },
+            { word: "direkt", translation: "directly" },
+            { word: "när", translation: "when" },
+            { word: "mötet", translation: "the meeting" },
+            { word: "är", translation: "is" },
+            { word: "slut.", translation: "over." }
+        ]
+    },
+    {
+        words: [
+            { word: "Du", translation: "You" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "inte", translation: "not" },
+            { word: "röra", translation: "touch" },
+            { word: "labbutrustningen", translation: "the lab equipment" },
+            { word: "utan", translation: "without" },
+            { word: "skyddskläder.", translation: "protective clothing." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi", translation: "We" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "hjälpa till", translation: "help out" },
+            { word: "på", translation: "at" },
+            { word: "evenemanget", translation: "the event" },
+            { word: "imorgon.", translation: "tomorrow." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han", translation: "He" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "komma ihåg", translation: "remember" },
+            { word: "att", translation: "to" },
+            { word: "köpa", translation: "buy" },
+            { word: "mjölk", translation: "milk" },
+            { word: "på", translation: "on" },
+            { word: "vägen", translation: "the way" },
+            { word: "hem.", translation: "home." }
+        ]
+    },
+    {
+        words: [
+            { word: "Ni", translation: "You (pl)" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "följa", translation: "follow" },
+            { word: "instruktionerna", translation: "the instructions" },
+            { word: "noga.", translation: "carefully." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag", translation: "I" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "besöka", translation: "visit" },
+            { word: "min", translation: "my" },
+            { word: "mormor", translation: "grandmother" },
+            { word: "varje", translation: "every" },
+            { word: "söndag.", translation: "Sunday." }
+        ]
+    },
+    {
+        words: [
+            { word: "Du", translation: "You" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "vara", translation: "be" },
+            { word: "hemma", translation: "home" },
+            { word: "klockan", translation: "by [at o'clock]" },
+            { word: "tio.", translation: "ten." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi", translation: "We" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "plantera", translation: "plant" },
+            { word: "träd", translation: "trees" },
+            { word: "i", translation: "in" },
+            { word: "parken", translation: "the park" },
+            { word: "nästa", translation: "next" },
+            { word: "månad.", translation: "month." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon", translation: "She" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "glömma", translation: "forget" },
+            { word: "det", translation: "what" },
+            { word: "vi", translation: "we" },
+            { word: "pratade", translation: "talked" },
+            { word: "om.", translation: "about." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag", translation: "I" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "fixa", translation: "fix" },
+            { word: "nätverksproblemen", translation: "the network issues" },
+            { word: "före", translation: "before" },
+            { word: "lunchen.", translation: "[the] lunch." }
+        ]
+    },
+    {
+        words: [
+            { word: "Du", translation: "You" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "lära", translation: "teach" },
+            { word: "barnen", translation: "the children" },
+            { word: "simma", translation: "to swim" },
+            { word: "i sommar", translation: "this summer" }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi", translation: "We" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "se till", translation: "ensure" },
+            { word: "att", translation: "that" },
+            { word: "alla", translation: "everyone" },
+            { word: "får", translation: "receives" },
+            { word: "korrekt", translation: "correct" },
+            { word: "information.", translation: "information." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han", translation: "He" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "betala", translation: "pay" },
+            { word: "tillbaka", translation: "back" },
+            { word: "lånet", translation: "the loan" },
+            { word: "inom", translation: "within" },
+            { word: "ett år", translation: "a year." }
+        ]
+    },
+    {
+        words: [
+            { word: "Ni", translation: "You [pl]" },
+            { word: `<select data-correct="ska" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "segla", translation: "sail" },
+            { word: "till", translation: "to" },
+            { word: "Gotland", translation: "Gotland" },
+            { word: "i höst.", translation: "this autumn." }
+        ]
+    },
+    {
+        words: [
+            { word: "Det", translation: "It" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "regna", translation: "rain" },
+            { word: "på", translation: "in" },
+            { word: "eftermiddagen.", translation: "the afternoon." }
+        ]
+    },
+    {
+        words: [
+            { word: "Temperaturen", translation: "The temperature" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "stiga", translation: "rise" },
+            { word: "under", translation: "during" },
+            { word: "helgen.", translation: "the weekend." }
+        ]
+    },
+    {
+        words: [
+            { word: "Tåget", translation: "The train" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "ankomma", translation: "arrive" },
+            { word: "klockan", translation: "at [o'clock]" },
+            { word: "18:45.", translation: "6:45 pm." }
+        ]
+    },
+    {
+        words: [
+            { word: "Bytet", translation: "The exchange" },
+            { word: "av", translation: "of" },
+            { word: "valuta", translation: "currency" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "påverkas", translation: "be affected" },
+            { word: "av", translation: "by" },
+            { word: "ränteläget.", translation: "the interest rates." }
+        ]
+    },
+    {
+        words: [
+            { word: "Projektet", translation: "The project" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "ta", translation: "take" },
+            { word: "längre", translation: "longer" },
+            { word: "tid", translation: "time" },
+            { word: "än", translation: "than" },
+            { word: "beräknat.", translation: "expected." }
+        ]
+    },
+    {
+        words: [
+            { word: "Antalet", translation: "The number [of]" },
+            { word: "anmälningar", translation: "registrations" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "öka", translation: "increase" },
+            { word: "nästa", translation: "next" },
+            { word: "år.", translation: "year." }
+        ]
+    },
+    {
+        words: [
+            { word: "Solen", translation: "The sun" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "gå upp", translation: "rise" },
+            { word: "klockan", translation: "at [o'clock]" },
+            { word: "04:15", translation: "4:15 am" },
+            { word: "imorgon.", translation: "tomorrow." },
+        ]
+    },
+    {
+        words: [
+            { word: "Trafiken", translation: "The traffic" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "vara", translation: "be" },
+            { word: "tät", translation: "heavy" },
+            { word: "på", translation: "on" },
+            { word: "motorvägen.", translation: "the motorway." }
+        ]
+    },
+    {
+        words: [
+            { word: "Företaget", translation: "The company" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "presentera", translation: "present" },
+            { word: "sina", translation: "its" },
+            { word: "resultat", translation: "results" },
+            { word: "i eftermiddag.", translation: "this afternoon." }
+        ]
+    },
+    {
+        words: [
+            { word: "Datasystemet", translation: "The data system" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "uppgraderas", translation: "be upgraded" },
+            { word: "under", translation: "during" },
+            { word: "natten.", translation: "the night." }
+        ]
+    },
+    {
+        words: [
+            { word: "Instruktionerna", translation: "The instructions" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "distribueras", translation: "be distributed" },
+            { word: "per", translation: "via" },
+            { word: "mejl.", translation: "email." }
+        ]
+    },
+    {
+        words: [
+            { word: "Utredningen", translation: "The investigation" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "ta", translation: "take" },
+            { word: "flera", translation: "several" },
+            { word: "månader", translation: "months" },
+            { word: "att", translation: "to" },
+            { word: "slutföra.", translation: "complete." }
+        ]
+    },
+    {
+        words: [
+            { word: "Skatten", translation: "The tax" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            ></select>`, translation: "will" },
+            { word: "ändras", translation: "be changed" },
+            { word: "från och med", translation: "as of" },
+            { word: "nästa", translation: "next" },
+            { word: "budgetår.", translation: "fiscal year." }
+        ]
+    },
+    {
+        words: [
+            { word: "Mobilnätet", translation: "The mobile network" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "förbättras", translation: "be improved" },
+            { word: "inom", translation: "within" },
+            { word: "regionen.", translation: "the region." }
+        ]
+    },
+    {
+        words: [
+            { word: "Antalet", translation: "The number [of]" },
+            { word: "deltagare", translation: "participants" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "vara", translation: "be" },
+            { word: "över", translation: "over" },
+            { word: "tusen.", translation: "a thousand." }
+        ]
+    },
+    {
+        words: [
+            { word: "Sändningen", translation: "The broadcast" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "starta", translation: "start" },
+            { word: "klockan", translation: "at [o'clock]" },
+            { word: "åtta.", translation: "eight." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vinden", translation: "The wind" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "blåsa", translation: "blow" },
+            { word: "från", translation: "from" },
+            { word: "nordöst", translation: "northeast" },
+            { word: "imorgon.", translation: "tomorrow." }
+        ]
+    },
+    {
+        words: [
+            { word: "Detta", translation: "This" },
+		    { word: "program", translation: "software" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "stötta", translation: "support" },
+            { word: "flera", translation: "several" },
+            { word: "språk", translation: "languages" },
+            { word: "framöver.", translation: "going forward." }
+        ]
+    },
+    {
+        words: [
+            { word: "Utbildningen", translation: "The course" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "erbjudas", translation: "be offered" },
+            { word: "även", translation: "also" },
+            { word: "online.", translation: "online." }
+        ]
+    },
+    {
+        words: [
+            { word: "Behovet", translation: "The need" },
+            { word: "av", translation: "of" },
+            { word: "förnybar", translation: "renewable" },
+            { word: "energi", translation: "energy" },
+            { word: `<select data-correct="kommer att" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="ska">ska</option>
+                <option value="kommer att">kommer att</option>
+            </select>`, translation: "will" },
+            { word: "öka", translation: "increase" },
+            { word: "betydligt.", translation: "significantly." }
+        ]
+    }
+	
+        ];
+
+    </script>
+	
+	<script src="att-ha.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title"><i class="fas fa-hourglass-half" aria-hidden="true" style="margin-right: 8px;"></i> Pick the correct form: ska | kommer att</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Information</h2>
+            <p>Swedish has no dedicated future tense; you simply use a present‐tense auxiliary plus the main verb—much as English does with "will [verb]" or "going to [verb]". In practice you choose "ska" for intentions, plans, promises, orders or obligations, and "kommer att" for neutral predictions or statements without personal nuance. Moreover, when the subject is inanimate — books, machines, the weather — you almost invariably use kommer att, since inanimate things lack intention or agency. Time to practise this – in 40 examples. Good luck!</p>
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes? If you want to take this to another level, <a href="https://learnswedish.github.io/html/att-ha-skriv.html" target="_blank" class="dynamic-link">try this exercise</a> where you enter the correct verb form yourself.</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
