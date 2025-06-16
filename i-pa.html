@@ -1,0 +1,936 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i | på</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="att-ha.css">
+
+<style>
+    #infoModal .modal-content {
+        text-align: left;
+    }
+</style>
+	
+    <script>
+
+        const sentences = [
+    {
+        words: [
+            { word: "Det finns flera nationalparker", translation: "There are several national parks" },
+            { word: `<select data-correct="i landet." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i landet.">i landet.</option>
+                <option value="på landet.">på landet.</option>
+            </select>`, translation: "in the country." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag köpte mjölk", translation: "I bought milk" },
+            { word: `<select data-correct="i affären." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i affären.">i affären.</option>
+                <option value="på affären.">på affären.</option>
+            </select>`, translation: "in the shop." }
+        ]
+    },
+    {
+        words: [
+            { word: "Det är lugnt och tyst", translation: "It’s calm and quiet" },
+            { word: `<select data-correct="i hemmet." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i hemmet.">i hemmet.</option>
+                <option value="på hemmet.">på hemmet.</option>
+            </select>`, translation: "in the home." }
+        ]
+    },
+    {
+        words: [
+            { word: "Katten satt", translation: "The cat was sitting" },
+            { word: `<select data-correct="i köket." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i köket.">i köket.</option>
+                <option value="på köket.">på köket.</option>
+            </select>`, translation: "in the kitchen." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jackan hänger", translation: "The jacket is hanging" },
+            { word: `<select data-correct="i hallen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i hallen.">i hallen.</option>
+                <option value="på hallen.">på hallen.</option>
+            </select>`, translation: "in the hallway." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi hittade gamla möbler", translation: "We found old furniture" },
+            { word: `<select data-correct="i källaren." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i källaren.">i källaren.</option>
+                <option value="på källaren.">på källaren.</option>
+            </select>`, translation: "in the cellar." }
+        ]
+    },
+    {
+        words: [
+            { word: "Det finns inget ljud", translation: "There is no sound" },
+            { word: `<select data-correct="i rymden." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i rymden.">i rymden.</option>
+                <option value="på rymden.">på rymden.</option>
+            </select>`, translation: "in space." }
+        ]
+    },
+    {
+        words: [
+            { word: "Bilen står", translation: "The car is" },
+            { word: `<select data-correct="i garaget." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i garaget.">i garaget.</option>
+                <option value="på garaget.">på garaget.</option>
+            </select>`, translation: "in the garage." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon sjöng högt", translation: "She sang loudly" },
+            { word: `<select data-correct="i duschen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i duschen.">i duschen.</option>
+                <option value="på duschen.">på duschen.</option>
+            </select>`, translation: "in the shower." }
+        ]
+    },
+    {
+        words: [
+            { word: "Det blir väldigt varmt", translation: "It gets very hot" },
+            { word: `<select data-correct="i bastun." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i bastun.">i bastun.</option>
+                <option value="på bastun.">på bastun.</option>
+            </select>`, translation: "in the sauna." }
+        ]
+    },
+    {
+        words: [
+            { word: "De bor", translation: "They live" },
+            { word: `<select data-correct="i lägenheten" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i lägenheten">i lägenheten</option>
+                <option value="på lägenheten">på lägenheten</option>
+            </select>`, translation: "in the flat" },
+            { word: "ovanför oss.", translation: "above us." }
+        ]
+    },
+    {
+        words: [
+            { word: "Barnen leker", translation: "The children are playing" },
+            { word: `<select data-correct="i rummet." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i rummet.">i rummet.</option>
+                <option value="på rummet.">på rummet.</option>
+            </select>`, translation: "in the room." }
+        ]
+    },
+    {
+        words: [
+            { word: "Verktygen ligger", translation: "The tools are kept" },
+            { word: `<select data-correct="i förrådet." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i förrådet.">i förrådet.</option>
+                <option value="på förrådet.">på förrådet.</option>
+            </select>`, translation: "in the storeroom." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi gömde oss", translation: "We hid" },
+            { word: `<select data-correct="i tunneln." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="i tunneln.">i tunneln.</option>
+                <option value="på tunneln.">på tunneln.</option>
+            </select>`, translation: "in the tunnel." }
+        ]
+    },
+ {
+    words: [
+        { word: "Hunden sover", translation: "The dog is sleeping" },
+        { word: `<select data-correct="i buren." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i buren.">i buren.</option>
+            <option value="på buren.">på buren.</option>
+        </select>`, translation: "in the cage." }
+    ]
+},
+{
+    words: [
+        { word: "Nyckeln låg", translation: "The key was" },
+        { word: `<select data-correct="i fickan." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i fickan.">i fickan.</option>
+            <option value="på fickan.">på fickan.</option>
+        </select>`, translation: "in the pocket." }
+    ]
+},
+{
+    words: [
+        { word: "Det är kallt", translation: "It’s cold" },
+        { word: `<select data-correct="i Sverige." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i Sverige.">i Sverige.</option>
+            <option value="på Sverige.">på Sverige.</option>
+        </select>`, translation: "in Sweden." }
+    ]
+},
+{
+    words: [
+        { word: "Vi ska gifta oss", translation: "We’re getting married" },
+        { word: `<select data-correct="i kyrkan." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i kyrkan.">i kyrkan.</option>
+            <option value="på kyrkan.">på kyrkan.</option>
+        </select>`, translation: "in the church." }
+    ]
+},
+{
+    words: [
+        { word: "Hon har bott", translation: "She has lived" },
+        { word: `<select data-correct="i New York." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i New York.">i New York.</option>
+            <option value="på New York.">på New York.</option>
+        </select>`, translation: "in New York." }
+    ]
+},
+{
+    words: [
+        { word: "Han försvann", translation: "He disappeared" },
+        { word: `<select data-correct="i mörkret." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i mörkret.">i mörkret.</option>
+            <option value="på mörkret.">på mörkret.</option>
+        </select>`, translation: "in the darkness." }
+    ]
+},
+{
+    words: [
+        { word: "Det glittrar", translation: "It sparkles" },
+        { word: `<select data-correct="i solljuset." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i solljuset.">i solljuset.</option>
+            <option value="på solljuset.">på solljuset.</option>
+        </select>`, translation: "in the sunlight." }
+    ]
+},
+{
+    words: [
+        { word: "Dammet syns", translation: "The dust is visible" },
+        { word: `<select data-correct="i ljuset." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i ljuset.">i ljuset.</option>
+            <option value="på ljuset.">på ljuset.</option>
+        </select>`, translation: "in the light." }
+    ]
+},
+{
+    words: [
+        { word: "Han kastade brevet", translation: "He threw the letter" },
+        { word: `<select data-correct="i elden." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i elden.">i elden.</option>
+            <option value="på elden.">på elden.</option>
+        </select>`, translation: "in the fire." }
+    ]
+},
+{
+    words: [
+        { word: "Vi tältade", translation: "We camped" },
+        { word: `<select data-correct="i skogen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i skogen.">i skogen.</option>
+            <option value="på skogen.">på skogen.</option>
+        </select>`, translation: "in the forest." }
+    ]
+},
+{
+    words: [
+        { word: "Vi åker på semester", translation: "We’re going on holiday" },
+        { word: `<select data-correct="i januari." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i januari.">i januari.</option>
+            <option value="på januari.">på januari.</option>
+        </select>`, translation: "in January." }
+    ]
+},
+{
+    words: [
+        { word: "Det är farligt", translation: "It’s dangerous" },
+        { word: `<select data-correct="i öknen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i öknen.">i öknen.</option>
+            <option value="på öknen.">på öknen.</option>
+        </select>`, translation: "in the desert." }
+    ]
+},
+{
+    words: [
+        { word: "Vi simmade", translation: "We swam" },
+        { word: `<select data-correct="i poolen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i poolen.">i poolen.</option>
+            <option value="på poolen.">på poolen.</option>
+        </select>`, translation: "in the pool" }
+    ]
+},
+{
+    words: [
+        { word: "Senast vi sågs var", translation: "The last time we saw each other was" },
+        { word: `<select data-correct="i lördags." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i lördags.">i lördags.</option>
+            <option value="på lördags.">på lördags.</option>
+        </select>`, translation: "on Saturday." }
+    ]
+},
+{
+    words: [
+        { word: "Jag kommer hem", translation: "I’ll be home" },
+        { word: `<select data-correct="i eftermiddag." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i eftermiddag.">i eftermiddag.</option>
+            <option value="på eftermiddag.">på eftermiddag.</option>
+        </select>`, translation: "in the afternoon." }
+    ]
+},
+{
+    words: [
+        { word: `<select data-correct="På eftermiddagen" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="På eftermiddagen">På eftermiddagen</option>
+            <option value="I eftermiddagen">I eftermiddagen</option>
+        </select>`, translation: "In the afternoon" },
+		{ word: "mådde han dåligt.", translation: "he felt unwell." },
+    ]
+},
+{
+    words: [
+        { word: `<select data-correct="På sommaren" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="På sommaren">På sommaren</option>
+            <option value="I sommaren">I sommaren</option>
+        </select>`, translation: "In the summer" },
+		{ word: "brukar han åka till Norge.", translation: "he usually travels to Norway." },
+    ]
+},
+{
+    words: [
+        { word: "Det står tydligt", translation: "It says clearly" },
+        { word: `<select data-correct="i planen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i planen.">i planen.</option>
+            <option value="på planen.">på planen.</option>
+        </select>`, translation: "in the plan." }
+    ]
+},
+{
+    words: [
+        { word: "Lampan sitter", translation: "The lamp is" },
+        { word: `<select data-correct="i taket." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i taket.">i taket.</option>
+            <option value="på taket.">på taket.</option>
+        </select>`, translation: "in the ceiling." }
+    ]
+},
+{
+    words: [
+        { word: "Tallriken står", translation: "The plate is" },
+        { word: `<select data-correct="på bordet." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på bordet.">på bordet.</option>
+            <option value="i bordet.">i bordet.</option>
+        </select>`, translation: "on the table." }
+    ]
+},
+{
+    words: [
+        { word: "Jag är", translation: "I’m" },
+        { word: `<select data-correct="på jobbet." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på jobbet.">på jobbet.</option>
+            <option value="i jobbet.">i jobbet.</option>
+        </select>`, translation: "at work" }
+    ]
+},
+{
+    words: [
+        { word: "Vi gick", translation: "We went" },
+        { word: `<select data-correct="på promenad." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på promenad.">på promenad.</option>
+            <option value="i promenad.">i promenad.</option>
+        </select>`, translation: "for a walk." }
+    ]
+},
+{
+    words: [
+        { word: "Det finns gamla lådor", translation: "There are old boxes" },
+        { word: `<select data-correct="på vinden." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på vinden.">på vinden.</option>
+            <option value="i vinden.">i vinden.</option>
+        </select>`, translation: "in the attic." }
+    ]
+},
+{
+    words: [
+        { word: "Han körde snabbt", translation: "He drove fast" },
+        { word: `<select data-correct="på vägen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på vägen.">på vägen.</option>
+            <option value="i vägen.">i vägen.</option>
+        </select>`, translation: "on the road." }
+    ]
+},
+{
+    words: [
+        { word: "Barnet sitter", translation: "The child is sitting" },
+        { word: `<select data-correct="på cykeln." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på cykeln.">på cykeln.</option>
+            <option value="i cykeln.">i cykeln.</option>
+        </select>`, translation: "on the bike." }
+    ]
+},
+{
+    words: [
+        { word: "Vi var", translation: "We were" },
+        { word: `<select data-correct="på semester" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på semester">på semester</option>
+            <option value="i semester">i semester</option>
+        </select>`, translation: "on holiday" },
+        { word: "i tre veckor.", translation: "for three weeks." }
+    ]
+},
+{
+    words: [
+        { word: "De sålde grönsaker", translation: "They sold vegetables" },
+        { word: `<select data-correct="på torget." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på torget.">på torget.</option>
+            <option value="i torget.">i torget.</option>
+        </select>`, translation: "at the market square." }
+    ]
+},
+{
+    words: [
+        { word: "Jag är", translation: "I’m" },
+        { word: `<select data-correct="på toaletten." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på toaletten.">på toaletten.</option>
+            <option value="i toaletten.">i toaletten.</option>
+        </select>`, translation: "on the toilet." }
+    ]
+},
+{
+    words: [
+        { word: "Det brinner", translation: "There’s a fire" },
+        { word: `<select data-correct="på våningen" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på våningen">på våningen</option>
+            <option value="i våningen">i våningen</option>
+        </select>`, translation: "on the floor" },
+        { word: "ovanför.", translation: "above." }
+    ]
+},
+{
+    words: [
+        { word: "Katten sover", translation: "The cat is sleeping" },
+        { word: `<select data-correct="på stolen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på stolen.">på stolen.</option>
+            <option value="i stolen.">i stolen.</option>
+        </select>`, translation: "on the chair." }
+    ]
+},
+{
+    words: [
+        { word: "Vi vandrade", translation: "We hiked" },
+        { word: `<select data-correct="på fjället." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på fjället.">på fjället.</option>
+            <option value="i fjället.">i fjället.</option>
+        </select>`, translation: "on the fell." }
+    ]
+},
+{
+    words: [
+        { word: "Det växer jordgubbar", translation: "Strawberries grow" },
+        { word: `<select data-correct="på gården." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på gården.">på gården.</option>
+            <option value="i gården.">i gården.</option>
+        </select>`, translation: "on the farm." }
+    ]
+},
+{
+    words: [
+        { word: "Det blommar vackert", translation: "It blooms beautifully" },
+        { word: `<select data-correct="på ängen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på ängen.">på ängen.</option>
+            <option value="i ängen.">i ängen.</option>
+        </select>`, translation: "on the meadow." }
+    ]
+},
+{
+    words: [
+        { word: "Vi åkte skridskor", translation: "We went ice skating" },
+        { word: `<select data-correct="på isen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på isen.">på isen.</option>
+            <option value="i isen.">i isen.</option>
+        </select>`, translation: "on the ice." }
+    ]
+},
+{
+    words: [
+        { word: "De stod och pratade", translation: "They stood talking" },
+        { word: `<select data-correct="på bron." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på bron.">på bron.</option>
+            <option value="i bron.">i bron.</option>
+        </select>`, translation: "on the bridge." }
+    ]
+},
+{
+    words: [
+        { word: "Hon sjöng", translation: "She sang" },
+        { word: `<select data-correct="på scenen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på scenen.">på scenen.</option>
+            <option value="i scenen.">i scenen.</option>
+        </select>`, translation: "on the stage." }
+    ]
+},
+{
+    words: [
+        { word: "Fåglarna sprang omkring", translation: "The birds ran around" },
+        { word: `<select data-correct="på fältet." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på fältet.">på fältet.</option>
+            <option value="i fältet.">i fältet.</option>
+        </select>`, translation: "on the field." }
+    ]
+},
+{
+    words: [
+        { word: "Vi såg en traktor", translation: "We saw a tractor" },
+        { word: `<select data-correct="på åkern." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på åkern.">på åkern.</option>
+            <option value="i åkern.">i åkern.</option>
+        </select>`, translation: "on the field." }
+    ]
+},
+{
+    words: [
+        { word: "Vi åt middag", translation: "We had dinner" },
+        { word: `<select data-correct="på terrassen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på terrassen.">på terrassen.</option>
+            <option value="i terrassen.">i terrassen.</option>
+        </select>`, translation: "on the terrace." }
+    ]
+},
+{
+    words: [
+        { word: "Vi gick", translation: "We walked" },
+        { word: `<select data-correct="på stigen" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på stigen">på stigen</option>
+            <option value="i stigen">i stigen</option>
+        </select>`, translation: "on the path" },
+        { word: "genom skogen.", translation: "through the woods." }
+    ]
+},
+{
+    words: [
+        { word: "Barnet sprang", translation: "The child ran" },
+        { word: `<select data-correct="på trottoaren." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på trottoaren.">på trottoaren.</option>
+            <option value="i trottoaren.">i trottoaren.</option>
+        </select>`, translation: "on the pavement." }
+    ]
+},
+{
+    words: [
+        { word: "Han ramlade", translation: "He fell" },
+        { word: `<select data-correct="på banan." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på banan.">på banan.</option>
+            <option value="i banan.">i banan.</option>
+        </select>`, translation: "on the track." }
+    ]
+},
+{
+    words: [
+        { word: "Raketen har landat", translation: "The rocket has landed" },
+        { word: `<select data-correct="på månen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på månen.">på månen.</option>
+            <option value="i månen.">i månen.</option>
+        </select>`, translation: "on the moon." }
+    ]
+},
+{
+    words: [
+        { word: "Det stod en bil", translation: "There was a car" },
+        { word: `<select data-correct="på gatan." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på gatan.">på gatan.</option>
+            <option value="i gatan.">i gatan.</option>
+        </select>`, translation: "in the street." }
+    ]
+},
+{
+    words: [
+        { word: "Glaset stod", translation: "The glass stood" },
+        { word: `<select data-correct="på brickan." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på brickan.">på brickan.</option>
+            <option value="i brickan.">i brickan.</option>
+        </select>`, translation: "on the tray." }
+    ]
+},
+{
+    words: [
+        { word: "Vi låg och solade", translation: "We lay sunbathing" },
+        { word: `<select data-correct="på stranden." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på stranden.">på stranden.</option>
+            <option value="i stranden.">i stranden.</option>
+        </select>`, translation: "on the beach." }
+    ]
+},
+{
+    words: [
+        { word: "Det fanns ett märke", translation: "There was a mark" },
+        { word: `<select data-correct="på ytan." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på ytan.">på ytan.</option>
+            <option value="i ytan.">i ytan.</option>
+        </select>`, translation: "on the surface." }
+    ]
+},
+{
+    words: [
+        { word: "Barnen spelar fotboll", translation: "The children are playing football" },
+        { word: `<select data-correct="på planen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på planen.">på planen.</option>
+            <option value="i planen.">i planen.</option>
+        </select>`, translation: "on the pitch." }
+    ]
+},
+{
+    words: [
+        { word: "Han satt", translation: "He sat" },
+        { word: `<select data-correct="på taket" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på taket">på taket</option>
+            <option value="i taket">i taket</option>
+        </select>`, translation: "on the roof" },
+        { word: "och tittade ut.", translation: "and looked out." }
+    ]
+},
+{
+    words: [
+        { word: "De har ett hus", translation: "They have a house" },
+        { word: `<select data-correct="på landet." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på landet.">på landet.</option>
+            <option value="i landet.">i landet.</option>
+        </select>`, translation: "in the countryside." }
+    ]
+},
+{
+    words: [
+        { word: "Vi lärde oss om fotosyntes", translation: "We learnt about photosynthesis" },
+        { word: `<select data-correct="i skolan" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i skolan">i skolan</option>
+            <option value="på skolan">på skolan</option>
+        </select>`, translation: "in school" },
+        { word: "idag.", translation: "today." }
+    ]
+},
+{
+    words: [
+        { word: "Hon trivs väldigt bra", translation: "She’s doing very well" },
+        { word: `<select data-correct="i skolan" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i skolan">i skolan</option>
+            <option value="på skolan">på skolan</option>
+        </select>`, translation: "in school" },
+        { word: "och får höga betyg.", translation: "and gets good grades." }
+    ]
+},
+{
+    words: [
+        { word: "Det var brandövning", translation: "There was a fire drill" },
+        { word: `<select data-correct="på skolan" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på skolan">på skolan</option>
+            <option value="i skolan">i skolan</option>
+        </select>`, translation: "at the school" },
+        { word: "idag.", translation: "today." }
+    ]
+},
+{
+    words: [
+        { word: "De håller på att bygga en ny matsal", translation: "They’re building a new canteen" },
+        { word: `<select data-correct="på skolan." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på skolan.">på skolan.</option>
+            <option value="i skolan.">i skolan.</option>
+        </select>`, translation: "at the school." }
+    ]
+},
+{
+    words: [
+        { word: "Han satt", translation: "He sat" },
+        { word: `<select data-correct="i fängelse" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i fängelse">i fängelse</option>
+            <option value="på fängelse">på fängelse</option>
+        </select>`, translation: "in prison" },
+        { word: "i tre år för grovt rån.", translation: "for three years for armed robbery." }
+    ]
+},
+{
+    words: [
+        { word: "Livet", translation: "Life" },
+        { word: `<select data-correct="i fängelset" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i fängelset">i fängelset</option>
+            <option value="på fängelset">på fängelset</option>
+        </select>`, translation: "in prison" },
+        { word: "var hårt men lärorikt.", translation: "was tough but educational." }
+    ]
+},
+{
+    words: [
+        { word: "Hon jobbar som psykolog", translation: "She works as a psychologist" },
+        { word: `<select data-correct="på fängelset." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på fängelset.">på fängelset.</option>
+            <option value="i fängelset.">i fängelset.</option>
+        </select>`, translation: "at the prison." }
+    ]
+},
+{
+    words: [
+        { word: "Det har varit ett rymningsförsök", translation: "There was an escape attempt" },
+        { word: `<select data-correct="på fängelset" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på fängelset">på fängelset</option>
+            <option value="i fängelset">i fängelset</option>
+        </select>`, translation: "at the prison" },
+        { word: "i natt.", translation: "last night." }
+    ]
+},
+{
+    words: [
+        { word: "Vi är", translation: "We’re" },
+        { word: `<select data-correct="i stan" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i stan">i stan</option>
+            <option value="på stan">på stan</option>
+        </select>`, translation: "in town" },
+        { word: "nu, tåget kom precis fram.", translation: "now, the train just arrived." }
+    ]
+},
+{
+    words: [
+        { word: "Hon bor", translation: "She lives" },
+        { word: `<select data-correct="i stan" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i stan">i stan</option>
+            <option value="på stan">på stan</option>
+        </select>`, translation: "in town" },
+        { word: "men jobbar på landet.", translation: "but works in the countryside." }
+    ]
+},
+{
+    words: [
+        { word: "Jag var", translation: "I was" },
+        { word: `<select data-correct="på stan" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på stan">på stan</option>
+            <option value="i stan">i stan</option>
+        </select>`, translation: "in town" },
+        { word: "och köpte nya skor.", translation: "and bought some new shoes." }
+    ]
+},
+{
+    words: [
+        { word: "Vi sågs", translation: "We met" },
+        { word: `<select data-correct="på stan" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på stan">på stan</option>
+            <option value="i stan">i stan</option>
+        </select>`, translation: "in town" },
+        { word: "och tog en fika tillsammans.", translation: "and had a coffee together." }
+    ]
+},
+{
+    words: [
+        { word: "Vi ska gå", translation: "We’re going" },
+        { word: `<select data-correct="på restaurang" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på restaurang">på restaurang</option>
+            <option value="i restaurang">i restaurang</option>
+        </select>`, translation: "to a restaurant" },
+        { word: "ikväll och fira.", translation: "tonight to celebrate." }
+    ]
+},
+{
+    words: [
+        { word: "De träffades första gången", translation: "They met for the first time" },
+        { word: `<select data-correct="på restaurang." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="på restaurang.">på restaurang.</option>
+            <option value="i restaurang.">i restaurang.</option>
+        </select>`, translation: "at a restaurant." }
+    ]
+},
+{
+    words: [
+        { word: "Det var väldigt varmt", translation: "It was very hot" },
+        { word: `<select data-correct="i restaurangen." onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i restaurangen.">i restaurangen.</option>
+            <option value="på restaurangen.">på restaurangen.</option>
+        </select>`, translation: "in the restaurant." }
+    ]
+},
+{
+    words: [
+        { word: "Det fanns inga lediga bord", translation: "There were no free tables" },
+        { word: `<select data-correct="i restaurangen" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+            <option value="">...</option>
+            <option value="i restaurangen">i restaurangen</option>
+            <option value="på restaurangen">på restaurangen</option>
+        </select>`, translation: "in the restaurant" },
+        { word: "när vi kom.", translation: "when we arrived." }
+    ]
+}
+
+
+
+        ];
+
+    </script>
+	
+	<script src="att-ha.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title"><i class="fas fa-question" aria-hidden="true" style="margin-right: 8px;"></i> Pick the correct preposition: i | på</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Should it be "i" or "på"?</h2>
+            <p>
+	    In most cases, Swedish and English express things the same way: "Katten sitter PÅ stolen" translates directly as "The cat is sitting ON the chair.", but in some cases it turns out differently. And sometimes the meaning changes, for instance if you say "i skolan" or "på skolan".</p>
+<br />
+<p>Here’s a large number of examples for you. Good luck!</p>
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
