@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>om | på | i | för</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="att-ha.css">
+
+<style>
+    #infoModal .modal-content {
+        text-align: left;
+        width: 90%;
+        max-width: 950px;
+    }
+</style>
+	
+    <script>
+
+        const sentences = [
+{
+    words: [
+        { word: "Jag har inte träffat min bror", translation: "I haven’t seen my brother" },
+        { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option"> 
+            <option value="">...</option>
+            <option value="om">om</option> 
+            <option value="på">på</option> 
+            <option value="i">i</option> 
+            <option value="för">för</option> 
+        </select>`, translation: "for" },
+        { word: "tre år.", translation: "three years." }
+    ]
+},
+    {
+        words: [
+            { word: "Skynda dig! Mötet börjar", translation: "Hurry up! The meeting starts" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "tio minuter.", translation: "ten minutes." }
+        ]
+    },
+    {
+        words: [
+            { word: "Läkaren sa att jag måste stanna hemma", translation: "The doctor said I must stay at home" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "en vecka.", translation: "a week." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag gjorde klar utbildningen", translation: "I completed the course" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "sex månader.", translation: "six months." }
+        ]
+    },
+    {
+        words: [
+            { word: `<select data-correct="Om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="Om">Om</option>
+                <option value="På">På</option>
+                <option value="I">I</option>
+                <option value="För">För</option>
+		    </select>`, translation: "In" },
+            { word: "fem månader ska han bli pappa.", translation: "five months, he’s going to be a father." }
+        ]
+    },
+    {
+        words: [
+            { word: "Är du klar snart? Du har suttit på toaletten", translation: "Are you nearly done? You’ve been on the toilet" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "en kvart.", translation: "fifteen minutes." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon bröt benet", translation: "She broke her leg" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "en vecka sedan.", translation: "a week ago." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han fick inte gå", translation: "He wasn’t allowed to walk" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "en månad efter operationen.", translation: "a month after the surgery." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag sprang till jobbet", translation: "I ran to work" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "fem minuter.", translation: "five minutes." }
+        ]
+    },
+    {
+        words: [
+            { word: "De går i kyrkan två gånger", translation: "They go to church twice" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "a" },
+            { word: "året.", translation: "year." }
+        ]
+    },
+    {
+        words: [
+            { word: "De går i kyrkan två gånger", translation: "They go to church twice" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "a" },
+            { word: "månaden.", translation: "month." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han cyklade", translation: "He cycled" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "en timme.", translation: "an hour." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han cyklade hela vägen", translation: "He cycled the whole way" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "en timme.", translation: "an hour." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon läser franska tre gånger", translation: "She studies French three times" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "a" },
+            { word: "veckan.", translation: "week." }
+        ]
+    },
+    {
+        words: [
+            { word: `<select data-correct="Om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="Om">Om</option>
+                <option value="På">På</option>
+                <option value="I">I</option>
+                <option value="För">För</option>
+		    </select>`, translation: "In" },
+            { word: "två dagar ska jag gifta mig.", translation: "two days, I’m getting married." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi åker till Grekland", translation: "We’re going to Greece" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "fyra veckor.", translation: "four weeks." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi stannar i Grekland", translation: "We’re staying in Greece" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "fyra veckor.", translation: "four weeks." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag har inte ätit pizza", translation: "I haven’t eaten pizza" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "fyra månader.", translation: "four months." }
+        ]
+    },
+    {
+        words: [
+            { word: "En måltid", translation: "One cooked meal" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "a" },
+            { word: "dagen räcker för de flesta.", translation: "day is enough for most people." }
+        ]
+    },
+    {
+        words: [
+            { word: "Såhär lyckas du se hela Vasamuseet", translation: "Here’s how you can see the entire Vasa Museum" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "en timme.", translation: "an hour." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han kom fram", translation: "He arrived" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "fem minuter sedan.", translation: "five minutes ago." }
+        ]
+    },
+    {
+        words: [
+            { word: "Sara ska börja gymnasiet", translation: "Sara will start upper secondary school" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "två år.", translation: "two years." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han var väldigt rastlös. Han stod stilla", translation: "He was very restless. He stood still" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "typ två sekunder.", translation: "like two seconds." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han borde ha varit framme", translation: "He should have arrived" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "två timmar sedan.", translation: "two hours ago." }
+        ]
+    },
+    {
+        words: [
+            { word: `<select data-correct="För" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="Om">Om</option>
+                <option value="På">På</option>
+                <option value="I">I</option>
+                <option value="För">För</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "tio år sedan var jag i Spanien.", translation: "Ten years ago, I was in Spain." }
+        ]
+    },
+    {
+        words: [
+            { word: "De åkte till London", translation: "They went to London" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "tre dagar sedan.", translation: "three days ago." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag vill att du ska koka äggen", translation: "I want you to boil the eggs" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "sju minuter.", translation: "seven minutes." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han ringer tre samtal", translation: "He makes three calls" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "a" },
+            { word: "minuten.", translation: "minute." }
+        ]
+    },
+    {
+        words: [
+            { word: "Det var medeltid i Sverige", translation: "It was the Middle Ages in Sweden" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "500 år sedan.", translation: "500 years ago." }
+        ]
+    },
+    {
+        words: [
+            { word: "De flyttade till Stockholm", translation: "They moved to Stockholm" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "sex veckor sedan.", translation: "six weeks ago." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag har inte kört bil", translation: "I haven’t driven a car" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "över ett år.", translation: "over a year." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han matar hönsen tre gånger", translation: "He feeds the chickens three times" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "a" },
+            { word: "dagen.", translation: "day." }
+        ]
+    },
+    {
+        words: [
+            { word: `<select data-correct="På" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="Om">Om</option>
+                <option value="På">På</option>
+                <option value="I">I</option>
+                <option value="För">För</option>
+		    </select>`, translation: "In" },
+            { word: "bara tre sekunder var han klar.", translation: "just three seconds, he was done." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han skrev hela ansökan till jobbet", translation: "He wrote the whole job application" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "10 minuter.", translation: "ten minutes." }
+        ]
+    },
+    {
+        words: [
+            { word: "De har inte hört av sig", translation: "They haven’t been in touch" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "fyra veckor.", translation: "four weeks." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag ska gå till doktorn", translation: "I’m going to the doctor" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "en vecka.", translation: "a week." }
+        ]
+    },
+    {
+        words: [
+            { word: "Huset byggdes", translation: "The house was built" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "25 år sedan.", translation: "25 years ago." }
+        ]
+    },
+    {
+        words: [
+            { word: "Stäng av din Play Station nu! Du har spelat", translation: "Turn off your PlayStation now! You’ve been playing" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "tre timmar!", translation: "three hours!" }
+        ]
+    },
+    {
+        words: [
+            { word: "Var är mina fotbollsskor? Matchen börjar", translation: "Where are my football boots? The match starts" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "15 minuter.", translation: "15 minutes." }
+        ]
+    },
+    {
+        words: [
+            { word: "Du får komma hem nu. Vi ska äta", translation: "You have to come home now. We’re eating" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "10 minuter.", translation: "10 minutes." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi satt och väntade på dig", translation: "We sat waiting for you" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "tre timmar!", translation: "three hours!" }
+        ]
+    },
+    {
+        words: [
+            { word: "Du borde ha städat ditt rum", translation: "You should have cleaned your room" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "(no equivalence)" },
+            { word: "flera dagar sedan.", translation: "several days ago." }
+        ]
+    },
+    {
+        words: [
+            { word: "Du har inte svarat i telefon", translation: "You haven’t answered the phone" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "flera timmar.", translation: "several hours." }
+        ]
+    },
+    {
+        words: [
+            { word: `<select data-correct="I" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="Om">Om</option>
+                <option value="På">På</option>
+                <option value="I">I</option>
+                <option value="För">För</option>
+            </select>`, translation: "For" },
+            { word: "sju månader satt de fängslade i det ökända fånglägret.", translation: "seven months, they were imprisoned in the infamous camp." }
+        ]
+    },	
+    {
+        words: [
+            { word: "Kidnapparen höll Hampus fängslad i sin källare", translation: "The kidnapper held Hampus captive in his cellar" },
+            { word: `<select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "åtta år.", translation: "eight years." }
+        ]
+    },
+    {
+        words: [
+            { word: "Var är du? De stänger gaten", translation: "Where are you? They’re closing the gate" },
+            { word: `<select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "tolv minuter!", translation: "twelve minutes!" }
+        ]
+    },
+    {
+        words: [
+            { word: "De byggde klart huset", translation: "They finished building the house" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "tolv dagar.", translation: "twelve days." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han sprang 10 kilometer", translation: "He ran 10 kilometres" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "in" },
+            { word: "36 minuter.", translation: "36 minutes." }
+        ]
+    },
+    {
+        words: [
+            { word: `<select data-correct="Om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="Om">Om</option>
+                <option value="På">På</option>
+                <option value="I">I</option>
+                <option value="För">För</option>
+            </select>`, translation: "In" },
+            { word: "två minuter måste jag gå.", translation: "two minutes, I have to go." }
+        ]
+    },	
+    {
+        words: [
+            { word: "Var är Thomas? Jag har inte sett honom", translation: "Where’s Thomas? I haven’t seen him" },
+            { word: `<select data-correct="på" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                <option value="">...</option>
+                <option value="om">om</option>
+                <option value="på">på</option>
+                <option value="i">i</option>
+                <option value="för">för</option>
+            </select>`, translation: "for" },
+            { word: "två dagar.", translation: "two days." }
+        ]
+    }
+ 
+        ];
+
+    </script>
+	
+	<script src="att-ha.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title"><i class="fas fa-clock" aria-hidden="true" style="margin-right: 8px;"></i> Pick the correct time preposition: om | på | i | för</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">On Time Prepositions</h2>
+            <h3>om<sup>1</sup></h3>
+<p>
+  Refers to the time <em>until</em> sth will happen in the future. (If sth will happen in two days, it will happen <strong>"<u>om</u> två dagar"</strong>)<br>
+</p>
+
+<h3>om<sup>2</sup></h3>
+<p>
+  Used specifically with "dagen" or "året" to express <strong>frequency specifically per day or year</strong>.
+</p>
+
+<h3>på<sup>1</sup></h3>
+<p>
+  Refers to the <strong>brief time it took</strong> to complete sth. (If you only needed five minutes, you did it <strong>"<u>på</u> fem minuter"</strong>)<br>
+</p>
+
+<h3>på<sup>2</sup></h3>
+<p>
+  Refers to sth you <strong>haven't done for a period of time</strong>. (If three weeks have passed, you haven’t done it <strong>"<u>på</u> tre veckor"</strong>)<br>
+</p>
+
+<h3>i<sup>1</sup></h3>
+<p>
+  Refers to the <strong>duration</strong> during which sth occurred. (If 20 minutes passed before you saw the doctor, you waited <strong>"<u>i</u> 20 minuter"</strong>)<br>
+</p>
+
+<h3>i<sup>2</sup></h3>
+<p>
+  Used with "sekunden", "minuten", "timmen", etc., to express <strong>frequency per second, minute, hour, etc.</strong>.<br>
+</p>
+
+<h3>för</h3>
+<p>
+  Refers to <strong>when sth happened in the past</strong>. (If you did sth a week ago, you did it <strong>"<u>för</u> en vecka sedan</strong>")<br>
+</p>
+<br />
+<p>
+In this exercise, you'll find 50 example sentences. Good luck!
+</p>
+
+
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
