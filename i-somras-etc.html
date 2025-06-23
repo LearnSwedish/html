@@ -1,0 +1,1254 @@
+
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i somras | {under; på; hela; över} sommaren</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="att-ha.css">
+
+<style>
+    #infoModal .modal-content {
+        text-align: left;
+        width: 90%;
+        max-width: 950px;
+    }
+</style>
+	
+    <script>
+
+const sentences = [
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-1">
+                <select data-correct="I somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-1">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: "åkte vi till Gotland över en helg.",
+            translation: "we went to Gotland for a weekend."
+        }
+    ]
+},
+{
+    words: [
+        { word: "Jag träffade min barndomsvän ", translation: "I met my childhood friend " },
+        {
+            word: `<span class="word" aria-describedby="tooltip-2">
+                <select data-correct="i somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-2">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: "för första gången på tio år.",
+            translation: "for the first time in ten years."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-3">
+                <select data-correct="I somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-3">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " var vi på en konsert i stadsparken.",
+            translation: "we went to a concert in the city park."
+        }
+    ]
+},
+{
+    words: [
+        { word: "Vi såg en älg i trädgården ", translation: "We saw a moose in the garden " },
+        {
+            word: `<span class="word" aria-describedby="tooltip-4">
+                <select data-correct="i somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-4">?</span>
+            </span>`,
+            translation: null
+        },
+        { word: "– det har aldrig hänt förut!", translation: "– that has never happened before!" }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-5">
+                <select data-correct="I somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-5">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: "gick strömmen mitt under middagen.",
+            translation: "the power went out in the middle of dinner."
+        }
+    ]
+},
+{
+    words: [
+        { word: "De friade till varandra ", translation: "They got engaged " },
+        {
+            word: `<span class="word" aria-describedby="tooltip-6">
+                <select data-correct="i somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-6">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: "på en brygga vid havet.",
+            translation: "on a jetty by the sea."
+        }
+    ]
+},
+{
+    words: [
+        { word: "Jag tappade min mobil i sjön ", translation: "I dropped my phone in the lake " },
+        {
+            word: `<span class="word" aria-describedby="tooltip-7">
+                <select data-correct="i somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-7">last summer.</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-8">
+                <select data-correct="I somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-8">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: "körde jag av vägen under ett skyfall.",
+            translation: "I drove off the road during a downpour."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-9">
+                <select data-correct="I somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-9">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: "fick vi oväntat besök från Kanada.",
+            translation: "we had unexpected visitors from Canada."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-10">
+                <select data-correct="I somras" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-10">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " badade vi i en iskall fjällsjö – bara en gång, men det minns jag!",
+            translation: "we swam in an icy mountain lake – just once, but I remember it!"
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-11">
+                <select data-correct="På sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-11">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " brukar vi alltid äta middag ute på altanen.",
+            translation: "we always eat dinner outside on the terrace."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Jag går barfota så ofta jag kan ",
+            translation: "I go barefoot as often as I can "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-12">
+                <select data-correct="på sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-12">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-13">
+                <select data-correct="På sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-13">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " läser jag alltid flera böcker i hängmattan.",
+            translation: "I always read several books in the hammock."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Vi cyklar till badplatsen nästan varje dag ",
+            translation: "We cycle to the bathing place almost every day "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-14">
+                <select data-correct="på sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-14">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-15">
+                <select data-correct="På sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-15">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " äter vi färska jordgubbar med mjölk till frukost.",
+            translation: "we eat fresh strawberries with milk for breakfast."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Jag sover med öppet fönster ",
+            translation: "I sleep with the window open "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-16">
+                <select data-correct="på sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-16">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " oavsett väder.",
+            translation: "regardless of the weather."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-17">
+                <select data-correct="På sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-17">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " brukar barnen leka ute till sent på kvällen.",
+            translation: "the children usually play outside until late in the evening."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Vi campar alltid minst en vecka ",
+            translation: "We always camp for at least one week "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-18">
+                <select data-correct="på sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-18">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-19">
+                <select data-correct="På sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-19">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " grillar vi nästan varje helg.",
+            translation: "we grill almost every weekend."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Jag tar ofta långa kvällspromenader ",
+            translation: "I often take long evening walks "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-20">
+                <select data-correct="på sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-20">in summer.</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-21">
+                <select data-correct="Under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-21">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " åkte vi flera gånger till stranden.",
+            translation: "we went to the beach several times."
+        }
+    ]
+},
+{
+    words: [
+        { word: "Jag träffade mina kusiner flera gånger ", translation: "I met my cousins several times " },
+        {
+            word: `<span class="word" aria-describedby="tooltip-22">
+                <select data-correct="under sommaren." onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-22">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-23">
+                <select data-correct="Under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-23">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " hade vi många grillkvällar med vänner.",
+            translation: "we had many barbecue evenings with friends."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Det regnade ovanligt ofta ",
+            translation: "It rained unusually often "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-24">
+                <select data-correct="under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-24">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-25a">
+                <select data-correct="Under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-25a">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " besökte vi flera olika festivaler.",
+            translation: "we visited several different festivals."
+        }
+    ]
+},
+{
+    words: [
+        { word: "Vi plockade bär nästan varje helg ", translation: "We picked berries almost every weekend " },
+        {
+            word: `<span class="word" aria-describedby="tooltip-26">
+                <select data-correct="under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-26">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-27a">
+                <select data-correct="Under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-27a">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " var vi på bio minst fem gånger.",
+            translation: "we went to the cinema at least five times."
+        }
+    ]
+},
+{
+    words: [
+        { word: "Jag jobbade extra på kaféet flera dagar i veckan ", translation: "I worked extra at the café several days a week " },
+        {
+            word: `<span class="word" aria-describedby="tooltip-28">
+                <select data-correct="under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-28">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-29a">
+                <select data-correct="Under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-29a">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " tog vi många långa kvällspromenader.",
+            translation: "we took many long evening walks."
+        }
+    ]
+},
+{
+    words: [
+        { word: "Vi badade i sjön nästan varje dag ", translation: "We swam in the lake almost every day " },
+        {
+            word: `<span class="word" aria-describedby="tooltip-30">
+                <select data-correct="under sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-30">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Jag arbetade dagligen ",
+            translation: "I worked daily "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-31">
+                <select data-correct="hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-31">the whole summer</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " utan något avbrott.",
+            translation: "without any interruption."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Hon bodde hos sin mormor ",
+            translation: "She stayed with her grandmother "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-32">
+                <select data-correct="hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-32">the whole summer</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " från första till sista dagen.",
+            translation: "from the first to the last day."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Byggarbetarna kom till oss ",
+            translation: "The construction workers came to us "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-33">
+                <select data-correct="hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-33">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: "från måndag till söndag.",
+            translation: "from Monday to Sunday."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-34a">
+                <select data-correct="Hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-34a">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " låg jag sjuk i samma sega förkylning dag ut och dag in.",
+            translation: "I was sick with the same stubborn cold day in and day out."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-34">
+                <select data-correct="Hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="I somras">I somras</option>
+                    <option value="På sommaren">På sommaren</option>
+                    <option value="Under sommaren">Under sommaren</option>
+                    <option value="Hela sommaren">Hela sommaren</option>
+                    <option value="Över sommaren">Över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-34">All summer long</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " låg jag sjuk i samma sega förkylning dag ut och dag in.",
+            translation: "I was sick with the same stubborn cold day in and day out."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-36a">
+                <select data-correct="hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-36a">All summer long</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " steg jag upp tidigt för att skriva morgon efter morgon.",
+            translation: "I got up early to write morning after morning."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Han tränade kontinuerligt ",
+            translation: "He trained continuously "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-37a">
+                <select data-correct="hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-37a">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " utan att missa en enda träning.",
+            translation: "without missing a single session."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Vi hyrde samma stuga ",
+            translation: "We rented the same cabin "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-38a">
+                <select data-correct="hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-38a">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " och vistades där dagligen.",
+            translation: "and stayed there daily."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Vi hyrde samma stuga ",
+            translation: "We rented the same cabin "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-38a">
+                <select data-correct="hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-38a">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " och vistades där dagligen.",
+            translation: "and stayed there daily."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Vi renoverade huset ",
+            translation: "We renovated the house "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-40a">
+                <select data-correct="hela sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>
+                <span class="tooltip" id="tooltip-40a">?</span>
+            </span>`,
+            translation: null
+        },
+        {
+            word: " och arbetade oavbrutet sju dagar i veckan.",
+            translation: "and worked nonstop seven days a week."
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Båten lämnades kvar i hamnen ",
+            translation: "The boat was left in the harbour "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-41a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-41a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Cykeln förvarades i garaget ",
+            translation: "The bike was stored in the garage "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-42a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-42a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Fönsterbläcket låg kvar på bänken ",
+            translation: "The window putty remained on the bench "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-43a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-43a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Möblerna stod i källaren och samlade damm",
+            translation: "The furniture stood in the cellar gathering dust"
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-44a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-44a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Böckerna låg helt orörda i stugan ",
+            translation: "The books lay completely untouched in the cottage "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-45a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-45a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Trädgårdsmöblerna stod kvar på altanen ",
+            translation: "The garden furniture stayed on the terrace "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-46a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-46a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Fotbollsskorna förvarades i förrådet ",
+            translation: "The football boots were stored in the storeroom "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-47a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-47a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Växterna stod kvar i växthuset ",
+            translation: "The plants remained in the greenhouse "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-48a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-48a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Kartongerna lämnades i vinden ",
+            translation: "The boxes were left in the attic "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-49a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-49a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: "Bilen stod parkerad hos föräldrarna ",
+            translation: "The car was parked at the parents' place "
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-50a">
+                <select data-correct="över sommaren" onchange="evaluateAnswer(this)" aria-label="Välj rätt uttryck">
+                    <option value="">...</option>
+                    <option value="i somras">i somras</option>
+                    <option value="på sommaren">på sommaren</option>
+                    <option value="under sommaren">under sommaren</option>
+                    <option value="hela sommaren">hela sommaren</option>
+                    <option value="över sommaren">över sommaren</option>
+                </select>.
+                <span class="tooltip" id="tooltip-50a">?</span>
+            </span>`,
+            translation: null
+        }
+    ]
+}
+];
+
+
+
+    </script>
+	
+	<script src="att-ha.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title"><i class="fas fa-clock" aria-hidden="true" style="margin-right: 8px;"></i> Pick the correct time expression: i somras | {under; på; hela; över} sommaren</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">On these expressions</h2><br />
+      <strong>Vi sågs i somras.</strong> (last summer)<br />
+
+Specific summer — the most recent past one. Common in everyday speech. Emphasises that sth happened, usually only once.<br /><br />
+
+<strong>Vi sågs under sommaren.</strong> (during the summer)<br />
+Not a specific summer. Formal style, common in writing. Emphasises that sth occurs repeatedly during a certain period.<br /><br />
+
+<strong>Vi sågs på sommaren.</strong> (in summer)<br />
+
+Not a specific summer – rather sth one usually does in summers.<br /><br />
+
+<strong>Vi sågs hela sommaren.</strong> (all the summer)<br />
+
+Implies "from start to finish".<br /><br />
+
+<strong>Vi sågs över sommaren (?).</strong> (over the summer)<br />
+
+Implies that sth (without interruption) was left behind, remained untouched, or was stored unused all summer.<br /><br />
+
+In this exercise, you'll find 50 example sentences. Good luck!
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
