@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Årstidsövning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* === Baslayout === */
+  body {
+    font-family: 'Work Sans', sans-serif;
+    text-align: center;
+    margin: 50px;
+  }
+
+  /* === Bildcontainer & markör === */
+  .image-container {
+    position: relative;
+    display: block;
+    max-width: 80%;
+    margin: 40px auto;
+  }
+
+  .season-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .marker {
+    position: absolute;
+    bottom: -60px;
+    width: 50px;
+    height: auto;
+    transform: translateX(-50%);
+    transition: left 0.8s ease;
+    z-index: 2;
+  }
+
+  /* === Övningsmening === */
+  .exercise {
+    margin-top: 40px;
+    font-size: 30px;
+    font-family: 'Work Sans', sans-serif;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    min-height: 2em;
+  }
+
+  .exercise.visible {
+    opacity: 1;
+  }
+
+  /* === Löpande text === */
+  p {
+    font-size: 20px;
+    font-family: 'Work Sans', sans-serif;
+  }
+
+  /* === Dropdown / select === */
+  .dropdown {
+    margin-top: 20px;
+    font-size: 20px;
+  }
+
+  select#dropdown {
+    font-size: 22px;
+    font-family: 'Work Sans', sans-serif;
+    padding: 10px 16px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background-color: #fdfdfd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  select#dropdown:hover {
+    border-color: #888;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+  }
+
+  select#dropdown:focus {
+    outline: none;
+    border-color: #555;
+    box-shadow: 0 0 0 3px rgba(100, 150, 255, 0.3);
+  }
+
+  /* === Feedback (rätt/fel) === */
+  .feedback {
+    margin-top: 20px;
+    font-size: 40px;
+  }
+
+  .correct {
+    color: green;
+  }
+
+  .incorrect {
+    color: red;
+  }
+
+  /* === Overlay-knapp (övningsvy) === */
+  #statusOverlay {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    text-align: right;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 8px 15px 12px 15px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    z-index: 10;
+  }
+
+  #statusOverlay button {
+    margin-top: 6px;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    cursor: pointer;
+  }
+
+	/* === Specialmeddelande === */
+  .special-message {
+	color: darkred;
+	font-size: 30px;
+	margin-top: 20px;
+	}
+</style>
+
+</head>
+<body>
+
+<div id="statusOverlay">
+  <div id="progressCounter">Sentence: 1 / 50</div>
+  <div id="mistakeCounter">Mistakes: 0 / 50</div>
+  <button onclick="window.open('seasons.html', '_blank')">Training area</button>
+</div>
+
+  <div class="image-container">
+    <img src="https://i.imgur.com/9nZ3ejZ.png" alt="Årstider" class="season-image" id="seasonImage" />
+    <img src="https://i.imgur.com/gSypQZw.png" alt="Markör" class="marker" id="marker" />
+  </div>
+<br /><br />
+  <div class="exercise" id="exerciseSentence"></div>
+<br />
+<p>The sentence is about:</p>
+  <div class="dropdown">
+    <select id="dropdown" onchange="checkAnswer(this.value)">
+      <option value="">Pick correct answer...</option>
+    </select>
+  </div>
+  <div class="special-message" id="specialMessage"></div>
+  <div class="feedback" id="feedback"></div>
+
+  <script>
+const exercises = [
+  {
+    "sentence": "Two springs ago, we renovated our kitchen.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "förra våren",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "The cherry trees were beautiful two springs ago.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "förra våren",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "We moved house two springs ago.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "förra våren",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "Two springs ago, I started my new job.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "förra våren",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "It rained a lot two springs ago.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "förra våren",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "We spent most of last summer at the beach.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "förra sommaren",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "Last summer, we visited my grandparents every week.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "förra sommaren",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "I broke my foot last summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "förra sommaren",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "Last summer, I worked at a café.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "förra sommaren",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "We camped in the forest last summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "förra sommaren",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "I started university last autumn.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höstas",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "The leaves were colourful last autumn.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höstas",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "We harvested apples last autumn.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höstas",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "Last autumn, we took long walks every weekend.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höstas",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "Last autumn, I joined a choir.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höstas",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "It snowed a lot last winter.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vintras",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "We went skiing last winter.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vintras",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "I stayed indoors most of last winter.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vintras",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "Last winter, we built a snowman.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vintras",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "Last winter, our heating broke down.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vintras",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "Last spring, I bought a new bicycle.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "i våras",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "We planted flowers last spring.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "i våras",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "Last spring, I ran my first marathon.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "i våras",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "Last spring was unusually warm.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "i våras",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "We got a new dog last spring.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "i våras",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 92,
+      "i vår": 84,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "I am travelling to Italy this summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "i sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "We're planning a road trip this summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "i sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "I'm starting a new course this summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "i sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "This summer, I'll be working full time.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "i sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "We're going to a festival this summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "i sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 92,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "I'm starting a painting class this autumn.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höst",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "This autumn, we’re redecorating the house.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höst",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "I'm looking forward to the colours this autumn.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höst",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "We're picking mushrooms this autumn.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höst",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "I’ll be busy with work this autumn.",
+    "options": [
+      "förra hösten",
+      "nästa höst",
+      "i höst",
+      "i höstas"
+    ],
+    "correct": "i höst",
+    "markerPositions": {
+      "förra hösten": 85,
+      "nästa höst": 92,
+      "i höst": 64,
+      "i höstas": 24.3
+    }
+  },
+  {
+    "sentence": "I will be moving to Stockholm this winter.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vinter",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "We're celebrating Christmas at home this winter.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vinter",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "This winter, I’ll take up skiing.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vinter",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "We’ll have guests from abroad this winter.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vinter",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "I'll wear my new coat this winter.",
+    "options": [
+      "förra vintern",
+      "nästa vinter",
+      "i vinter",
+      "i vintras"
+    ],
+    "correct": "i vinter",
+    "markerPositions": {
+      "förra vintern": 43,
+      "nästa vinter": 92,
+      "i vinter": 74.8,
+      "i vintras": 35
+    }
+  },
+  {
+    "sentence": "Next spring, we plan to visit Japan.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "nästa vår",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 84.8,
+      "i vår": 84.8,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "I’ll start gardening next spring.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "nästa vår",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 84.8,
+      "i vår": 84.8,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "We’re organising a wedding next spring.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "nästa vår",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 84.8,
+      "i vår": 84.8,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "I want to run a race next spring.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "nästa vår",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 84.8,
+      "i vår": 84.8,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "We’ll open the café next spring.",
+    "options": [
+      "förra våren",
+      "nästa vår",
+      "i vår",
+      "i våras"
+    ],
+    "correct": "nästa vår",
+    "markerPositions": {
+      "förra våren": 5.5,
+      "nästa vår": 84.8,
+      "i vår": 84.8,
+      "i våras": 45
+    }
+  },
+  {
+    "sentence": "Next summer, we're going to Gotland.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "nästa sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 94.7,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "I'm working abroad next summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "nästa sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 94.7,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "We're saving money for next summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "nästa sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 94.7,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "Next summer will be amazing.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "nästa sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 94.7,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  },
+  {
+    "sentence": "We’re hosting a reunion next summer.",
+    "options": [
+      "förra sommaren",
+      "nästa sommar",
+      "i sommar",
+      "i somras"
+    ],
+    "correct": "nästa sommar",
+    "markerPositions": {
+      "förra sommaren": 15.5,
+      "nästa sommar": 94.7,
+      "i sommar": 55,
+      "i somras": 22
+    }
+  }
+];
+
+let currentExercise = 0;
+let lastCategory = "";
+let mistakeCount = 0;
+
+function getCategoryFromExercise(exercise) {
+  const correct = exercise.correct;
+  switch (correct) {
+    case "förra våren": return "past-spring-1";
+    case "förra sommaren": return "past-summer";
+    case "i höstas": return "past-autumn";
+    case "i vintras": return "past-winter";
+    case "i våras": return "last-spring";
+    case "i sommar": return "this-summer";
+    case "i höst": return "this-autumn";
+    case "i vinter": return "this-winter";
+    case "nästa vår": return "next-spring";
+    case "nästa sommar": return "next-summer";
+    default: return "unknown";
+  }
+}
+
+function shuffleAvoidingRepeat(arr) {
+  let shuffled;
+  let attempt = 0;
+  do {
+    shuffled = [...arr].sort(() => Math.random() - 0.5);
+    attempt++;
+  } while (
+    attempt < 100 &&
+    shuffled.some((ex, i, a) => i > 0 && getCategoryFromExercise(ex) === getCategoryFromExercise(a[i - 1]))
+  );
+  return shuffled;
+}
+	
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+    function loadExercise(index) {
+      const ex = exercises[index];
+      const sentenceDiv = document.getElementById("exerciseSentence");
+		sentenceDiv.classList.remove("visible");
+
+		setTimeout(() => {
+		sentenceDiv.textContent = ex.sentence;
+		sentenceDiv.classList.add("visible");
+	}, 50);
+
+      const dropdown = document.getElementById("dropdown");
+      dropdown.innerHTML = '<option value="">Pick correct answer...</option>';
+      ex.options.forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.textContent = opt;
+        dropdown.appendChild(option);
+      });
+
+      moveMarkerTo(ex.correct); // Markören visas på rätt årstid
+      document.getElementById("feedback").textContent = "";
+	  
+	  document.getElementById("progressCounter").textContent = `Sentence: ${index + 1} / ${exercises.length}`;
+
+    }
+
+    function moveMarkerTo(option) {
+      const ex = exercises[currentExercise];
+      const marker = document.getElementById("marker");
+      const image = document.getElementById("seasonImage");
+      const position = ex.markerPositions[option];
+
+      if (position !== undefined) {
+        const imageWidth = image.offsetWidth;
+        const newLeft = (position / 100) * imageWidth;
+        marker.style.left = `${newLeft}px`;
+      }
+    }
+
+	function checkAnswer(selected) {
+		if (!selected) return;
+		const ex = exercises[currentExercise];
+		const feedback = document.getElementById("feedback");
+		const specialMessage = document.getElementById("specialMessage");
+		specialMessage.textContent = "";
+		specialMessage.className = "special-message";
+		
+		if (selected === ex.correct) {
+			feedback.textContent = "✅";
+			feedback.className = "feedback correct";
+			specialMessage.textContent = "";
+		
+			setTimeout(() => {
+			currentExercise++;
+			if (currentExercise < exercises.length) {
+				loadExercise(currentExercise);
+			} else {
+				feedback.textContent = "✔️ Övningen är klar!";
+				document.getElementById("exerciseSentence").textContent = "";
+				document.getElementById("dropdown").style.display = "none";
+			}
+			}, 1000);
+		} else if (ex.correct === "nästa vår" && selected === "i vår") {
+			mistakeCount++;  // Lägg till detta
+			feedback.textContent = "";
+			specialMessage.textContent = '"i vår" is formally correct, but it can be ambiguous.';
+			document.getElementById("mistakeCounter").textContent = `Mistakes: ${mistakeCount} / ${exercises.length}`;
+		} else {
+			mistakeCount++;
+			feedback.textContent = "❌";
+			feedback.className = "feedback incorrect";
+			document.getElementById("mistakeCounter").textContent = `Mistakes: ${mistakeCount} / ${exercises.length}`;
+		}
+	}
+
+
+window.onload = () => {
+  const shuffled = shuffleAvoidingRepeat(exercises);
+  exercises.length = 0;
+  exercises.push(...shuffled);
+  loadExercise(currentExercise);
+};
+  </script>
+</body>
+</html>
