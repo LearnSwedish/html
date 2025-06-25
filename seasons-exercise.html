@@ -1013,12 +1013,14 @@ function shuffleAvoidingRepeat(arr) {
 	}, 50);
 
       const dropdown = document.getElementById("dropdown");
-      dropdown.innerHTML = '<option value="">Pick correct answer...</option>';
-      ex.options.forEach(opt => {
-        const option = document.createElement("option");
-        option.value = opt;
-        option.textContent = opt;
-        dropdown.appendChild(option);
+	dropdown.innerHTML = '<option value="">Pick correct answer...</option>';
+	const shuffledOptions = [...ex.options]; // clone original array
+	shuffle(shuffledOptions); // use existing shuffle function
+	shuffledOptions.forEach(opt => {
+	  const option = document.createElement("option");
+	  option.value = opt;
+	  option.textContent = opt;
+	  dropdown.appendChild(option);
       });
 
       moveMarkerTo(ex.correct); // Markören visas på rätt årstid
