@@ -1,0 +1,1234 @@
+
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequency</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="att-ha.css">
+
+<style>
+    #infoModal .modal-content {
+        text-align: left;
+        width: 90%;
+        max-width: 700px;
+    }
+</style>
+	
+    <script>
+
+        const sentences = [
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-1">De går i kyrkan<span class="tooltip" id="tooltip-1">They go to church</span></span>`,
+            translation: null
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-2">
+                två gånger 
+                <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="om">om</option>
+                    <option value="i">i</option>
+                    <option value="per">per</option>
+                    <option value="varje">varje</option>
+                </select> veckan.
+                <span class="tooltip" id="tooltip-2">twice a week.</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-3">De går i kyrkan<span class="tooltip" id="tooltip-1">They go to church</span></span>`,
+            translation: null
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-4">
+			två gånger
+                <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="om">om</option>
+                    <option value="i">i</option>
+                    <option value="per">per</option>
+                    <option value="varje">varje</option>
+                </select> månaden.
+                <span class="tooltip" id="tooltip-2">twice a month.</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-1">Hon läser franska<span class="tooltip" id="tooltip-1">She studies French</span></span>`,
+            translation: null
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-2">
+                tre gånger 
+                <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="om">om</option>
+                    <option value="i">i</option>
+                    <option value="per">per</option>
+                    <option value="varje">varje</option>
+                </select> veckan.
+                <span class="tooltip" id="tooltip-2">three times a week.</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-1">
+			    En måltid 
+                <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+				    <option value="">...</option>
+                    <option value="om">om</option>
+                    <option value="i">i</option>
+                    <option value="per">per</option>
+                    <option value="varje">varje</option>
+                </select> dagen 
+                <span class="tooltip" id="tooltip-1">One cooked meal a day</span>
+            </span>`,
+            translation: null
+        },
+		{
+            word: `<span class="word" aria-describedby="tooltip-2">är tillräckligt för de flesta.<span class="tooltip" id="tooltip-2">is enough for most people.</span></span>`,
+            translation: null
+        },
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-1">Han ringer<span class="tooltip" id="tooltip-1">He makes</span></span>`,
+            translation: null
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-2">
+                tre samtal 
+                <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="om">om</option>
+                    <option value="i">i</option>
+                    <option value="per">per</option>
+                    <option value="varje">varje</option>
+                </select> minuten.
+                <span class="tooltip" id="tooltip-2">three calls a minute.</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+{
+    words: [
+        {
+            word: `<span class="word" aria-describedby="tooltip-1">Han matar hönsen<span class="tooltip" id="tooltip-1">He feeds the chickens</span></span>`,
+            translation: null
+        },
+        {
+            word: `<span class="word" aria-describedby="tooltip-2">
+                tre gånger 
+                <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                    <option value="">...</option>
+                    <option value="om">om</option>
+                    <option value="i">i</option>
+                    <option value="per">per</option>
+                    <option value="varje">varje</option>
+                </select> dagen.
+                <span class="tooltip" id="tooltip-2">three times a day.</span>
+            </span>`,
+            translation: null
+        }
+    ]
+},
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-1">Lisa bakar<span class="tooltip" id="tooltip-1">Lisa bakes</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-2">
+                    fyra kakor 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> timmen.
+                    <span class="tooltip" id="tooltip-2">four cakes an hour.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-3">Hon plockar<span class="tooltip" id="tooltip-3">She picks</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-4">
+                    två buketter 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dagen.
+                    <span class="tooltip" id="tooltip-4">two bouquets a day.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-5">Sara kokar<span class="tooltip" id="tooltip-5">Sara boils</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-6">
+                    tre koppar te 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> veckan.
+                    <span class="tooltip" id="tooltip-6">three cups of tea a week.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-1">Vi reser till Italien<span class="tooltip" id="tooltip-1">We go to Italy</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-2">
+                    två gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> hösten.
+                    <span class="tooltip" id="tooltip-2">twice in the autumn.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-3">Vi mäter temperaturen<span class="tooltip" id="tooltip-3">We measure the temperature</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-4">
+                    två gånger 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> minuten.
+                    <span class="tooltip" id="tooltip-4">twice a minute.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-5">De nattar barnet<span class="tooltip" id="tooltip-5">They put the child to bed</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-6">
+                    tre gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> natten.
+                    <span class="tooltip" id="tooltip-6">three times a night.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-7">Vi skickar<span class="tooltip" id="tooltip-7">We send</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-8">
+                    två vykort 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> månaden.
+                    <span class="tooltip" id="tooltip-8">two postcards a month.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-9">Barnet äter<span class="tooltip" id="tooltip-9">The child eats</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-10">
+                    två glassar 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dagen.
+                    <span class="tooltip" id="tooltip-10">two ice creams a day.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-1">Pojken klipper<span class="tooltip" id="tooltip-1">The boy cuts</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-2">
+                    två pappersfigurer 
+                    <select data-correct="varje" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> timme.
+                    <span class="tooltip" id="tooltip-2">two paper figures every hour.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-3">Han går på bio<span class="tooltip" id="tooltip-3">He goes to the cinema</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-4">
+                    två gånger 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> veckan.
+                    <span class="tooltip" id="tooltip-4">twice a week.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-5">Vi bakar<span class="tooltip" id="tooltip-5">We bake</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-6">
+                    fyra pajer 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> månaden.
+                    <span class="tooltip" id="tooltip-6">four pies a month.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-7">Hon trycker<span class="tooltip" id="tooltip-7">She prints</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-8">
+                    50 exemplar 
+                    <select data-correct="per" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> timme.
+                    <span class="tooltip" id="tooltip-8">50 copies per hour.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-9">Lisa skriver<span class="tooltip" id="tooltip-9">Lisa writes</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-10">
+                    fyra låtar 
+                    <select data-correct="varje" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> vecka.
+                    <span class="tooltip" id="tooltip-10">four songs every week.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-11">Vi spelar<span class="tooltip" id="tooltip-11">We play</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-12">
+                    två partier schack 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> timmen.
+                    <span class="tooltip" id="tooltip-12">two games of chess an hour.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-1">Tommy städar sitt rum<span class="tooltip" id="tooltip-1">Tommy cleans his room</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-2">
+                    en gång 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dagen.
+                    <span class="tooltip" id="tooltip-2">once a day.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-3">Hon matar sitt marsvin<span class="tooltip" id="tooltip-3">She feeds her guinea pig</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-4">
+                    en gång 
+                    <select data-correct="per" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dag.
+                    <span class="tooltip" id="tooltip-4">once per day.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-5">Han hugger ner<span class="tooltip" id="tooltip-5">He chops down</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-6">
+                    30 granar 
+                    <select data-correct="varje" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> vinter.
+                    <span class="tooltip" id="tooltip-6">30 spruce trees every winter.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-7">Han skriver<span class="tooltip" id="tooltip-7">He writes</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-8">
+                    tre böcker 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> året.
+                    <span class="tooltip" id="tooltip-8">three books a year.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-9">Han filmar<span class="tooltip" id="tooltip-9">He records</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-10">
+                    tre klipp 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> timmen.
+                    <span class="tooltip" id="tooltip-10">three clips an hour.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-11">Flickan blåser<span class="tooltip" id="tooltip-11">The girl blows</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-12">
+                    fyra bubblor 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dagen.
+                    <span class="tooltip" id="tooltip-12">four bubbles a day.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-13">Vi skriver<span class="tooltip" id="tooltip-13">We write</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-14">
+                    två inlägg 
+                    <select data-correct="per" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> vecka.
+                    <span class="tooltip" id="tooltip-14">two posts per week.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-15">Hon dricker<span class="tooltip" id="tooltip-15">She drinks</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-16">
+                    två koppar te 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dagen.
+                    <span class="tooltip" id="tooltip-16">two cups of tea a day.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-17">Klockan visar rätt tid<span class="tooltip" id="tooltip-17">The clock shows the correct time</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-18">
+                    två gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dygnet.
+                    <span class="tooltip" id="tooltip-18">twice a day (24-hour period).</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-19">Barnet vaknar<span class="tooltip" id="tooltip-19">The child wakes up</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-20">
+                    tre gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> natten.
+                    <span class="tooltip" id="tooltip-20">three times a night.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-1">Vi ses<span class="tooltip" id="tooltip-1">We meet</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-2">
+                    två gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> året.
+                    <span class="tooltip" id="tooltip-2">twice a year.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-3">Flickan badar<span class="tooltip" id="tooltip-3">The girl bathes</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-4">
+                    tre gånger 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> veckan.
+                    <span class="tooltip" id="tooltip-4">three times a week.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-5">Han åker skidor<span class="tooltip" id="tooltip-5">He goes skiing</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-6">
+                    två gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> vintern.
+                    <span class="tooltip" id="tooltip-6">twice during the winter.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-7">Vi firar<span class="tooltip" id="tooltip-7">We celebrate</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-8">
+                    två högtider 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> vintern.
+                    <span class="tooltip" id="tooltip-8">two holidays in the winter.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-9">Vi planterar<span class="tooltip" id="tooltip-9">We plant</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-10">
+                    5 000 frön 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> våren.
+                    <span class="tooltip" id="tooltip-10">5,000 seeds in the spring.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-11">Han lagar mat<span class="tooltip" id="tooltip-11">He cooks</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-12">
+                    tre gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dagen.
+                    <span class="tooltip" id="tooltip-12">three times a day.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-13">De grillar<span class="tooltip" id="tooltip-13">They grill</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-14">
+                    minst tio gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> året.
+                    <span class="tooltip" id="tooltip-14">at least ten times a year.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-15">Han blinkar<span class="tooltip" id="tooltip-15">He blinks</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-16">
+                    tre gånger 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> sekunden.
+                    <span class="tooltip" id="tooltip-16">three times a second.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-17">En vuxen människa andas<span class="tooltip" id="tooltip-17">An adult breathes</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-18">
+                    12–20 gånger 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> minuten
+                    <span class="tooltip" id="tooltip-18">12–20 times a minute</span>
+                </span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-19">i vila.<span class="tooltip" id="tooltip-19">at rest.</span></span>`,
+                translation: null
+            },			
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-19">Barnen springer<span class="tooltip" id="tooltip-19">The children run</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-20">
+                    tre varv 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> minuten.
+                    <span class="tooltip" id="tooltip-20">three laps a minute.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-21">Hon spelar tennis<span class="tooltip" id="tooltip-21">She plays tennis</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-22">
+                    två gånger 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> veckan.
+                    <span class="tooltip" id="tooltip-22">twice a week.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-1">Jag ringer<span class="tooltip" id="tooltip-1">I make</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-2">
+                    tre samtal 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> timmen.
+                    <span class="tooltip" id="tooltip-2">three phone calls an hour.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-3">Hon kollar mobilen<span class="tooltip" id="tooltip-3">She checks her phone</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-4">
+                    fyra gånger 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> minuten.
+                    <span class="tooltip" id="tooltip-4">four times a minute.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-5">Vi publicerar<span class="tooltip" id="tooltip-5">We publish</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-6">
+                    tre artiklar 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> månaden.
+                    <span class="tooltip" id="tooltip-6">three articles a month.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-7">De äter middag<span class="tooltip" id="tooltip-7">They have dinner</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-8">
+                    tre gånger 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> veckan.
+                    <span class="tooltip" id="tooltip-8">three times a week.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-9">Barnet sover<span class="tooltip" id="tooltip-9">The child sleeps</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-10">
+                    3–4 gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> dagen.
+                    <span class="tooltip" id="tooltip-10">3–4 times a day.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-11">Han skickar<span class="tooltip" id="tooltip-11">He sends</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-12">
+                    fyra meddelanden 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> månaden.
+                    <span class="tooltip" id="tooltip-12">four messages a month.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-13">Han vaknar<span class="tooltip" id="tooltip-13">He wakes up</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-14">
+                    tre gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> natten.
+                    <span class="tooltip" id="tooltip-14">three times a night.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-15">Vi ses<span class="tooltip" id="tooltip-15">We meet</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-16">
+                    två gånger 
+                    <select data-correct="om" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> sommaren.
+                    <span class="tooltip" id="tooltip-16">twice in the summer.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    },
+    {
+        words: [
+            {
+                word: `<span class="word" aria-describedby="tooltip-17">Hon dricker<span class="tooltip" id="tooltip-17">She drinks</span></span>`,
+                translation: null
+            },
+            {
+                word: `<span class="word" aria-describedby="tooltip-18">
+                    två glas vatten 
+                    <select data-correct="i" onchange="evaluateAnswer(this)" aria-label="Choose the correct option">
+                        <option value="">...</option>
+                        <option value="om">om</option>
+                        <option value="i">i</option>
+                        <option value="per">per</option>
+                        <option value="varje">varje</option>
+                    </select> timmen.
+                    <span class="tooltip" id="tooltip-18">two glasses of water an hour.</span>
+                </span>`,
+                translation: null
+            }
+        ]
+    }
+
+
+
+        ];
+
+    </script>
+	
+	<script src="att-ha.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title"><i class="fas fa-clock" aria-hidden="true" style="margin-right: 8px;"></i> Frequency within a time frame: om | i | per | varje</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Frequency within a time frame</h2><br />
+  <p><strong>This is a practice exercise focusing on how to express frequency in Swedish.</strong><br>
+  You will encounter expressions such as <em>"tre gånger i veckan"</em> (three times a week) or <em>"två gånger om dagen"</em> (twice a day), where frequency is paired with a time phrase using the appropriate preposition. The correct preposition depends on the <strong>type of time unit</strong>:</p>
+<br />
+<ul style="padding-left: 20px;">
+  <li><strong>om</strong> for <em>less exact periods</em> (e.g. <em>dagen, natten, dygnet, sommaren, vintern, året</em>).</li>
+  <li><strong>i</strong> for <em>measurable, exact units</em> (e.g. <em>sekunden, minuten, timmen, veckan, månaden</em>).</li>
+  <li><strong>per</strong> and <strong>varje</strong> can be used more generally – both work with almost all time units.</li>
+</ul>
+<br />
+<p>📌 <a href="https://learnswedish.github.io/html/Frequency.png" target="_blank"><em>See this image</a> to understand when to use "om" and "i"</em>.</p><br />
+<p>In this exercise, you'll find 50 example sentences. Good luck!</p>
+
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
