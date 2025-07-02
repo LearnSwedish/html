@@ -987,21 +987,20 @@ function shuffleAvoidingRepeat(arr) {
   let shuffled;
   let attempt = 0;
 
-  function hasTooClosePositionRepeats(array, window) {
-    const recent = [];
+function hasTooClosePositionRepeats(array, windowSize) {
+  for (let i = 0; i < array.length - windowSize + 1; i++) {
+    const window = array.slice(i, i + windowSize);
+    const seen = new Set();
 
-    for (let i = 0; i < array.length; i++) {
-      const label = array[i].correct;  // t.ex. "i våras", "förra sommaren" – nyckel till markerPosition
-
-      if (recent.slice(-window).includes(label)) {
-        return true; // Samma position förekommer inom windowSize
+    for (const ex of window) {
+      if (seen.has(ex.correct)) {
+        return true; // Dubblett inom fönstret
       }
-
-      recent.push(label);
+      seen.add(ex.correct);
     }
-
-    return false;
   }
+  return false;
+}
 
   do {
     shuffled = [...arr].sort(() => Math.random() - 0.5);
