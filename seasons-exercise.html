@@ -983,17 +983,34 @@ function getCategoryFromExercise(exercise) {
 }
 
 function shuffleAvoidingRepeat(arr) {
+  const windowSize = 10;
   let shuffled;
   let attempt = 0;
+
+  function hasTooClosePositionRepeats(array, window) {
+    const recent = [];
+
+    for (let i = 0; i < array.length; i++) {
+      const label = array[i].correct;  // t.ex. "i våras", "förra sommaren" – nyckel till markerPosition
+
+      if (recent.slice(-window).includes(label)) {
+        return true; // Samma position förekommer inom windowSize
+      }
+
+      recent.push(label);
+    }
+
+    return false;
+  }
+
   do {
     shuffled = [...arr].sort(() => Math.random() - 0.5);
     attempt++;
-  } while (
-    attempt < 100 &&
-    shuffled.some((ex, i, a) => i > 0 && getCategoryFromExercise(ex) === getCategoryFromExercise(a[i - 1]))
-  );
+  } while (attempt < 100 && hasTooClosePositionRepeats(shuffled, windowSize));
+
   return shuffled;
 }
+
 	
   function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
