@@ -962,13 +962,61 @@ const exercises = [
 ];
 
 let currentExercise = 0;
-let lastCategory = "";
 let mistakeCount = 0;
+
+const allPositions = [
+  'förra våren',
+  'förra sommaren',
+  'i höstas',
+  'i vintras',
+  'i våras',
+  'i sommar',
+  'i höst',
+  'i vinter',
+  'nästa vår',
+  'nästa sommar'
+];
+
+let remainingPositionCycle = [];
+let lastUsedPosition = null;
+
+function shuffleNewSeries() {
+  let shuffled;
+  let attempt = 0;
+  do {
+    shuffled = [...allPositions].sort(() => Math.random() - 0.5);
+    attempt++;
+  } while (
+    attempt < 100 &&
+    shuffled[0] === lastUsedPosition
+  );
+  return shuffled;
+}
+
+function getNextUniquePosition() {
+  if (remainingPositionCycle.length === 0) {
+    remainingPositionCycle = shuffleNewSeries();
+  }
+
+  let next = remainingPositionCycle.shift();
+
+  if (next === lastUsedPosition) {
+    for (let i = 0; i < remainingPositionCycle.length; i++) {
+      if (remainingPositionCycle[i] !== lastUsedPosition) {
+        [next, remainingPositionCycle[i]] = [remainingPositionCycle[i], next];
+        break;
+      }
+    }
+  }
+
+  lastUsedPosition = next;
+  return next;
+}
 
 function getCategoryFromExercise(exercise) {
   const correct = exercise.correct;
   switch (correct) {
-    case "förra våren": return "past-spring-1";
+    case "förra våren": return "past-spring";
     case "förra sommaren": return "past-summer";
     case "i höstas": return "past-autumn";
     case "i vintras": return "past-winter";
@@ -976,132 +1024,103 @@ function getCategoryFromExercise(exercise) {
     case "i sommar": return "this-summer";
     case "i höst": return "this-autumn";
     case "i vinter": return "this-winter";
+    case "i vår": return "this-spring";
     case "nästa vår": return "next-spring";
     case "nästa sommar": return "next-summer";
     default: return "unknown";
   }
 }
 
-function shuffleAvoidingRepeat(arr) {
-  const windowSize = 10;
-  let shuffled;
-  let attempt = 0;
-
-function hasTooClosePositionRepeats(array, windowSize) {
-  for (let i = 0; i < array.length - windowSize + 1; i++) {
-    const window = array.slice(i, i + windowSize);
-    const seen = new Set();
-
-    for (const ex of window) {
-      if (seen.has(ex.correct)) {
-        return true; // Dubblett inom fönstret
-      }
-      seen.add(ex.correct);
-    }
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  return false;
 }
 
-  do {
-    shuffled = [...arr].sort(() => Math.random() - 0.5);
-    attempt++;
-  } while (attempt < 100 && hasTooClosePositionRepeats(shuffled, windowSize));
+function loadExercise(index) {
+  const ex = exercises[index];
+  const sentenceDiv = document.getElementById("exerciseSentence");
+  sentenceDiv.classList.remove("visible");
 
-  return shuffled;
+  setTimeout(() => {
+    sentenceDiv.textContent = ex.sentence;
+    sentenceDiv.classList.add("visible");
+  }, 50);
+
+  const dropdown = document.getElementById("dropdown");
+  dropdown.innerHTML = '<option value="">Pick correct answer...</option>';
+  const shuffledOptions = [...ex.options];
+  shuffle(shuffledOptions);
+  shuffledOptions.forEach(opt => {
+    const option = document.createElement("option");
+    option.value = opt;
+    option.textContent = opt;
+    dropdown.appendChild(option);
+  });
+
+  moveMarkerTo(ex.correct);
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("progressCounter").textContent = `Sentence: ${index + 1} / ${exercises.length}`;
 }
 
-	
-  function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
+function moveMarkerTo(option) {
+  const ex = exercises[currentExercise];
+  const marker = document.getElementById("marker");
+  const image = document.getElementById("seasonImage");
+  const position = ex.markerPositions[option];
+
+  if (position !== undefined) {
+    const imageWidth = image.offsetWidth;
+    const newLeft = (position / 100) * imageWidth;
+    marker.style.left = `${newLeft}px`;
   }
+}
 
-    function loadExercise(index) {
-      const ex = exercises[index];
-      const sentenceDiv = document.getElementById("exerciseSentence");
-		sentenceDiv.classList.remove("visible");
+function checkAnswer(selected) {
+  if (!selected) return;
+  const ex = exercises[currentExercise];
+  const feedback = document.getElementById("feedback");
+  const specialMessage = document.getElementById("specialMessage");
+  specialMessage.textContent = "";
+  specialMessage.className = "special-message";
 
-		setTimeout(() => {
-		sentenceDiv.textContent = ex.sentence;
-		sentenceDiv.classList.add("visible");
-	}, 50);
+  if (selected === ex.correct) {
+    feedback.textContent = "✅";
+    feedback.className = "feedback correct";
+    specialMessage.textContent = "";
 
-      const dropdown = document.getElementById("dropdown");
-	dropdown.innerHTML = '<option value="">Pick correct answer...</option>';
-	const shuffledOptions = [...ex.options]; // clone original array
-	shuffle(shuffledOptions); // use existing shuffle function
-	shuffledOptions.forEach(opt => {
-	  const option = document.createElement("option");
-	  option.value = opt;
-	  option.textContent = opt;
-	  dropdown.appendChild(option);
-      });
-
-      moveMarkerTo(ex.correct); // Markören visas på rätt årstid
-      document.getElementById("feedback").textContent = "";
-	  
-	  document.getElementById("progressCounter").textContent = `Sentence: ${index + 1} / ${exercises.length}`;
-
-    }
-
-    function moveMarkerTo(option) {
-      const ex = exercises[currentExercise];
-      const marker = document.getElementById("marker");
-      const image = document.getElementById("seasonImage");
-      const position = ex.markerPositions[option];
-
-      if (position !== undefined) {
-        const imageWidth = image.offsetWidth;
-        const newLeft = (position / 100) * imageWidth;
-        marker.style.left = `${newLeft}px`;
+    setTimeout(() => {
+      currentExercise++;
+      if (currentExercise < exercises.length) {
+        loadExercise(currentExercise);
+      } else {
+        feedback.textContent = "✔️ Övningen är klar!";
+        document.getElementById("exerciseSentence").textContent = "";
+        document.getElementById("dropdown").style.display = "none";
       }
-    }
-
-	function checkAnswer(selected) {
-		if (!selected) return;
-		const ex = exercises[currentExercise];
-		const feedback = document.getElementById("feedback");
-		const specialMessage = document.getElementById("specialMessage");
-		specialMessage.textContent = "";
-		specialMessage.className = "special-message";
-		
-		if (selected === ex.correct) {
-			feedback.textContent = "✅";
-			feedback.className = "feedback correct";
-			specialMessage.textContent = "";
-		
-			setTimeout(() => {
-			currentExercise++;
-			if (currentExercise < exercises.length) {
-				loadExercise(currentExercise);
-			} else {
-				feedback.textContent = "✔️ Övningen är klar!";
-				document.getElementById("exerciseSentence").textContent = "";
-				document.getElementById("dropdown").style.display = "none";
-			}
-			}, 1000);
-		} else if (ex.correct === "nästa vår" && selected === "i vår") {
-			mistakeCount++;  // Lägg till detta
-			feedback.textContent = "";
-			specialMessage.textContent = '"i vår" is formally correct, but it can be ambiguous.';
-			document.getElementById("mistakeCounter").textContent = `Mistakes: ${mistakeCount} / ${exercises.length}`;
-		} else {
-			mistakeCount++;
-			feedback.textContent = "❌";
-			feedback.className = "feedback incorrect";
-			document.getElementById("mistakeCounter").textContent = `Mistakes: ${mistakeCount} / ${exercises.length}`;
-		}
-	}
-
+    }, 1000);
+  } else if (ex.correct === "nästa vår" && selected === "i vår") {
+    mistakeCount++;
+    feedback.textContent = "";
+    specialMessage.textContent = '"i vår" is formally correct, but it can be ambiguous.';
+    document.getElementById("mistakeCounter").textContent = `Mistakes: ${mistakeCount} / ${exercises.length}`;
+  } else {
+    mistakeCount++;
+    feedback.textContent = "❌";
+    feedback.className = "feedback incorrect";
+    document.getElementById("mistakeCounter").textContent = `Mistakes: ${mistakeCount} / ${exercises.length}`;
+  }
+}
 
 window.onload = () => {
-  const shuffled = shuffleAvoidingRepeat(exercises);
-  exercises.length = 0;
-  exercises.push(...shuffled);
+  // Anta att "exercises" redan finns och är korrekt laddad
+  exercises.forEach(ex => {
+    ex.correct = getNextUniquePosition(); // sätt ny unik position för varje övning
+  });
   loadExercise(currentExercise);
 };
+
   </script>
 </body>
 </html>
