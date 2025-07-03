@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Seasons – training area</title>
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
 <style>
   /* === Baslayout === */
   body {
@@ -35,49 +37,99 @@
     z-index: 2;
   }
 
-  /* === Knappar & container === */
-  .button-container {
-    margin-top: 80px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
+.eye-wrapper {
+  position: absolute;
+  margin-top: 80px;
+  transform: translateX(-50%);
+  z-index: 2;
+}
 
-  .button-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100px;
-  }
 
-  .button-container button {
-    margin: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+.eye-icon {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 36px;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.3s;
+  width: 40px;
+  height: 40px;
+  line-height: 36px;
+  text-align: center;
+}
 
-  .translation {
-    font-size: 14px;
-    color: #555;
-    font-style: italic;
-    min-height: 2em;
-    display: inline-block;
-    line-height: 1.2;
-    text-align: center;
-  }
+.eye-icon.fa-eye {
+  color: #0077cc; /* Blå färg för öppet öga */
+}
+
+.eye-icon:hover {
+  color: yellow;
+}
+
+
+.icon-wrapper {
+  position: relative;
+  width: 40px;
+  height: 70px; /* utrymme för öga + översättning */
+}
+
+.icon-wrapper i {
+  font-size: 26px;
+  cursor: pointer;
+  color: #777;
+}
+
+.icon-wrapper i:hover {
+  color: #000;
+}
+
+.icon-wrapper i.fa-eye {
+  color: #0077cc;
+}
+
+.translation {
+  position: absolute;
+  top: 35px; /* lägg texten direkt under ögat */
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 165px;
+  font-size: 15px;
+  color: #555;
+  font-style: italic;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.2;
+  z-index: 1;
+}
+
+.red-text {
+  color: darkred;
+}
+
+.swedish-term {
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
+  font-style: normal; /* not italic */
+}
 
   /* === Exempelutskrift === */
-  #example-output {
-    margin-top: 40px;
-    font-size: 30px;
-    font-family: 'Work Sans', sans-serif;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    min-height: 2em;
-  }
+#example-output {
+  position: relative;   /* istället för margin-top */
+  top: 160px;           /* justera efter behov */
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1000px;
+  max-height: 4.5em;
+  font-size: 25px;
+  font-family: 'Work Sans', sans-serif;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  min-height: 2em;
+}
 
   #example-output.visible {
     opacity: 1;
@@ -119,27 +171,86 @@
 <body>
 
 <div id="statusOverlay">
-  <button onclick="window.open('seasons-exercise.html', '_blank')">Exercise area</button>
+  <button onclick="window.open('https://learnswedish.github.io/html/seasons-exercise.html', '_blank')">Exercise area</button>
 </div>
 
-  <div class="image-container">
-    <img src="https://i.imgur.com/9nZ3ejZ.png" alt="Årstider" class="season-image" id="seasonImage">
-    <img src="https://i.imgur.com/gSypQZw.png" alt="Markör" class="marker" id="marker">
-  </div>
-<br />
-<div class="button-container">
-  <div class="button-wrapper"><button onclick="moveTo('förra våren', this)">Förra våren</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('förra sommaren', this)">Förra sommaren</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('i höstas', this)">I höstas</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('i vintras', this)">I vintras</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('i våras', this)">I våras</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('i sommar', this)">I sommar</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('i höst', this)">I höst</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('i vinter', this)">I vinter</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('i vår', this)">I vår</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('nästa vår', this)">Nästa vår</button><br><span class="translation"></span></div>
-  <div class="button-wrapper"><button onclick="moveTo('nästa sommar', this)">Nästa sommar</button><br><span class="translation"></span></div>
+<div class="image-container">
+  <img src="https://i.imgur.com/9nZ3ejZ.png" alt="Årstider" class="season-image" id="seasonImage">
+  <img src="https://i.imgur.com/gSypQZw.png" alt="Markör" class="marker" id="marker">
+
+  <!-- Ögonikoner direkt inuti image-container -->
+<div class="eye-wrapper" style="left: 5.5%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('förra våren', this)"></i>
+	<span class="translation"></span>
+	</div>
 </div>
+
+<div class="eye-wrapper" style="left: 15.5%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('förra sommaren', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+<div class="eye-wrapper" style="left: 24.3%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('i höstas', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+<div class="eye-wrapper" style="left: 35%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('i vintras', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+<div class="eye-wrapper" style="left: 45%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('i våras', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+<div class="eye-wrapper" style="left: 55%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('i sommar', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+<div class="eye-wrapper" style="left: 64%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('i höst', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+<div class="eye-wrapper" style="left: 74.8%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('i vinter', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+<div class="eye-wrapper" style="left: 84.8%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('i vår', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+<div class="eye-wrapper" style="left: 94.7%;">
+	<div class="icon-wrapper">
+	<i class="fas fa-eye-slash eye-icon" onclick="moveTo('nästa sommar', this)"></i>
+	<span class="translation"></span>
+    </div>
+</div>
+
+</div>
+
 
 
   <div id="example-output"></div>
@@ -161,19 +272,18 @@
     'start': 55  // nyckel för init-position
   };
 
-  const englishTranslations = {
-    'förra våren': 'Two springs ago',
-    'förra sommaren': 'Last summer',
-    'i höstas': 'Last autumn',
-    'i vintras': 'Last winter',
-    'i våras': 'Last spring',
-    'i sommar': 'This summer',
-    'i höst': 'This autumn',
-    'i vinter': 'This winter',
-    'i vår': 'This spring<br>(ambiguous)',
-    'nästa vår': 'Next spring<br>(unambiguous)',
-    'nästa sommar': 'Next summer'
-  };
+const englishTranslations = {
+  'förra våren': '<span class="swedish-term">Förra våren</span><br>(Two springs ago)',
+  'förra sommaren': '<span class="swedish-term">Förra sommaren</span><br>(Last summer)',
+  'i höstas': '<span class="swedish-term">I höstas</span><br>(Last autumn)',
+  'i vintras': '<span class="swedish-term">I vintras</span><br>(Last winter)',
+  'i våras': '<span class="swedish-term">I våras</span><br>(Last spring)',
+  'i sommar': '<span class="swedish-term">I sommar</span><br>(This summer)',
+  'i höst': '<span class="swedish-term">I höst</span><br>(This autumn)',
+  'i vinter': '<span class="swedish-term">I vinter</span><br>(This winter)',
+  'i vår': '<span class="swedish-term">I vår</span><br>(This spring)',
+  'nästa sommar': '<span class="swedish-term">Nästa sommar</span><br>(Next summer)'
+};
 
   const exampleSentences = {
     'förra våren': [
@@ -249,9 +359,7 @@
   };
 
 const specialMessages = {
-  'i vår': 'Note: "i vår" usually means the coming spring.<br>' +
-          'But during summer – with a spring just behind you –<br>' +
-          'the phrase can be ambiguous. Say "nästa vår" instead.'
+  'i vår': 'While "<u>i vår</u>" is grammatically correct, it may cause confusion here because the previous spring has recently passed. Use "<u>nästa vår</u>" instead.'
 };
 
 
@@ -266,6 +374,17 @@ const specialMessages = {
       const newLeft = (position / 100) * imageWidth;
       marker.style.left = `${newLeft}px`;
     }
+	
+	// Hantera ikonbyte
+document.querySelectorAll('.eye-icon').forEach(icon => {
+  icon.classList.remove('fa-eye');
+  icon.classList.add('fa-eye-slash');
+});
+
+if (buttonElement) {
+  buttonElement.classList.remove('fa-eye-slash');
+  buttonElement.classList.add('fa-eye');
+}
 
     // Hantera översättning under knappen
     document.querySelectorAll('.translation').forEach(span => span.innerHTML = '');
@@ -274,15 +393,27 @@ const specialMessages = {
       translationSpan.innerHTML = englishTranslations[label] || '';
     }
 
-    // Särskilt fall: visa meddelande istället för exempelmening
+// Särskilt fall: visa meddelande istället för exempelmening
 if (specialMessages[label]) {
+  const output = document.getElementById('example-output');
   output.classList.remove('visible');
+  output.classList.add('red-text'); // Lägg till den röda färgen
+
   setTimeout(() => {
-    output.innerHTML = `<span class="special-message">${specialMessages[label]}</span>`;
+    // Hämta en slumpmässig "nästa vår"-mening
+    const nextSpringExamples = exampleSentences['nästa vår'];
+    const randomIndex = Math.floor(Math.random() * nextSpringExamples.length);
+    const nextSpringSentence = nextSpringExamples[randomIndex];
+
+    // Kombinera specialmeddelande och slumpad mening med radbrytning
+    output.innerHTML = specialMessages[label] + `<br><br>` + `<span style="font-style: normal; color: black;">${nextSpringSentence}</span>`;
     output.classList.add('visible');
   }, 50);
   return;
 }
+
+output.classList.remove('red-text');
+
 
     // Slumpa mening
     const examples = exampleSentences[label];
@@ -302,7 +433,16 @@ if (specialMessages[label]) {
   }
 
   // Init-position
-  window.onload = () => moveTo('start');
+  window.onload = () => {
+  moveTo('start');
+ 
+  const output = document.getElementById('example-output');
+  output.classList.remove('visible');
+  setTimeout(() => {
+    output.innerHTML = "Click one any eye to reveal how to refer to the corresponding season. Each time, you'll also get an example sentence in Swedish.";
+    output.classList.add('visible');
+  }, 50);
+};
 </script>
 
 </body>
