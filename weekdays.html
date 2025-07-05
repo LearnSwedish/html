@@ -1,0 +1,632 @@
+
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Weekdays – training area</title>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<style>
+  /* === Baslayout === */
+  body {
+    font-family: 'Work Sans', sans-serif;
+    text-align: center;
+    margin: 50px;
+  }
+
+  /* === Bildcontainer & markör === */
+  .image-container {
+    max-width: 80%;
+    margin: 40px auto;
+    position: relative;
+  }
+
+.season-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+  .marker {
+    position: absolute;
+    bottom: -60px;
+    width: 50px;
+    height: auto;
+    transform: translateX(-50%);
+    transition: left 0.8s ease;
+    z-index: 2;
+  }
+
+  /* === Ögonikoner och översättningstext === */
+  .eye-wrapper {
+    position: absolute;
+    margin-top: 80px;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .eye-icon {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 36px;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.3s;
+    width: 40px;
+    height: 40px;
+    line-height: 36px;
+    text-align: center;
+  }
+
+  .eye-icon.fa-eye {
+    color: #0077cc; /* Blå färg för öppet öga */
+  }
+
+  .icon-wrapper {
+    position: relative;
+    width: 40px;
+    height: 70px; /* utrymme för öga + översättning */
+  }
+
+  .icon-wrapper i {
+    font-size: 26px;
+    cursor: pointer;
+    color: #777;
+  }
+
+  .icon-wrapper i:hover {
+    color: #000;
+  }
+
+  .icon-wrapper i.fa-eye {
+    color: #0077cc;
+  }
+
+  .translation {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: 300px;
+    font-size: 15px;
+    color: #555;
+    font-style: italic;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.2;
+    z-index: 1;
+  }
+
+  .swedish-term {
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  .red-text {
+    color: darkred;
+  }
+
+  /* === Exempelutskrift === */
+#example-output {
+  position: relative;
+  top: 160px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1000px;
+  font-size: 25px;
+  font-family: 'Work Sans', sans-serif;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  min-height: 4.5em; /* <-- viktigaste raden */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+  #example-output.visible {
+    opacity: 1;
+  }
+
+  /* === Overlay-knapp uppe till höger === */
+  #statusOverlay {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    text-align: right;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 8px 15px 12px 15px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    z-index: 10;
+  }
+
+  #statusOverlay button {
+    margin-top: 6px;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    cursor: pointer;
+  }
+
+  /* === Specialmeddelande === */
+  .special-message {
+    color: darkred;
+    font-size: 20px;
+    margin-top: 20px;
+  }
+
+  /* === Toggle-knappar för veckobilder === */
+.toggle-switch-container {
+  margin-top: 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.toggle-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.toggle-switch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 120px; /* fast bredd för att skapa jämnt avstånd */
+}
+
+
+.toggle-text {
+  font-size: 15px;
+  color: #222;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.toggle-label {
+  position: relative;
+  width: 50px;
+  height: 28px;
+  background: #ccc;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.toggle-label::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-checkbox:checked + .toggle-label {
+  background: #0077cc;
+}
+
+.toggle-checkbox:checked + .toggle-label::after {
+  transform: translateX(22px);
+}
+
+.toggle-checkbox {
+  display: none;
+}
+
+.fade-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+</style>
+
+</head>
+<body>
+
+<!-- DENNA KNAPP – uppe till höger – visas i framtida version
+
+<div id="statusOverlay">
+  <button onclick="window.open('seasons-exercise.html', '_blank')">Exercise area</button>
+</div>
+
+-->
+
+<div class="image-container">
+  <img id="seasonImage" src="https://learnswedish.github.io/html/weekdays-normal.png" alt="Veckoschema" class="season-image" />
+  <img id="seasonImageFade" src="" class="season-image fade-image" style="opacity: 0;" />
+  <img src="https://i.imgur.com/gSypQZw.png" alt="Markör" class="marker" id="marker" />
+
+
+  <!-- Eye icons with exact same horizontal positions as before -->
+  <div class="eye-wrapper" style="left: 5%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('fredag1', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+  
+  <div class="eye-wrapper" style="left: 10%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('lördag1', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 15%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('söndag1', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 20%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('måndag2', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 25%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('tisdag2', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 30%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('onsdag2', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 35%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('torsdag2', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 40%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('fredag2', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 45%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('lördag2', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 50%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('söndag2', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 55%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('måndag3', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 60%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('tisdag3', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 65%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('onsdag3', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 70%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('torsdag3', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 75%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('fredag3', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 80%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('lördag3', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 85%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('söndag3', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 90%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('måndag4', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+
+  <div class="eye-wrapper" style="left: 95%;">
+  	<div class="icon-wrapper">
+    <i class="fas fa-eye-slash eye-icon" onclick="moveTo('tisdag4', this)"></i>
+    <div class="translation"></div>
+	</div>
+  </div>
+</div>
+
+<div id="example-output"></div>
+
+<div class="toggle-switch-container">
+  <!-- Rad 1: Weekend-toggles -->
+  <div class="toggle-row">
+  
+    <div class="toggle-switch">
+      <span class="toggle-text"><img src="https://learnswedish.github.io/html/forrforra.png" alt="Förrförra" class="toggle-icon"> Week</span>
+      <input type="checkbox" id="toggleWeekBeforeLast" class="toggle-checkbox" data-target="weekBeforeLast">
+      <label for="toggleWeekBeforeLast" class="toggle-label"></label>
+    </div>
+	
+    <div class="toggle-switch">
+      <span class="toggle-text"><img src="https://learnswedish.github.io/html/forrforra.png" alt="Förrförra" class="toggle-icon"> Weekend</span>
+      <input type="checkbox" id="toggleLastWeekend" class="toggle-checkbox" data-target="lastWeekend">
+      <label for="toggleLastWeekend" class="toggle-label"></label>
+    </div>
+	
+    <div class="toggle-switch">
+      <span class="toggle-text"><img src="https://learnswedish.github.io/html/forra.png" alt="Förra" class="toggle-icon"> Week</span>
+      <input type="checkbox" id="toggleLastWeek" class="toggle-checkbox" data-target="lastWeek">
+      <label for="toggleLastWeek" class="toggle-label"></label>
+    </div>
+
+    <div class="toggle-switch">
+      <span class="toggle-text"><img src="https://learnswedish.github.io/html/forra.png" alt="Förra" class="toggle-icon"> Weekend</span>
+      <input type="checkbox" id="toggleWeekendPast" class="toggle-checkbox" data-target="weekendPast">
+      <label for="toggleWeekendPast" class="toggle-label"></label>
+    </div>
+	
+    <div class="toggle-switch">
+      <span class="toggle-text"><img src="https://learnswedish.github.io/html/denna.png" alt="Denna" class="toggle-icon"> Week</span>
+      <input type="checkbox" id="toggleThisWeek" class="toggle-checkbox" data-target="thisWeek">
+      <label for="toggleThisWeek" class="toggle-label"></label>
+    </div>
+
+    <div class="toggle-switch">
+      <span class="toggle-text"><img src="https://learnswedish.github.io/html/nasta.png" alt="Nästa" class="toggle-icon"> Weekend</span>
+      <input type="checkbox" id="toggleWeekendFuture" class="toggle-checkbox" data-target="weekendFuture">
+      <label for="toggleWeekendFuture" class="toggle-label"></label>
+    </div>
+
+    <div class="toggle-switch">
+      <span class="toggle-text"><img src="https://learnswedish.github.io/html/nasta.png" alt="Nästa" class="toggle-icon"> Week</span>
+      <input type="checkbox" id="toggleNextWeek" class="toggle-checkbox" data-target="nextWeek">
+      <label for="toggleNextWeek" class="toggle-label"></label>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// Bildkarta – kopplar toggle-namn till bild-URL
+const imageMap = {
+  "weekendPast": "https://learnswedish.github.io/html/weekdays-i-helgen-past.png",
+  "weekendFuture": "https://learnswedish.github.io/html/weekdays-i-helgen-future.png",
+  "lastWeekend": "https://learnswedish.github.io/html/weekdays-weekend-before-last-week.png",
+  "thisWeek": "https://learnswedish.github.io/html/weekdays-this-week.png",
+  "lastWeek": "https://learnswedish.github.io/html/weekdays-last-week.png",
+  "weekBeforeLast": "https://learnswedish.github.io/html/weekdays-week-before-last-week.png",
+  "nextWeek": "https://learnswedish.github.io/html/weekdays-next-week.png"
+};
+
+const defaultImage = "https://learnswedish.github.io/html/weekdays-normal.png";
+
+// Dagpositioner i procent
+const seasonPositions = {
+  'fredag1': 5, 'lördag1': 10, 'söndag1': 15,
+  'måndag2': 20, 'tisdag2': 25, 'onsdag2': 30, 'torsdag2': 35,
+  'fredag2': 40, 'lördag2': 45, 'söndag2': 50,
+  'måndag3': 55, 'tisdag3': 60, 'onsdag3': 65, 'torsdag3': 70,
+  'fredag3': 75, 'lördag3': 80, 'söndag3': 85,
+  'måndag4': 90, 'tisdag4': 95, 'start': 55
+};
+
+// Översättningstext
+const englishTranslations = {
+  'fredag1': '<span class="swedish-term"><br>Fredag förrförra veckan</span><br>(The Friday before last)',
+  'lördag1': '<span class="swedish-term"><br>Lördag förrförra veckan</span><br>(The Saturday before last)',
+  'söndag1': '<span class="swedish-term"><br>Söndag förrförra veckan</span><br>(The Sunday before last)',
+  'måndag2': '<span class="swedish-term"><br>I måndags,<br>Måndag förra veckan</span><br>(Last Monday)',
+  'tisdag2': '<span class="swedish-term"><br>I tisdags,<br>Tisdag förra veckan</span><br>(Last Tuesday)',
+  'onsdag2': '<span class="swedish-term"><br>I onsdags,<br>Onsdag förra veckan</span><br>(Last Wednesday)',
+  'torsdag2': '<span class="swedish-term"><br>I torsdags,<br>Torsdag förra veckan</span><br>(Last Thursday)',
+  'fredag2': '<span class="swedish-term"><br>I fredags,<br>Fredag förra veckan</span><br>(Last Friday)',
+  'lördag2': '<span class="swedish-term"><br>I lördags, I förrgår,<br>Lördag förra veckan</span><br>(Last Saturday,<br>The day before yesterday)',
+  'söndag2': '<span class="swedish-term"><br>Igår</span><br>(Yesterday)',
+  'måndag3': '<span class="swedish-term"><br>Idag</span><br>(Today)',
+  'tisdag3': '<span class="swedish-term"><br>Imorgon</span><br>(Tomorrow)',
+  'onsdag3': '<span class="swedish-term"><br>På onsdag,<br>I övermorgon</span><br>(On Wednesday,<br>The day after tomorrow)',
+  'torsdag3': '<span class="swedish-term"><br>På torsdag</span><br>(On Thursday)',
+  'fredag3': '<span class="swedish-term"><br>På fredag</span><br>(On Friday)',
+  'lördag3': '<span class="swedish-term"><br>På lördag</span><br>(On Saturday)',
+  'söndag3': '<span class="swedish-term"><br>På söndag</span><br>(On Sunday)',
+  'måndag4': '<span class="swedish-term"><br>Nästa måndag,<br>Måndag nästa vecka</span><br>(Next Monday)',
+  'tisdag4': '<span class="swedish-term"><br>Nästa tisdag,<br>Tisdag nästa vecka</span><br>(Next Tuesday)'
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const seasonImage = document.getElementById("seasonImage");
+  const seasonImageFade = document.getElementById("seasonImageFade");
+  const marker = document.getElementById("marker");
+  const output = document.getElementById("example-output");
+  const checkboxes = document.querySelectorAll('.toggle-checkbox');
+
+  const defaultImage = "https://learnswedish.github.io/html/weekdays-normal.png";
+  const imageMap = {
+    weekend: "https://learnswedish.github.io/html/weekdays-i-helgen.png",
+    weekendPast: "https://learnswedish.github.io/html/weekdays-i-helgen-past.png",
+    weekendFuture: "https://learnswedish.github.io/html/weekdays-i-helgen-future.png",
+    lastWeekend: "https://learnswedish.github.io/html/weekdays-weekend-before-last-week.png",
+    thisWeekend: "https://learnswedish.github.io/html/weekdays-i-helgen-future.png",
+    thisWeek: "https://learnswedish.github.io/html/weekdays-this-week.png",
+    lastWeek: "https://learnswedish.github.io/html/weekdays-last-week.png",
+    weekBeforeLast: "https://learnswedish.github.io/html/weekdays-week-before-last-week.png",
+    nextWeek: "https://learnswedish.github.io/html/weekdays-next-week.png"
+  };
+
+  // Startbild
+  seasonImage.src = defaultImage;
+
+  // Förladda bilder
+  [defaultImage, ...Object.values(imageMap)].forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+
+  // Visa marker
+  marker.style.left = `${(seasonPositions['start'] / 100) * seasonImage.offsetWidth}px`;
+  marker.style.display = "block";
+
+  // Visa standardtext
+  output.innerHTML = "Click an eye or a toggle switch to reveal how to refer to the corresponding day(s).";
+  output.classList.add('visible');
+
+  // Nollställ ögon
+  document.querySelectorAll('.eye-icon').forEach(icon => {
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  });
+
+  // Toggle-logik med fade-effekt
+  checkboxes.forEach(current => {
+    current.addEventListener('change', () => {
+      checkboxes.forEach(other => {
+        if (other !== current) other.checked = false;
+      });
+
+      const activeKey = current.checked ? current.dataset.target : null;
+      const newSrc = activeKey ? imageMap[activeKey] : defaultImage;
+
+      if (seasonImage.src !== newSrc) {
+        seasonImageFade.src = newSrc;
+        seasonImageFade.style.opacity = 0;
+
+        seasonImageFade.onload = () => {
+          seasonImageFade.style.opacity = 1;
+          setTimeout(() => {
+            seasonImage.src = newSrc;
+            seasonImageFade.style.opacity = 0;
+          }, 600);
+        };
+      }
+    });
+  });
+});
+
+// Responsiv markör
+window.addEventListener('resize', () => {
+  const marker = document.getElementById('marker');
+  const image = document.getElementById('seasonImage');
+  marker.style.left = `${(seasonPositions['start'] / 100) * image.offsetWidth}px`;
+});
+
+// Flytta markör och visa översättning
+function moveTo(label, buttonElement) {
+  const marker = document.getElementById('marker');
+  const image = document.getElementById('seasonImage');
+  const output = document.getElementById('example-output');
+
+  const pos = seasonPositions[label];
+  if (pos !== undefined) {
+    marker.style.left = `${(pos / 100) * image.offsetWidth}px`;
+  }
+  marker.style.display = "block";
+
+  output.textContent = '';
+  output.classList.remove('visible');
+
+  // Återställ ögonikoner
+  document.querySelectorAll('.eye-icon').forEach(icon => {
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  });
+  if (buttonElement) {
+    buttonElement.classList.remove('fa-eye-slash');
+    buttonElement.classList.add('fa-eye');
+  }
+
+  // Visa översättning
+  document.querySelectorAll('.translation').forEach(span => span.innerHTML = '');
+  if (buttonElement) {
+    const span = buttonElement.parentElement.querySelector('.translation');
+    span.innerHTML = englishTranslations[label] || '';
+  }
+
+  // Visa exempelmening om tillgänglig
+  const examples = exampleSentences?.[label];
+  if (examples && examples.length > 0) {
+    const randomIndex = Math.floor(Math.random() * examples.length);
+    setTimeout(() => {
+      output.textContent = examples[randomIndex];
+      output.classList.add('visible');
+    }, 50);
+  }
+}
+</script>
+
+</body>
+</html>
