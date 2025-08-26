@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Lesson Planning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body { font-family: 'Work Sans', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #333; }
+        .next-lesson-planning-container { background-color: #ffffff; border-radius: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); width: 100%; max-width: 600px; padding: 30px; box-sizing: border-box; overflow: hidden; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 30px; font-size: 2em; font-weight: 600; }
+        .student-selector { margin-bottom: 25px; text-align: center; }
+        .student-selector label { display: block; margin-bottom: 10px; font-size: 1.1em; color: #34495e; font-weight: 500; }
+        .student-selector .selector-group { display: flex; gap: 10px; align-items: center; }
+        .student-selector select { flex-grow: 1; padding: 12px 18px; border: 1px solid #dcdcdc; border-radius: 6px; font-size: 1.25em; color: #555; box-sizing: border-box; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="rgb(149, 165, 166)" d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: right 15px center; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+        .student-selector select:focus { border-color: #a1d9ff; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); outline: none; }
+        .edit-button { padding: 12px 18px; border: 1px solid #dcdcdc; border-radius: 6px; background-color: #f0f0f0; cursor: pointer; font-family: 'Work Sans', sans-serif; font-weight: 500; transition: background-color 0.3s ease; }
+        .edit-button:hover { background-color: #e0e0e0; }
+        .tabs { display: flex; border-bottom: 2px solid #e0e0e0; margin-bottom: 25px; }
+        .tab-button { flex-grow: 1; padding: 15px 0; border: none; background: transparent; cursor: pointer; font-size: 1.15em; font-weight: 500; color: #7f8c8d; transition: color 0.3s ease, border-bottom 0.3s ease; position: relative; outline: none; }
+        .tab-button:hover:not(.active) { color: #34495e; }
+        .tab-button.active { color: #e74c3c; border-bottom: 3px solid #e74c3c; font-weight: 600; }
+        .form-group { margin-bottom: 25px; position: relative; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #34495e; font-size: 1.1em; }
+        .form-group p { font-size: 0.95em; color: #95a5a6; margin-top: -5px; margin-bottom: 10px; }
+        input, textarea { width: 100%; padding: 18px; border: 1px solid #dcdcdc; border-radius: 6px; font-size: 1.25em; color: #555; box-sizing: border-box; transition: border-color 0.3s ease, box-shadow 0.3s ease; -webkit-appearance: none; -moz-appearance: none; appearance: none; font-family: 'Work Sans', sans-serif; }
+        input:focus, textarea:focus { border-color: #a1d9ff; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); outline: none; }
+        .flatpickr-input { cursor: pointer; }
+        textarea { resize: vertical; min-height: 120px; }
+        .clear-btn { position: absolute; right: 15px; background: none; border: none; cursor: pointer; font-size: 1.4em; color: #95a5a6; font-weight: bold; display: none; transition: color 0.2s ease; line-height: 1; }
+        .shared-clear-btn { top: 35px; }
+        .private-clear-btn { top: 58px; }
+        .clear-btn:hover { color: #e74c3c; }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); animation: fadeIn 0.3s; }
+        .modal-content { background-color: #ffffff; margin: 10% auto; padding: 20px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.2); width: 80%; max-width: 450px; text-align: left; position: relative; }
+        .modal-content h3 { margin-top: 0; color: #2c3e50; font-size: 1.5em; }
+        .modal-content textarea { min-height: 200px; font-size: 1em; margin-top: 10px; margin-bottom: 20px; }
+        .modal-content .instruction { font-size: 0.9em; color: #7f8c8d; margin-bottom: 10px; }
+        .modal-content .error-message { color: #e74c3c; font-size: 0.9em; margin-top: -10px; margin-bottom: 10px; font-weight: 500; display: none; }
+        .modal-buttons { text-align: right; }
+        .modal-buttons button { padding: 10px 20px; border: none; border-radius: 6px; font-size: 1em; cursor: pointer; font-weight: 500; margin-left: 10px; }
+        .modal-buttons .save-button { background-color: #3498db; color: white; }
+        .modal-buttons .cancel-button { background-color: #ecf0f1; color: #7f8c8d; }
+        .modal-buttons button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="next-lesson-planning-container">
+        <h2>Next lesson planning</h2>
+
+        <div class="student-selector">
+            <label for="student-select">Select student</label>
+            <div class="selector-group">
+                <select id="student-select" name="student-select"></select>
+                <button id="edit-students-btn" class="edit-button">Redigera</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('shared', this)">Shared</button>
+            <button class="tab-button" onclick="showTab('private', this)">Private</button>
+        </div>
+
+        <div id="shared" class="tab-content active">
+            <div class="form-group">
+                <label for="lesson-date">Lesson date</label>
+                <input type="text" id="lesson-date" name="lesson-date">
+            </div>
+
+            <div class="form-group">
+                <label for="homework">Homework</label>
+                <textarea id="homework" name="homework" oninput="toggleClearButton(this)"></textarea>
+                <button class="clear-btn shared-clear-btn" onclick="clearField('homework')">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label for="error-correction">Error correction</label>
+                <textarea id="error-correction" name="error-correction" oninput="toggleClearButton(this)"></textarea>
+                <button class="clear-btn shared-clear-btn" onclick="clearField('error-correction')">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="lesson-objective">Lesson objective</label>
+                <textarea id="lesson-objective" name="lesson-objective" oninput="toggleClearButton(this)"></textarea>
+                <button class="clear-btn shared-clear-btn" onclick="clearField('lesson-objective')">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="materials">Materials</label>
+                <textarea id="materials" name="materials" oninput="toggleClearButton(this)"></textarea>
+                <button class="clear-btn shared-clear-btn" onclick="clearField('materials')">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label for="new-vocabulary">New vocabulary</label>
+                <textarea id="new-vocabulary" name="new-vocabulary" oninput="toggleClearButton(this)"></textarea>
+                <button class="clear-btn shared-clear-btn" onclick="clearField('new-vocabulary')">&times;</button>
+            </div>
+
+            <div class="form-group">
+                <label for="next-lesson-objective">Next lesson objective</label>
+                <textarea id="next-lesson-objective" name="next-lesson-objective" oninput="toggleClearButton(this)"></textarea>
+                <button class="clear-btn shared-clear-btn" onclick="clearField('next-lesson-objective')">&times;</button>
+            </div>
+        </div>
+
+        <div id="private" class="tab-content">
+            <div class="form-group">
+                <label for="private-note">Private note</label>
+                <p>Only visible for you</p>
+                <textarea id="private-note" name="private-note" oninput="toggleClearButton(this)"></textarea>
+                <button class="clear-btn private-clear-btn" onclick="clearField('private-note')">&times;</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal för redigering av studentlista -->
+    <div id="edit-students-modal" class="modal">
+      <div class="modal-content">
+        <h3>Redigera studentlista</h3>
+        <p class="instruction">
+            För att uppdatera listan, redigera data direkt i ditt Google Sheets-dokument.<br>
+            <a id="sheets-link" href="#" target="_blank">Öppna kalkylbladet</a>
+        </p>
+        <p id="fetch-error-message" class="error-message"> </p>
+        <div class="modal-buttons">
+          <button class="cancel-button" onclick="closeModal()">Stäng</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Följande URL-strukturer är kända för att fungera med publicerade Google Sheets.
+        // Byt ut 'your-spreadsheet-id' med ID:t från din egen URL.
+        const SPREADSHEET_ID = '2PACX-1vQtcGlHPAnlYqsIuXC10KKnEPsY_Z4Ci3-kx52vbtmg_mMviaTCnJyqQm8t5q8AEJqLut2o7qvCNo2p';
+        
+        // Vi går tillbaka till att hämta den publicerade HTML-versionen, som ibland är mer tillförlitlig än CSV-länken.
+        // Denna URL bör ge en publicerad HTML-version av kalkylbladet.
+        const GOOGLE_SHEETS_URL = `https://docs.google.com/spreadsheets/d/e/${SPREADSHEET_ID}/pubhtml`;
+        
+        // Den korrekta URL:en för att redigera kalkylbladet
+        const GOOGLE_SHEETS_EDIT_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit`;
+
+        const defaultStudents = [
+            { name: 'Kalle Anka', email: 'kalle@anka.se' },
+            { name: 'Maja Gräddnos', email: 'maja@graddnos.com' }
+        ];
+
+        let students = [];
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            fetchStudentsFromSheets();
+            
+            const editButton = document.getElementById('edit-students-btn');
+            editButton.addEventListener('click', openModal);
+        });
+        
+        // Funktion för att hämta studentdata genom att skrapa den publicerade HTML-versionen
+        async function fetchStudentsFromSheets() {
+            const errorMessageElem = document.getElementById('fetch-error-message');
+            errorMessageElem.style.display = 'none';
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_URL);
+                if (!response.ok) {
+                    throw new Error(`Kunde inte hämta data. Status: ${response.status}. Kontrollera att kalkylbladet är publicerat för webben.`);
+                }
+                const htmlText = await response.text();
+                students = parseHTML(htmlText);
+
+                if (students.length === 0) {
+                    console.warn('Studentlistan var tom eller kunde inte läsas. Använder standardlista.');
+                    students = defaultStudents;
+                    errorMessageElem.textContent = 'Det gick inte att hämta studentlistan. Kontrollera att ditt kalkylblad har rubrikerna "Namn" och "Epost" och att det är publicerat för webben.';
+                    errorMessageElem.style.display = 'block';
+                }
+                
+                loadStudentsToSelect();
+
+            } catch (error) {
+                console.error('Ett fel uppstod vid hämtning av data från Google Sheets:', error);
+                students = defaultStudents;
+                loadStudentsToSelect();
+                errorMessageElem.textContent = 'Ett fel uppstod. Kontrollera att din Google Sheets-länk är korrekt och att filen är publicerad för webben. Status: ' + error.message;
+                errorMessageElem.style.display = 'block';
+            }
+        }
+        
+        // Funktion för att tolka HTML och extrahera studentdata
+        function parseHTML(htmlText) {
+            const studentsList = [];
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+            
+            // Vi letar efter tabellen som innehåller datan
+            const table = doc.querySelector('table');
+            if (!table) {
+                console.error('Kunde inte hitta datatabellen i HTML-innehållet.');
+                return studentsList;
+            }
+
+            const rows = table.querySelectorAll('tr');
+            if (rows.length <= 1) { // Minst en rubrikrad och en datarad
+                 return studentsList;
+            }
+            
+            const headers = Array.from(rows[0].querySelectorAll('td')).map(td => td.textContent.trim().toLowerCase());
+            const nameIndex = headers.findIndex(header => header === 'namn');
+            const emailIndex = headers.findIndex(header => header === 'epost');
+
+            // Gå igenom alla rader utom den första (rubriken)
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].querySelectorAll('td');
+                if (cells.length > Math.max(nameIndex, emailIndex)) {
+                    const studentName = cells[nameIndex] ? cells[nameIndex].textContent.trim() : '';
+                    const studentEmail = cells[emailIndex] ? cells[emailIndex].textContent.trim() : '';
+
+                    if (studentName && studentEmail) {
+                        studentsList.push({ name: studentName, email: studentEmail });
+                    }
+                }
+            }
+            return studentsList;
+        }
+
+        function loadStudentsToSelect() {
+            const studentSelect = document.getElementById('student-select');
+            studentSelect.innerHTML = '';
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.email;
+                option.textContent = student.name;
+                studentSelect.appendChild(option);
+            });
+        }
+
+        function openModal() {
+            const modal = document.getElementById('edit-students-modal');
+            const editLink = document.getElementById('sheets-link');
+            editLink.href = GOOGLE_SHEETS_EDIT_URL;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('edit-students-modal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('edit-students-modal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        function showTab(tabId, clickedButton) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => { content.classList.remove('active'); });
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => { button.classList.remove('active'); });
+            document.getElementById(tabId).classList.add('active');
+            clickedButton.classList.add('active');
+        }
+
+        function toggleClearButton(textarea) {
+            const clearBtn = textarea.nextElementSibling;
+            if (textarea.value.length > 0) { clearBtn.style.display = 'block'; } else { clearBtn.style.display = 'none'; }
+        }
+
+        function clearField(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.value = '';
+            toggleClearButton(field);
+            field.focus();
+        }
+
+        flatpickr("#lesson-date", {
+            dateFormat: "Y-m-d",
+            locale: { weekdays: { shorthand: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], longhand: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] }, firstDayOfWeek: 1 }
+        });
+    </script>
+</body>
+</html>
