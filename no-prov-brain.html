@@ -1,0 +1,274 @@
+<!-- FILE: nervsystemet-desktop.html -->
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nervsystemet – Studieunderlag (Desktop)</title>
+  <style>
+    :root{
+      --bg:#0f1220;         /* djup bakgrund */
+      --panel:#151933;      /* panelbakgrund */
+      --muted:#99a2c2;      /* dämpad text */
+      --text:#e8ecff;       /* brödtext */
+      --accent:#7aa2ff;     /* länkar/markering */
+      --accent-2:#17d2a5;   /* highlights */
+      --danger:#ff6b6b;     /* varningar */
+      --ok:#58d68d;         /* grönt */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text); background:linear-gradient(180deg,#0f1220 0%,#0b1023 100%);
+    }
+    .wrap{display:grid; grid-template-columns: 300px 1fr; gap:28px; max-width:1400px; margin:0 auto; padding:28px;}
+    header.site{grid-column:1/-1; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:16px; padding:18px 22px; box-shadow:var(--shadow)}
+    header.site h1{margin:0; font-weight:800; letter-spacing:.2px}
+    header.site p{margin:.35rem 0 0; color:var(--muted)}
+
+    nav.toc{position:sticky; top:20px; align-self:start; background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px; height:max-content; box-shadow:var(--shadow)}
+    nav.toc h2{font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:0 0 8px 0}
+    .search{position:relative; margin-bottom:10px}
+    .search input{width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.08); background:#0e1330; color:var(--text)}
+    .search input::placeholder{color:#7f88ab}
+    .toc ul{list-style:none; padding:0; margin:8px 0 0}
+    .toc a{display:block; padding:8px 10px; border-radius:10px; color:var(--text); text-decoration:none}
+    .toc a:hover{background:rgba(122,162,255,.12); color:#fff}
+    .toc li{margin:2px 0}
+
+    main{display:grid; gap:22px}
+    section{background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:16px; padding:22px; box-shadow:var(--shadow)}
+    section h2{margin:.2rem 0 0.6rem; font-size:26px}
+    section h3{margin:1rem 0 .4rem; font-size:20px}
+    p,li{color:var(--text)}
+    .muted{color:var(--muted)}
+    .chip{display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; letter-spacing:.02em; border:1px solid rgba(255,255,255,.15)}
+    .chip.ok{background:rgba(23,210,165,.08); border-color:rgba(23,210,165,.35); color:#b8ffe9}
+    .chip.alert{background:rgba(255,107,107,.08); border-color:rgba(255,107,107,.35); color:#ffd7d7}
+    .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+    .note{background:#0e1634; border-left:4px solid var(--accent); padding:12px 14px; border-radius:10px}
+    .defs{display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px}
+    .defs .card{background:#0e1634; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:12px}
+    .defs .card b{display:block; margin-bottom:4px}
+    code.kb{background:#0e1330; border:1px solid rgba(255,255,255,.08); padding:2px 6px; border-radius:6px}
+    a.inline{color:var(--accent)}
+
+    footer{grid-column:1/-1; color:var(--muted); font-size:14px; padding:10px 0 20px}
+
+    @media (max-width: 1100px){.wrap{grid-template-columns: 260px 1fr}}
+    @media (max-width: 900px){.wrap{grid-template-columns:1fr} nav.toc{position:static}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site">
+      <h1>Nervsystemet – Studieunderlag (åk 8)</h1>
+      <p class="muted">En tydlig guide med förklaringar, uppdelad i avsnitt. Desktopversion med 
+        sidomeny och förklaringskort.</p>
+    </header>
+
+    <nav class="toc" aria-label="Snabbnavigering">
+      <h2>Innehåll</h2>
+      <div class="search"><input id="tocSearch" type="search" placeholder="Filtrera rubriker…" aria-label="Filtrera rubriker"></div>
+      <ul id="tocList">
+        <li><a href="#oversikt">Nervsystemet – översikt</a></li>
+        <li><a href="#nervceller">Nervceller</a></li>
+        <li><a href="#perifera">Sensoriska & motoriska nerver</a></li>
+        <li><a href="#hjarnan">Hjärnan</a></li>
+        <li><a href="#sinnen">Sinnesorganen</a></li>
+        <li><a href="#rorelser">Rörelser & muskler</a></li>
+        <li><a href="#reflexer">Reflexer</a></li>
+        <li><a href="#kemi">Nervsystemets kemiska signaler</a></li>
+        <li><a href="#ryggmarg">Ryggmärgen</a></li>
+        <li><a href="#autonomt">Autonoma nervsystemet</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <section id="oversikt">
+        <h2>Nervsystemet – kroppens styrsystem</h2>
+        <p>Nervsystemet är kroppens <b>snabba kommunikationsnätverk</b>. Det gör att vi kan <b>känna</b>, 
+          <b>tänka</b> och <b>röra oss</b>. Det delas in i:</p>
+        <ul>
+          <li><b>Centrala nervsystemet</b> (CNS): <i>hjärnan och ryggmärgen</i>.</li>
+          <li><b>Perifera nervsystemet</b> (PNS): alla nerver som går <i>till och från</i> resten av kroppen.</li>
+        </ul>
+        <div class="note"><b>Svåra ord:</b> <b>nervimpuls</b> = elektrisk signal i nerven. 
+          <b>synaps</b> = kontaktställe där signalen hoppar mellan celler.</div>
+      </section>
+
+      <section id="nervceller">
+        <h2>Nervceller – byggstenarna</h2>
+        <div class="grid-2">
+          <div>
+            <p>En <b>nervcell</b> (neuron) kan skicka och ta emot signaler. Delar:</p>
+            <ul>
+              <li><b>Cellkropp</b> – styr cellen och samlar ihop signaler.</li>
+              <li><b>Dendriter</b> – tar emot signaler från andra nervceller.</li>
+              <li><b>Axon</b> – skickar signalen vidare.</li>
+              <li><b>Myelin</b> – fettlager runt axonet som gör signalen snabb.</li>
+              <li><b>Ändplatta</b> – slutet av axonet där signalen lämnar cellen.</li>
+              <li><b>Synaps</b> – kontakt med nästa cell (nerv- eller muskelcell).</li>
+            </ul>
+          </div>
+          <div>
+            <div class="defs">
+              <div class="card"><b>Impuls</b> Elektrisk signal i en nervcell.</div>
+              <div class="card"><b>Signalämne</b> Ämne som för signalen över synapsen.</div>
+              <div class="card"><b>Mottagarcell</b> Cellen som tar emot signalen.</div>
+            </div>
+          </div>
+        </div>
+        <p class="note"><b>Kontaktpunkter:</b> Nervceller pratar med varandra i <b>synapser</b>. När 
+          signalen ska till en muskel sker det i muskelns <b>ändplatta</b>.</p>
+      </section>
+
+      <section id="perifera">
+        <h2>Perifera nerver – sensoriska & motoriska</h2>
+        <ul>
+          <li><b>Sensoriska nerver</b> – leder <i>in</i> information till CNS (t.ex. beröring, 
+            värme, smärta).</li>
+          <li><b>Motoriska nerver</b> – leder signaler <i>ut</i> från CNS till muskler så att de 
+            drar ihop sig.</li>
+        </ul>
+      </section>
+
+      <section id="hjarnan">
+        <h2>Hjärnan – kroppens kontrollrum</h2>
+        <div class="grid-2">
+          <div>
+            <h3>Skydd & försörjning</h3>
+            <ul>
+              <li><b>Hjärnhinnor</b> – flera skyddande lager.</li>
+              <li><b>Vätska</b> – fungerar som stötdämpning.</li>
+              <li><b>Blodflöde</b> med <b>syre och näring</b> – håller hjärnan igång.</li>
+            </ul>
+            <p><b>Ryggmärgen – en förlängning av hjärnan</b>: leder signaler mellan hjärnan och 
+              kroppen och hanterar snabba reflexer.</p>
+          </div>
+          <div>
+            <h3>Viktiga delar</h3>
+            <ul>
+              <li><b>Storhjärnan</b> – tänkande, minne, språk, sinnen, viljestyrda rörelser.
+                <ul>
+                  <li><b>Vänster hjärnhalva</b> – tal, matematik, logik.</li>
+                  <li><b>Höger hjärnhalva</b> – konst, musik, bilder, ansikten, röster.</li>
+                  <li><b>Minneslagring</b> – sparar information vi vill komma ihåg.</li>
+                </ul>
+              </li>
+              <li><b>Lillhjärnan</b> – <b>koordinerade rörelser</b> och balans (hjälps av <b>balansorganen</b> i örat).</li>
+              <li><b>Hjärnstammen</b> – <b>kroppens automatiska funktioner</b>: andning, hjärtslag, blodtryck.</li>
+              <li><b>Hypofys</b> – hormonchef som styr många andra körtlar.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="sinnen">
+        <h2>Sinnesorganen</h2>
+        <ul class="grid-2">
+          <li><b>Syn</b> – ögonen tar in ljus och formar bilder.</li>
+          <li><b>Hörsel</b> – öronen känner ljudvågor.</li>
+          <li><b>Känsel</b> – huden känner beröring, värme, kyla, smärta.</li>
+          <li><b>Smak</b> – tungan känner sött, surt, salt, beskt, umami.</li>
+          <li><b>Doft</b> – näsan känner lukter.</li>
+          <li><b>Balansorgan</b> – i innerörat, hjälper oss hålla balansen.</li>
+        </ul>
+      </section>
+
+      <section id="rorelser">
+        <h2>Rörelser & muskler</h2>
+        <ul>
+          <li><b>Viljestyrda muskler</b> – muskler du själv kan styra (armar, ben).</li>
+          <li><b>Koordinerade rörelser</b> – flera muskler samarbetar så rörelsen blir jämn.</li>
+          <li><b>Förlamning</b> – när signaler inte når fram till musklerna.</li>
+        </ul>
+      </section>
+
+      <section id="reflexer">
+        <h2>Reflexer – snabba skydd</h2>
+        <ul>
+          <li><b>Reflexer</b> – snabba, automatiska svar (behöver inte hjärnans beslut).</li>
+          <li><b>Medfödda reflexer</b> – du föds med dem (t.ex. blinka).</li>
+          <li><b>Inlärda reflexer</b> – sådant du övat in (t.ex. bromsa snabbt).</li>
+        </ul>
+      </section>
+
+      <section id="kemi">
+        <h2>Nervsystemets kemiska signaler</h2>
+        <div class="grid-2">
+          <div>
+            <h3>Signalämnen i synapser</h3>
+            <ul>
+              <li><b>Acetylkolin</b> – för över signalen till muskler i deras <b>ändplatta</b>.</li>
+              <li><b>Curare</b> – gift som blockerar acetylkolin ⇒ <span class="chip alert">förlamning</span>.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>"Må bra" och smärta</h3>
+            <ul>
+              <li><b>Endorfin</b> – kroppens egna ämnen som ger <b>vällust</b> och <b>smärtstillande effekt</b>.</li>
+              <li><b>Opiater</b> (t.ex. heroin, morfin) – efterliknar endorfiner men kan ge beroende och <b>abstinensbesvär</b>.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="ryggmarg">
+        <h2>Ryggmärgen</h2>
+        <p>Ryggmärgen ligger i ryggraden och är en <b>förlängning av hjärnan</b>. Den är som en 
+          motorväg för signaler mellan hjärnan och resten av kroppen och kan sköta många 
+          <b>reflexer</b> direkt.</p>
+      </section>
+
+      <section id="autonomt">
+        <h2>Autonoma nervsystemet</h2>
+        <p>Sköter sådant som händer automatiskt – du behöver inte tänka på det.</p>
+        <div class="grid-2">
+          <div>
+            <h3>Parasympatiska – <span class="chip ok">Normalläge</span></h3>
+            <ul>
+              <li>Pulsen sänks.</li>
+              <li>Andningen minskar.</li>
+              <li>Matsmältning aktiveras.</li>
+              <li>Mer saliv, mer magsaft.</li>
+              <li>Tarmarnas aktivitet ökar.</li>
+              <li>Pupillen minskas.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Sympatiska – <span class="chip alert">Aktivitetsläge</span></h3>
+            <ul>
+              <li>Pulsen ökar.</li>
+              <li>Luftrören vidgas.</li>
+              <li>Blodflödet styrs till skelettmuskler.</li>
+              <li>Mindre saliv, mindre magsaft.</li>
+              <li>Tarmarnas aktivitet minskar.</li>
+              <li>Pupillen förstoras.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      © Studieunderlag: Nervsystemet. Desktopversion. Tips: Tryck <code class="kb">Ctrl</code>+<code class="kb">F</code> för att söka i sidan.
+    </footer>
+  </div>
+
+  <script>
+    // Enkel filtrering av TOC
+    const input = document.getElementById('tocSearch');
+    const list = document.getElementById('tocList');
+    input?.addEventListener('input', () => {
+      const q = input.value.toLowerCase();
+      for (const li of list.children){
+        const a = li.querySelector('a');
+        li.style.display = a.textContent.toLowerCase().includes(q) ? '' : 'none';
+      }
+    });
+  </script>
+</body>
+</html>
