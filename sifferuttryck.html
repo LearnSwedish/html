@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <title>Svenska uttryck</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+html{
+  overflow-y: auto;
+  scrollbar-gutter: stable; /* håller kvar “gutter” så inget hoppar */
+}
+
+        :root{
+            --bg:#f0f2f5;
+            --card:#fff;
+            --text:#333;
+            --muted:#6b7280;
+            --primary:#3498db;
+            --shadow:0 4px 15px rgba(0,0,0,.1);
+            --border:#eee;
+            --overlay:rgba(0,0,0,.45);
+        }
+
+        *{box-sizing:border-box}
+        body{
+            font-family:'Poppins',sans-serif;
+            background-color:var(--bg);
+            color:var(--text);
+            margin:0;
+            padding:2rem;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+        }
+        h1{
+            color:#2c3e50;
+            text-align:center;
+            font-weight:600;
+            margin:0 0 1.25rem 0;
+        }
+        ul{
+            list-style:none;
+            padding:0;
+            margin:0;
+            max-width:850px;
+            width:100%;
+            background:var(--card);
+            border-radius:10px;
+            box-shadow:var(--shadow);
+            overflow:hidden;
+        }
+.phrases > li{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  padding:14px 14px;
+  border-bottom:1px solid var(--border);
+  line-height:1.4;
+  font-size:1.05rem;
+}
+        li:last-child{border-bottom:none}
+        .row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            width:100%;
+            gap:1rem;
+        }
+        .li-text{
+            flex:1 1 auto;
+            min-width:0;
+        }
+        u{
+            text-decoration-color:var(--primary);
+            text-decoration-thickness:2px;
+        }
+        .info-btn{
+            flex:0 0 auto;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:34px;height:34px;
+            border:1px solid #d9e3ee;
+            border-radius:999px;
+            background:#f8fbff;
+            color:var(--primary);
+            cursor:pointer;
+            transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+        }
+        .info-btn:hover{
+            transform:translateY(-1px);
+            box-shadow:0 6px 14px rgba(0,0,0,.08);
+            background:#ffffff;
+        }
+        .info-btn:active{transform:translateY(0)}
+        .info-btn i{font-size:16px}
+
+        /* Modal */
+        .modal{
+            position:fixed;
+            inset:0;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            background:var(--overlay);
+            padding:20px;
+            z-index:1000;
+        }
+        .modal.open{display:flex;animation:fadeIn .18s ease-out}
+        @keyframes fadeIn{
+            from{opacity:0} to{opacity:1}
+        }
+        .modal-card{
+            position:relative;
+            width:min(720px,94vw);
+            max-height:86vh;
+            overflow:auto;
+            background:#fff;
+            border-radius:14px;
+            box-shadow:0 16px 40px rgba(0,0,0,.25);
+            padding:26px 22px 24px 22px;
+            animation:pop .18s ease-out;
+        }
+        @keyframes pop{
+            from{transform:translateY(6px) scale(.98);opacity:.96}
+            to{transform:translateY(0) scale(1);opacity:1}
+        }
+        .modal h2{
+            margin:0 36px 10px 0;
+            font-size:1.25rem;
+            line-height:1.3;
+        }
+        .modal .meta{
+            color:var(--muted);
+            font-size:.9rem;
+            margin-bottom:.25rem;
+        }
+        .modal ul{box-shadow:none;border-radius:0}
+        .modal section ul{
+            list-style:disc;
+            padding-left:1.25rem;
+            background:transparent;
+        }
+        .modal section li{
+		    border:0;
+			padding:3px 0;
+			font-size:1rem;
+			line-height:1.6}
+        .close-btn{
+            position:absolute;
+            top:10px;right:10px;
+            width:36px;height:36px;
+            display:inline-flex;align-items:center;justify-content:center;
+            border-radius:999px;
+            border:1px solid #e5e7eb;
+            background:#fff;
+            color:#111827;
+            cursor:pointer;
+            transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+        .close-btn:hover{
+            transform:rotate(90deg) scale(1.05);
+            box-shadow:0 6px 14px rgba(0,0,0,.1);
+            background:#fafafa;
+        }
+        .close-btn i{font-size:16px}
+
+        /* Small screens */
+        @media (max-width:640px){
+            li{font-size:1rem}
+            .modal h2{font-size:1.1rem}
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Några svenska sifferuttryck</h1>
+
+    <ul class="phrases">
+        <li><div class="row"><span class="li-text">1. <u>Tusan</u> också, nu glömde jag nycklarna på jobbet!</span><button class="info-btn" aria-label="Förklara uttrycket 1" data-id="1"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">2. <u>Fy hundan</u> vad kallt det är ute idag.</span><button class="info-btn" aria-label="Förklara uttrycket 2" data-id="2"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">3. <u>Det var som attan</u>, vilken fart hon fick på cykeln!</span><button class="info-btn" aria-label="Förklara uttrycket 3" data-id="3"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">4. Ja, <u>för sjutton</u>, nu kör vi igång!</span><button class="info-btn" aria-label="Förklara uttrycket 4" data-id="4"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">5. Du förstår väl <u>för sjutton gubbar</u> att jag skojade?</span><button class="info-btn" aria-label="Förklara uttrycket 5" data-id="5"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">6. Nu säger jag detta <u>för femtioelfte gången</u> – släck alla ljus när du går hemifrån!</span><button class="info-btn" aria-label="Förklara uttrycket 6" data-id="6"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">7. Hon behandlade honom som <u>en riktig nolla</u>.</span><button class="info-btn" aria-label="Förklara uttrycket 7" data-id="7"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">8. Vänta lite, jag måste bara gå och <u>slå en sjua</u>.</span><button class="info-btn" aria-label="Förklara uttrycket 8" data-id="8"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">9. Hon packade väskan och var ute genom dörren <u>på tre röda</u>.</span><button class="info-btn" aria-label="Förklara uttrycket 9" data-id="9"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">10. Jag tyckte att förra vintern var kall, men den här är <u>sju resor värre</u>.</span><button class="info-btn" aria-label="Förklara uttrycket 10" data-id="10"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">11. Det var <u>sju sorger och åtta bedrövelser</u> innan vi fick huset färdigrenoverat.</span><button class="info-btn" aria-label="Förklara uttrycket 11" data-id="11"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">12. Billiga plastleksaker finns det <u>tretton på dussinet</u>.</span><button class="info-btn" aria-label="Förklara uttrycket 12" data-id="12"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">13. När det gäller nya idéer på jobbet är han alltid <u>tvåa på bollen</u>.</span><button class="info-btn" aria-label="Förklara uttrycket 13" data-id="13"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">14. Efter mötet ville chefen prata med mig <u>på tu man hand</u>.</span><button class="info-btn" aria-label="Förklara uttrycket 14" data-id="14"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">15. Han hade <u>noll koll</u> på hur tvättmaskinen fungerar.</span><button class="info-btn" aria-label="Förklara uttrycket 15" data-id="15"><i class="fa-regular fa-circle-question"></i></button></div></li>
+
+        <li><div class="row"><span class="li-text">16 a. Det var <u>ett hundratal</u> personer där.</span><button class="info-btn" aria-label="Förklara uttrycket 16 a" data-id="16a"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">16 b. Det var <u>hundratals</u> personer där.</span><button class="info-btn" aria-label="Förklara uttrycket 16 b" data-id="16b"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">16 c. Det var <u>flera hundra</u> personer där.</span><button class="info-btn" aria-label="Förklara uttrycket 16 c" data-id="16c"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">16 d. Det var <u>några hundra</u> personer där.</span><button class="info-btn" aria-label="Förklara uttrycket 16 d" data-id="16d"><i class="fa-regular fa-circle-question"></i></button></div></li>
+
+        <li><div class="row"><span class="li-text">17 a. Enligt undersökningen tycker <u>flera</u> svenskar att sommaren är den bästa årstiden.</span><button class="info-btn" aria-label="Förklara uttrycket 17 a" data-id="17a"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">17 b. Enligt undersökningen tycker <u>ett flertal</u> svenskar att sommaren är den bästa årstiden.</span><button class="info-btn" aria-label="Förklara uttrycket 17 b" data-id="17b"><i class="fa-regular fa-circle-question"></i></button></div></li>
+        <li><div class="row"><span class="li-text">17 c. Enligt undersökningen tycker <u>flertalet</u> svenskar att sommaren är den bästa årstiden.</span><button class="info-btn" aria-label="Förklara uttrycket 17 c" data-id="17c"><i class="fa-regular fa-circle-question"></i></button></div></li>
+    </ul>
+
+    <!-- Modal -->
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-card" id="modal-card">
+            <button class="close-btn" id="modal-close" aria-label="Stäng förklaringen">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="meta" id="modal-meta"></div>
+            <h2 id="modal-title"></h2>
+            <section id="modal-body"></section>
+        </div>
+    </div>
+
+<script>
+  // --- Kvadratisk Union Jack som inline-SVG, unika id:n varje gång ---
+  let UK_COUNTER = 0;
+  function UK() {
+    const sId = `uk-s-${UK_COUNTER}`;
+    const tId = `uk-t-${UK_COUNTER}`;
+    UK_COUNTER++;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30"
+      width="30" height="30" role="img" aria-label="British flag"
+      style="vertical-align:middle;margin-right:.4rem">
+      <defs>
+        <clipPath id="${sId}"><path d="M0,0V30H60V0Z"/></clipPath>
+        <clipPath id="${tId}"><path d="M30,15H60V30ZM60,0H30V15ZM0,0H30V15ZM0,30H30V15Z"/></clipPath>
+      </defs>
+      <g clip-path="url(#${sId})">
+        <path fill="#012169" d="M0,0V30H60V0Z"/>
+        <path d="M0,0L60,30M60,0L0,30" stroke="#fff" stroke-width="6"/>
+        <path d="M0,0L60,30M60,0L0,30" stroke="#C8102E" stroke-width="4" clip-path="url(#${tId})"/>
+        <path d="M30,0V30M0,15H60" stroke="#fff" stroke-width="10"/>
+        <path d="M30,0V30M0,15H60" stroke="#C8102E" stroke-width="6"/>
+      </g>
+    </svg>`;
+  }
+
+  // Hjälpare: ersätt [UK] i punkttext med flagg-SVG
+  function renderPoint(p) {
+    return p.replace('[UK]', UK());
+  }
+
+  // Alla förklaringar (matchar dina data-id exakt)
+  const EXPL = {
+    "1": { title: "<u>Tusan</u> också, nu glömde jag nycklarna på jobbet!",
+      points: [
+        "Betydelse: Tusan (”tusen” » ”tusen djävlar”) – en mild svordom.",
+        "[UK] <u>Damn it</u>, I left my keys at work!"
+      ]},
+    "2": { title: "<u>Fy hundan</u> vad kallt det är ute idag.",
+      points: [
+        "Betydelse: Hundan (”hundra” » ”hundra djävlar”) – betyder ”Usch”.",
+        "[UK] <u>Good grief</u>, it’s cold out today."
+      ]},
+    "3": { title: "<u>Det var som attan</u>, vilken fart hon fick på cykeln!",
+      points: [
+        "Betydelse: Attan (”arton”), Odens tal, symbol för djävulen – en mild svordom.",
+        "[UK] <u>Blimey</u>, what speed she got on that bike!"
+      ]},
+    "4": { title: "Ja, <u>för sjutton</u>, nu kör vi igång!",
+      points: [
+        "Betydelse: Absolut ja.",
+        "[UK] <u>Right then</u>, let’s get going!"
+      ]},
+    "5": { title: "Du förstår väl <u>för sjutton gubbar</u> att jag skojade?",
+      points: [
+        "Betydelse: Det är väl självklart.",
+        "[UK] <u>For heaven’s sake</u>, you do realise I was joking?"
+      ]},
+    "6": { title: "Nu säger jag detta <u>för femtioelfte gången</u> – släck alla ljus när du går hemifrån!",
+      points: [
+        "Betydelse: ”Fifty-eleventh time” – överdrift, talaren är otålig.",
+        "[UK] I’ve told you <u>umpteen times</u> – turn off the lights when you leave!"
+      ]},
+    "7": { title: "Hon behandlade honom som <u>en riktig nolla</u>.",
+      points: [
+        "Betydelse: Nolla = siffran 0 → överfört till ”värdelös person”.",
+        "[UK] She treated him like <u>a complete nobody</u>."
+      ]},
+    "8": { title: "Vänta lite, jag måste bara gå och <u>slå en sjua</u>.",
+      points: [
+        "Betydelse: Slang → sjua syftar på siffrans form, associerad till att kissa.",
+        "[UK] Hang on, I just need to <u>take a wee</u>."
+      ]},
+    "9": { title: "Hon packade väskan och var ute genom dörren <u>på tre röda</u>.",
+      points: [
+        "Betydelse: På några ögonblick (väldigt fort).",
+        "[UK] She packed her bag and was out the door <u>in no time</u>."
+      ]},
+    "10": { title: "Jag tyckte att förra vintern var kall, men den här är <u>sju resor värre</u>.",
+      points: [
+        "Betydelse: ”Sju resor” = gammalt talesätt, överdriven multiplikation.",
+        "[UK] I thought last winter was cold, but this one is <u>far worse</u>."
+      ]},
+    "11": { title: "Det var <u>sju sorger och åtta bedrövelser</u> innan vi fick huset färdigrenoverat.",
+      points: [
+        "Betydelse: Biblisk och folklig tradition – många svåra problem.",
+        "[UK] It was <u>sheer hell</u> getting the house renovated."
+      ]},
+    "12": { title: "Billiga plastleksaker finns det <u>tretton på dussinet</u>.",
+      points: [
+        "Betydelse: Dussin = 12, tretton blir ett överflöd → för många, har inget värde.",
+        "[UK] Cheap plastic toys are <u>ten a penny</u>."
+      ]},
+    "13": { title: "När det gäller nya idéer på jobbet är han alltid <u>tvåa på bollen</u>.",
+      points: [
+        "Ursprung: Idrottsterminologi – någon som alltid reagerar för långsamt.",
+        "[UK] When it comes to new ideas at work, he’s always <u>slow off the mark</u>."
+      ]},
+    "14": { title: "Efter mötet ville chefen prata med mig <u>på tu man hand</u>.",
+      points: [
+        "Betydelse: Mellan fyra ögon – bara två personer.",
+        "[UK] After the meeting the boss wanted to talk to me <u>in private</u>."
+      ]},
+    "15": { title: "Han hade <u>noll koll</u> på hur tvättmaskinen fungerar.",
+      points: [
+        "Betydelse: Noll = absolut inget → ”ingen koll” – totalt okunnig.",
+        "[UK] He had <u>no clue</u> how the washing machine works."
+      ]},
+    "16a": { title: "Det var <u>ett hundratal</u> personer där.",
+      points: [
+        "Betydelse: Omkring 100 (80–120), ungefärlig uppskattning.",
+        "[UK] There were <u>about a hundred</u> people there."
+      ]},
+    "16b": { title: "Det var <u>hundratals</u> personer där.",
+      points: [
+        "Betydelse: Över 200 (men inte 1 000).",
+        "[UK] There were <u>hundreds</u> of people there."
+      ]},
+    "16c": { title: "Det var <u>flera hundra</u> personer där.",
+      points: [
+        "Betydelse: Över 200 (men inte 1 000) med attityd ”mer än förväntat”.",
+        "[UK] There were <u>several hundred</u> people there."
+      ]},
+    "16d": { title: "Det var <u>några hundra</u> personer där.",
+      points: [
+        "Betydelse: Över 200 (men inte 1 000) med attityd ”mindre än förväntat”.",
+        "[UK] There were <u>a few hundred</u> people there."
+      ]},
+    "17a": { title: "Enligt undersökningen tycker <u>flera</u> svenskar att sommaren är den bästa årstiden.",
+      points: [
+        "Betydelse: ”Flera” = ett (ovisst) antal, inte nödvändigtvis många.",
+        "[UK] According to the survey, <u>several</u> Swedes think summer is the best season."
+      ]},
+    "17b": { title: "Enligt undersökningen tycker <u>ett flertal</u> svenskar att sommaren är den bästa årstiden.",
+      points: [
+        "Betydelse: ”Ett flertal” = en större mängd, men inte majoriteten.",
+        "[UK] According to the survey, <u>quite a few</u> Swedes think summer is the best season."
+      ]},
+    "17c": { title: "Enligt undersökningen tycker <u>flertalet</u> svenskar att sommaren är den bästa årstiden.",
+      points: [
+        "Betydelse: ”Flertalet” = majoriteten, alltså de flesta.",
+        "[UK] According to the survey, <u>most</u> Swedes think summer is the best season."
+      ]}
+  };
+
+  const modal = document.getElementById('modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody  = document.getElementById('modal-body');
+  const modalMeta  = document.getElementById('modal-meta');
+  const modalClose = document.getElementById('modal-close');
+
+  function openModal(id){
+    const data = EXPL[id];
+    if(!data) return;
+
+    modalTitle.innerHTML = data.title;
+    // Ersätt [UK] med en riktig flagga per punkt
+    modalBody.innerHTML = `<ul>${data.points.map(p=>`<li>${renderPoint(p)}</li>`).join('')}</ul>`;
+    modalMeta.textContent = "Förklaring av uttryck";
+
+    // Lås scroll på html (utan padding-hack)
+    document.documentElement.style.overflow = 'hidden';
+
+    modal.classList.add('open');
+    modalClose.focus();
+  }
+
+  function closeModal(){
+    modal.classList.remove('open');
+    // Återställ scroll på html
+    document.documentElement.style.overflow = '';
+  }
+
+  // Öppna
+  document.querySelectorAll('.info-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      openModal(btn.dataset.id);
+    });
+  });
+
+  // Stäng
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e)=>{
+    if(e.target === modal) closeModal(); // klick utanför kortet
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+</script>
+
+</body>
+</html>
