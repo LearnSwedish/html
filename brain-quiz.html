@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nervsystemet – mobilquiz</title>
+  <style>
+    :root{
+      --bg:#0f172a;           /* mörk bakgrund för kontrast */
+      --card:#111827;         /* kortbakgrund */
+      --text:#e5e7eb;         /* brödtext */
+      --muted:#9ca3af;        /* sekundärtext */
+      --brand:#22c55e;        /* progress/korrekt */
+      --accent:#3b82f6;       /* knappar */
+      --wrong:#ef4444;        /* fel */
+      --right:#10b981;        /* rätt */
+      --border:#1f2937;       /* kantlinjer */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background:linear-gradient(180deg,#0b1220 0%, #0f172a 30%, #0b1220 100%);
+      color:var(--text);
+    }
+    .wrap{max-width:720px;margin:0 auto;padding:80px 16px 24px 16px}
+
+    /* Sticky räknare */
+    .hud{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter:saturate(120%) blur(6px);
+      background:rgba(2,6,23,.7);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px; min-height:56px;
+    }
+    .hud .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-weight:600;}
+    .hud .pill small{color:var(--muted);font-weight:500}
+    .progress{flex:1;height:10px;background:#0b1020;border-radius:999px;overflow:hidden;border:1px solid var(--border)}
+    .progress > span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--brand));transition:width .3s ease}
+
+    h1{font-size:1.25rem;margin:16px 0 8px}
+    p.lead{margin:0 0 12px;color:var(--muted)}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .qtext{font-size:1.05rem;line-height:1.35;margin:2px 0 10px}
+
+    .options{display:grid;gap:10px}
+    .btn{
+      width:100%;border:1px solid var(--border);background:#0b1220;color:var(--text);
+      padding:12px 14px;border-radius:12px;font-size:1rem;line-height:1.2;
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      transition:transform .06s ease, border-color .2s ease, background .2s ease;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:#2a3448}
+    .btn[disabled]{opacity:.7;pointer-events:none}
+    .btn.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.5)}
+    .btn.incorrect{background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.6)}
+
+    .feedback{margin-top:10px;font-size:.95rem}
+    .feedback .ok{color:var(--right);font-weight:700}
+    .feedback .no{color:var(--wrong);font-weight:700}
+
+    .controls{display:flex;gap:10px;margin-top:12px}
+    .primary{background:var(--accent);border:1px solid #2b59b3;color:white;padding:12px 16px;border-radius:12px;font-weight:700}
+    .ghost{background:transparent;border:1px dashed var(--border);color:var(--muted);padding:12px 16px;border-radius:12px}
+
+    .pill.kpi{gap:4px}
+    .k{font-weight:800}
+    .muted{color:var(--muted)}
+
+    footer{color:var(--muted);font-size:.85rem;text-align:center;margin-top:16px}
+
+    @media (max-width:420px){
+      .wrap{padding-left:12px;padding-right:12px}
+      .btn{font-size:.98rem}
+    }
+  </style>
+</head>
+<body>
+  <!-- Sticky HUD -->
+  <div class="hud">
+    <div class="pill kpi" id="qCounter"><span class="k" id="qIndex">1</span>/<span id="qTotal">—</span> <small>frågor</small></div>
+    <div class="pill kpi">Rätt: <span class="k" id="score">0</span></div>
+    <div class="pill kpi">Svarade: <span class="k" id="answered">0</span></div>
+    <div class="progress" aria-hidden="true"><span id="bar"></span></div>
+  </div>
+
+  <div class="wrap">
+    <h1>Nervsystemet – snabbquiz</h1>
+    <p class="lead">Fyra alternativ per fråga. Direkt feedback. Frågorna och alternativen slumpas.</p>
+
+    <div class="card" id="quizCard" aria-live="polite">
+      <div class="qtext" id="qText">Laddar fråga…</div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="controls">
+        <button class="primary" id="nextBtn" disabled>Nästa fråga</button>
+        <button class="ghost" id="restartBtn" style="display:none">Starta om</button>
+      </div>
+    </div>
+
+    <footer>Tips: Tryck varsomhelst på ett alternativ för att svara.</footer>
+  </div>
+
+<script>
+// Fisher–Yates shuffle
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+const bank = [
+  {q:"Vilken struktur tar emot signaler från andra nervceller?", correct:"Dendrit", distractors:["Axon","Myelin","Synaps"]},
+  {q:"Vad kallas utskottet som leder signalen bort från cellkroppen?", correct:"Axon", distractors:["Dendrit","Synaps","Glia"]},
+  {q:"Vilket ämne fungerar som elektriskt isolerande skikt runt många axon?", correct:"Myelin", distractors:["Keratin","Melanin","Kollagen"]},
+  {q:"Vad kallas kontaktstället där signal överförs mellan nervceller eller till muskelcell?", correct:"Synaps", distractors:["Sutur","Sarkomer","Hinna"]},
+  {q:"Vad är en signalsubstans?", correct:"Ett kemiskt ämne som överför signal i synapsen", distractors:["En typ av blodcell","Ett hormonproducerande organ","En fettvävnad runt axonet"]},
+  {q:"Vilken signalsubstans används ofta i nerv–muskel-kopplingen?", correct:"Acetylkolin", distractors:["Insulin","Kortisol","Tyroxin"]},
+  {q:"Vilken kroppsegen substans dämpar smärta och ingår i belöningssystemet?", correct:"Endorfin", distractors:["Laktas","Keratin","Pepsin"]},
+  {q:"Vad kallas den elektriska signal som färdas längs axonet?", correct:"Nervsignal (impuls)", distractors:["Jonström","Tryckvåg","Glukospuls"]},
+  {q:"Vad beskriver en reflexrörelse bäst?", correct:"Snabb, omedveten reaktion som ofta går via ryggmärgen", distractors:["Långsam, viljestyrd rörelse","Slumpmässig muskelryckning","Enbart rörelse i hjärtat"]},
+  {q:"Åt vilket håll går en sensorisk nervsignal?", correct:"Från sinnesorgan till centrala nervsystemet", distractors:["Från CNS till muskler","Mellan två muskler","Från hjärtat till levern"]},
+  {q:"Åt vilket håll går en motorisk nervsignal?", correct:"Från CNS till muskler/körtlar", distractors:["Från sinnen till CNS","Från muskler till hjärta","Från hud till hud"]},
+  {q:"Vilket av följande är en medfödd reflex?", correct:"Blinka när något snabbt närmar sig ögat", distractors:["Cykla","Gå i takt","Ducka i ringen som boxare"]},
+  {q:"Vilket av följande är en inlärd reflex?", correct:"En boxare duckar automatiskt", distractors:["Pupillen drar ihop sig","Knäreflexen","Blinkreflexen"]},
+  {q:"Vad ingår i det centrala nervsystemet (CNS)?", correct:"Hjärnan och ryggmärgen", distractors:["Hjärnan och alla nerver","Ryggmärgen och skelettet","Alla sinnesorgan"]},
+  {q:"Vad ingår i det perifera nervsystemet (PNS)?", correct:"Alla nerver utanför hjärna och ryggmärg", distractors:["Bara hjärnan","Bara ryggmärgen","Endast sinnesorganen"]},
+  {q:"Vilket system är viljestyrt och styr skelettmusklerna?", correct:"Somatiska nervsystemet (viljestyrda)", distractors:["Autonoma nervsystemet","Sympatiska nervsystemet","Parasympatiska nervsystemet"]},
+  {q:"Vilket system reglerar automatiska funktioner som hjärta och tarmar?", correct:"Autonoma nervsystemet", distractors:["Somatiska nervsystemet","Motoriska systemet","Sensoriska systemet"]},
+  {q:"Vilken del av det autonoma nervsystemet aktiverar ‘kamp och flykt’?", correct:"Sympatiska nervsystemet", distractors:["Parasympatiska nervsystemet","Somatiska nervsystemet","Sensoriska systemet"]},
+  {q:"Vilken del av det autonoma nervsystemet dominerar vid vila och matsmältning?", correct:"Parasympatiska nervsystemet", distractors:["Sympatiska nervsystemet","Somatiska nervsystemet","Motoriska nervsystemet"]},
+  {q:"Vilken del tar emot och tolkar sinnesintryck som syn och hörsel?", correct:"Storhjärnan", distractors:["Lillhjärnan","Hjärnstammen","Ryggmärgen"]},
+  {q:"Vilken del känner igen röster, ansikten, bilder och mönster?", correct:"Storhjärnan", distractors:["Lillhjärnan","Hjärnstammen","Hjärnbarken saknar sådan förmåga"]},
+  {q:"Var finns förmågor, kunskaper, minnen lagrade och var styrs tankar?", correct:"Storhjärnan", distractors:["Lillhjärnan","Hjärnstammen","Ryggmärgen"]},
+  {q:"Vilken del samordnar impulser från ögon, balansorgan och muskler?", correct:"Lillhjärnan", distractors:["Storhjärnan","Hjärnstammen","Hjärnbalken"]},
+  {q:"Vilken del finjusterar och samordnar våra rörelser?", correct:"Lillhjärnan", distractors:["Storhjärnan","Hjärnstammen","Ryggmärgen"]},
+  {q:"Vilken del styr funktioner vi inte kan påverka med vilja (andning, puls, blodtryck)?", correct:"Hjärnstammen", distractors:["Lillhjärnan","Hjärnbalken","Storhjärnan"]},
+  {q:"Vad är hjärnbalken (corpus callosum)?", correct:"Kopplingen mellan vänster och höger hjärnhalva", distractors:["Hjärnans yttre bark","Centrum för andning","En hjärnhinna"]},
+  {q:"Vilken hjärnhalva förknippas oftare med tal, logik och matematik?", correct:"Vänster hjärnhalva", distractors:["Höger hjärnhalva","Båda lika utan specialisering","Hjärnstammen"]},
+  {q:"Vilken hjärnhalva förknippas oftare med form, bilder och konstnärliga uttryck?", correct:"Höger hjärnhalva", distractors:["Vänster hjärnhalva","Hjärnstammen","Lillhjärnan"]},
+  {q:"Ungefär vilken topphastighet kan en nervimpuls nå?", correct:"Cirka 360 km/h", distractors:["Cirka 36 km/h","Cirka 3 600 km/h","Cirka 36 000 km/h"]},
+  {q:"Vilken funktion har ryggmärgen?", correct:"Förbinder hjärnan med kroppen och är centrum för många reflexer", distractors:["Producerar röda blodkroppar","Lagrar långtidsminnen","Skapar signalsubstanserna"]},
+  {q:"Vilket av följande är inte ett sinnesorgan?", correct:"Njure", distractors:["Öga","Öra","Balansorgan"]},
+  {q:"Vilken är en skyddsreflex?", correct:"Rycka bort handen från något varmt", distractors:["Lära sig cykla","Skriva sitt namn","Långsamma viljestyrda rörelser"]},
+  {q:"Hur överför en nervcell sin impuls till nästa cell?", correct:"Via en synaps där signalsubstans (t.ex. acetylkolin) frisätts och aktiverar receptorer", distractors:["Genom DNA-signaler i cellkärnan","Via syrepumpar i myelinet","Elektrisk ledning direkt genom benvävnad"]}
+];
+
+let questions = [];
+let index = 0;
+let score = 0;  // antal rätt
+let answered = 0;
+
+const qText = document.getElementById('qText');
+const optionsEl = document.getElementById('options');
+const feedbackEl = document.getElementById('feedback');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const qIndexEl = document.getElementById('qIndex');
+const qTotalEl = document.getElementById('qTotal');
+const scoreEl = document.getElementById('score');
+const answeredEl = document.getElementById('answered');
+const barEl = document.getElementById('bar');
+
+function init(){
+  questions = shuffle(bank);
+  index = 0; score = 0; answered = 0;
+  qTotalEl.textContent = questions.length;
+  scoreEl.textContent = score;
+  answeredEl.textContent = answered;
+  nextBtn.disabled = true;
+  restartBtn.style.display = 'none';
+  barEl.style.width = '0%';
+  render();
+}
+
+function render(){
+  const item = questions[index];
+  qIndexEl.textContent = index+1;
+  qText.textContent = item.q;
+  feedbackEl.innerHTML = '';
+  nextBtn.disabled = true;
+  optionsEl.innerHTML = '';
+
+  const opts = shuffle([item.correct, ...item.distractors]);
+
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.type = 'button';
+    btn.innerHTML = `<span>${opt}</span>`;
+    btn.addEventListener('click', () => handleAnswer(btn, opt === item.correct, item.correct));
+    optionsEl.appendChild(btn);
+  });
+}
+
+function handleAnswer(btn, isCorrect, correctText){
+  // Lås knappar
+  [...optionsEl.children].forEach(b => b.disabled = true);
+
+  answered++;
+  answeredEl.textContent = answered;
+  const progress = (answered / questions.length) * 100;
+  barEl.style.width = progress + '%';
+
+  if(isCorrect){
+    score++;
+    scoreEl.textContent = score;
+    btn.classList.add('correct');
+    feedbackEl.innerHTML = `<span class="ok">Rätt!</span> ${correctText}`;
+  }else{
+    btn.classList.add('incorrect');
+    // markera rätt svar
+    [...optionsEl.children].forEach(b => {
+      if(b.textContent.trim() === correctText) b.classList.add('correct');
+    });
+    feedbackEl.innerHTML = `<span class="no">Fel.</span> Rätt svar: <strong>${correctText}</strong>`;
+  }
+
+  nextBtn.disabled = false;
+  if(index === questions.length-1){
+    nextBtn.textContent = 'Visa resultat';
+  }
+}
+
+nextBtn.addEventListener('click', () => {
+  if(index < questions.length-1){
+    index++;
+    nextBtn.textContent = 'Nästa fråga';
+    render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }else{
+    showResult();
+  }
+});
+
+function showResult(){
+  const total = questions.length;
+  const percent = Math.round((score/total)*100);
+  qText.textContent = 'Resultat';
+  optionsEl.innerHTML = '';
+  feedbackEl.innerHTML = `Du fick <strong>${score}</strong> av <strong>${total}</strong> rätt (${percent}%).`;
+  nextBtn.disabled = true;
+  nextBtn.textContent = 'Klar';
+  restartBtn.style.display = 'inline-flex';
+}
+
+restartBtn.addEventListener('click', init);
+
+// start
+init();
+</script>
+</body>
+</html>
