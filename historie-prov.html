@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Historia – 1800-talet, ideologier & folkrörelser</title>
+  <style>
+    :root{
+      --bg:#0f172a;        /* mörk bakgrund (bra i mobil/dark mode) */
+      --card:#111827;      /* kortbakgrund */
+      --text:#e5e7eb;      /* brödtext */
+      --muted:#9ca3af;     /* sekundär text */
+      --accent:#22c55e;    /* rätt */
+      --wrong:#ef4444;     /* fel */
+      --info:#38bdf8;      /* förklaringar */
+      --btn:#1f2937;       /* knappar */
+      --btnText:#e5e7eb;
+      --border:#1f2937;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background:linear-gradient(180deg,#0b1223,#0f172a 25%,#0f172a 75%,#0b1223);
+      color:var(--text);
+      line-height:1.45;
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(15,23,42,.85); backdrop-filter: blur(6px);
+      border-bottom:1px solid var(--border);
+    }
+    .wrap{max-width:980px; margin:0 auto; padding:12px 16px;}
+    .top{
+      display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px;
+      border:1px solid var(--border); border-radius:999px; background:#0b1223;
+      font-weight:600; font-size:14px;
+    }
+    .title{font-size:18px; font-weight:700}
+    main{padding:16px}
+    .card{
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:16px; margin:12px auto; max-width:980px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    }
+    .qheader{
+      display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;
+    }
+    .qindex{font-weight:700; font-size:14px; color:var(--muted)}
+    .qtext{font-size:18px; font-weight:600; margin:8px 0 6px}
+    .qbadge{
+      font-size:12px; color:#facc15; border:1px dashed #facc15; padding:2px 8px; border-radius:999px;
+    }
+    .options{display:grid; gap:8px; margin-top:10px}
+    .opt{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px; border:1px solid var(--border);
+      border-radius:12px; background:#0b1223; cursor:pointer;
+      transition: transform .02s ease-in-out, border-color .2s ease, background .2s ease;
+      user-select:none;
+    }
+    .opt:hover{transform: translateY(-1px); border-color:#27324a}
+    .opt input{margin-top:2px; transform:scale(1.2)}
+    .opt.correct{border-color:var(--accent); background:rgba(34,197,94,.08)}
+    .opt.incorrect{border-color:var(--wrong); background:rgba(239,68,68,.08)}
+    .controls{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+    button{
+      background:var(--btn); color:var(--btnText); border:1px solid var(--border);
+      padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer;
+    }
+    button[disabled]{opacity:.6; cursor:not-allowed}
+    .explain{
+      border-top:1px dashed var(--border); margin-top:12px; padding-top:12px;
+      color:var(--info); font-size:15px;
+    }
+    .footer{
+      margin:20px auto 60px; text-align:center; color:var(--muted); font-size:14px;
+    }
+    .legend{display:flex; gap:8px; flex-wrap:wrap; font-size:13px; color:var(--muted)}
+    .legend span{display:inline-flex; gap:6px; align-items:center; padding:4px 8px; border:1px solid var(--border); border-radius:10px}
+    @media (min-width:700px){
+      .qtext{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap top">
+      <div class="title">Historiaquiz: 1800-talet, ideologier & folkrörelser</div>
+      <div class="legend">
+        <span>Rätt: <strong id="score">0</strong></span>
+        <span>Besvarade: <strong id="answered">0</strong> / <strong id="total">0</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <main id="quiz"></main>
+
+  <div class="wrap footer">
+    <div style="margin-bottom:12px">
+      <button id="restart">Starta om</button>
+      <button id="reveal">Visa alla rätta svar</button>
+    </div>
+    <div class="pill">Tips: Flervalsfrågor kräver minst två kryss.</div>
+  </div>
+
+<script>
+/* ====== Hjälpfunktioner ====== */
+const shuffle = (arr) => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+const mk = (tag, attrs = {}, ...children) => {
+  const el = document.createElement(tag);
+  Object.entries(attrs).forEach(([k,v]) => {
+    if (k === "class") el.className = v;
+    else if (k === "html") el.innerHTML = v;
+    else el.setAttribute(k, v);
+  });
+  children.flat().forEach(ch => {
+    if (ch === null || ch === undefined) return;
+    if (typeof ch === "string") el.appendChild(document.createTextNode(ch));
+    else el.appendChild(ch);
+  });
+  return el;
+};
+
+/* ====== Frågebank (50 frågor) ======
+   Baserat på Underlag prov.docx + utgångspunkterna.
+   Flervalsfrågor har multi:true och minst två korrekt:true. */
+const BANK = [
+  // --- Arbetarrörelsen (Palm, SAP, LO, Kata, storstrejk 1909) ---
+  {
+    q: "Vem spred de socialistiska idéerna i Sverige genom resor och startade tidningen Socialdemokraten 1885?",
+    options: [
+      {t:"August Palm", correct:true},
+      {t:"Hjalmar Branting", correct:false},
+      {t:"Per Albin Hansson", correct:false},
+      {t:"Ivan Bratt", correct:false},
+    ],
+    explain: "August Palm reste runt och spred socialistiska idéer och startade dagstidningen Socialdemokraten 1885.",
+  },
+  {
+    q: "Fyra år efter att Socialdemokraten startade grundades SAP. Vilket år?",
+    options: [
+      {t:"1889", correct:true},
+      {t:"1895", correct:false},
+      {t:"1879", correct:false},
+      {t:"1905", correct:false},
+    ],
+    explain: "Socialdemokraten startade 1885; fyra år senare (1889) grundades Sveriges socialdemokratiska arbetareparti.",
+  },
+  {
+    q: "Kata Dalström var känd för att…",
+    options: [
+      {t:"resa och hålla tal om rösträtt för alla", correct:true},
+      {t:"införa motboken 1917", correct:false},
+      {t:"leda Frälsningsarméns musikkår", correct:false},
+      {t:"vara riksbankschef under 1920-talet", correct:false},
+    ],
+    explain: "Kata Dalström reste runt och höll tal; rösträtt för alla var en central fråga.",
+  },
+  {
+    q: "Vad var LO:s roll inom arbetarrörelsen?",
+    options: [
+      {t:"Facklig samarbetsorganisation för förbund som Målareförbundet", correct:true},
+      {t:"Politiskt parti som styrde riksdagen", correct:false},
+      {t:"Religiös väckelserörelse", correct:false},
+      {t:"Nykterhetsorganisation", correct:false},
+    ],
+    explain: "LO samlade fackförbund efter yrke – den fackliga delen av arbetarrörelsen.",
+  },
+  {
+    q: "Vilken händelse var några LO-förbund delaktiga i 1909?",
+    options: [
+      {t:"Storstrejken", correct:true},
+      {t:"Folkomröstningen om alkohol", correct:false},
+      {t:"Unionen med Norge", correct:false},
+      {t:"Reformen om folkskola", correct:false},
+    ],
+    explain: "Storstrejken 1909 engagerade delar av LO.",
+  },
+
+  // --- Nykterhetsrörelsen (Wieselgren, IOGT/NTO, Bratt, motbok, 1922) ---
+  {
+    q: "Vad drev nykterhetsrörelsen initialt enligt Peter Wieselgrens linje?",
+    options: [
+      {t:"Måttlighet i bruket av brännvin", correct:true},
+      {t:"Total avhållsamhet från start", correct:false},
+      {t:"Avkriminalisering av hemdestillering", correct:false},
+      {t:"Starkare beskattning av kaffe", correct:false},
+    ],
+    explain: "Wieselgrens tidiga föreningar manade till måttlighet, inte total avhållsamhet.",
+  },
+  {
+    q: "När fick nykterhetsrörelsen nytt uppsving genom IOGT och NTO?",
+    options: [
+      {t:"1870-talet", correct:true},
+      {t:"1840-talet", correct:false},
+      {t:"1890-talet", correct:false},
+      {t:"1920-talet", correct:false},
+    ],
+    explain: "Under 1870-talet kom de internationella orden IOGT och NTO in starkt.",
+  },
+  {
+    q: "Vilket påstående om motboken som infördes 1917 stämmer?",
+    options: [
+      {t:"Män över 25 år fick köpa högst 4 liter sprit/månad", correct:true},
+      {t:"Gifta kvinnor hade samma rätt som män", correct:false},
+      {t:"Systemet avskaffades 1932", correct:false},
+      {t:"Ogifta kvinnor under 25 fick fritt köpa", correct:false},
+    ],
+    explain: "Män >25 år: max 4 liter/månad. Gifta kvinnor: ingen rätt. Ogifta kvinnor >25 kunde ansöka. Avskaffades först 1955.",
+  },
+  {
+    q: "Vad blev utfallet i folkomröstningen 1922 om alkoholförbud?",
+    options: [
+      {t:"Nej till förbud (51%) – alkoholförsäljning kvarstod", correct:true},
+      {t:"Ja till förbud (60%) – alkoholförsäljning stoppades", correct:false},
+      {t:"Ja till förbud (51%) – endast öl tilläts", correct:false},
+      {t:"Nej till förbud (70%) – inga begränsningar", correct:false},
+    ],
+    explain: "Förbudssidan förlorade med 49–51; försäljning kvarstod.",
+  },
+  {
+    q: "Vilket år blev hemdestillering till husbehov förbjuden?",
+    options: [
+      {t:"1855", correct:true},
+      {t:"1845", correct:false},
+      {t:"1867", correct:false},
+      {t:"1917", correct:false},
+    ],
+    explain: "Fram till 1855 var hemdestillering tillåten.",
+  },
+
+  // --- Frikyrkorörelsen (1858, exempel, demokrati) ---
+  {
+    q: "Vilket var ett mål för frikyrkorörelsen under 1800-talet?",
+    options: [
+      {t:"Själv få tolka Bibeln och fritt samlas till gudstjänst", correct:true},
+      {t:"Införa statskyrklig censur", correct:false},
+      {t:"Avskaffa folkskolan", correct:false},
+      {t:"Öka kungens makt över kyrkan", correct:false},
+    ],
+    explain: "Frikyrkorna ville lämna statskyrkan och fritt samlas/tolka texterna.",
+  },
+  {
+    q: "Vilka av följande var frikyrkor? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Metodistkyrkan", correct:true},
+      {t:"Baptistsamfundet", correct:true},
+      {t:"Missionsförbundet", correct:true},
+      {t:"Frälsningsarmén", correct:false},
+    ],
+    explain: "Metodistkyrkan, Baptistsamfundet och Missionsförbundet nämns som exempel; Frälsningsarmén var en kristen rörelse känd för socialt arbete men räknas ofta som samfund – här efter underlaget skiljer vi ut exemplen som listas explicit som frikyrkor.",
+  },
+  {
+    q: "Vilket år blev det tillåtet att lämna statskyrkan och bilda frikyrkor?",
+    options: [
+      {t:"1858", correct:true},
+      {t:"1845", correct:false},
+      {t:"1867", correct:false},
+      {t:"1889", correct:false},
+    ],
+    explain: "Från 1858 var det tillåtet att lämna statskyrkan.",
+  },
+  {
+    q: "Vilken funktion hade frikyrkorna i industrisamhällets framväxt?",
+    options: [
+      {t:"Gemenskap och skola i demokrati", correct:true},
+      {t:"Statlig arbetsförmedling", correct:false},
+      {t:"Tekniska högskolor", correct:false},
+      {t:"Obligatorisk militärutbildning", correct:false},
+    ],
+    explain: "Frikyrkorna skapade gemenskap och tränade mötesdemokrati.",
+  },
+
+  // --- Sverige moderniseras / folkrörelser som skola i demokrati ---
+  {
+    q: "Vilka processer moderniserade Sverige under 1800-talet? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Industrialiseringen", correct:true},
+      {t:"Urbaniseringen", correct:true},
+      {t:"Införandet av folkskola", correct:true},
+      {t:"Avskaffandet av allmän rösträtt", correct:false},
+    ],
+    explain: "Industrialisering, urbanisering och folkskola lyfts i underlaget.",
+  },
+  {
+    q: "Hur fungerade folkrörelserna och partierna som en ”skola för många”?",
+    options: [
+      {t:"Möten, studier och beslutsfattande tränade medlemmar i demokrati", correct:true},
+      {t:"De ersatte helt den offentliga skolan", correct:false},
+      {t:"De krävde total lydnad utan debatt", correct:false},
+      {t:"De var endast religiösa sammanslutningar", correct:false},
+    ],
+    explain: "Möten och studier gav praktisk demokratierfarenhet.",
+  },
+  {
+    q: "Vad kännetecknade Arbetarnas bibliotek?",
+    options: [
+      {t:"Slagordet ”Veta, vilja, vinna!” och lördagsöppet 17–18", correct:true},
+      {t:"Söndagsöppet 7–8 och slagordet ”Tro, hopp, kärlek”", correct:false},
+      {t:"Militär läsning och inga debatter", correct:false},
+      {t:"Endast lånebar för barn", correct:false},
+    ],
+    explain: "Underlaget nämner slagordet och öppettiden.",
+  },
+
+  // --- Nationalism (bakgrund, splittrande/enande, 1867) ---
+  {
+    q: "Varför kopplas nationalismens framväxt till franska revolutionen och Napoleon?",
+    options: [
+      {t:"Yttre hot och krig väckte nationell samhörighet", correct:true},
+      {t:"Kyrkan förbjöd lokala dialekter", correct:false},
+      {t:"Ny teknik gjorde pass obligatoriska", correct:false},
+      {t:"Feodalismen stärktes överallt", correct:false},
+    ],
+    explain: "Hotet mot Frankrike och Napoleons krig väckte nationalkänslor.",
+  },
+  {
+    q: "Vad är en grundtanke i nationalismen?",
+    options: [
+      {t:"Varje folk bör bilda en egen nationalstat", correct:true},
+      {t:"Alla stater ska styras av kejsare", correct:false},
+      {t:"Religionsfrihet är förbjuden", correct:false},
+      {t:"All egendom ska ägas av staten", correct:false},
+    ],
+    explain: "”Ett land för varje folk” sammanfattar idén.",
+  },
+  {
+    q: "Vilka stater kunde hotas av nationalismens splittrande kraft? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Ryssland", correct:true},
+      {t:"Österrike (senare Österrike-Ungern)", correct:true},
+      {t:"Osmanska riket", correct:true},
+      {t:"Portugal", correct:false},
+    ],
+    explain: "De stora multietniska rikena riskerade att fragmenteras.",
+  },
+  {
+    q: "Vad innebar kompromissen 1867 i Österrike-Ungern?",
+    options: [
+      {t:"Ungern fick viss självständighet, kejsaren blev också Ungerns kung", correct:true},
+      {t:"Ungern blev helt självständigt och lämnade riket", correct:false},
+      {t:"Tyskland annekterade Ungern", correct:false},
+      {t:"Italien fick styra Wien", correct:false},
+    ],
+    explain: "Dubbelmonarkin skapades 1867.",
+  },
+
+  // --- Feminism & suffragetter ---
+  {
+    q: "Vilken bok av Mary Wollstonecraft (1792) anses grundläggande för feminismen?",
+    options: [
+      {t:"Till kvinnans försvar", correct:true},
+      {t:"Om samhällsfördraget", correct:false},
+      {t:"Det kommunistiska manifestet", correct:false},
+      {t:"Rikedomens natur och orsaker", correct:false},
+    ],
+    explain: "”Till kvinnans försvar” (1792) lyfts i underlaget.",
+  },
+  {
+    q: "Vilka orättvisor nämns kring kvinnors ställning under 1800-talet? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Lägre lön för arbetarkvinnor", correct:true},
+      {t:"Begränsad tillgång till gymnasier/universitet", correct:true},
+      {t:"Underordning i överklassfamiljer", correct:true},
+      {t:"Allmän kvinnlig rösträtt redan 1809", correct:false},
+    ],
+    explain: "Underlaget listar löner, utbildning och patriarkala normer.",
+  },
+  {
+    q: "Vad betecknar suffragetter?",
+    options: [
+      {t:"Kvinnorörelser som krävde lika rösträtt", correct:true},
+      {t:"Organisationer för total avhållsamhet", correct:false},
+      {t:"Militära motståndsgrupper", correct:false},
+      {t:"Fackliga centralorganisationer", correct:false},
+    ],
+    explain: "”Suffrage” = rösträtt; suffragetter drev rösträttsfrågan.",
+  },
+  {
+    q: "Vilket land införde allmän kvinnlig rösträtt först (nationellt) och när?",
+    options: [
+      {t:"Nya Zeeland 1893", correct:true},
+      {t:"Storbritannien 1867", correct:false},
+      {t:"USA 1865", correct:false},
+      {t:"Sverige 1866", correct:false},
+    ],
+    explain: "Nya Zeeland 1893 enligt underlaget.",
+  },
+  {
+    q: "Vilka profiler kopplas i underlaget till svensk kvinnorörelse/rösträttsarbete? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Ellen Key", correct:true},
+      {t:"Selma Lagerlöf", correct:true},
+      {t:"Elin Wägner", correct:true},
+      {t:"Else Kleen", correct:true},
+    ],
+    explain: "Samtliga nämns. Wägner samlade >350 000 namn 1913–1914.",
+  },
+  {
+    q: "Vilken hållning tog svenska aktivister gentemot engelska suffragetters metoder?",
+    options: [
+      {t:"De tog avstånd från mer våldsamma metoder", correct:true},
+      {t:"De kopierade alla våldsamma metoder", correct:false},
+      {t:"De var neutrala och avstod från ställningstagande", correct:false},
+      {t:"De förespråkade sabotage", correct:false},
+    ],
+    explain: "Underlaget betonar avståndstagande från våldsamma metoder.",
+  },
+  {
+    q: "Vad illustrerar fotot av Elin Wägner 1913–1914?",
+    options: [
+      {t:"Över 350 000 namn för kvinnlig rösträtt", correct:true},
+      {t:"Motbokssystemets införande", correct:false},
+      {t:"Folkomröstningens resultat 1922", correct:false},
+      {t:"LO:s grundande", correct:false},
+    ],
+    explain: "Wägner poserar med insamlade namn för kvinnlig rösträtt.",
+  },
+
+  // --- Ideologier: socialism, liberalism, konservatism ---
+  {
+    q: "Vilka kännetecken finns för socialismen enligt underlaget? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Statligt ägande av fabriker/gruvor/jord/skog", correct:true},
+      {t:"Avskaffade klasskillnader", correct:true},
+      {t:"Rösträtt och politiska rättigheter", correct:true},
+      {t:"Starkare kungamakt", correct:false},
+    ],
+    explain: "Staten äger produktionsmedlen, klasskillnader bort, politiska rättigheter viktiga.",
+  },
+  {
+    q: "Hur delades socialismen senare upp?",
+    options: [
+      {t:"Socialdemokrati (reformer) och kommunism (revolution)", correct:true},
+      {t:"Monarki och teokrati", correct:false},
+      {t:"Liberalism och konservatism", correct:false},
+      {t:"Anarkism och fascism", correct:false},
+    ],
+    explain: "Underlaget beskriver två huvudgrenar.",
+  },
+  {
+    q: "Vilka kärnidéer drev liberalismen enligt underlaget? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Ekonomisk frihet (fri företagsamhet)", correct:true},
+      {t:"Politisk frihet (yttrande-, tros- och tryckfrihet)", correct:true},
+      {t:"Rösträtt för kvinnor och arbetare", correct:true},
+      {t:"Statligt detaljstyre av näringslivet", correct:false},
+    ],
+    explain: "Frihet i ekonomi, politik och religion; breddad rösträtt.",
+  },
+  {
+    q: "Vilken syn hade konservatismen enligt underlaget?",
+    options: [
+      {t:"Bevara och förändra långsamt; ordning och stabilitet", correct:true},
+      {t:"Snabb omstöpning genom revolution", correct:false},
+      {t:"Total religionsfrihet utan tradition", correct:false},
+      {t:"Avskaffa monarkin omedelbart", correct:false},
+    ],
+    explain: "”Conservare” = bevara; misstro mot snabba förändringar.",
+  },
+  {
+    q: "Vilka grupper återfanns ofta bland konservativa enligt underlaget? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Godsägare och högre ämbetsmän", correct:true},
+      {t:"Ledande militärer och präster", correct:true},
+      {t:"Bönder och hantverkare som ogillade snabba förändringar", correct:true},
+      {t:"Enbart fattiga arbetare", correct:false},
+    ],
+    explain: "Bred social sammansättning – inte bara överklass.",
+  },
+
+  // --- Folkrörelser: vad och varför viktiga ---
+  {
+    q: "Vilka tre folkrörelser framhålls i materialet? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Arbetarrörelsen", correct:true},
+      {t:"Nykterhetsrörelsen", correct:true},
+      {t:"Frikyrkorörelsen", correct:true},
+      {t:"Militärrörelsen", correct:false},
+    ],
+    explain: "Dessa tre namnges och beskrivs i underlaget.",
+  },
+  {
+    q: "Varför förändrade folkrörelserna samhället?",
+    options: [
+      {t:"De organiserade människor kring idéer och tränade demokratiskt deltagande", correct:true},
+      {t:"De förbjöd utbildning och föreningsliv", correct:false},
+      {t:"De centraliserade allt beslutsfattande till kungen", correct:false},
+      {t:"De krävde att alla flyttade från städerna", correct:false},
+    ],
+    explain: "Organisering + möteskultur → demokratisering.",
+  },
+
+  // --- Fakta/årtal/detaljer från underlaget (kontrollfrågor) ---
+  {
+    q: "Vilket var ett ”första steg” för kvinnors likställdhet som nämns i materialet?",
+    options: [
+      {t:"Lika arvsrätt 1845", correct:true},
+      {t:"Kvinnlig rösträtt 1809", correct:false},
+      {t:"Avskaffat förmyndarskap 1792", correct:false},
+      {t:"Universitetsreform 1820", correct:false},
+    ],
+    explain: "Lika arvsrätt 1845 lyfts som viktigt tidigt steg.",
+  },
+  {
+    q: "Hur arbetade svenska kvinnorörelsen taktiskt i rösträttsfrågan enligt materialet?",
+    options: [
+      {t:"Föredrag, kurser och studiecirklar i hela landet", correct:true},
+      {t:"Väpnade aktioner mot riksdagen", correct:false},
+      {t:"Internationella handelsblockader", correct:false},
+      {t:"Skattestrejk", correct:false},
+    ],
+    explain: "I motsats till de våldsamma metoderna i England.",
+  },
+  {
+    q: "Vilken roll tillskrivs Karl Marx i materialet?",
+    options: [
+      {t:"Socialismens främste teoretiker med stor påverkan", correct:true},
+      {t:"Grundare av LO", correct:false},
+      {t:"Ledare för Frälsningsarmén", correct:false},
+      {t:"Arkitekt bakom motboken", correct:false},
+    ],
+    explain: "Marx skrifter studerades och påverkade 1900-talets rörelser.",
+  },
+  {
+    q: "Vilka grupper drogs ofta till liberalismen? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Industriägare (ekonomisk frihet)", correct:true},
+      {t:"Journalister/författare/lärare (politisk frihet)", correct:true},
+      {t:"Kvinnor som kämpade för rättigheter", correct:true},
+      {t:"Enbart präster och militärer", correct:false},
+    ],
+    explain: "Underlaget lyfter näringsfrihet och politiska friheter.",
+  },
+  {
+    q: "Vilket påstående om konservatismens samhällssyn stämmer?",
+    options: [
+      {t:"Kungen/kejsaren skapar ordning och stabilitet", correct:true},
+      {t:"Snabba revolutioner är önskvärda", correct:false},
+      {t:"Arbetare och kvinnor bör omedelbart ha politisk makt", correct:false},
+      {t:"Traditioner saknar värde", correct:false},
+    ],
+    explain: "Konservatismen betonar stabilitet, hierarki, tradition.",
+  },
+  {
+    q: "Vilka var typiska mål för socialismen? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Jämlikhet och broderskap", correct:true},
+      {t:"Klasslöshet", correct:true},
+      {t:"Privat äganderätt till allt kapital", correct:false},
+      {t:"Statligt ägande av produktionsmedel", correct:true},
+    ],
+    explain: "Jämlikhet, klasslöshet, statligt ägande betonas.",
+  },
+
+  // --- Ideologier som krävs i utgångspunkter men ej detaljerade i underlaget ---
+  // (Definitioner hålls korta och allmänt vedertagna.)
+  {
+    q: "Vad kännetecknar fascism och nazism? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Auktoritärt styre och förakt för demokrati", correct:true},
+      {t:"Ultranationalism", correct:true},
+      {t:"Liberal individualism", correct:false},
+      {t:"Nazism: rasideologi/antisemitism", correct:true},
+    ],
+    explain: "Fascism och nazism är antidemokratiska; nazism inkluderar rasistisk antisemitisk ideologi.",
+  },
+  {
+    q: "Vilket påstående stämmer om anarkism?",
+    options: [
+      {t:"Vill avskaffa statligt tvång och hierarkiska maktstrukturer", correct:true},
+      {t:"Vill stärka monarkin", correct:false},
+      {t:"Bygger på rasbiologi", correct:false},
+      {t:"Är en religiös rörelse", correct:false},
+    ],
+    explain: "Anarkism kritiserar staten och tvångshierarkier.",
+  },
+  {
+    q: "Vad menas med pacifism?",
+    options: [
+      {t:"Motstånd mot krig och våld som medel", correct:true},
+      {t:"Krav på upprustning", correct:false},
+      {t:"Religiös väckelse", correct:false},
+      {t:"Förespråkar klasskamp med vapen", correct:false},
+    ],
+    explain: "Pacifism motsätter sig krig och våld.",
+  },
+  {
+    q: "Vad avser ekologism? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Politiskt fokus på miljö, hållbarhet och ekosystem", correct:true},
+      {t:"Att naturens gränser ska styra ekonomin", correct:true},
+      {t:"Totalförbud mot föreningsliv", correct:false},
+      {t:"Avskaffa all demokrati", correct:false},
+    ],
+    explain: "Ekologism sätter miljö och hållbarhet i centrum.",
+  },
+  {
+    q: "Vilket hör ihop? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Antisemitism – hat/fördomar mot judar", correct:true},
+      {t:"Antiziganism – hat/fördomar mot romer", correct:true},
+      {t:"Islamofobi – hat/fördomar mot muslimer", correct:true},
+      {t:"Sexism – en ekonomisk teori om frihandel", correct:false},
+    ],
+    explain: "Begreppen avser fientlighet mot specifika grupper; sexism gäller könsdiskriminering.",
+  },
+  {
+    q: "Vilket beskriver sexism korrekt?",
+    options: [
+      {t:"Diskriminering eller nedvärdering på grund av kön", correct:true},
+      {t:"Motstånd mot statens våldsmonopol", correct:false},
+      {t:"Ett nykterhetskrav", correct:false},
+      {t:"En handelsideologi", correct:false},
+    ],
+    explain: "Sexism handlar om könsbaserad diskriminering.",
+  },
+  {
+    q: "Vad kännetecknar rasism?",
+    options: [
+      {t:"Föreställningar om över-/underlägsna ”raser” och diskriminering", correct:true},
+      {t:"En religiös liturgi", correct:false},
+      {t:"Enbart kritik av skattesystem", correct:false},
+      {t:"Teknisk industrialism", correct:false},
+    ],
+    explain: "Rasism bygger på idéer om ”ras” och hierarkier.",
+  },
+
+  // --- Blandade fördjupningar & kontroll på helheten ---
+  {
+    q: "Vilka sätt använde folkrörelser för att sprida idéer? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Tidningar och möten", correct:true},
+      {t:"Studiecirklar och föredrag", correct:true},
+      {t:"Hemliga kungliga dekret", correct:false},
+      {t:"Bibliotek och föreningsliv", correct:true},
+    ],
+    explain: "Möteskultur och bildning återkommer i materialet.",
+  },
+  {
+    q: "Vilket samband betonas i materialet mellan folkrörelser och demokratisering?",
+    options: [
+      {t:"Folkrörelserna bidrog till att demokratisera Sverige", correct:true},
+      {t:"Folkrörelserna försvagade allt föreningsliv", correct:false},
+      {t:"Folkrörelserna förbjöd val", correct:false},
+      {t:"Folkrörelserna avskaffade yttrandefriheten", correct:false},
+    ],
+    explain: "De var viktiga motorer för demokratiutvecklingen.",
+  },
+  {
+    q: "Vilket av följande var en central fråga för kvinnorörelsen från 1900?",
+    options: [
+      {t:"Kvinnlig rösträtt", correct:true},
+      {t:"Avskaffa folkskolan", correct:false},
+      {t:"Införa ståndssamhället", correct:false},
+      {t:"Återinföra hemdestillering", correct:false},
+    ],
+    explain: "Rösträtten lyfts som absolut viktigaste frågan.",
+  },
+  {
+    q: "Vilket samband mellan ideologier och det nya klassamhället betonas?",
+    options: [
+      {t:"Konservatism, liberalism och socialism var olika svar på klassamhället", correct:true},
+      {t:"Ideologier saknar koppling till klassamhället", correct:false},
+      {t:"Endast konservatism räknas som ideologi", correct:false},
+      {t:"Endast liberalism räknas som ideologi", correct:false},
+    ],
+    explain: "Materialet placerar de tre ideologierna som svar på 1800-talets klassamhälle.",
+  },
+  {
+    q: "Vilka exempel på nationalstaters ”brist” nämns i mitten av 1800-talet? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Italien bestod av flera stater", correct:true},
+      {t:"Tyskland bestod av flera stater", correct:true},
+      {t:"Schweiz var en absolut monarki", correct:false},
+      {t:"Österrike var multietniskt", correct:true},
+    ],
+    explain: "Nationalstaten var ovanlig; Italien/Tyskland splittrade; Österrike multietniskt.",
+  },
+  {
+    q: "Vilket begrepp definieras korrekt?",
+    options: [
+      {t:"Ideologi – en samling idéer om hur något är eller bör vara", correct:true},
+      {t:"Nationalstat – ett globalt tullförbund", correct:false},
+      {t:"Motbok – ett körkortssystem", correct:false},
+      {t:"Folkrörelse – individuell protest utan organisation", correct:false},
+    ],
+    explain: "Begreppsdefinition enligt materialet.",
+  },
+  {
+    q: "Vilka metoder använde svenska aktivister i rösträttsarbetet? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Föredrag och möten i hela landet", correct:true},
+      {t:"Kurser och studiecirklar", correct:true},
+      {t:"Våldsamma aktioner", correct:false},
+      {t:"Förbud mot tidningar", correct:false},
+    ],
+    explain: "I kontrast till de våldsamma engelska metoderna.",
+  },
+  {
+    q: "Vilka områden skulle staten enligt socialismen äga och driva? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Fabriker", correct:true},
+      {t:"Gruvor", correct:true},
+      {t:"Jordbruk och skog", correct:true},
+      {t:"Privata bostäder för alla", correct:false},
+    ],
+    explain: "Underlaget listar fabriker, gruvor, jord och skog.",
+  },
+  {
+    q: "Vilka ideologier fanns uttryckligen bland ”utgångspunkterna” men utvecklas inte i underlaget? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Nazism", correct:true},
+      {t:"Fascism", correct:true},
+      {t:"Ekologism", correct:true},
+      {t:"Pacifism", correct:true},
+    ],
+    explain: "Dessa nämns i provets utgångspunkter och ingår därför i quizet.",
+  },
+  {
+    q: "Vilket samband beskriver liberalismen mellan frihet och ansvar?",
+    options: [
+      {t:"Med rösträtt och frihet tar fler ansvar för samhället", correct:true},
+      {t:"Frihet innebär frånvaro av ansvar", correct:false},
+      {t:"Endast fabriksägare bör ha ansvar", correct:false},
+      {t:"Endast staten har ansvar", correct:false},
+    ],
+    explain: "Underlaget kopplar utvidgad rösträtt till ökat ansvarstagande.",
+  },
+  {
+    q: "Vilka var typiska krav från konservativa enligt materialet? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Långsam, gradvis förändring", correct:true},
+      {t:"Bevarande av monarkins roll", correct:true},
+      {t:"Mindre politisk makt för arbetare/kvinnor", correct:true},
+      {t:"Omedelbar revolution", correct:false},
+    ],
+    explain: "Konservatismen föredrog ordning, tradition och gradvisa reformer.",
+  },
+  {
+    q: "Vilka uttryck knyts till franska revolutionens arv i materialet? (flervalsfråga)",
+    multi:true,
+    options: [
+      {t:"Frihet (liberté) – liberalism", correct:true},
+      {t:"Jämlikhet och broderskap – socialism", correct:true},
+      {t:"Absolutism – nykterhetsrörelsen", correct:false},
+      {t:"Feodal återgång – konservatism", correct:false},
+    ],
+    explain: "Materialet kopplar frihet till liberalism och jämlikhet/broderskap till socialism.",
+  },
+  {
+    q: "Vilken roll tillskrivs Frälsningsarmén i materialet?",
+    options: [
+      {t:"Tidigt arbete bland fattiga och alkoholiserade", correct:true},
+      {t:"Införde motbokssystemet", correct:false},
+      {t:"Grundade LO", correct:false},
+      {t:"Avskaffade folkskolan", correct:false},
+    ],
+    explain: "Frälsningsarmén är känd för socialt arbete.",
+  },
+  {
+    q: "Vilken var LO:s relation till SAP enligt materialet?",
+    options: [
+      {t:"Nära samarbete – facklig del av arbetarrörelsen", correct:true},
+      {t:"Ingen kontakt", correct:false},
+      {t:"Religiös motsatsrörelse", correct:false},
+      {t:"Statlig myndighet", correct:false},
+    ],
+    explain: "SAP och LO samarbetade nära inom arbetarrörelsen.",
+  },
+];
+
+/* Säkerställ 50 frågor (BANK innehåller 50) */
+document.getElementById("total").textContent = BANK.length;
+
+/* ====== Render och logik ====== */
+let state = {
+  order: shuffle([...Array(BANK.length).keys()]), // indexordning
+  answered: 0,
+  correct: 0,
+  locked: new Set(), // låsta frågor
+};
+
+const quizEl = document.getElementById("quiz");
+const scoreEl = document.getElementById("score");
+const answeredEl = document.getElementById("answered");
+
+const render = () => {
+  quizEl.innerHTML = "";
+  state.order.forEach((idx, qi) => {
+    const item = BANK[idx];
+
+    const card = mk("section", {class:"card", id:`q-${qi}`});
+    const head = mk("div", {class:"qheader"},
+      mk("div", {class:"qindex"}, `Fråga ${qi+1} av ${BANK.length}`),
+      item.multi ? mk("span", {class:"qbadge"}, "flervalsfråga") : null
+    );
+    const qtext = mk("div", {class:"qtext"}, item.q);
+    const opts = mk("div", {class:"options"});
+    // slumpa alternativ
+    const optionsShuffled = shuffle(item.options.map((o,i)=>({...o, _i:i})));
+
+    const inputs = [];
+    optionsShuffled.forEach((opt, oi) => {
+      const id = `q${qi}-o${oi}`;
+      const input = mk("input", {
+        type: item.multi ? "checkbox" : "radio",
+        name: `q${qi}`,
+        id
+      });
+      const label = mk("label", {for:id});
+      const optBox = mk("label", {class:"opt", for:id});
+      optBox.append(input, mk("div", {}, opt.t));
+      opts.appendChild(optBox);
+      inputs.push({wrap:optBox, input, data:opt});
+    });
+
+    const controls = mk("div", {class:"controls"});
+    const btnCheck = mk("button", {}, "Rätta");
+    const btnClear = mk("button", {}, "Rensa val");
+    controls.append(btnCheck, btnClear);
+
+    const explain = mk("div", {class:"explain", style:"display:none"}, item.explain);
+
+    btnClear.addEventListener("click", () => {
+      if (state.locked.has(qi)) return;
+      inputs.forEach(({input, wrap}) => { input.checked = false; wrap.classList.remove("correct","incorrect"); });
+    });
+
+    btnCheck.addEventListener("click", () => {
+      if (state.locked.has(qi)) return;
+      const selected = inputs.filter(i => i.input.checked);
+      if (selected.length === 0) { btnCheck.blur(); return; }
+
+      // rättningslogik
+      const correctSet = new Set(item.options.map((o,ix)=>o.correct ? ix : null).filter(v=>v!==null));
+      const selectedOrigIdx = new Set(
+        selected.map(s => s.data._i)
+      );
+
+      // Markera visuellt
+      inputs.forEach(({wrap, data}) => {
+        wrap.classList.remove("correct","incorrect");
+        if (data.correct) wrap.classList.add("correct");
+      });
+      selected.forEach(({wrap, data}) => {
+        if (!data.correct) wrap.classList.add("incorrect");
+      });
+
+      // Bedömning: rätt om exakt samma korrekta val gjorts
+      const allCorrectChosen = item.options.every((o,ix) => (o.correct === selectedOrigIdx.has(ix)));
+      if (allCorrectChosen) {
+        state.correct++;
+        scoreEl.textContent = state.correct;
+      }
+
+      state.answered++;
+      answeredEl.textContent = state.answered;
+      state.locked.add(qi);
+      inputs.forEach(({input}) => input.disabled = true);
+      btnCheck.disabled = true;
+      btnClear.disabled = true;
+      explain.style.display = "block";
+    });
+
+    card.append(head, qtext, opts, controls, explain);
+    quizEl.appendChild(card);
+  });
+};
+
+document.getElementById("restart").addEventListener("click", () => {
+  state = { order: shuffle([...Array(BANK.length).keys()]), answered:0, correct:0, locked:new Set() };
+  scoreEl.textContent = "0";
+  answeredEl.textContent = "0";
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+document.getElementById("reveal").addEventListener("click", () => {
+  // Visa facit visuellt (utan att räkna som besvarat)
+  document.querySelectorAll(".card").forEach(card => {
+    const explain = card.querySelector(".explain");
+    if (explain) explain.style.display = "block";
+    card.querySelectorAll(".opt").forEach(opt => {
+      const txt = opt.textContent.trim();
+      const qIdx = +card.id.split("-")[1];
+      const bankIdx = state.order[qIdx];
+      const item = BANK[bankIdx];
+      const match = item.options.find(o => o.t === txt);
+      if (match?.correct) opt.classList.add("correct");
+    });
+  });
+});
+
+render();
+</script>
+</body>
+</html>
