@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Spanska ↔ Svenska – Flashcards</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0f1221;
+    --bg-soft:#141832;
+    --card:#ffffff;
+    --text:#10121a;
+    --muted:#a7b0c3;
+    --accent:#6ee7ff;
+    --accent-2:#8b5cf6;
+    --ok:#10b981;
+    --warn:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';
+    background:
+      radial-gradient(1200px 700px at 120% -20%, rgba(139,92,246,.35), transparent 60%),
+      radial-gradient(900px 600px at -20% 10%, rgba(110,231,255,.25), transparent 55%),
+      linear-gradient(180deg, var(--bg), #0b0e1c 60%, #0a0d19);
+    color:#fff;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  header{
+    position:sticky; top:0; z-index:5;
+    padding:12px 16px env(safe-area-inset-top) 12px;
+    background:linear-gradient(180deg, rgba(10,12,25,.85), rgba(10,12,25,.35));
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .bar{
+    display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+  }
+  .title{
+    font-size:18px; font-weight:800; letter-spacing:.2px; display:flex; align-items:center; gap:8px;
+  }
+  .title .dot{width:8px; height:8px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 0 12px rgba(110,231,255,.6)}
+  .controls{
+    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  }
+  .chip{
+    border:1px solid rgba(255,255,255,.15);
+    background-color:rgba(255,255,255,.06);
+    color:#eaf2ff;
+    padding:8px 12px;
+    border-radius:999px;
+    font-size:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .chip select{
+    background:transparent; color:#eaf2ff; border:none; font-size:14px; font-weight:600; outline:none;
+  }
+  .btn{
+    border:1px solid rgba(255,255,255,.15);
+    background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    color:#fff;
+    padding:10px 14px;
+    border-radius:12px;
+    font-weight:700; font-size:14px;
+    display:inline-flex; align-items:center; gap:8px;
+    box-shadow:0 4px 16px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{
+    border-color: rgba(110,231,255,.35);
+    background: linear-gradient(180deg, rgba(110,231,255,.18), rgba(139,92,246,.15));
+    box-shadow:0 6px 22px rgba(139,92,246,.25);
+  }
+
+  main{
+    padding:18px 16px 28px 16px;
+    max-width:800px; margin:0 auto;
+  }
+
+  .progress{
+    margin:6px 2px 14px 2px;
+    height:8px; width:100%; border-radius:999px;
+    background:rgba(255,255,255,.08);
+    overflow:hidden; position:relative;
+  }
+  .progress > span{
+    display:block; height:100%; width:0%;
+    background:linear-gradient(90deg, var(--accent), var(--accent-2));
+    box-shadow:0 0 20px rgba(110,231,255,.35);
+    transition: width .25s ease;
+  }
+  .xofn{
+    display:flex; justify-content:center; gap:10px; color:#cdd5ea; font-size:13px; margin-top:2px;
+  }
+
+  .stage{
+    position:relative; margin-top:8px;
+    min-height:58vh;
+    display:grid; place-items:center;
+  }
+  .card{
+    width:min(92vw, 680px);
+    min-height:46vh;
+    background:var(--card);
+    color:var(--text);
+    border-radius:22px;
+    box-shadow:
+      0 10px 40px rgba(0,0,0,.35),
+      inset 0 1px 0 rgba(255,255,255,.6);
+    padding:24px 18px 22px 18px;
+    perspective: 1000px;
+    position:relative;
+    touch-action: manipulation;
+  }
+  .card-inner{
+    position:relative; height:100%; width:100%;
+    transform-style:preserve-3d;
+    transition:transform .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .card.flipped .card-inner{ transform:rotateY(180deg); }
+
+  /* GRID-layouter för exakt centrerad term */
+  .face{
+    position:absolute; inset:0; border-radius:16px;
+    display:grid;
+    grid-template-rows:auto 1fr auto;   /* tag – term – hint */
+    align-items:center;                 /* vertikal centrering inom respektive rad */
+    justify-items:center;               /* horisontell centrering */
+    row-gap:10px;
+    backface-visibility:hidden;
+    padding:18px;
+    text-align:center;
+  }
+  .front{ transform:rotateY(0); }
+  .back{ transform:rotateY(180deg); }
+
+  .front .tag, .back .tag{
+    font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+    color:#6b7280;
+    align-self:start;                   /* hålls uppe */
+  }
+  .term{
+    place-self:center;                  /* exakt mitten (rad 2) */
+    font-size:clamp(22px, 5vw, 38px);
+    font-weight:800; line-height:1.2;
+    max-width: 92%;
+    word-break: break-word;
+  }
+  .hint{
+    font-size:14px; color:#6b7280;
+    align-self:end;                     /* hålls nere */
+  }
+
+  .nav{
+    display:flex; gap:10px; justify-content:center; align-items:center; margin-top:16px; flex-wrap:wrap;
+  }
+  .nav .btn{ min-width:48px; justify-content:center; }
+  .pill{
+    border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+    padding:8px 12px; color:#eaf2ff; font-size:13px;
+  }
+
+  .jump{
+    margin-top:8px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap;
+  }
+  .jump button{
+    background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.12);
+    padding:8px 12px; border-radius:10px; font-size:13px; min-width:40px;
+  }
+  .jump button.active{
+    background:linear-gradient(180deg, rgba(110,231,255,.22), rgba(139,92,246,.18));
+    border-color:rgba(110,231,255,.35);
+  }
+
+  footer{
+    padding:14px 16px env(safe-area-inset-bottom);
+    display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+    color:#cfd7ee; font-size:12px;
+    opacity:.9;
+  }
+  .kbd{
+    border:1px solid rgba(255,255,255,.2);
+    border-bottom-width:2px;
+    background:rgba(255,255,255,.06);
+    padding:2px 6px; border-radius:6px; font-weight:700;
+    color:#eaf2ff;
+  }
+
+  @media (hover:hover){
+    .btn:hover{ filter:brightness(1.05) saturate(1.1) }
+    .jump button:hover{ filter:brightness(1.1) }
+  }
+</style>
+
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="title"><span class="dot"></span> Spanska ↔ Svenska</div>
+      <div class="controls">
+        <div class="chip" title="Välj vilket språk som visas först">
+          <span>Framsida:</span>
+          <select id="frontLang">
+            <option value="es">Spanska</option>
+            <option value="sv">Svenska</option>
+          </select>
+        </div>
+        <button id="shuffleBtn" class="btn" aria-pressed="false" title="Slumpa ordningen">
+          🔀 Slumpa
+        </button>
+        <button id="resetBtn" class="btn" title="Starta om till första kortet">↺ Nollställ</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="progress" aria-label="Framsteg"><span id="bar" style="width:0%"></span></div>
+    <div class="xofn"><span id="pos">1</span>/<span id="total">0</span></div>
+
+    <section class="stage">
+      <article class="card" id="card" role="button" aria-label="Flashcard">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="tag" id="frontTag">Spanska</div>
+            <div class="term" id="frontTerm">—</div>
+            <div class="hint">Tryck för att vända</div>
+          </div>
+          <div class="face back">
+            <div class="tag" id="backTag">Svenska</div>
+            <div class="term" id="backTerm">—</div>
+            <div class="hint">Tryck igen för att vända tillbaka</div>
+          </div>
+        </div>
+      </article>
+
+      <nav class="nav" aria-label="Navigation">
+        <button class="btn" id="prevBtn" title="Föregående">◀︎</button>
+        <button class="btn primary" id="flipBtn" title="Vänd kort">↻ Vänd</button>
+        <button class="btn" id="nextBtn" title="Nästa">▶︎</button>
+      </nav>
+
+      <div class="jump" id="jump"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div>Tips: <span class="kbd">Tryck</span> för att vända • <span class="kbd">Svep</span> för föregående/nästa</div>
+    <div id="status"></div>
+  </footer>
+
+  <script>
+    // --- Data --------------------------------------------------------------
+    const CARDS = [
+      { es:"Estuve en Kos, en Grecia.", sv:"Jag var på Kos i Grekland." },
+      { es:"Nadamos en el mar todos los días.", sv:"Vi badade i havet varje dag." },
+      { es:"Hacía calor.", sv:"Det var varmt väder." },
+      { es:"Llevaba gafas de sol todos los días.", sv:"Jag hade solglasögon varje dag." },
+      { es:"Una tarde vimos la puesta de sol.", sv:"En kväll såg vi solnedgången." },
+      { es:"La comida griega estaba muy rica.", sv:"Den grekiska maten var mycket god." },
+
+      { es:"Estuve en Småland.", sv:"Jag var i Småland." },
+      { es:"Visité a mi abuela.", sv:"Jag besökte min farmor." },
+      { es:"Mi abuela tiene dos perros.", sv:"Min farmor har två hundar." },
+      { es:"Estuvimos en un bosque bonito.", sv:"Vi var i en vacker skog." },
+      { es:"Vimos películas.", sv:"Vi tittade på filmer." },
+      { es:"Hablamos mucho.", sv:"Vi pratade mycket." },
+
+      { es:"Estuve en Estocolmo.", sv:"Jag var i Stockholm." },
+      { es:"Visité a unos amigos.", sv:"Jag besökte några vänner." },
+      { es:"Nos reímos mucho.", sv:"Vi skrattade mycket." },
+      { es:"Entramos en tiendas.", sv:"Vi gick i affärer." },
+      { es:"Compramos cosas.", sv:"Vi köpte saker." },
+      { es:"Comimos helado.", sv:"Vi åt glass." }
+    ];
+
+    // --- State -------------------------------------------------------------
+    const els = {
+      total: document.getElementById('total'),
+      pos: document.getElementById('pos'),
+      bar: document.getElementById('bar'),
+      frontLang: document.getElementById('frontLang'),
+      shuffleBtn: document.getElementById('shuffleBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      card: document.getElementById('card'),
+      flipBtn: document.getElementById('flipBtn'),
+      prevBtn: document.getElementById('prevBtn'),
+      nextBtn: document.getElementById('nextBtn'),
+      frontTag: document.getElementById('frontTag'),
+      backTag: document.getElementById('backTag'),
+      frontTerm: document.getElementById('frontTerm'),
+      backTerm: document.getElementById('backTerm'),
+      jump: document.getElementById('jump'),
+      status: document.getElementById('status')
+    };
+
+    let order = [...CARDS.keys()];
+    let index = 0;
+    let flipped = false;
+
+    // Load prefs
+    const savedLang = localStorage.getItem('fc_frontLang');
+    const savedShuffle = localStorage.getItem('fc_shuffle') === '1';
+    if (savedLang) els.frontLang.value = savedLang;
+
+    // Shuffle helper
+    function shuffleArray(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    if (savedShuffle){
+      order = shuffleArray(order);
+      els.shuffleBtn.setAttribute('aria-pressed','true');
+      els.shuffleBtn.classList.add('primary');
+    }
+
+    // --- UI render ---------------------------------------------------------
+    function renderJump(){
+      els.jump.innerHTML = '';
+      order.forEach((_,i)=>{
+        const b = document.createElement('button');
+        b.textContent = i+1;
+        b.setAttribute('aria-label', 'Gå till kort '+(i+1));
+        if (i===index) b.classList.add('active');
+        b.addEventListener('click', ()=>{ index=i; flipped=false; render(); });
+        els.jump.appendChild(b);
+      });
+    }
+
+    function renderCard(){
+      const showEs = els.frontLang.value === 'es';
+      const item = CARDS[order[index]];
+      els.frontTag.textContent = showEs ? 'Spanska' : 'Svenska';
+      els.backTag.textContent  = showEs ? 'Svenska' : 'Spanska';
+      els.frontTerm.textContent = showEs ? item.es : item.sv;
+      els.backTerm.textContent  = showEs ? item.sv : item.es;
+      els.card.classList.toggle('flipped', flipped);
+    }
+
+    function renderProgress(){
+      els.total.textContent = order.length;
+      els.pos.textContent = index+1;
+      const pct = ((index+1)/order.length)*100;
+      els.bar.style.width = pct.toFixed(2)+'%';
+    }
+
+    function render(){
+      renderCard();
+      renderProgress();
+      renderJump();
+    }
+
+    // --- Events ------------------------------------------------------------
+    els.card.addEventListener('click', ()=>{ flipped=!flipped; renderCard(); });
+
+    els.flipBtn.addEventListener('click', ()=>{
+      flipped=!flipped; renderCard();
+    });
+
+    els.prevBtn.addEventListener('click', ()=>{
+      index = (index - 1 + order.length) % order.length;
+      flipped=false; render();
+    });
+
+    els.nextBtn.addEventListener('click', ()=>{
+      index = (index + 1) % order.length;
+      flipped=false; render();
+    });
+
+    els.frontLang.addEventListener('change', ()=>{
+      localStorage.setItem('fc_frontLang', els.frontLang.value);
+      flipped=false; renderCard();
+    });
+
+    els.shuffleBtn.addEventListener('click', ()=>{
+      const pressed = els.shuffleBtn.getAttribute('aria-pressed') === 'true';
+      if (!pressed){
+        order = shuffleArray([...order]);
+        els.shuffleBtn.setAttribute('aria-pressed','true');
+        els.shuffleBtn.classList.add('primary');
+        localStorage.setItem('fc_shuffle','1');
+      } else {
+        order = [...CARDS.keys()];
+        els.shuffleBtn.setAttribute('aria-pressed','false');
+        els.shuffleBtn.classList.remove('primary');
+        localStorage.setItem('fc_shuffle','0');
+      }
+      index = 0; flipped=false; render();
+    });
+
+    els.resetBtn.addEventListener('click', ()=>{
+      order = els.shuffleBtn.getAttribute('aria-pressed') === 'true' ? shuffleArray([...CARDS.keys()]) : [...CARDS.keys()];
+      index=0; flipped=false; render();
+      pulse('Återställt');
+    });
+
+    // Swipe gestures (simple)
+    let touchStartX = null;
+    let touchStartY = null;
+    const SWIPE_THRESH = 40;
+
+    function onTouchStart(e){
+      const t = e.changedTouches[0];
+      touchStartX = t.clientX; touchStartY = t.clientY;
+    }
+    function onTouchEnd(e){
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESH){
+        if (dx < 0){ // left
+          els.nextBtn.click();
+        } else {
+          els.prevBtn.click();
+        }
+      }
+    }
+    els.card.addEventListener('touchstart', onTouchStart, {passive:true});
+    els.card.addEventListener('touchend', onTouchEnd);
+
+    // Little status pulse
+    function pulse(msg){
+      els.status.textContent = msg;
+      els.status.style.opacity = '1';
+      setTimeout(()=>{ els.status.style.opacity = '.85'; }, 1200);
+      setTimeout(()=>{ els.status.textContent=''; }, 2200);
+    }
+
+    // Keyboard (for desktop testing)
+    window.addEventListener('keydown', (e)=>{
+      if (e.key === 'ArrowRight') els.nextBtn.click();
+      else if (e.key === 'ArrowLeft') els.prevBtn.click();
+      else if (e.key === ' ' || e.key.toLowerCase() === 'f'){ e.preventDefault(); els.flipBtn.click(); }
+    });
+
+    // Init
+    render();
+  </script>
+</body>
+</html>
