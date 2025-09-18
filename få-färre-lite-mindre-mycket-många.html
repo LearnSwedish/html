@@ -16,6 +16,19 @@
       --error-bg: #fdecea;
       --error-border: #e74c3c;
     }
+
+    body.dark-mode {
+      --bg: #1e1e1e;
+      --card: #2c2c2c;
+      --text: #eaeaea;
+      --muted: #b0b0b0;
+      --accent: #9b59b6;
+      --success-bg: #1f3d2a;
+      --success-border: #27ae60;
+      --error-bg: #3d1f1f;
+      --error-border: #e74c3c;
+    }
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -23,6 +36,7 @@
       background: var(--bg);
       color: var(--text);
       padding: 20px;
+      transition: background 0.3s, color 0.3s;
     }
     header {
       display: flex;
@@ -75,12 +89,6 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
     }
-    em {
-      display: block;
-      margin-top: 8px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
     .correct {
       background-color: var(--success-bg);
       border: 1px solid var(--success-border);
@@ -107,68 +115,95 @@
     .btn:hover {
       background: #2980b9;
     }
-    /* Info-knapp */
-    #infoBtn {
-      margin-left: 10px;
-      background: #2ecc71;
+    /* Staplar */
+    .bar-container {
+      background: #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 14px;
     }
-    #infoBtn:hover {
-      background: #27ae60;
+	.bar-wrapper {
+	  margin-top: 15px;  /* ger luft mellan meningen och stapeln */
+	}
+    .bar-fill {
+      background: var(--accent);
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    .bar-group {
+      margin-top: 10px;
+    }
+    .bar-label {
+      width: 100px;
+      text-align: right;
+      font-size: 14px;
     }
 
-    /* Modal */
-    .modal {
-      display: none;
+    /* Dark mode toggle (floating) */
+    .theme-toggle {
       position: fixed;
-      z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
+      top: 15px;
+      right: 15px;
+      display: flex;
       align-items: center;
-      padding: 20px;
+      gap: 10px;
+      z-index: 1000;
+      background: var(--card);
+      padding: 6px 12px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    .modal-content {
-      background: #fff;
-      padding: 20px 30px;
-      border-radius: 12px;
-      max-width: 600px;
-      width: 100%;
+    .switch {
       position: relative;
-      animation: fadeIn 0.3s ease;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
     }
-    .close {
+    .slider {
       position: absolute;
-      top: 12px;
-      right: 12px;
-      font-size: 22px;
-      font-weight: bold;
-      color: #555;
       cursor: pointer;
-      transition: transform 0.3s, color 0.3s;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
     }
-    .close:hover {
-      color: #e74c3c;
-      transform: rotate(90deg);
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
     }
-    .modal h2 {
-      margin-top: 0;
+    input:checked + .slider {
+      background-color: var(--accent);
     }
-    .modal p {
-      margin: 6px 0;
+    input:checked + .slider:before {
+      transform: translateX(22px);
     }
   </style>
 </head>
 <body>
+  <div class="theme-toggle">
+    <span>Tema</span>
+    <label class="switch">
+      <input type="checkbox" id="themeSwitch">
+      <span class="slider"></span>
+    </label>
+  </div>
+
   <header>
     <h1>Välj rätt ord</h1>
     <div>
       <span id="score">Rätt: 0 / 30</span>
-      <button id="infoBtn" class="btn" onclick="openModal()">Info</button>
     </div>
   </header>
 
@@ -178,74 +213,77 @@
     <button class="btn" onclick="restart()">Starta om övningen</button>
   </div>
 
-  <!-- Modal -->
-  <div id="infoModal" class="modal" onclick="outsideClick(event)">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h2>Information</h2>
-      <p>📌 <b>Mindre</b> (mängd/grad – ej räknebart)</p>
-      <p>Jag har mindre tid idag än igår.</p>
-      <p>Vi behöver använda mindre mjölk i degen.</p><br/>
-
-      <p>📌 <b>Färre</b> (antal – räknebart)</p>
-      <p>Det kom färre personer till mötet än förra gången.</p>
-      <p>Idag körde färre bilar på vägen.</p><br/>
-
-      <p>📌 <b>Lite</b> (mängd – ej räknebart)</p>
-      <p>Det är bara lite socker kvar i burken.</p>
-      <p>Han har lite energi på morgonen.</p><br/>
-
-      <p>📌 <b>Få</b> (antal – räknebart)</p>
-      <p>Det finns få stolar i rummet.</p>
-      <p>Han har få syskon.</p><br/>
-
-      <p>📌 <b>Mycket</b> (mängd – ej räknebart)</p>
-      <p>Det är mycket vatten i sjön.</p>
-      <p>Hon har mycket erfarenhet.</p><br/>
-
-      <p>📌 <b>Många</b> (antal – räknebart)</p>
-      <p>Det är många barn på lekplatsen.</p>
-      <p>Vi har många böcker i hyllan.</p>
-    </div>
-  </div>
-
   <script>
     const options = ["Välj svar","mindre","färre","lite","få","mycket","många"];
 
     const exercises = [
-      {text: "Jag har ___ tid idag än igår.", answer: "mindre", eng: "I have less time today than yesterday."},
-      {text: "Vi behöver använda ___ mjölk i degen.", answer: "mindre", eng: "We need to use less milk in the dough."},
-      {text: "Hon fick ___ lön än sin kollega.", answer: "mindre", eng: "She received less pay than her colleague."},
-      {text: "Efter renoveringen blev det ___ utrymme i köket.", answer: "mindre", eng: "After the renovation there was less space in the kitchen."},
-      {text: "Han har ___ ork på kvällen.", answer: "mindre", eng: "He has less energy in the evening."},
-      {text: "Det kom ___ personer till mötet än förra gången.", answer: "färre", eng: "Fewer people came to the meeting than last time."},
-      {text: "Idag körde ___ bilar på vägen.", answer: "färre", eng: "Fewer cars drove on the road today."},
-      {text: "Hon har ___ vänner än sin bror.", answer: "färre", eng: "She has fewer friends than her brother."},
-      {text: "Läraren gav ___ uppgifter den här veckan.", answer: "färre", eng: "The teacher gave fewer tasks this week."},
-      {text: "Det finns ___ fåglar här på vintern.", answer: "färre", eng: "There are fewer birds here in winter."},
-      {text: "Det är bara ___ socker kvar i burken.", answer: "lite", eng: "There is only a little sugar left in the jar."},
-      {text: "Han har ___ energi på morgonen.", answer: "lite", eng: "He has little energy in the morning."},
-      {text: "Vi har ___ tid före tåget går.", answer: "lite", eng: "We have little time before the train leaves."},
-      {text: "Det finns ___ smör i kylen.", answer: "lite", eng: "There is little butter in the fridge."},
-      {text: "Hon pratar ___ svenska.", answer: "lite", eng: "She speaks a little Swedish."},
-      {text: "Det finns ___ stolar i rummet.", answer: "få", eng: "There are few chairs in the room."},
-      {text: "Han har ___ syskon.", answer: "få", eng: "He has few siblings."},
-      {text: "Vi såg ___ turister i staden.", answer: "få", eng: "We saw few tourists in the city."},
-      {text: "Det var ___ fel på provet.", answer: "få", eng: "There were few mistakes on the test."},
-      {text: "Hon känner ___ personer här.", answer: "få", eng: "She knows few people here."},
-      {text: "Det är ___ vatten i sjön.", answer: "mycket", eng: "There is much water in the lake."},
-      {text: "Hon har ___ erfarenhet.", answer: "mycket", eng: "She has much experience."},
-      {text: "Vi fick ___ information på kursen.", answer: "mycket", eng: "We received much information in the course."},
-      {text: "Det är ___ snö i fjällen.", answer: "mycket", eng: "There is much snow in the mountains."},
-      {text: "Han har ___ pengar på banken.", answer: "mycket", eng: "He has much money in the bank."},
-      {text: "Det är ___ barn på lekplatsen.", answer: "många", eng: "There are many children on the playground."},
-      {text: "Vi har ___ böcker i hyllan.", answer: "många", eng: "We have many books on the shelf."},
-      {text: "Det fanns ___ fel i texten.", answer: "många", eng: "There were many mistakes in the text."},
-      {text: "Hon känner ___ människor i staden.", answer: "många", eng: "She knows many people in the city."},
-      {text: "Det kom ___ gäster till festen.", answer: "många", eng: "Many guests came to the party."}
+      {text: "Jag har ___ tid idag än igår.", answer: "mindre"},
+      {text: "Vi behöver använda ___ mjölk i degen.", answer: "mindre"},
+      {text: "Hon fick ___ lön än sin kollega.", answer: "mindre"},
+      {text: "Efter renoveringen blev det ___ utrymme i köket.", answer: "mindre"},
+      {text: "Han har ___ ork på kvällen.", answer: "mindre"},
+      {text: "Det kom ___ personer till mötet än förra gången.", answer: "färre"},
+      {text: "Idag körde ___ bilar på vägen.", answer: "färre"},
+      {text: "Hon har ___ vänner än sin bror.", answer: "färre"},
+      {text: "Läraren gav ___ uppgifter den här veckan.", answer: "färre"},
+      {text: "Det finns ___ fåglar här på vintern.", answer: "färre"},
+      {text: "Det är bara ___ socker kvar i burken.", answer: "lite"},
+      {text: "Han har ___ energi på morgonen.", answer: "lite"},
+      {text: "Vi har ___ tid före tåget går.", answer: "lite"},
+      {text: "Det finns ___ smör i kylen.", answer: "lite"},
+      {text: "Hon pratar ___ svenska.", answer: "lite"},
+      {text: "Det finns ___ stolar i rummet.", answer: "få"},
+      {text: "Han har ___ syskon.", answer: "få"},
+      {text: "Vi såg ___ turister i staden.", answer: "få"},
+      {text: "Det var ___ fel på provet.", answer: "få"},
+      {text: "Hon känner ___ personer här.", answer: "få"},
+      {text: "Det är ___ vatten i sjön.", answer: "mycket"},
+      {text: "Hon har ___ erfarenhet.", answer: "mycket"},
+      {text: "Vi fick ___ information på kursen.", answer: "mycket"},
+      {text: "Det är ___ snö i fjällen.", answer: "mycket"},
+      {text: "Han har ___ pengar på banken.", answer: "mycket"},
+      {text: "Det är ___ barn på lekplatsen.", answer: "många"},
+      {text: "Vi har ___ böcker i hyllan.", answer: "många"},
+      {text: "Det fanns ___ fel i texten.", answer: "många"},
+      {text: "Hon känner ___ människor i staden.", answer: "många"},
+      {text: "Det kom ___ gäster till festen.", answer: "många"}
     ];
 
-    // Shuffle
+    const barLabels = {
+      "Han har ___ ork på kvällen.": ["På dagen", "På kvällen"],
+      "Det kom ___ personer till mötet än förra gången.": ["Förra gången", "Mötet idag"],
+      "Efter renoveringen blev det ___ utrymme i köket.": ["Före", "Efter"],
+      "Jag har ___ tid idag än igår.": ["Igår", "Idag"],
+      "Hon fick ___ lön än sin kollega.": ["Kollega", "Hon"],
+      "Det finns ___ fåglar här på vintern.": ["Inte vinter", "Vinter"],
+      "Läraren gav ___ uppgifter den här veckan.": ["Förra veckan", "Denna vecka"],
+      "Idag körde ___ bilar på vägen.": ["Igår", "Idag"],
+      "Vi behöver använda ___ mjölk i degen.": ["För mycket", "Rätt mängd"],
+      "Hon har ___ vänner än sin bror.": ["Han", "Hon"]
+    };
+
+    const labelMap = {
+      "Det var ___ fel på provet.": "Fel",
+      "Vi fick ___ information på kursen.": "Information",
+      "Det finns ___ stolar i rummet.": "Stolar",
+      "Det finns ___ smör i kylen.": "Smör",
+      "Han har ___ pengar på banken.": "Pengar",
+      "Det är ___ barn på lekplatsen.": "Barn",
+      "Vi har ___ böcker i hyllan.": "Böcker",
+      "Det fanns ___ fel i texten.": "Fel",
+      "Hon känner ___ människor i staden.": "Människor",
+      "Det kom ___ gäster till festen.": "Gäster",
+      "Det är ___ vatten i sjön.": "Vatten",
+      "Hon har ___ erfarenhet.": "Erfarenhet",
+      "Det är ___ snö i fjällen.": "Snö",
+      "Han har ___ syskon.": "Syskon",
+      "Vi såg ___ turister i staden.": "Turister",
+      "Hon pratar ___ svenska.": "Svenska",
+      "Han har ___ energi på morgonen.": "Energi",
+      "Vi har ___ tid före tåget går.": "Tid",
+      "Det är bara ___ socker kvar i burken.": "Socker"
+    };
+
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -263,13 +301,46 @@
       shuffled.forEach((ex, i) => {
         const div = document.createElement("div");
         div.className = "exercise";
+
+        let barHTML = "";
+        if(ex.answer === "många" || ex.answer === "mycket"){
+          const lbl = labelMap[ex.text] || "";
+          barHTML = `
+            <div class="bar-wrapper" style="display:flex;align-items:center;gap:8px;">
+              <span class="bar-label">${lbl}</span>
+              <div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:90%"></div></div>
+            </div>`;
+        } else if(ex.answer === "lite" || ex.answer === "få"){
+          const lbl = labelMap[ex.text] || "";
+          barHTML = `
+            <div class="bar-wrapper" style="display:flex;align-items:center;gap:8px;">
+              <span class="bar-label">${lbl}</span>
+              <div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:10%"></div></div>
+            </div>`;
+        } else if(ex.answer === "mindre" || ex.answer === "färre"){
+          const labels = barLabels[ex.text];
+          if(labels){
+            barHTML = `
+              <div class="bar-group bar-wrapper">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="bar-label">${labels[0]}</span>
+                  <div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:50%"></div></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                  <span class="bar-label">${labels[1]}</span>
+                  <div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:40%"></div></div>
+                </div>
+              </div>`;
+          }
+        }
+
         div.innerHTML = `
           <label>${i+1}. ${ex.text.replace("___",
             `<select id="q${i}" onchange="checkOne(${i})">
               ${options.map(o=>`<option value="${o}">${o}</option>`).join("")}
             </select>`)}
           </label>
-          <em>${ex.eng}</em>
+          ${barHTML}
         `;
         container.appendChild(div);
       });
@@ -304,17 +375,10 @@
       render();
     }
 
-    function openModal(){
-      document.getElementById("infoModal").style.display = "flex";
-    }
-    function closeModal(){
-      document.getElementById("infoModal").style.display = "none";
-    }
-    function outsideClick(event){
-      if(event.target.classList.contains("modal")){
-        closeModal();
-      }
-    }
+    // Dark mode toggle
+    document.getElementById("themeSwitch").addEventListener("change", function(){
+      document.body.classList.toggle("dark-mode", this.checked);
+    });
 
     // första laddning
     render();
