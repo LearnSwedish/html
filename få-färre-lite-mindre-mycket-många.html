@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Övning: mindre, färre, lite, få, mycket, många</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --card: #ffffff;
+      --text: #2c3e50;
+      --muted: #7f8c8d;
+      --accent: #3498db;
+      --success-bg: #e9f7ef;
+      --success-border: #2ecc71;
+      --error-bg: #fdecea;
+      --error-border: #e74c3c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    #score {
+      background: var(--accent);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    #exercises {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .exercise {
+      background: var(--card);
+      padding: 18px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: background-color 0.3s, border 0.3s;
+    }
+    .exercise label {
+      font-weight: 500;
+    }
+    select {
+      padding: 6px 8px;
+      margin: 0 4px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #fff;
+    }
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    em {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .correct {
+      background-color: var(--success-bg);
+      border: 1px solid var(--success-border);
+    }
+    .incorrect {
+      background-color: var(--error-bg);
+      border: 1px solid var(--error-border);
+    }
+    .actions {
+      text-align: center;
+      margin-top: 25px;
+    }
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #2980b9;
+    }
+    /* Info-knapp */
+    #infoBtn {
+      margin-left: 10px;
+      background: #2ecc71;
+    }
+    #infoBtn:hover {
+      background: #27ae60;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #555;
+      cursor: pointer;
+      transition: transform 0.3s, color 0.3s;
+    }
+    .close:hover {
+      color: #e74c3c;
+      transform: rotate(90deg);
+    }
+    .modal h2 {
+      margin-top: 0;
+    }
+    .modal p {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Välj rätt ord</h1>
+    <div>
+      <span id="score">Rätt: 0 / 30</span>
+      <button id="infoBtn" class="btn" onclick="openModal()">Info</button>
+    </div>
+  </header>
+
+  <div id="exercises"></div>
+
+  <div class="actions">
+    <button class="btn" onclick="restart()">Starta om övningen</button>
+  </div>
+
+  <!-- Modal -->
+  <div id="infoModal" class="modal" onclick="outsideClick(event)">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Information</h2>
+      <p>📌 <b>Mindre</b> (mängd/grad – ej räknebart)</p>
+      <p>Jag har mindre tid idag än igår.</p>
+      <p>Vi behöver använda mindre mjölk i degen.</p><br/>
+
+      <p>📌 <b>Färre</b> (antal – räknebart)</p>
+      <p>Det kom färre personer till mötet än förra gången.</p>
+      <p>Idag körde färre bilar på vägen.</p><br/>
+
+      <p>📌 <b>Lite</b> (mängd – ej räknebart)</p>
+      <p>Det är bara lite socker kvar i burken.</p>
+      <p>Han har lite energi på morgonen.</p><br/>
+
+      <p>📌 <b>Få</b> (antal – räknebart)</p>
+      <p>Det finns få stolar i rummet.</p>
+      <p>Han har få syskon.</p><br/>
+
+      <p>📌 <b>Mycket</b> (mängd – ej räknebart)</p>
+      <p>Det är mycket vatten i sjön.</p>
+      <p>Hon har mycket erfarenhet.</p><br/>
+
+      <p>📌 <b>Många</b> (antal – räknebart)</p>
+      <p>Det är många barn på lekplatsen.</p>
+      <p>Vi har många böcker i hyllan.</p>
+    </div>
+  </div>
+
+  <script>
+    const options = ["Välj svar","mindre","färre","lite","få","mycket","många"];
+
+    const exercises = [
+      {text: "Jag har ___ tid idag än igår.", answer: "mindre", eng: "I have less time today than yesterday."},
+      {text: "Vi behöver använda ___ mjölk i degen.", answer: "mindre", eng: "We need to use less milk in the dough."},
+      {text: "Hon fick ___ lön än sin kollega.", answer: "mindre", eng: "She received less pay than her colleague."},
+      {text: "Efter renoveringen blev det ___ utrymme i köket.", answer: "mindre", eng: "After the renovation there was less space in the kitchen."},
+      {text: "Han har ___ ork på kvällen.", answer: "mindre", eng: "He has less energy in the evening."},
+      {text: "Det kom ___ personer till mötet än förra gången.", answer: "färre", eng: "Fewer people came to the meeting than last time."},
+      {text: "Idag körde ___ bilar på vägen.", answer: "färre", eng: "Fewer cars drove on the road today."},
+      {text: "Hon har ___ vänner än sin bror.", answer: "färre", eng: "She has fewer friends than her brother."},
+      {text: "Läraren gav ___ uppgifter den här veckan.", answer: "färre", eng: "The teacher gave fewer tasks this week."},
+      {text: "Det finns ___ fåglar här på vintern.", answer: "färre", eng: "There are fewer birds here in winter."},
+      {text: "Det är bara ___ socker kvar i burken.", answer: "lite", eng: "There is only a little sugar left in the jar."},
+      {text: "Han har ___ energi på morgonen.", answer: "lite", eng: "He has little energy in the morning."},
+      {text: "Vi har ___ tid före tåget går.", answer: "lite", eng: "We have little time before the train leaves."},
+      {text: "Det finns ___ smör i kylen.", answer: "lite", eng: "There is little butter in the fridge."},
+      {text: "Hon pratar ___ svenska.", answer: "lite", eng: "She speaks a little Swedish."},
+      {text: "Det finns ___ stolar i rummet.", answer: "få", eng: "There are few chairs in the room."},
+      {text: "Han har ___ syskon.", answer: "få", eng: "He has few siblings."},
+      {text: "Vi såg ___ turister i staden.", answer: "få", eng: "We saw few tourists in the city."},
+      {text: "Det var ___ fel på provet.", answer: "få", eng: "There were few mistakes on the test."},
+      {text: "Hon känner ___ personer här.", answer: "få", eng: "She knows few people here."},
+      {text: "Det är ___ vatten i sjön.", answer: "mycket", eng: "There is much water in the lake."},
+      {text: "Hon har ___ erfarenhet.", answer: "mycket", eng: "She has much experience."},
+      {text: "Vi fick ___ information på kursen.", answer: "mycket", eng: "We received much information in the course."},
+      {text: "Det är ___ snö i fjällen.", answer: "mycket", eng: "There is much snow in the mountains."},
+      {text: "Han har ___ pengar på banken.", answer: "mycket", eng: "He has much money in the bank."},
+      {text: "Det är ___ barn på lekplatsen.", answer: "många", eng: "There are many children on the playground."},
+      {text: "Vi har ___ böcker i hyllan.", answer: "många", eng: "We have many books on the shelf."},
+      {text: "Det fanns ___ fel i texten.", answer: "många", eng: "There were many mistakes in the text."},
+      {text: "Hon känner ___ människor i staden.", answer: "många", eng: "She knows many people in the city."},
+      {text: "Det kom ___ gäster till festen.", answer: "många", eng: "Many guests came to the party."}
+    ];
+
+    // Shuffle
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    let shuffled = [];
+    function render() {
+      const container = document.getElementById("exercises");
+      container.innerHTML = "";
+      shuffled = shuffle([...exercises]);
+
+      shuffled.forEach((ex, i) => {
+        const div = document.createElement("div");
+        div.className = "exercise";
+        div.innerHTML = `
+          <label>${i+1}. ${ex.text.replace("___",
+            `<select id="q${i}" onchange="checkOne(${i})">
+              ${options.map(o=>`<option value="${o}">${o}</option>`).join("")}
+            </select>`)}
+          </label>
+          <em>${ex.eng}</em>
+        `;
+        container.appendChild(div);
+      });
+      updateScore();
+    }
+
+    function checkOne(i){
+      const ex = shuffled[i];
+      const val = document.getElementById("q"+i).value;
+      const div = document.getElementById("q"+i).closest(".exercise");
+      div.classList.remove("correct","incorrect");
+
+      if(val === "Välj svar"){ return; }
+      if(val === ex.answer){
+        div.classList.add("correct");
+      } else {
+        div.classList.add("incorrect");
+      }
+      updateScore();
+    }
+
+    function updateScore(){
+      let count = 0;
+      shuffled.forEach((ex,i)=>{
+        const val = document.getElementById("q"+i).value;
+        if(val === ex.answer){ count++; }
+      });
+      document.getElementById("score").textContent = `Rätt: ${count} / ${shuffled.length}`;
+    }
+
+    function restart(){
+      render();
+    }
+
+    function openModal(){
+      document.getElementById("infoModal").style.display = "flex";
+    }
+    function closeModal(){
+      document.getElementById("infoModal").style.display = "none";
+    }
+    function outsideClick(event){
+      if(event.target.classList.contains("modal")){
+        closeModal();
+      }
+    }
+
+    // första laddning
+    render();
+  </script>
+</body>
+</html>
