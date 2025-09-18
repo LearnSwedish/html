@@ -16,7 +16,6 @@
       --error-bg: #fdecea;
       --error-border: #e74c3c;
     }
-
     body.dark-mode {
       --bg: #1e1e1e;
       --card: #2c2c2c;
@@ -28,7 +27,6 @@
       --error-bg: #3d1f1f;
       --error-border: #e74c3c;
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -47,11 +45,7 @@
       margin-left: auto;
       margin-right: auto;
     }
-    header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin: 0;
-    }
+    header h1 { font-size: 1.6rem; font-weight: 700; margin: 0; }
     #score {
       background: var(--accent);
       color: #fff;
@@ -61,10 +55,7 @@
       font-size: 0.9rem;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    #exercises {
-      max-width: 700px;
-      margin: 0 auto;
-    }
+    #exercises { max-width: 700px; margin: 0 auto; }
     .exercise {
       background: var(--card);
       padding: 18px;
@@ -73,9 +64,7 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       transition: background-color 0.3s, border 0.3s;
     }
-    .exercise label {
-      font-weight: 500;
-    }
+    .exercise label { font-weight: 500; }
     select {
       padding: 6px 8px;
       margin: 0 4px;
@@ -89,32 +78,16 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
     }
-    .correct {
-      background-color: var(--success-bg);
-      border: 1px solid var(--success-border);
-    }
-    .incorrect {
-      background-color: var(--error-bg);
-      border: 1px solid var(--error-border);
-    }
-    .actions {
-      text-align: center;
-      margin-top: 25px;
-    }
+    .correct { background-color: var(--success-bg); border: 1px solid var(--success-border); }
+    .incorrect { background-color: var(--error-bg); border: 1px solid var(--error-border); }
+    .actions { text-align: center; margin-top: 25px; }
     .btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 8px; padding: 10px 20px;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
       transition: background 0.3s;
     }
-    .btn:hover {
-      background: #2980b9;
-    }
+    .btn:hover { background: #2980b9; }
     /* Staplar */
     .bar-container {
       background: #e0e0e0;
@@ -122,100 +95,158 @@
       overflow: hidden;
       height: 14px;
     }
-	.bar-wrapper {
-	  margin-top: 15px;  /* ger luft mellan meningen och stapeln */
-	}
-    .bar-fill {
-      background: var(--accent);
-      height: 100%;
-      transition: width 0.3s ease;
-    }
-    .bar-group {
-      margin-top: 10px;
-    }
-    .bar-label {
-      width: 100px;
-      text-align: right;
-      font-size: 14px;
-    }
-
-    /* Dark mode toggle (floating) */
-    .theme-toggle {
+    .bar-fill { background: var(--accent); height: 100%; transition: width 0.3s ease; }
+    .bar-group { margin-top: 14px; }
+    .bar-label { width: 100px; text-align: right; font-size: 14px; }
+    .bar-wrapper { margin-top: 14px; }
+    /* Floating controls */
+    .floating-controls {
       position: fixed;
       top: 15px;
       right: 15px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 10px;
       z-index: 1000;
+    }
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       background: var(--card);
       padding: 6px 12px;
       border-radius: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     .switch {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 24px;
+      position: relative; display: inline-block;
+      width: 46px; height: 24px;
     }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+    .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 24px;
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc; transition: .4s; border-radius: 24px;
     }
     .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
+      position: absolute; content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
       background-color: white;
-      transition: .4s;
-      border-radius: 50%;
+      transition: .4s; border-radius: 50%;
     }
-    input:checked + .slider {
-      background-color: var(--accent);
+    input:checked + .slider { background-color: var(--accent); }
+    input:checked + .slider:before { transform: translateX(22px); }
+    #infoBtn { background: #2ecc71; }
+    #infoBtn:hover { background: #27ae60; }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center; align-items: center;
+      padding: 20px;
     }
-    input:checked + .slider:before {
-      transform: translateX(22px);
+.modal-content {
+  background: var(--card);
+  color: var(--text);
+  padding: 20px 30px;
+  border-radius: 12px;
+  max-width: 600px; width: 100%;
+  position: relative;
+  animation: zoomIn 0.4s ease;
+}
+@keyframes zoomIn {
+  0%   { opacity: 0; transform: scale(0.7); }
+  60%  { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease;
+}
+
+.close:before,
+.close:after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 3px;
+  background-color: var(--text);
+  border-radius: 2px;
+  transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+.close:before {
+  transform: rotate(45deg);
+}
+.close:after {
+  transform: rotate(-45deg);
+}
+
+/* När man hovrar snurrar hela krysset */
+.close:hover {
+  transform: rotate(180deg);
+}
+
   </style>
 </head>
 <body>
-  <div class="theme-toggle">
-    <span>Tema</span>
-    <label class="switch">
-      <input type="checkbox" id="themeSwitch">
-      <span class="slider"></span>
-    </label>
+  <div class="floating-controls">
+    <div class="theme-toggle">
+      <span>Tema</span>
+      <label class="switch">
+        <input type="checkbox" id="themeSwitch">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <button id="infoBtn" class="btn" onclick="openModal()">Info</button>
   </div>
 
   <header>
     <h1>Välj rätt ord</h1>
-    <div>
-      <span id="score">Rätt: 0 / 30</span>
-    </div>
+    <div><span id="score">Rätt: 0 / 30</span></div>
   </header>
 
   <div id="exercises"></div>
 
-  <div class="actions">
-    <button class="btn" onclick="restart()">Starta om övningen</button>
+  <div class="actions"><button class="btn" onclick="restart()">Starta om övningen</button></div>
+
+  <!-- Modal -->
+  <div id="infoModal" class="modal" onclick="outsideClick(event)">
+    <div class="modal-content">
+      <div class="close" onclick="closeModal()"></div>
+      <h2>Information</h2>
+      <p>📌 <b>Mindre</b> (mängd/grad – ej räknebart – "före > nu")</p>
+      <p>Jag har mindre <strong><u>tid</u></strong> idag än igår.</p><br/>
+      <p>📌 <b>Färre</b> (antal – räknebart – "före > nu"</p>
+      <p>Det kom färre <strong><u>personer</u></strong> till mötet än förra gången.</p><br/>
+      <p>📌 <b>Lite</b> (mängd – ej räknebart – "nästan slut")</p>
+      <p>Det är bara lite <strong><u>socker</u></strong> kvar i burken.</p><br/>
+      <p>📌 <b>Få</b> (antal – räknebart – "nästan inga")</p>
+      <p>Det finns få <strong><u>stolar</u></strong> i rummet.</p><br/>
+      <p>📌 <b>Mycket</b> (mängd – ej räknebart – "stor mängd")</p>
+      <p>Det är mycket <strong><u>vatten</u></strong> i sjön.</p><br/>
+      <p>📌 <b>Många</b> (antal – räknebart – "stort antal")</p>
+      <p>Det är många <strong><u>barn</u></strong> på lekplatsen.</p>
+    </div>
   </div>
 
   <script>
     const options = ["Välj svar","mindre","färre","lite","få","mycket","många"];
-
     const exercises = [
       {text: "Jag har ___ tid idag än igår.", answer: "mindre"},
       {text: "Vi behöver använda ___ mjölk i degen.", answer: "mindre"},
@@ -250,16 +281,16 @@
     ];
 
     const barLabels = {
-      "Han har ___ ork på kvällen.": ["På dagen", "På kvällen"],
-      "Det kom ___ personer till mötet än förra gången.": ["Förra gången", "Mötet idag"],
-      "Efter renoveringen blev det ___ utrymme i köket.": ["Före", "Efter"],
-      "Jag har ___ tid idag än igår.": ["Igår", "Idag"],
-      "Hon fick ___ lön än sin kollega.": ["Kollega", "Hon"],
-      "Det finns ___ fåglar här på vintern.": ["Inte vinter", "Vinter"],
-      "Läraren gav ___ uppgifter den här veckan.": ["Förra veckan", "Denna vecka"],
-      "Idag körde ___ bilar på vägen.": ["Igår", "Idag"],
-      "Vi behöver använda ___ mjölk i degen.": ["För mycket", "Rätt mängd"],
-      "Hon har ___ vänner än sin bror.": ["Han", "Hon"]
+      "Han har ___ ork på kvällen.": ["På dagen","På kvällen"],
+      "Det kom ___ personer till mötet än förra gången.": ["Förra gången","Mötet idag"],
+      "Efter renoveringen blev det ___ utrymme i köket.": ["Före","Efter"],
+      "Jag har ___ tid idag än igår.": ["Igår","Idag"],
+      "Hon fick ___ lön än sin kollega.": ["Kollega","Hon"],
+      "Det finns ___ fåglar här på vintern.": ["Inte vinter","Vinter"],
+      "Läraren gav ___ uppgifter den här veckan.": ["Förra veckan","Denna vecka"],
+      "Idag körde ___ bilar på vägen.": ["Igår","Idag"],
+      "Vi behöver använda ___ mjölk i degen.": ["För mycket","Rätt mängd"],
+      "Hon har ___ vänner än sin bror.": ["Han","Hon"]
     };
 
     const labelMap = {
@@ -297,7 +328,6 @@
       const container = document.getElementById("exercises");
       container.innerHTML = "";
       shuffled = shuffle([...exercises]);
-
       shuffled.forEach((ex, i) => {
         const div = document.createElement("div");
         div.className = "exercise";
@@ -305,23 +335,20 @@
         let barHTML = "";
         if(ex.answer === "många" || ex.answer === "mycket"){
           const lbl = labelMap[ex.text] || "";
-          barHTML = `
-            <div class="bar-wrapper" style="display:flex;align-items:center;gap:8px;">
+          barHTML = `<div class="bar-wrapper"><div style="display:flex;align-items:center;gap:8px;">
               <span class="bar-label">${lbl}</span>
               <div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:90%"></div></div>
-            </div>`;
+            </div></div>`;
         } else if(ex.answer === "lite" || ex.answer === "få"){
           const lbl = labelMap[ex.text] || "";
-          barHTML = `
-            <div class="bar-wrapper" style="display:flex;align-items:center;gap:8px;">
+          barHTML = `<div class="bar-wrapper"><div style="display:flex;align-items:center;gap:8px;">
               <span class="bar-label">${lbl}</span>
               <div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:10%"></div></div>
-            </div>`;
+            </div></div>`;
         } else if(ex.answer === "mindre" || ex.answer === "färre"){
           const labels = barLabels[ex.text];
           if(labels){
-            barHTML = `
-              <div class="bar-group bar-wrapper">
+            barHTML = `<div class="bar-wrapper"><div class="bar-group">
                 <div style="display:flex;align-items:center;gap:8px;">
                   <span class="bar-label">${labels[0]}</span>
                   <div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:50%"></div></div>
@@ -330,18 +357,16 @@
                   <span class="bar-label">${labels[1]}</span>
                   <div class="bar-container" style="flex:1;"><div class="bar-fill" style="width:40%"></div></div>
                 </div>
-              </div>`;
+              </div></div>`;
           }
         }
 
-        div.innerHTML = `
-          <label>${i+1}. ${ex.text.replace("___",
-            `<select id="q${i}" onchange="checkOne(${i})">
-              ${options.map(o=>`<option value="${o}">${o}</option>`).join("")}
-            </select>`)}
-          </label>
-          ${barHTML}
-        `;
+        div.innerHTML = `<label>${i+1}. ${ex.text.replace("___",
+          `<select id="q${i}" onchange="checkOne(${i})">
+            ${options.map(o=>`<option value="${o}">${o}</option>`).join("")}
+          </select>`)}
+        </label>
+        ${barHTML}`;
         container.appendChild(div);
       });
       updateScore();
@@ -354,11 +379,8 @@
       div.classList.remove("correct","incorrect");
 
       if(val === "Välj svar"){ return; }
-      if(val === ex.answer){
-        div.classList.add("correct");
-      } else {
-        div.classList.add("incorrect");
-      }
+      if(val === ex.answer){ div.classList.add("correct"); }
+      else { div.classList.add("incorrect"); }
       updateScore();
     }
 
@@ -371,9 +393,12 @@
       document.getElementById("score").textContent = `Rätt: ${count} / ${shuffled.length}`;
     }
 
-    function restart(){
-      render();
-    }
+    function restart(){ render(); }
+
+    // Modal
+    function openModal(){ document.getElementById("infoModal").style.display = "flex"; }
+    function closeModal(){ document.getElementById("infoModal").style.display = "none"; }
+    function outsideClick(event){ if(event.target.classList.contains("modal")){ closeModal(); } }
 
     // Dark mode toggle
     document.getElementById("themeSwitch").addEventListener("change", function(){
