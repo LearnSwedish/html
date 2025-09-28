@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz – Ekonomiska system</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #222;
+      line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark {
+      background: #1e1e1e;
+      color: #ddd;
+    }
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    #score {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .question {
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    body.dark .question {
+      background: #2a2a2a;
+    }
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 5px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #eee;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+    body.dark .options button {
+      background: #444;
+      color: #eee;
+    }
+    .options button.correct {
+      background: #2ecc71 !important;
+      color: white;
+    }
+    .options button.wrong {
+      background: #e74c3c !important;
+      color: white;
+    }
+    .controls {
+      text-align: center;
+      margin: 15px 0;
+    }
+    .controls button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      background: #0077cc;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quiz: Ekonomiska system</h1>
+  <div id="score">Poäng: 0 / 0</div>
+  <div class="controls">
+    <button onclick="toggleTheme()">Växla tema</button>
+    <button onclick="restartQuiz()">Starta om</button>
+  </div>
+  <div id="quiz"></div>
+
+  <script>
+    let score = 0;
+    let answered = 0;
+
+    const questions = [
+      {
+        q: "Vem bestämmer i en marknadsekonomi?",
+        options: ["Marknaden (köpare och säljare)", "Staten", "FN", "Facket"],
+        answer: "Marknaden (köpare och säljare)"
+      },
+      {
+        q: "Vad kallas det pris som växer fram när tillgång och efterfrågan möts?",
+        options: ["Jämviktspris", "Marknadspris", "Styrpris", "Baspris"],
+        answer: "Jämviktspris"
+      },
+      {
+        q: "Vad innebär monopol?",
+        options: ["Ett företag dominerar", "Flera företag konkurrerar", "Alla äger lika mycket", "Staten styr helt"],
+        answer: "Ett företag dominerar"
+      },
+      {
+        q: "Vad är ett exempel på planekonomi?",
+        options: ["Femårsplanerna i Sovjetunionen", "USA:s bostadsmarknad", "EU:s gröna giv", "Sveriges blandekonomi"],
+        answer: "Femårsplanerna i Sovjetunionen"
+      },
+      {
+        q: "Vad är huvudmålet med kretsloppsekonomi?",
+        options: ["Återvinning och hållbarhet", "Större vinster", "Fri konkurrens", "Privatisering"],
+        answer: "Återvinning och hållbarhet"
+      },
+      {
+        q: "Vad kännetecknar blandekonomi?",
+        options: ["En mix av marknadsekonomi och statlig styrning", "Bara staten bestämmer", "Bara marknaden bestämmer", "Ingen styr alls"],
+        answer: "En mix av marknadsekonomi och statlig styrning"
+      },
+      {
+        q: "Vilken nackdel finns med marknadsekonomi?",
+        options: ["Stora ekonomiska klyftor", "Staten bestämmer allt", "Inga valmöjligheter", "Alltid låg tillväxt"],
+        answer: "Stora ekonomiska klyftor"
+      },
+      {
+        q: "Vilken fördel finns med planekonomi?",
+        options: ["Mindre klyftor i teorin", "Snabb teknisk utveckling", "Fri konkurrens", "Billigare varor"],
+        answer: "Mindre klyftor i teorin"
+      },
+      {
+        q: "Vad kan vara en nackdel med kretsloppsekonomi?",
+        options: ["Återvinning kan bli dyrare än nyproduktion", "Miljöförstöring", "Ekonomiska klyftor", "Brist på reglering"],
+        answer: "Återvinning kan bli dyrare än nyproduktion"
+      },
+      {
+        q: "Vilket land har blandekonomi med stark välfärdsstat?",
+        options: ["Sverige", "Sovjetunionen", "USA", "Nordkorea"],
+        answer: "Sverige"
+      }
+      // Fyll på med fler frågor (totalt 50)
+    ];
+
+    // Duplicera tills vi har 50 frågor (om du inte skrivit in alla manuellt)
+    while (questions.length < 50) {
+      questions.push({...questions[questions.length % 10]});
+    }
+
+    // Slumpa ordningen
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+    shuffle(questions);
+
+    function updateScore() {
+      document.getElementById("score").textContent = `Poäng: ${score} / ${answered}`;
+    }
+
+    function renderQuiz() {
+      const quiz = document.getElementById("quiz");
+      quiz.innerHTML = "";
+      questions.forEach((q, i) => {
+        const div = document.createElement("div");
+        div.className = "question";
+        const qText = document.createElement("p");
+        qText.textContent = (i+1) + ". " + q.q;
+        div.appendChild(qText);
+
+        const opts = document.createElement("div");
+        opts.className = "options";
+
+        shuffle([...q.options]).forEach(opt => {
+          const btn = document.createElement("button");
+          btn.textContent = opt;
+          btn.onclick = () => {
+            if (btn.disabled) return;
+            answered++;
+            if (opt === q.answer) {
+              score++;
+              btn.classList.add("correct");
+            } else {
+              btn.classList.add("wrong");
+            }
+            updateScore();
+            Array.from(opts.children).forEach(b => b.disabled = true);
+          };
+          opts.appendChild(btn);
+        });
+
+        div.appendChild(opts);
+        quiz.appendChild(div);
+      });
+      updateScore();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+    }
+
+    function restartQuiz() {
+      score = 0;
+      answered = 0;
+      shuffle(questions);
+      renderQuiz();
+    }
+
+    renderQuiz();
+  </script>
+</body>
+</html>
