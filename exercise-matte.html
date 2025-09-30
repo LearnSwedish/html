@@ -8,23 +8,43 @@
   <script id="MathJax-script" async
           src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #222;
+      --card: #fff;
+    }
+    body.dark {
+      --bg: #1e1e1e;
+      --text: #ddd;
+      --card: #2a2a2a;
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 10px;
-      padding: 0;
-      background: #f9f9f9;
-      color: #222;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
     }
     h1 {
       text-align: center;
       font-size: 20px;
       margin-bottom: 15px;
     }
+    .toggle-btn {
+      display: block;
+      margin: 0 auto 15px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
+      font-size: 15px;
+    }
     .question {
       margin-bottom: 20px;
       padding: 12px;
       border-radius: 8px;
-      background: #fff;
+      background: var(--card);
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .question p {
@@ -35,72 +55,96 @@
       width: 100%;
       padding: 8px;
       font-size: 16px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
     }
     button {
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      margin-top: 20px;
+      padding: 10px;
+      font-size: 15px;
       background: #007bff;
       color: white;
       border: none;
       border-radius: 6px;
+      margin-bottom: 5px;
     }
-    #result {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 18px;
+    .feedback {
+      margin-top: 8px;
       font-weight: bold;
     }
+    .correct { color: green; }
+    .incorrect { color: red; }
   </style>
 </head>
 <body>
 
 <h1>Quiz: Öva på bråktal</h1>
+<button class="toggle-btn" onclick="toggleTheme()">Växla tema</button>
 
-<form id="quizForm">
-
-  <div class="question"><p>1. \( \left(\tfrac{1}{2}\right)^2 \)</p><input type="text" name="q1"></div>
-  <div class="question"><p>2. \( \left(\tfrac{1}{3}\right)^2 \)</p><input type="text" name="q2"></div>
-  <div class="question"><p>3. \( \left(\tfrac{2}{5}\right)^2 \)</p><input type="text" name="q3"></div>
-  <div class="question"><p>4. \( \left(\tfrac{3}{4}\right)^2 \)</p><input type="text" name="q4"></div>
-  <div class="question"><p>5. \( \left(\tfrac{5}{6}\right)^2 \)</p><input type="text" name="q5"></div>
-  <div class="question"><p>6. \( \tfrac{3}{5} \div 2 \)</p><input type="text" name="q6"></div>
-  <div class="question"><p>7. \( 2 \div \tfrac{2}{5} \)</p><input type="text" name="q7"></div>
-  <div class="question"><p>8. \( 1 - \left(\tfrac{1}{3}\right)^2 \)</p><input type="text" name="q8"></div>
-  <div class="question"><p>9. \( \left(\tfrac{1}{2}\right)^2 + \left(\tfrac{1}{2}\right)^2 \)</p><input type="text" name="q9"></div>
-  <div class="question"><p>10. \( \left(\tfrac{4}{5}\right)^2 \)</p><input type="text" name="q10"></div>
-  <div class="question"><p>11. \( \left(\tfrac{7}{8}\right)^2 \)</p><input type="text" name="q11"></div>
-  <div class="question"><p>12. \( 1 - \left(\tfrac{2}{3}\right)^2 \)</p><input type="text" name="q12"></div>
-  <div class="question"><p>13. \( \left(\tfrac{2}{7}\right)^2 \)</p><input type="text" name="q13"></div>
-  <div class="question"><p>14. \( \left(\tfrac{3}{10}\right)^2 \)</p><input type="text" name="q14"></div>
-  <div class="question"><p>15. \( \left(\tfrac{9}{10}\right)^2 \)</p><input type="text" name="q15"></div>
-
-  <button type="button" onclick="checkAnswers()">Rätta quiz</button>
-</form>
-
-<div id="result"></div>
+<div id="quiz"></div>
 
 <script>
-function checkAnswers() {
-  const answers = {
-    q1:"1/4", q2:"1/9", q3:"4/25", q4:"9/16", q5:"25/36",
-    q6:"3/10", q7:"5", q8:"8/9", q9:"1/2", q10:"16/25",
-    q11:"49/64", q12:"5/9", q13:"4/49", q14:"9/100", q15:"81/100"
-  };
+const questions = [
+  {text:"\\( (\\tfrac{1}{2})^2 \\)", answer:"1/4"},
+  {text:"\\( (\\tfrac{1}{3})^2 \\)", answer:"1/9"},
+  {text:"\\( (\\tfrac{2}{5})^2 \\)", answer:"4/25"},
+  {text:"\\( (\\tfrac{3}{4})^2 \\)", answer:"9/16"},
+  {text:"\\( (\\tfrac{5}{6})^2 \\)", answer:"25/36"},
+  {text:"\\( \\tfrac{3}{5} \\div 2 \\)", answer:"3/10"},
+  {text:"\\( 2 \\div \\tfrac{2}{5} \\)", answer:"5"},
+  {text:"\\( 1 - (\\tfrac{1}{3})^2 \\)", answer:"8/9"},
+  {text:"\\( (\\tfrac{1}{2})^2 + (\\tfrac{1}{2})^2 \\)", answer:"1/2"},
+  {text:"\\( (\\tfrac{4}{5})^2 \\)", answer:"16/25"},
+  {text:"\\( (\\tfrac{7}{8})^2 \\)", answer:"49/64"},
+  {text:"\\( 1 - (\\tfrac{2}{3})^2 \\)", answer:"5/9"},
+  {text:"\\( (\\tfrac{2}{7})^2 \\)", answer:"4/49"},
+  {text:"\\( (\\tfrac{3}{10})^2 \\)", answer:"9/100"},
+  {text:"\\( (\\tfrac{9}{10})^2 \\)", answer:"81/100"}
+];
 
-  let form = document.forms["quizForm"];
-  let score = 0;
-  let total = Object.keys(answers).length;
+// Fisher–Yates shuffle
+for (let i = questions.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [questions[i], questions[j]] = [questions[j], questions[i]];
+}
 
-  for (let key in answers) {
-    if (form[key].value.trim() === answers[key]) {
-      score++;
-    }
+const quizDiv = document.getElementById("quiz");
+questions.forEach((q, i) => {
+  const div = document.createElement("div");
+  div.className = "question";
+  div.dataset.answer = q.answer;
+  div.innerHTML = `
+    <p>${i+1}. ${q.text}</p>
+    <input type="text" inputmode="numeric" pattern="[0-9/]*">
+    <button onclick="checkOne(this)">Rätta</button>
+    <div class="feedback"></div>
+  `;
+  quizDiv.appendChild(div);
+});
+
+// Kör MathJax efter att vi lagt in frågorna
+if (window.MathJax) {
+  MathJax.typesetPromise();
+}
+
+function checkOne(button) {
+  const container = button.parentElement;
+  const input = container.querySelector("input");
+  const feedback = container.querySelector(".feedback");
+  const correctAnswer = container.dataset.answer;
+
+  if (input.value.trim() === correctAnswer) {
+    feedback.textContent = "Rätt!";
+    feedback.className = "feedback correct";
+  } else {
+    feedback.textContent = "Fel! Rätt svar är " + correctAnswer;
+    feedback.className = "feedback incorrect";
   }
+}
 
-  document.getElementById("result").innerText = 
-    "Du fick " + score + " av " + total + " rätt!";
+function toggleTheme() {
+  document.body.classList.toggle("dark");
 }
 </script>
 
