@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Potensquiz</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #222;
+      --card: #fff;
+    }
+    body.dark {
+      --bg: #1e1e1e;
+      --text: #ddd;
+      --card: #2a2a2a;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10px;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .toggle-btn {
+      display: block;
+      margin: 0 auto 15px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
+      font-size: 15px;
+    }
+    .question {
+      margin-bottom: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .question p {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    .numpad button {
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      background: #e0e0e0;
+      cursor: pointer;
+    }
+    .numpad button:active {
+      background: #bbb;
+    }
+    .feedback {
+      margin-top: 8px;
+      font-weight: bold;
+    }
+    .correct { color: green; }
+    .incorrect { color: red; }
+    .ratta {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Quiz: Potenser</h1>
+<button class="toggle-btn" onclick="toggleTheme()">Växla tema</button>
+
+<div id="quiz"></div>
+
+<script>
+// Frågebank med enkla potensuttryck
+const bank = [
+  {text:"\\( \\tfrac{7^4}{7^{-2}} \\)", answer:"7^6"},
+  {text:"\\( \\tfrac{10^3}{10^{-5}} \\)", answer:"10^8"},
+  {text:"\\( \\tfrac{2^{-1}}{2^{-4}} \\)", answer:"2^3"},
+  {text:"\\( \\tfrac{9^6}{9^{-3}} \\)", answer:"9^9"},
+  {text:"\\( \\tfrac{5^{-2}}{5^{-7}} \\)", answer:"5^5"},
+  {text:"\\( 3^6 \\cdot 3^2 \\)", answer:"3^8"},
+  {text:"\\( \\tfrac{6^2}{6^{-4}} \\)", answer:"6^6"},
+  {text:"\\( 4^{-3} \\cdot 4^7 \\)", answer:"4^4"},
+  {text:"\\( 11^{-1} \\cdot 11^5 \\)", answer:"11^4"},
+  {text:"\\( \\tfrac{8^5}{8^{-2}} \\)", answer:"8^7"},
+  {text:"\\( 2^4 \\cdot 2^{-2} \\)", answer:"2^2"},
+  {text:"\\( 9^{-2} \\cdot 9^7 \\)", answer:"9^5"},
+  {text:"\\( \\tfrac{12^{-1}}{12^{-4}} \\)", answer:"12^3"},
+  {text:"\\( 5^0 \\cdot 5^7 \\)", answer:"5^7"},
+  {text:"\\( \\tfrac{3^7}{3^{-5}} \\)", answer:"3^12"}
+];
+
+// plocka slumpmässiga frågor
+function pickRandom(arr, n) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, n);
+}
+
+const questions = pickRandom(bank, 15);
+
+const quizDiv = document.getElementById("quiz");
+questions.forEach((q, i) => {
+  const div = document.createElement("div");
+  div.className = "question";
+  div.dataset.answer = q.answer;
+  div.innerHTML = `
+    <p>${i+1}. ${q.text}</p>
+    <input type="text" placeholder="Skriv t.ex. 7^6">
+    <div class="numpad">
+      <button onclick="addChar(this,'7')">7</button>
+      <button onclick="addChar(this,'8')">8</button>
+      <button onclick="addChar(this,'9')">9</button>
+      <button onclick="addChar(this,'4')">4</button>
+      <button onclick="addChar(this,'5')">5</button>
+      <button onclick="addChar(this,'6')">6</button>
+      <button onclick="addChar(this,'1')">1</button>
+      <button onclick="addChar(this,'2')">2</button>
+      <button onclick="addChar(this,'3')">3</button>
+      <button onclick="addChar(this,'0')">0</button>
+      <button onclick="addChar(this,'^')">^</button>
+      <button onclick="delChar(this)">⌫</button>
+    </div>
+    <button class="ratta" onclick="checkOne(this)">Rätta</button>
+    <div class="feedback"></div>
+  `;
+  quizDiv.appendChild(div);
+});
+
+// rendera MathJax
+if (window.MathJax) {
+  MathJax.typesetPromise();
+}
+
+function addChar(btn, char) {
+  const container = btn.closest(".question");
+  const input = container.querySelector("input");
+  input.value += char;
+}
+
+function delChar(btn) {
+  const container = btn.closest(".question");
+  const input = container.querySelector("input");
+  input.value = input.value.slice(0, -1);
+}
+
+function checkOne(button) {
+  const container = button.parentElement;
+  const input = container.querySelector("input");
+  const feedback = container.querySelector(".feedback");
+  const correctAnswer = container.dataset.answer;
+
+  if (input.value.trim() === correctAnswer) {
+    feedback.textContent = "Rätt!";
+    feedback.className = "feedback correct";
+  } else {
+    feedback.textContent = "Fel! Rätt svar är " + correctAnswer;
+    feedback.className = "feedback incorrect";
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
