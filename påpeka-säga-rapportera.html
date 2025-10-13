@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tala, säga, berätta</title>
+<style>
+  :root {
+    --bg-color: #fafafa;
+    --text-color: #222;
+    --table-header: #f0f0f0;
+    --border-color: #ccc;
+    --link-color: #0056b3;
+    --tooltip-bg: #fff;
+    --tooltip-text: #111;
+  }
+
+  body.dark {
+    --bg-color: #1e1e1e;
+    --text-color: #eee;
+    --table-header: #2b2b2b;
+    --border-color: #444;
+    --link-color: #81aefc;
+    --tooltip-bg: #333;
+    --tooltip-text: #f1f1f1;
+  }
+
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+  }
+
+  main {
+    width: 100%;
+    max-width: 1300px;
+  }
+
+  h2 {
+    display: inline-block;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .toggle-container {
+    position: fixed;
+    top: 15px;
+    right: 25px;
+    display: flex;
+    align-items: center;
+  }
+
+  .toggle-label {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 26px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 34px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #4a90e2;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 25px;
+  }
+
+  th, td {
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+    word-wrap: break-word;
+    transition: border-color 0.3s ease;
+  }
+
+  th {
+    background-color: var(--table-header);
+  }
+
+  th:nth-child(1) { width: 10%; }
+  th:nth-child(2) { width: 25%; }
+  th:nth-child(3) { width: 25%; }
+  th:nth-child(4) { width: 40%; }
+
+  .word-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px 25px;
+  }
+
+  .word-list {
+    line-height: 1.7;
+  }
+
+  .word-list span {
+    display: block;
+    cursor: pointer;
+    color: var(--link-color);
+    position: relative;
+    transition: color 0.2s ease;
+  }
+
+  .word-list span:hover {
+    text-decoration: underline;
+  }
+
+  .highlight {
+    color: #ff3333;
+    font-weight: bold;
+  }
+
+  .tooltip {
+    position: absolute;
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 10px;
+    white-space: nowrap;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out, background-color 0.3s ease;
+  }
+
+  #exampleBox {
+    margin-top: 25px;
+    padding: 15px;
+    border-left: 4px solid var(--link-color);
+    background-color: var(--table-header);
+    border-radius: 4px;
+    display: none;
+  }
+
+  #exampleBox p {
+    margin: 5px 0;
+  }
+
+  @media (max-width: 700px) {
+    .word-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="toggle-container">
+  <label class="toggle-label">Dark mode</label>
+  <label class="toggle-switch">
+    <input type="checkbox" id="themeToggle">
+    <span class="slider"></span>
+  </label>
+</div>
+
+<main>
+<h2>Tala, säga, berätta</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Base word</th>
+      <th>Synonym</th>
+      <th>Formal variant</th>
+      <th>Comment</th>
+    </tr>
+  </thead>
+  <tbody id="verbTable">
+    <tr>
+      <td colspan="4" style="text-align:center; color:#777;">Click a word below to show information</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="word-grid" id="wordGrid"></div>
+<div id="tooltip" class="tooltip"></div>
+
+<div id="exampleBox">
+  <p id="exampleSv"></p>
+  <p id="exampleEn" style="color:#555;"></p>
+</div>
+
+</main>
+
+<script>
+const verbData = [
+  { bas: "berätta", synonym: "beskriva", formell: "redogöra, återge, skildra, rapportera", kommentar: "Att återge en händelse, verklig eller tänkt", alla: ["berätta","beskriva","redogöra","återge","skildra","rapportera"] },
+  { bas: "påpeka", synonym: "", formell: "framhålla, anmärka, poängtera", kommentar: "Att göra någon uppmärksam på något", alla: ["påpeka","framhålla","anmärka","poängtera"] },
+  { bas: "säga", synonym: "", formell: "yttra, nämna, anföra, uttala", kommentar: "Att framföra ord eller ett yttrande", alla: ["säga","yttra","nämna","anföra","uttala"] },
+  { bas: "förklara", synonym: "", formell: "klargöra, tydliggöra, förtydliga, utveckla", kommentar: "Att göra något begripligt", alla: ["förklara","redogöra","klargöra","tydliggöra","förtydliga","utveckla"] },
+  { bas: "framföra", synonym: "", formell: "presentera", kommentar: "Att uttrycka eller överlämna ett budskap muntligt", alla: ["framföra","presentera"] },
+  { bas: "ropa", synonym: "hojta, skrika, vråla, gapa", formell: "ryta, gorma", kommentar: "Att tala högt eller kraftfullt", alla: ["ropa","hojta","skrika","vråla","gapa","ryta","gorma"] },
+  { bas: "mumla", synonym: "muttra, sluddra", formell: "", kommentar: "Att tala otydligt eller tyst", alla: ["mumla","muttra","sluddra"] },
+  { bas: "tjattra", synonym: "kackla, babbla, gaffla, pladdra", formell: "", kommentar: "Att tala mycket och utan substans", alla: ["tjattra","kackla","babbla","gaffla","pladdra"] },
+  { bas: "fnysa", synonym: "fräsa, snäsa", formell: "", kommentar: "Att tala med förakt eller irritation", alla: ["fnysa","fräsa","snäsa"] },
+  { bas: "meddela", synonym: "informera, redovisa", formell: "förmedla, underrätta, kungöra", kommentar: "Att överföra information formellt eller sakligt", alla: ["meddela","informera","redovisa","förmedla","underrätta","kungöra"] }
+];
+
+const translations = {
+  anföra: "cite (BE), put forward (AE)",
+  anmärka: "remark, observe",
+  babbla: "babble, chatter (BE), ramble on (AE)",
+  berätta: "tell, narrate",
+  beskriva: "describe",
+  fnysa: "snort, scoff",
+  framföra: "convey, express",
+  framhålla: "point out, lay stress upon",
+  fräsa: "snap, hiss",
+  förklara: "explain",
+  förmedla: "convey, communicate",
+  förtydliga: "clarify",
+  gaffla: "jabber, prattle on",
+  gapa: "yell, shout, bawl (BE), holler (AE)",
+  gorma: "bellow, rant, yell",
+  hojta: "shout, call out",
+  informera: "inform, notify",
+  kackla: "chatter, prattle, cluck (BE), gabble (AE)",
+  klargöra: "clarify, make clear",
+  kungöra: "proclaim, announce",
+  meddela: "announce, inform",
+  mumla: "mumble",
+  muttra: "mutter, grumble",
+  nämna: "mention, refer to",
+  pladdra: "chatter, prattle",
+  poängtera: "emphasize, point out",
+  presentera: "present, introduce",
+  påpeka: "point out, call attention to, indicate",
+  rapportera: "report",
+  redogöra: "give an account of, report",
+  redovisa: "report, present findings",
+  ropa: "shout, call, cry out",
+  ryta: "roar, growl",
+  skildra: "depict, portray",
+  skrika: "scream, shout",
+  sluddra: "slur, mumble indistinctly",
+  snäsa: "snap, retort",
+  säga: "say",
+  tjattra: "chatter, natter (BE), gab (AE)",
+  tydliggöra: "clarify, make explicit",
+  underrätta: "inform, notify, apprise",
+  uttala: "pronounce, articulate",
+  utveckla: "elaborate, develop",
+  vråla: "yell, bellow, roar",
+  yttra: "utter, say",
+  återge: "reproduce, recount, render"
+};
+
+const examples = {
+  anföra: { sv: "Vad har den anklagade att anföra till sitt försvar?", en: "What has the accused to put forward in his defence?" },
+  anmärka: { sv: "Hon anmärkte att siffrorna inte stämde överens.", en: "She remarked that the figures did not match." },
+  babbla: { sv: "Han stod och babblade om vädret i en kvart.", en: "He kept babbling about the weather for fifteen minutes." },
+  berätta: { sv: "Kan du berätta vad som hände i går?", en: "Can you tell me what happened yesterday?" },
+  beskriva: { sv: "Hon beskrev platsen med stor noggrannhet.", en: "She described the place in great detail." },
+  fnysa: { sv: "Han fnös åt förslaget och gick därifrån.", en: "He scoffed at the proposal and walked away." },
+  framföra: { sv: "Han framförde sina synpunkter på ett respektfullt sätt.", en: "He expressed his views in a respectful manner." },
+  framhålla: { sv: "Han framhöll att samarbetet hade varit avgörande för resultatet.", en: "He stressed that the cooperation had been crucial to the outcome." },
+  fräsa: { sv: "Hon fräste åt honom att vara tyst.", en: "She snapped at him to be quiet." },
+  förklara: { sv: "Läraren förklarade skillnaden mellan orden.", en: "The teacher explained the difference between the words." },
+  förmedla: { sv: "Hon försökte förmedla känslan av hopp till publiken.", en: "She tried to convey a sense of hope to the audience." },
+  förtydliga: { sv: "Kan du förtydliga vad du menar med det?", en: "Could you clarify what you mean by that?" },
+  gaffla: { sv: "De satt och gafflade om politik hela kvällen.", en: "They kept prattling on about politics all evening." },
+  gapa: { sv: "Ta henne! gapade en av pojkarna.", en: "Get her! one of the boys yelled." },
+  gorma: { sv: "Förmannen stod och gormade på byggarbetsplatsen.", en: "The foreman was yelling on the building site." },
+  hojta: { sv: "Hon hojtade till vännerna på andra sidan gatan.", en: "She shouted to her friends on the other side of the street." },
+  informera: { sv: "Vi vill informera alla medlemmar om ändringen i stadgarna.", en: "We wish to inform all members about the amendment to the statutes." },
+  kackla: { sv: "Tjejerna satt och kacklade högljutt på restaurangen.", en: "The girls were cackling loudly in the restaurant." },
+  klargöra: { sv: "Ministern klargjorde regeringens hållning i frågan.", en: "The minister clarified the government’s position on the matter." },
+  kungöra: { sv: "Regeringen kungjorde beslutet i gårdagens tidning.", en: "The government proclaimed the decision in yesterday’s newspaper." },
+  meddela: { sv: "Hon meddelade att mötet flyttas till måndag.", en: "She announced that the meeting would be moved to Monday." },
+  mumla: { sv: "Han mumlade fram en ursäkt.", en: "He mumbled an apology." },
+  muttra: { sv: "Han satt och muttrade för sig själv.", en: "He sat muttering to himself." },
+  nämna: { sv: "Han nämnde hennes namn i förbifarten.", en: "He mentioned her name in passing." },
+  pladdra: { sv: "Hon pladdrade på utan att någon egentligen lyssnade.", en: "She prattled on while no one was really listening." },
+  poängtera: { sv: "Rektorn poängterade vikten av att komma i tid.", en: "The headteacher emphasised the importance of being on time." },
+  presentera: { sv: "Direktören presenterade den nya strategin för styrelsen.", en: "The director presented the new strategy to the board." },
+  påpeka: { sv: "Hon påpekade att rapporten innehöll flera fel.", en: "She pointed out that the report contained several errors." },
+  rapportera: { sv: "Journalisten rapporterade direkt från platsen.", en: "The journalist reported directly from the scene." },
+  redogöra: { sv: "Han redogjorde i detalj för händelseförloppet.", en: "He gave a detailed account of the course of events." },
+  redovisa: { sv: "Studenterna redovisade sina projekt inför klassen.", en: "The students presented their projects to the class." },
+  ropa: { sv: "Barnen ropade på varandra över gården.", en: "The children called out to each other across the yard." },
+  ryta: { sv: "Chefen röt åt personalen att skynda sig.", en: "The boss roared at the staff to hurry up." },
+  skildra: { sv: "Romanen skildrar livet på landsbygden under 1800-talet.", en: "The novel portrays rural life in the nineteenth century." },
+  skrika: { sv: "Hon skrek genom fönstret att middagen var klar.", en: "She shouted through the window that dinner was ready." },
+  sluddra: { sv: "Gråten gjorde att hon sluddrade.", en: "Her crying made her slur her words." },
+  snäsa: { sv: "Hon snäste åt honom att hålla sig borta.", en: "She snapped at him to stay away." },
+  säga: { sv: "Vad försöker du egentligen säga?", en: "What are you actually trying to say?" },
+  tjattra: { sv: "De satt och tjattrade hela eftermiddagen.", en: "They sat chatting all afternoon." },
+  tydliggöra: { sv: "Rapporten tydliggör sambandet mellan miljö och hälsa.", en: "The report clarifies the connection between environment and health." },
+  underrätta: { sv: "Polisen underrättade familjen om olyckan.", en: "The police informed the family about the accident." },
+  uttala: { sv: "Hon uttalade orden med perfekt engelskt uttal.", en: "She pronounced the words with perfect English pronunciation." },
+  utveckla: { sv: "Han utvecklade sina idéer under föreläsningen.", en: "He elaborated on his ideas during the lecture." },
+  vråla: { sv: "Han vrålade att de skulle hålla käften.", en: "He bellowed that they should shut up." },
+  yttra: { sv: "Hon yttrade sig sällan under mötena.", en: "She rarely spoke during the meetings." },
+  återge: { sv: "Artikeln återger intervjun i sin helhet.", en: "The article reproduces the interview in its entirety." }
+};
+
+
+const allWords = [...new Set(verbData.flatMap(v => v.alla))].sort((a,b)=>a.localeCompare(b,"sv"));
+const columns = 4;
+const wordsPerColumn = Math.ceil(allWords.length / columns);
+let html = "";
+
+for (let i = 0; i < columns; i++) {
+  const slice = allWords.slice(i * wordsPerColumn, (i + 1) * wordsPerColumn);
+  html += `<div class="word-list">${slice.map(w => `<span data-word="${w}">${w}</span>`).join("")}</div>`;
+}
+document.getElementById("wordGrid").innerHTML = html;
+
+const tooltip = document.getElementById("tooltip");
+document.querySelectorAll(".word-list span").forEach(span => {
+  const word = span.dataset.word;
+  const translation = translations[word];
+  span.addEventListener("mousemove", e => {
+    if (translation) {
+      tooltip.innerHTML = translation;
+      const tooltipWidth = tooltip.offsetWidth;
+      const pageWidth = window.innerWidth;
+      let left = e.pageX + 15;
+      if (left + tooltipWidth > pageWidth - 20) left = pageWidth - tooltipWidth - 20;
+      tooltip.style.left = left + "px";
+      tooltip.style.top = e.pageY + 15 + "px";
+      tooltip.style.opacity = "1";
+    }
+  });
+  span.addEventListener("mouseleave", () => tooltip.style.opacity = "0");
+});
+
+document.querySelectorAll(".word-list span").forEach(span => {
+  span.addEventListener("click", () => {
+    const word = span.textContent.trim();
+    const match = verbData.find(v => v.alla.includes(word));
+    if (match) {
+      const highlightWord = (text, target) =>
+        text ? text.split(",").map(w => {
+          const t = w.trim();
+          return t === target ? `<span class='highlight'>${t}</span>` : t;
+        }).join(", ") : "";
+      const bas = match.bas.trim() === word ? `<span class='highlight'>${match.bas}</span>` : match.bas;
+      const syn = highlightWord(match.synonym, word);
+      const form = highlightWord(match.formell, word);
+      document.getElementById("verbTable").innerHTML = `
+        <tr>
+          <td>${bas}</td>
+          <td>${syn}</td>
+          <td>${form}</td>
+          <td>${match.kommentar}</td>
+        </tr>`;
+      // Visa exempelmening
+      const ex = examples[word];
+      const exBox = document.getElementById("exampleBox");
+      if (ex) {
+        document.getElementById("exampleSv").textContent = ex.sv;
+        document.getElementById("exampleEn").textContent = ex.en;
+        exBox.style.display = "block";
+      } else {
+        exBox.style.display = "none";
+      }
+    }
+  });
+});
+
+document.getElementById("themeToggle").addEventListener("change", () => {
+  document.body.classList.toggle("dark");
+});
+</script>
+
+</body>
+</html>
