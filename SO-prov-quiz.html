@@ -709,10 +709,13 @@ function showQuestion() {
   const container = document.getElementById('questionContainer');
   const score = document.getElementById('score');
 
+  // Lägg till denna rad:
+  const shuffledOptions = shuffle([...q.options]);  // 🔹 slumpa alternativen
+
   container.innerHTML = `
     <div class="question">${q.question}</div>
     <div class="options">
-      ${q.options.map(opt => `<button>${opt}</button>`).join('')}
+      ${shuffledOptions.map(opt => `<button>${opt}</button>`).join('')}
     </div>
   `;
 
@@ -756,3 +759,4 @@ startQuiz();
 </script>
 </body>
 </html>
+
