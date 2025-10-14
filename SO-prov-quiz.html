@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samhällsekonomi – Quiz</title>
+<style>
+  :root {
+    --bg: #f9f9f9;
+    --text: #222;
+    --card: #fff;
+    --accent: #0077cc;
+    --correct: #4caf50;
+    --wrong: #e53935;
+  }
+  body.dark {
+    --bg: #121212;
+    --text: #eee;
+    --card: #1e1e1e;
+    --accent: #81aefc;
+    --correct: #2e7d32;
+    --wrong: #c62828;
+  }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 0.3s, color 0.3s;
+  }
+  h1 {
+    font-size: 1.3em;
+    text-align: center;
+    margin: 10px 0;
+  }
+  #quiz {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .question {
+    font-size: 1.1em;
+    margin-bottom: 1em;
+    font-weight: 500;
+  }
+  .options button {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    transition: 0.25s;
+  }
+  .options button:hover {
+    opacity: 0.85;
+  }
+  .options button.correct {
+    background: var(--correct);
+  }
+  .options button.wrong {
+    background: var(--wrong);
+  }
+  #score {
+    text-align: center;
+    margin: 12px 0;
+    font-weight: 600;
+  }
+  #nextBtn, #restartBtn, #themeBtn {
+    margin: 8px 4px;
+    padding: 10px 16px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+  }
+  #controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+</style>
+</head>
+<body>
+<h1>Quiz om samhällsekonomi</h1>
+<div id="quiz">
+  <div id="questionContainer"></div>
+  <div id="score"></div>
+  <div id="controls">
+    <button id="nextBtn">Nästa</button>
+    <button id="restartBtn">Börja om</button>
+    <button id="themeBtn">🌙</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    question: "Vad visar det ekonomiska kretsloppet?",
+    options: [
+      "Hur pengar, varor och tjänster rör sig mellan hushåll, företag, banker och offentlig sektor",
+      "Hur vädret påverkar ekonomin",
+      "Hur endast företag samarbetar",
+      "Hur staten bestämmer alla priser"
+    ],
+    correct: "Hur pengar, varor och tjänster rör sig mellan hushåll, företag, banker och offentlig sektor"
+  },
+  {
+    question: "Vilka fyra huvudaktörer ingår i det ekonomiska kretsloppet?",
+    options: [
+      "Hushåll, företag, banker och offentlig sektor",
+      "Riksbanken, staten, kommuner och föreningar",
+      "Skolor, sjukhus, företag och hushåll",
+      "Riksdagen, kommuner, banker och skolor"
+    ],
+    correct: "Hushåll, företag, banker och offentlig sektor"
+  },
+  {
+    question: "Vad är hushållens roll i det ekonomiska kretsloppet?",
+    options: [
+      "Att arbeta, konsumera och betala skatt",
+      "Att bestämma räntan",
+      "Att trycka pengar",
+      "Att ge bidrag till staten"
+    ],
+    correct: "Att arbeta, konsumera och betala skatt"
+  },
+  {
+    question: "Vilken skatt betalar hushållen på sin lön?",
+    options: ["Inkomstskatt", "Moms", "Fastighetsskatt", "Kapitalskatt"],
+    correct: "Inkomstskatt"
+  },
+  {
+    question: "Vad är ett hushåll?",
+    options: [
+      "Personer som bor tillsammans och har gemensam ekonomi",
+      "Ett statligt företag",
+      "En kommunal myndighet",
+      "En grupp banker"
+    ],
+    correct: "Personer som bor tillsammans och har gemensam ekonomi"
+  },
+  {
+    question: "Vad gör företagen i det ekonomiska kretsloppet?",
+    options: [
+      "Producerar varor och tjänster och betalar lön och skatt",
+      "Lånar ut pengar till staten",
+      "Bestämmer skattesatser",
+      "Tillverkar endast exportvaror"
+    ],
+    correct: "Producerar varor och tjänster och betalar lön och skatt"
+  },
+  {
+    question: "Vilka inkomster har företag?",
+    options: [
+      "Pengar från försäljning av varor och tjänster",
+      "Bidrag från hushåll",
+      "Avgifter från Riksbanken",
+      "Endast skatter"
+    ],
+    correct: "Pengar från försäljning av varor och tjänster"
+  },
+  {
+    question: "Vad består den offentliga sektorn av?",
+    options: [
+      "Staten, kommunerna och regionerna",
+      "Endast staten",
+      "Privata företag",
+      "Banker och myndigheter"
+    ],
+    correct: "Staten, kommunerna och regionerna"
+  },
+  {
+    question: "Vad är ett exempel på en välfärdstjänst?",
+    options: [
+      "Sjukvård",
+      "Aktiehandel",
+      "Import",
+      "Ränta"
+    ],
+    correct: "Sjukvård"
+  },
+  {
+    question: "Varifrån kommer den offentliga sektorns inkomster?",
+    options: [
+      "Skatter och avgifter",
+      "Ränta från bankerna",
+      "Privata donationer",
+      "Exportinkomster"
+    ],
+    correct: "Skatter och avgifter"
+  },
+  {
+    question: "Vilken roll har banker i ekonomin?",
+    options: [
+      "De lånar ut pengar till hushåll, företag och offentlig sektor",
+      "De styr lönerna i landet",
+      "De bestämmer statens budget",
+      "De äger alla företag"
+    ],
+    correct: "De lånar ut pengar till hushåll, företag och offentlig sektor"
+  },
+  {
+    question: "Vad är ränta?",
+    options: [
+      "Avgiften för att låna pengar",
+      "En statlig skatt",
+      "En form av aktie",
+      "En typ av moms"
+    ],
+    correct: "Avgiften för att låna pengar"
+  },
+  {
+    question: "Varför betalar banker ränta till sina kunder?",
+    options: [
+      "För att de använder kundernas pengar till utlåning",
+      "För att uppmuntra konsumtion",
+      "För att minska inflationen",
+      "För att staten kräver det"
+    ],
+    correct: "För att de använder kundernas pengar till utlåning"
+  },
+  {
+    question: "Vad kallas de perioder då ekonomin går upp och ner?",
+    options: ["Konjunkturer", "Inflationer", "Recessioner", "Depressioner"],
+    correct: "Konjunkturer"
+  },
+  {
+    question: "Vad kännetecknar en högkonjunktur?",
+    options: [
+      "Låg arbetslöshet och hög efterfrågan",
+      "Hög arbetslöshet och låg efterfrågan",
+      "Låga priser och låg produktion",
+      "Stigande räntor och minskad konsumtion"
+    ],
+    correct: "Låg arbetslöshet och hög efterfrågan"
+  },
+  {
+    question: "Vad kan bli en risk vid högkonjunktur?",
+    options: [
+      "Inflation",
+      "Deflation",
+      "Minskad sysselsättning",
+      "Stigande arbetslöshet"
+    ],
+    correct: "Inflation"
+  },
+  {
+    question: "Vad innebär lågkonjunktur?",
+    options: [
+      "Ekonomin går dåligt och arbetslösheten ökar",
+      "Ekonomin växer snabbt",
+      "Priserna stiger snabbt",
+      "BNP ökar kraftigt"
+    ],
+    correct: "Ekonomin går dåligt och arbetslösheten ökar"
+  },
+  {
+    question: "Vad händer ofta med BNP under en lågkonjunktur?",
+    options: ["Den minskar", "Den ökar", "Den står still", "Den fördubblas"],
+    correct: "Den minskar"
+  },
+  {
+    question: "Vad betyder BNP?",
+    options: [
+      "Bruttonationalprodukt",
+      "Bostadsnationspris",
+      "Börsnationalpeng",
+      "Bruttoskatteprocent"
+    ],
+    correct: "Bruttonationalprodukt"
+  },
+  {
+    question: "Vad mäter BNP?",
+    options: [
+      "Värdet av alla varor och tjänster som produceras i ett land under ett år",
+      "Statens skatteintäkter",
+      "Antal sysselsatta",
+      "Landets befolkning"
+    ],
+    correct: "Värdet av alla varor och tjänster som produceras i ett land under ett år"
+  },
+  {
+    question: "Vad betyder ekonomisk tillväxt?",
+    options: [
+      "Att BNP ökar från ett år till nästa",
+      "Att lönerna sjunker",
+      "Att priserna minskar",
+      "Att fler slutar arbeta"
+    ],
+    correct: "Att BNP ökar från ett år till nästa"
+  },
+  {
+    question: "Vad är målet för penningpolitiken?",
+    options: [
+      "Att hålla inflationen kring två procent",
+      "Att öka statsskulden",
+      "Att höja lönerna",
+      "Att minska exporten"
+    ],
+    correct: "Att hålla inflationen kring två procent"
+  },
+  {
+    question: "Vilken institution ansvarar för penningpolitiken i Sverige?",
+    options: ["Riksbanken", "Finansdepartementet", "Regeringen", "Kommunen"],
+    correct: "Riksbanken"
+  },
+  {
+    question: "Vad kallas Riksbankens viktigaste ränta?",
+    options: ["Styrränta", "Sparränta", "Bolåneränta", "Basränta"],
+    correct: "Styrränta"
+  },
+  {
+    question: "Vad händer ofta när Riksbanken höjer styrräntan?",
+    options: [
+      "Folk sparar mer och lånar mindre",
+      "Folk lånar mer och sparar mindre",
+      "Priserna på varor stiger",
+      "Inflationen ökar"
+    ],
+    correct: "Folk sparar mer och lånar mindre"
+  },
+  {
+    question: "Vad kallas den ekonomiska politik som regeringen styr?",
+    options: ["Finanspolitik", "Penningpolitik", "Skattepolitik", "Tillväxtpolitik"],
+    correct: "Finanspolitik"
+  },
+  {
+    question: "Vilket departement ansvarar för finanspolitiken?",
+    options: [
+      "Finansdepartementet",
+      "Utrikesdepartementet",
+      "Riksbanken",
+      "Näringsdepartementet"
+    ],
+    correct: "Finansdepartementet"
+  },
+  {
+    question: "Vad kan staten göra för att dämpa en högkonjunktur?",
+    options: [
+      "Höja skatter eller minska bidrag",
+      "Sänka skatter",
+      "Öka bidrag och investeringar",
+      "Låna mer pengar"
+    ],
+    correct: "Höja skatter eller minska bidrag"
+  },
+  {
+    question: "Vad kan staten göra för att stimulera ekonomin i en lågkonjunktur?",
+    options: [
+      "Sänka skatter eller öka bidrag",
+      "Höja räntan",
+      "Minska statsskulden",
+      "Stoppa konsumtion"
+    ],
+    correct: "Sänka skatter eller öka bidrag"
+  },
+  {
+    question: "Vad betyder inflation?",
+    options: [
+      "Att priserna stiger och pengarna blir mindre värda",
+      "Att priserna sjunker",
+      "Att produktionen ökar",
+      "Att arbetslösheten minskar"
+    ],
+    correct: "Att priserna stiger och pengarna blir mindre värda"
+  },
+  {
+    question: "Vilken inflationstakt är lagom enligt Riksbanken?",
+    options: ["Cirka 2 procent", "Cirka 10 procent", "0 procent", "5 procent"],
+    correct: "Cirka 2 procent"
+  },
+  {
+    question: "Vad händer om inflationen blir för hög?",
+    options: [
+      "Pengarna tappar i värde",
+      "Varor blir billigare",
+      "Exporten ökar",
+      "Räntorna sjunker"
+    ],
+    correct: "Pengarna tappar i värde"
+  },
+  {
+    question: "Vad betyder hög och jämn sysselsättning?",
+    options: [
+      "Att de flesta har arbete och att arbetslösheten inte svänger kraftigt",
+      "Att lönerna är lika höga överallt",
+      "Att ingen arbetar",
+      "Att staten styr alla arbeten"
+    ],
+    correct: "Att de flesta har arbete och att arbetslösheten inte svänger kraftigt"
+  },
+  {
+    question: "Vilka tre mål har den ekonomiska politiken?",
+    options: [
+      "Tillväxt, hög sysselsättning och stabilt penningvärde",
+      "Export, import och skatter",
+      "Välfärd, inflation och investeringar",
+      "Konsumtion, produktion och arbetslöshet"
+    ],
+    correct: "Tillväxt, hög sysselsättning och stabilt penningvärde"
+  },
+  {
+    question: "Vad är syftet med finanspolitik?",
+    options: [
+      "Att dämpa konjunktursvängningar genom skatter och bidrag",
+      "Att reglera import och export",
+      "Att trycka nya pengar",
+      "Att kontrollera Riksbanken"
+    ],
+    correct: "Att dämpa konjunktursvängningar genom skatter och bidrag"
+  },
+  {
+    question: "Vad menas med offentlig sektor?",
+    options: [
+      "Verksamhet som drivs av stat, kommun eller region",
+      "Privata företag",
+      "Internationella koncerner",
+      "Frivilligorganisationer"
+    ],
+    correct: "Verksamhet som drivs av stat, kommun eller region"
+  },
+  {
+    question: "Vad kallas pengarna som staten tar in via konsumtion?",
+    options: ["Moms", "Ränta", "Lön", "Bidrag"],
+    correct: "Moms"
+  },
+  {
+    question: "Vad står HDI för?",
+    options: [
+      "Human Development Index",
+      "Human Dynamic Indicator",
+      "High Domestic Income",
+      "Human Data Index"
+    ],
+    correct: "Human Development Index"
+  },
+  {
+    question: "Vad mäter HDI?",
+    options: [
+      "Hur bra människor har det i ett land",
+      "Landets skatteintäkter",
+      "Antalet banker",
+      "Import och export"
+    ],
+    correct: "Hur bra människor har det i ett land"
+  },
+  {
+    question: "Vad är kapital?",
+    options: [
+      "Tillgångar eller pengar som används för att skapa mer värde",
+      "En särskild typ av skatt",
+      "Ett slags bidrag",
+      "En valutaenhet"
+    ],
+    correct: "Tillgångar eller pengar som används för att skapa mer värde"
+  },
+  {
+    question: "Vad betyder att investera?",
+    options: [
+      "Att satsa pengar för att få avkastning i framtiden",
+      "Att köpa och använda något direkt",
+      "Att spara utan mål",
+      "Att låna utan ränta"
+    ],
+    correct: "Att satsa pengar för att få avkastning i framtiden"
+  },
+  {
+    question: "Vad betyder att konsumera?",
+    options: [
+      "Att köpa och använda varor eller tjänster",
+      "Att producera något nytt",
+      "Att låna pengar",
+      "Att spara till pension"
+    ],
+    correct: "Att köpa och använda varor eller tjänster"
+  },
+  {
+    question: "Vad är en vara?",
+    options: [
+      "En fysisk sak som kan köpas eller säljas",
+      "En banktjänst",
+      "Ett bidrag",
+      "En skatteform"
+    ],
+    correct: "En fysisk sak som kan köpas eller säljas"
+  },
+  {
+    question: "Vad är en tjänst?",
+    options: [
+      "Ett arbete någon gör mot betalning",
+      "En produkt i butik",
+      "Ett lån utan ränta",
+      "En skatt"
+    ],
+    correct: "Ett arbete någon gör mot betalning"
+  },
+  {
+    question: "Vad är ett monopol?",
+    options: [
+      "När ett företag har ensamrätt på en vara eller tjänst",
+      "När många företag tävlar fritt",
+      "När priserna sätts av kunderna",
+      "När staten förbjuder försäljning"
+    ],
+    correct: "När ett företag har ensamrätt på en vara eller tjänst"
+  },
+  {
+    question: "Vad är ett oligopol?",
+    options: [
+      "När några få företag dominerar marknaden",
+      "När en enda person äger allt",
+      "När det finns tusentals småföretag",
+      "När staten äger alla företag"
+    ],
+    correct: "När några få företag dominerar marknaden"
+  },
+  {
+    question: "Vad innebär kartellbildning?",
+    options: [
+      "Att företag samarbetar i hemlighet om priser eller rabatter",
+      "Att staten äger flera företag",
+      "Att banker delar vinster",
+      "Att hushåll går ihop och köper tillsammans"
+    ],
+    correct: "Att företag samarbetar i hemlighet om priser eller rabatter"
+  },
+  {
+    question: "Vilken myndighet övervakar konkurrensen i Sverige?",
+    options: [
+      "Konkurrensverket",
+      "Finansinspektionen",
+      "Riksbanken",
+      "Skatteverket"
+    ],
+    correct: "Konkurrensverket"
+  },
+  {
+    question: "Vad betyder privatisering?",
+    options: [
+      "När statlig verksamhet säljs till privata företag",
+      "När företag köps upp av staten",
+      "När hushåll betalar mindre skatt",
+      "När banker blir statliga"
+    ],
+    correct: "När statlig verksamhet säljs till privata företag"
+  },
+  {
+    question: "Vad är syftet med kretsloppsekonomi?",
+    options: [
+      "Att resurser ska återanvändas och miljön skyddas",
+      "Att staten styr priserna",
+      "Att företag får större vinster",
+      "Att minska handeln mellan länder"
+    ],
+    correct: "Att resurser ska återanvändas och miljön skyddas"
+  },
+  {
+    question: "Vilket exempel passar på kretsloppsekonomi?",
+    options: [
+      "Att återvinna glas och metall",
+      "Att öka produktionen utan gräns",
+      "Att förbjuda import",
+      "Att införa högre moms"
+    ],
+    correct: "Att återvinna glas och metall"
+  },
+  {
+    question: "Vad är producentansvar?",
+    options: [
+      "Att tillverkare ansvarar för återvinningen av sina produkter",
+      "Att konsumenter betalar för återvinning",
+      "Att staten äger alla fabriker",
+      "Att banker kontrollerar produktionen"
+    ],
+    correct: "Att tillverkare ansvarar för återvinningen av sina produkter"
+  },
+  {
+    question: "Vad menas med hållbar utveckling?",
+    options: [
+      "Att använda resurser på ett sätt som inte förstör framtida möjligheter",
+      "Att konsumera så mycket som möjligt",
+      "Att öka tillväxten oavsett miljön",
+      "Att minska all produktion"
+    ],
+    correct: "Att använda resurser på ett sätt som inte förstör framtida möjligheter"
+  },
+  {
+    question: "Vad är välfärdssystemets syfte?",
+    options: [
+      "Att skapa trygghet för alla medborgare",
+      "Att öka statens vinster",
+      "Att minska antalet jobb",
+      "Att minska konsumtionen"
+    ],
+    correct: "Att skapa trygghet för alla medborgare"
+  },
+  {
+    question: "Vad kan staten göra med skattepengarna?",
+    options: [
+      "Finansiera skola, vård och omsorg",
+      "Köpa företag",
+      "Betala löner till banker",
+      "Minska räntor"
+    ],
+    correct: "Finansiera skola, vård och omsorg"
+  },
+  {
+    question: "Vad betyder offentlig sektor finansieras genom?",
+    options: ["Skatter", "Aktier", "Bidrag", "Privata lån"],
+    correct: "Skatter"
+  },
+  {
+    question: "Vad menas med investering?",
+    options: [
+      "Att satsa resurser för att få avkastning senare",
+      "Att köpa något för omedelbar användning",
+      "Att spara utan mål",
+      "Att betala av lån"
+    ],
+    correct: "Att satsa resurser för att få avkastning senare"
+  },
+  {
+    question: "Vad är skillnaden mellan konsumtion och investering?",
+    options: [
+      "Konsumtion används nu, investering för framtiden",
+      "Investering är alltid billigare",
+      "Konsumtion ökar alltid värdet",
+      "Det finns ingen skillnad"
+    ],
+    correct: "Konsumtion används nu, investering för framtiden"
+  },
+  {
+    question: "Vad är målet med ekonomisk politik i Sverige?",
+    options: [
+      "Att skapa tillväxt, sysselsättning och stabila priser",
+      "Att minska handeln",
+      "Att öka skatterna",
+      "Att stoppa inflationen helt"
+    ],
+    correct: "Att skapa tillväxt, sysselsättning och stabila priser"
+  },
+  {
+    question: "Vilken institution kallas ibland 'bankernas bank'?",
+    options: ["Riksbanken", "Nordea", "Handelsbanken", "Finansdepartementet"],
+    correct: "Riksbanken"
+  },
+  {
+    question: "Vad händer om Riksbanken sänker räntan?",
+    options: [
+      "Det blir billigare att låna och konsumtionen ökar",
+      "Sparandet ökar",
+      "Inflationen minskar",
+      "Företag minskar sina investeringar"
+    ],
+    correct: "Det blir billigare att låna och konsumtionen ökar"
+  },
+  {
+    question: "Vad är ett exempel på finanspolitik i lågkonjunktur?",
+    options: [
+      "Att staten bygger vägar för att skapa jobb",
+      "Att Riksbanken höjer räntan",
+      "Att företag minskar produktionen",
+      "Att hushåll sparar mer"
+    ],
+    correct: "Att staten bygger vägar för att skapa jobb"
+  },
+  {
+    question: "Vad betyder ordet ekonomi från början?",
+    options: [
+      "Hushållning",
+      "Pengar",
+      "Statlig styrning",
+      "Tillväxt"
+    ],
+    correct: "Hushållning"
+  }
+];
+
+
+let shuffled = [], current = 0, correct = 0;
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function startQuiz() {
+  shuffled = shuffle([...questions]);
+  current = 0;
+  correct = 0;
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = shuffled[current];
+  const container = document.getElementById('questionContainer');
+  const score = document.getElementById('score');
+
+  container.innerHTML = `
+    <div class="question">${q.question}</div>
+    <div class="options">
+      ${q.options.map(opt => `<button>${opt}</button>`).join('')}
+    </div>
+  `;
+
+  score.textContent = `Fråga ${current + 1} av ${shuffled.length} | Rätt: ${correct}`;
+
+  document.querySelectorAll('.options button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.options button').forEach(b => b.disabled = true);
+      if (btn.textContent === q.correct) {
+        btn.classList.add('correct');
+        correct++;
+      } else {
+        btn.classList.add('wrong');
+        document.querySelectorAll('.options button').forEach(b => {
+          if (b.textContent === q.correct) b.classList.add('correct');
+        });
+      }
+      score.textContent = `Fråga ${current + 1} av ${shuffled.length} | Rätt: ${correct}`;
+    };
+  });
+}
+
+document.getElementById('nextBtn').onclick = () => {
+  if (current < shuffled.length - 1) {
+    current++;
+    showQuestion();
+  } else {
+    document.getElementById('questionContainer').innerHTML =
+      `<div class='question'>Klar! Du fick ${correct} av ${shuffled.length} rätt.</div>`;
+  }
+};
+
+document.getElementById('restartBtn').onclick = startQuiz;
+document.getElementById('themeBtn').onclick = () => {
+  document.body.classList.toggle('dark');
+  document.getElementById('themeBtn').textContent =
+    document.body.classList.contains('dark') ? "☀️" : "🌙";
+};
+
+startQuiz();
+</script>
+</body>
+</html>
