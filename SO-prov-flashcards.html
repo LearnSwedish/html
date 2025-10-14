@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samhällsekonomi – Flashcards</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --text: #222;
+    --card-bg: #fff;
+    --accent: #0077cc;
+  }
+  body.dark {
+    --bg: #121212;
+    --text: #eee;
+    --card-bg: #1e1e1e;
+    --accent: #81aefc;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+	min-height: 100vh;
+	overflow: visible;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  header {
+    width: 100%;
+    text-align: center;
+    padding: 1em 0;
+    background-color: var(--accent);
+    color: #fff;
+    font-size: 1.2em;
+    letter-spacing: 0.5px;
+  }
+
+.flashcard {
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  height: 280px;
+  margin-top: 2em;
+  perspective: 1000px;
+  margin-bottom: 1.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s;
+  transform-style: preserve-3d;
+  transform-origin: center;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+  .card-inner.flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: var(--card-bg);
+    color: var(--text);
+    border-radius: 1.2em;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.4em;
+    text-align: center;
+    font-size: 1.3em;
+  }
+
+  .back {
+    transform: rotateY(180deg);
+    text-align: left;
+    font-size: 1.05em;
+    line-height: 1.5;
+    overflow-y: auto;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 400px;
+    margin-top: 1.5em;
+  }
+
+  button {
+    flex: 1;
+    margin: 0 6px;
+    padding: 0.8em;
+    border: none;
+    border-radius: 0.8em;
+    background-color: var(--accent);
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  .theme-toggle {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.3em;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<header>
+  Samhällsekonomi – Flashcards
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+</header>
+
+<div class="flashcard" onclick="flipCard()">
+  <div class="card-inner" id="cardInner">
+    <div class="card-face front" id="front"></div>
+    <div class="card-face back" id="back"></div>
+  </div>
+</div>
+
+<div class="buttons">
+  <button onclick="prevCard()">⬅ Föregående</button>
+  <button onclick="nextCard()">Nästa ➡</button>
+</div>
+
+<script>
+const cards = [
+  {
+    term: "Kretsloppsekonomi",
+    definition: `
+    👉 Man försöker få ekonomin att fungera som ett kretslopp där resurser används om och om igen.<br>
+    💡 Viktigt: Handlar om hållbarhet, återvinning och miljövänlig produktion.<br>
+    📘 Jämför med: "Slit-och-släng"-ekonomi.
+    `
+  },
+  {
+    term: "Blandekonomi",
+    definition: `
+    👉 En blandning av olika ekonomiska system, där både staten och marknaden styr.<br>
+    💡 Viktigt: Sverige har blandekonomi – både privata företag och offentlig sektor.<br>
+    📘 Jämför med: Ren marknadsekonomi eller planekonomi.
+    `
+  },
+  {
+    term: "Fri konkurrens",
+    definition: `
+    👉 Företag tävlar fritt om kunder genom pris, kvalitet och service.<br>
+    💡 Viktigt: Leder ofta till bättre varor och lägre priser.<br>
+    📘 Jämför med: Monopol.
+    `
+  },
+  {
+    term: "Efterfrågan",
+    definition: `
+    👉 Hur mycket människor vill köpa av något.<br>
+    💡 Viktigt: Ökar när priset är lågt, minskar när priset är högt.<br>
+    📘 Jämför med: Utbud.
+    `
+  },
+  {
+    term: "Utbud",
+    definition: `
+    👉 Hur mycket det finns till salu av något.<br>
+    💡 Viktigt: När utbudet är stort sjunker ofta priserna.<br>
+    📘 Jämför med: Efterfrågan.
+    `
+  },
+  {
+    term: "Jämviktspris",
+    definition: `
+    👉 Det pris där utbud och efterfrågan möts.<br>
+    💡 Viktigt: Vid jämviktspris är både köpare och säljare nöjda.<br>
+    📘 Förändras när marknaden ändras.
+    `
+  },
+  {
+    term: "Vara",
+    definition: `
+    👉 En fysisk sak man kan köpa eller sälja.<br>
+    💡 Exempel: Kläder, mobil, mat.<br>
+    📘 Jämför med: Tjänst.
+    `
+  },
+  {
+    term: "Tjänst",
+    definition: `
+    👉 Ett arbete man betalar för, någon gör något åt dig.<br>
+    💡 Exempel: Klippning, städning, bussresa.<br>
+    📘 Jämför med: Vara.
+    `
+  },
+  {
+    term: "Monopol",
+    definition: `
+    👉 Ett enda företag har ensamrätt att sälja en viss vara eller tjänst.<br>
+    💡 Exempel: Systembolaget i Sverige.<br>
+    📘 Jämför med: Fri konkurrens.
+    `
+  },
+  {
+    term: "Oligopol",
+    definition: `
+    👉 Några få företag dominerar marknaden.<br>
+    💡 Exempel: Elbolag, bensinbolag, mobiloperatörer.<br>
+    📘 Kan leda till karteller.
+    `
+  },
+  {
+    term: "Kartellbildning",
+    definition: `
+    👉 Företag samarbetar i hemlighet om priser eller rabatter.<br>
+    💡 Viktigt: Olagligt, skadar konkurrensen.<br>
+    📘 Övervakas av Konkurrensverket.
+    `
+  },
+  {
+    term: "Marknadskrafter",
+    definition: `
+    👉 De krafter (utbud och efterfrågan) som styr priser och produktion.<br>
+    💡 Viktigt: Bestämmer vad som säljs och till vilket pris.<br>
+    📘 Påverkas av både köpare och säljare.
+    `
+  },
+  {
+    term: "Privatisering",
+    definition: `
+    👉 När något som tidigare ägdes av staten säljs till privata företag.<br>
+    💡 Exempel: Apotek, posten.<br>
+    📘 Syfte: Öka konkurrens och effektivitet.
+    `
+  },
+  {
+    term: "Ekonomiskt kretslopp",
+    definition: `
+    👉 En modell som visar hur pengar, varor och tjänster rör sig i samhället.<br>
+    💡 Viktigt: Hushåll, företag, banker och staten påverkar varandra.<br>
+    📘 Exempel: Hushåll får lön, betalar skatt, konsumerar.
+    `
+  },
+  {
+    term: "Hushåll",
+    definition: `
+    👉 Personer som bor tillsammans och har gemensam ekonomi.<br>
+    💡 Viktigt: Är både arbetare (lön) och konsumenter (köper varor).<br>
+    📘 Exempel: Familj, ensamstående, sambos.
+    `
+  },
+  {
+    term: "Företag",
+    definition: `
+    👉 Producerar varor och tjänster och skapar jobb.<br>
+    💡 Viktigt: Betalar skatt och driver tillväxt.<br>
+    📘 Exempel: ICA, Volvo, Spotify.
+    `
+  },
+  {
+    term: "Offentliga sektorn",
+    definition: `
+    👉 Den del av samhället som drivs av staten, kommuner och regioner.<br>
+    💡 Viktigt: Finansieras genom skatter.<br>
+    📘 Exempel: Skola, sjukvård, omsorg.
+    `
+  },
+  {
+    term: "Välfärdstjänster",
+    definition: `
+    👉 Tjänster som betalas via skatten och ges till alla.<br>
+    💡 Exempel: Sjukvård, barnomsorg, skola.<br>
+    📘 Syfte: Trygghet och rättvisa.
+    `
+  },
+  {
+    term: "Kapital",
+    definition: `
+    👉 Pengar eller tillgångar som används för att skapa mer värde.<br>
+    💡 Viktigt: Används för investeringar eller produktion.<br>
+    📘 Exempel: Maskiner, pengar, fastigheter.
+    `
+  },
+  {
+    term: "Investera",
+    definition: `
+    👉 Att satsa pengar för att få avkastning i framtiden.<br>
+    💡 Exempel: Aktier, företag, bostad.<br>
+    📘 Jämför med: Konsumera.
+    `
+  },
+  {
+    term: "Ränta",
+    definition: `
+    👉 Kostnaden för att låna pengar eller ersättningen för att spara.<br>
+    💡 Viktigt: Bankerna tjänar på skillnaden mellan spar- och låneränta.<br>
+    📘 Påverkas av Riksbankens styrränta.
+    `
+  },
+  {
+    term: "Högkonjunktur",
+    definition: `
+    👉 Ekonomin går bra, företag växer, många har jobb.<br>
+    💡 Viktigt: Risk för inflation när efterfrågan ökar.<br>
+    📘 Jämför med: Lågkonjunktur.
+    `
+  },
+  {
+    term: "Lågkonjunktur",
+    definition: `
+    👉 Ekonomin går dåligt, arbetslösheten ökar.<br>
+    💡 Viktigt: Staten försöker stimulera ekonomin.<br>
+    📘 Jämför med: Högkonjunktur.
+    `
+  },
+  {
+    term: "Inflation",
+    definition: `
+    👉 Priserna stiger och pengarna blir mindre värda.<br>
+    💡 Viktigt: En låg inflation (runt 2%) är lagom.<br>
+    📘 Exempel: Samma vara kostar mer nästa år.
+    `
+  },
+  {
+    term: "BNP",
+    definition: `
+    👉 Summan av alla varor och tjänster som produceras i ett land på ett år.<br>
+    💡 Viktigt: Mäter landets ekonomiska styrka.<br>
+    📘 Förkortning: Bruttonationalprodukt.
+    `
+  },
+  {
+    term: "Tillväxt",
+    definition: `
+    👉 När BNP ökar från ett år till nästa.<br>
+    💡 Viktigt: Betyder att ekonomin växer.<br>
+    📘 Kan leda till högre levnadsstandard.
+    `
+  },
+  {
+    term: "Riksbanken",
+    definition: `
+    👉 Sveriges centralbank.<br>
+    💡 Viktigt: Bestämmer styrräntan och håller inflationen stabil.<br>
+    📘 Kallas ibland bankernas bank.
+    `
+  },
+  {
+    term: "Penningpolitik",
+    definition: `
+    👉 Riksbankens sätt att påverka ekonomin genom räntan.<br>
+    💡 Exempel: Höja räntan vid hög inflation.<br>
+    📘 Påverkar konsumtion och sparande.
+    `
+  },
+  {
+    term: "Finanspolitik",
+    definition: `
+    👉 Regeringens sätt att styra ekonomin med skatter och bidrag.<br>
+    💡 Exempel: Höja bidrag under lågkonjunktur.<br>
+    📘 Hanteras av Finansdepartementet.
+    `
+  },
+  {
+    term: "Finansdepartementet",
+    definition: `
+    👉 Del av regeringen som ansvarar för statens ekonomi.<br>
+    💡 Viktigt: Leds av finansministern.<br>
+    📘 Planerar statsbudgeten.
+    `
+  },
+  {
+    term: "Moms",
+    definition: `
+    👉 Mervärdesskatt på varor och tjänster (ofta 25%).<br>
+    💡 Viktigt: Betalas av konsumenten men går till staten.<br>
+    📘 Exempel: En vara för 100 kr innehåller 20 kr moms.
+    `
+  },
+  {
+    term: "Inkomstskatt",
+    definition: `
+    👉 Skatt du betalar på din lön.<br>
+    💡 Viktigt: Finansierar välfärden.<br>
+    📘 Ju högre inkomst, desto högre skatt.
+    `
+  },
+  {
+    term: "Producera",
+    definition: `
+    👉 Att tillverka eller skapa något som säljs.<br>
+    💡 Exempel: Ett bageri producerar bröd.<br>
+    📘 Jämför med: Konsumera.
+    `
+  },
+  {
+    term: "Konsumera",
+    definition: `
+    👉 Att köpa och använda varor eller tjänster.<br>
+    💡 Exempel: Äta på restaurang, köpa kläder.<br>
+    📘 Jämför med: Investera – då använder man pengar för framtiden.
+    `
+  },
+  {
+    term: "HDI",
+    definition: `
+    👉 Human Development Index – mäter hur bra människor har det i ett land.<br>
+    💡 Viktigt: Tar hänsyn till inkomst, livslängd och utbildning.<br>
+    📘 Visar levnadsstandard bättre än BNP.
+    `
+  }
+];
+
+// Slumpmässig ordning
+cards.sort(() => Math.random() - 0.5);
+let index = 0;
+
+const front = document.getElementById("front");
+const back = document.getElementById("back");
+const cardInner = document.getElementById("cardInner");
+
+function showCard(i) {
+  cardInner.classList.remove("flipped");
+  front.textContent = cards[i].term;
+  back.innerHTML = cards[i].definition;
+}
+
+function flipCard() {
+  cardInner.classList.toggle("flipped");
+}
+
+function nextCard() {
+  index = (index + 1) % cards.length;
+  showCard(index);
+}
+
+function prevCard() {
+  index = (index - 1 + cards.length) % cards.length;
+  showCard(index);
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+}
+
+showCard(index);
+</script>
+</body>
+</html>
