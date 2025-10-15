@@ -1,3 +1,4 @@
+
 // Get references
 const toggleSwitch = document.getElementById('darkModeSwitch');
 const body = document.body;

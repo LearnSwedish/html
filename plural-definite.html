@@ -1,0 +1,740 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definite plural</title>
+    
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+	
+	<!-- Link to External CSS -->
+    <link rel="stylesheet" href="1from4.css">
+   
+</head>
+
+<body>
+
+    <!-- Desktop Menu -->
+    <div class="desktop-menu">
+      <!-- Score Counter -->
+      <div class="score">Score:&nbsp; <span class="score-value">0</span>&nbsp;/&nbsp;<span class="total-score-value">0</span></div>
+      
+      <!-- Dark Mode Toggle -->
+      <div class="toggle" id="darkModeToggleDiv">
+          <label class="switch">
+              <input type="checkbox" id="darkModeSwitch">
+              <span class="slider"></span>
+          </label>
+          <span style="margin-left: 10px;">Dark mode</span>
+      </div>
+        
+      <!-- Info Button -->
+      <button class="info" id="info-button" onclick="openModal('infoModal')">
+        <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info 
+      </button>
+      
+      <!-- Start Over Button -->
+      <button class="restart" onclick="startOver()">
+        <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over 
+      </button>
+    </div>
+	
+	<!-- Hamburger Icon for Mobile -->
+	<div class="hamburger-icon" onclick="toggleMobileMenu()">
+		<i id="hamburgerIcon" class="fas fa-bars"></i>
+	</div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+	<div class="score">Score:&nbsp; <span class="score-value">0</span>&nbsp;/&nbsp;<span class="total-score-value">0</span></div>
+        
+        <!-- Dark Mode Toggle for Mobile -->
+        <div class="toggle" onclick="toggleDarkModeMobile()">
+            <i class="fas fa-lightbulb" id="darkModeIcon"></i>
+            <span id="darkModeText">Dark mode</span>
+        </div>
+        
+        <!-- Info Button for Mobile -->
+        <button class="info" onclick="openOverlay()"> <!-- Call openOverlay here -->
+			<i class="fas fa-info-circle"></i>&nbsp;Info
+		</button>
+        
+        <!-- Start Over Button for Mobile -->
+        <button class="restart" onclick="closeMobileMenu(); startOver()">
+            <i class="fas fa-rotate-left"></i>&nbsp;Start over
+        </button>
+    </div>
+    
+    <!-- Page Title -->
+    <h1 class="page-title">Definite plural: from "a car" to "the cars"</h1>
+    <p id="readinfo">Read the "Info" to understand what this exercise is about.</p>
+    
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <!-- Question Text -->
+    <h1 class="question-text" id="question-text">
+        <center><span class="gender" id="gender">(en)</span> <span class="highlight" id="noun">stol</span><br /></center>
+    </h1>
+    
+    <!-- Buttons Container -->
+    <div class="buttons" id="buttons-container">
+        <!-- Answer options will be inserted dynamically here -->
+    </div>
+    
+    <!-- Feedback Text -->
+    <p id="feedback" class="feedback"></p>
+    
+    <!-- Info Modal -->
+<!-- Info Modal -->
+<div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+  <div class="modal-content">
+    <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+    <h2 id="infoModalTitle">The definite plural in Swedish</h2>
+
+    <p>
+      As <a href="https://learnswedish.github.io/html/plural-prediction.html" target="_blank">this exercise</a> shows, it is often possible 
+	  to predict the plural form of a noun (going from singular to plural, as in "car" → "cars"). Once you have mastered that (i.e. the 
+	  indefinite plural), it is time to learn the <strong>definite plural</strong> of the noun (as in "car" → "the cars"). There are three 
+	  rules to remember:
+    </p>
+
+    <h3>Rule 1</h3>
+    <p>
+      If the plural ends in a <strong>vowel + -r</strong> 
+      (e.g. väg<u>ar</u>, gat<u>or</u>, flick<u>or</u>), <b>add -na</b>:
+    </p>
+    <p class="example">gator → gator<u>na</u> [streets → the streets]</p>
+    <p class="note">Note: Nouns ending in -are (e.g.lär<u>are</u>, hamburg<u>are</u>) <b>first drop the -e</b>:</p>
+    <p class="example">lärare → lärarna [teachers → the teachers]</p>
+
+    <h3>Rule 2</h3>
+    <p>
+      If the plural ends <b>in any other consonant</b> (i.e. <b>not -r</b>), <b>add -en</b>:
+    </p>
+    <p class="example">hus → husen [houses → the houses]</p>
+    <p class="note">Note: Stems ending in -el, -en, -er <b>first drop the -e</b>:</p>
+    <p class="example">fönster → fönstren [windows → the windows]</p>
+
+    <h3>Rule 3 – only for ett-words</h3>
+    <p>
+      If the plural ends in a <strong>vowel + -n</strong>, (e.g. äppl<u>en</u>, yrk<u>en</u>), <b>add -a</b>:
+    </p>
+    <p class="example">äpplen → äpplena [apples → the apples]</p>
+  </div>
+</div>
+
+    
+		<!-- Mobile view info div -->
+<div id="mobileOverlay" class="mobile-overlay">
+    <button class="close-overlay-button" onclick="closeOverlay()">×</button>
+    <div class="overlay-content">
+        <h2 id="infoModalTitle">Apply these eight<br />prediction rules</h2>
+        <p>For a very large portion of Swedish nouns (over 65 percent), the plural form can be predicted. Here you will become familiar with eight important tools. Keep an eye on:</p><br />
+        <ol>
+            <li>The <u>gender</u> of the noun</li>
+            <li>Word <u>stress</u> (underlined)</li>
+            <li>How the word <u>ends</u></li>
+        </ol>
+		<p>If you don't know what the word means, you only need to click on it.</p>
+        <br />
+		<p>The symbol | indicates "ends with".</p><br />
+		<p style="font-size:18px;"><strong>Rules</strong></p>
+        <ol start="1" style="list-style-type: decimal;">
+            <li><strong>Final stress</strong> N |cons / T |vowel (N aff<u>ä</u>r, T kaf<u>é</u>).<br />Solution: add -er.</li>
+            <li><strong>N gen. |unstressed -a</strong> (kv<u>i</u>nna).<br />Solution: drop -a, add -or.</li>
+            <li><strong>N gen. |unstressed -e</strong> (p<u>o</u>jke).<br />Solution: drop -e, add -ar.</li>
+            <li><strong>T gen. |vowel</strong> (<u>ä</u>pple, m<u>i</u>nne).<br />Solution: add -n.</li>
+            <li><strong>T gen. |consonant</strong> (h<u>u</u>s, b<u>a</u>rn).<br />Solution: no change (Ø).</li>
+            <li><strong>|are or |er</strong> (h<u>a</u>mb<u>u</u>rgare, <u>i</u>ndier).<br />Solution: no change (Ø).</li>
+            <li><strong>|(n)ing</strong> (t<u>i</u>dn<u>i</u>ng, s<u>a</u>ml<u>i</u>ng).<br />Solution: add -ar.</li>
+            <li><strong>|het</strong> (n<u>y</u>h<u>e</u>t, h<u>e</u>mligh<u>e</u>t).<br />Solution: add -er.</li>
+        </ol>
+    </div>
+</div>
+
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Grattis!</h2>
+            <p>Du har svarat rätt på alla frågor!</p>
+        </div>
+    </div>
+    
+    <!-- Tooltip element -->
+    <div class="tooltip" id="custom-tooltip"></div>
+
+<script>
+// Array of questions with tooltips
+    const questions = [
+            {
+                gender: "(ett)",
+                noun: "<u>a</u>rb<u>e</u>te",
+                options: ["arbetena", "arbetarna", "arbetorna", "arbeten"],
+                correctAnswer: 0,
+                tooltip: "work"
+            },
+            {
+                gender: "(ett)",
+                noun: "m<u>i</u>nne",
+                options: ["minnena", "minnarna", "minnorna", "minnen"],
+                correctAnswer: 0,
+                tooltip: "memory"
+            },
+            {
+                gender: "(ett)",
+                noun: "<u>o</u>mr<u>å</u>de",
+                options: ["områdena", "områdarna", "områdorna", "områden"],
+                correctAnswer: 0,
+                tooltip: "area"
+            },
+            {
+                gender: "(ett)",
+                noun: "s<u>y</u>fte",
+                options: ["syftena", "syftarna", "syftorna", "syfte"],
+                correctAnswer: 0,
+                tooltip: "purpose"
+            },
+            {
+                gender: "(ett)",
+                noun: "m<u>ä</u>rke",
+                options: ["märkena", "märkarna", "märkorna", "märke"],
+                correctAnswer: 0,
+                tooltip: "mark/brand"
+            },
+            {
+                gender: "(ett)",
+                noun: "t<u>i</u>llf<u>ä</u>lle",
+                options: ["tillfällena", "tillfällarna", "tillfällorna", "tillfälle"],
+                correctAnswer: 0,
+                tooltip: "occasion"
+            },
+            {
+                gender: "(ett)",
+                noun: "m<u>ö</u>te",
+                options: ["mötena", "mötarna", "mötorna", "möte"],
+                correctAnswer: 0,
+                tooltip: "meeting"
+            },
+            {
+                gender: "(ett)",
+                noun: "<u>ä</u>mne",
+                options: ["ämnena", "ämnarna", "ämnorna", "ämne"],
+                correctAnswer: 0,
+                tooltip: "subject/topic"
+            },
+            {
+                gender: "(ett)",
+                noun: "<u>ä</u>rende",
+                options: ["ärendena", "ärendarna", "ärendorna", "ärende"],
+                correctAnswer: 0,
+                tooltip: "case/matter"
+            },
+            {
+                gender: "(ett)",
+                noun: "intr<u>e</u>sse",
+                options: ["intressena", "intressarna", "intressorna", "intresse"],
+                correctAnswer: 0,
+                tooltip: "interest"
+            },
+            {
+                gender: "(en)",
+                noun: "t<u>e</u>ckning",
+                options: ["teckningarna", "teckningerna", "teckningorna", "teckning"],
+                correctAnswer: 0,
+                tooltip: "drawing"
+            },
+            {
+                gender: "(en)",
+                noun: "<u>a</u>nst<u>ä</u>llning",
+                options: ["anställningarna", "anställningerna", "anställningorna", "anställning"],
+                correctAnswer: 0,
+                tooltip: "employment"
+            },
+            {
+                gender: "(en)",
+                noun: "förp<u>a</u>ckning",
+                options: ["förpackningarna", "förpackningerna", "förpackningorna", "förpackning"],
+                correctAnswer: 0,
+                tooltip: "package"
+            },
+            {
+                gender: "(en)",
+                noun: "r<u>ä</u>kning",
+                options: ["räkningarna", "räkningerna", "räkningorna", "räkning"],
+                correctAnswer: 0,
+                tooltip: "bill"
+            },
+            {
+                gender: "(en)",
+                noun: "<u>u</u>ppf<u>i</u>nning",
+                options: ["uppfinningarna", "uppfinningerna", "uppfinningorna", "uppfinning"],
+                correctAnswer: 0,
+                tooltip: "invention"
+            },
+            {
+                gender: "(en)",
+                noun: "<u>u</u>tb<u>i</u>ldning",
+                options: ["utbildningarna", "utbildningerna", "utbildningorna", "utbildning"],
+                correctAnswer: 0,
+                tooltip: "education"
+            },
+            {
+                gender: "(en)",
+                noun: "pr<u>ö</u>vning",
+                options: ["prövningarna", "prövningerna", "prövningorna", "prövning"],
+                correctAnswer: 0,
+                tooltip: "trial/test"
+            },
+            {
+                gender: "(en)",
+                noun: "förb<u>ä</u>ttring",
+                options: ["förbättringarna", "förbättringerna", "förbättringorna", "förbättring"],
+                correctAnswer: 0,
+                tooltip: "improvement"
+            },
+            {
+                gender: "(en)",
+                noun: "bed<u>ö</u>mning",
+                options: ["bedömningarna", "bedömningerna", "bedömningorna", "bedömning"],
+                correctAnswer: 0,
+                tooltip: "assessment"
+            },
+            {
+                gender: "(en)",
+                noun: "f<u>ö</u>rest<u>ä</u>llning",
+                options: ["föreställningarna", "föreställningerna", "föreställningorna", "föreställning"],
+                correctAnswer: 0,
+                tooltip: "performance"
+            },
+            {
+                gender: "(en)",
+                noun: "p<u>o</u>jke",
+                options: ["pojkarna", "pojkerna", "pojkorna", "pojken"],
+                correctAnswer: 0,
+                tooltip: "boy"
+            },
+            {
+                gender: "(en)",
+                noun: "k<u>i</u>lle",
+                options: ["killarna", "killerna", "killorna", "killen"],
+                correctAnswer: 0,
+                tooltip: "guy"
+            },
+            {
+                gender: "(en)",
+                noun: "j<u>ä</u>tte",
+                options: ["jättarna", "jätterna", "jättorna", "jätten"],
+                correctAnswer: 0,
+                tooltip: "giant"
+            },
+            {
+                gender: "(en)",
+                noun: "g<u>u</u>bbe",
+                options: ["gubbarna", "gubberna", "gubborna", "gubben"],
+                correctAnswer: 0,
+                tooltip: "old man"
+            },
+            {
+                gender: "(en)",
+                noun: "t<u>a</u>nke",
+                options: ["tankarna", "tankerna", "tankorna", "tanken"],
+                correctAnswer: 0,
+                tooltip: "thought"
+            },
+            {
+                gender: "(en)",
+                noun: "m<u>a</u>ge",
+                options: ["magarna", "magerna", "magorna", "magen"],
+                correctAnswer: 0,
+                tooltip: "stomach"
+            },
+            {
+                gender: "(en)",
+                noun: "f<u>i</u>nne",
+                options: ["finnarna", "finnerna", "finnorna", "finnen"],
+                correctAnswer: 0,
+                tooltip: "pimple/Finn"
+            },
+            {
+                gender: "(en)",
+                noun: "h<u>a</u>re",
+                options: ["hararna", "harerna", "harorna", "haren"],
+                correctAnswer: 0,
+                tooltip: "hare"
+            },
+            {
+                gender: "(en)",
+                noun: "h<u>e</u>rre",
+                options: ["herrarna", "herrerna", "herrorna", "herren"],
+                correctAnswer: 0,
+                tooltip: "gentleman"
+            },
+            {
+                gender: "(en)",
+                noun: "st<u>e</u>ge",
+                options: ["stegarna", "stegerna", "stegorna", "stegen"],
+                correctAnswer: 0,
+                tooltip: "ladder"
+            },
+            {
+                gender: "(en)",
+                noun: "<u>a</u>rb<u>e</u>tare",
+                options: ["arbetarna", "arbetaren", "arbeten", "arbetorna"],
+                correctAnswer: 0,
+                tooltip: "worker"
+            },
+            {
+                gender: "(en)",
+                noun: "l<u>e</u>dare",
+                options: ["ledarna", "ledaren", "leden", "ledorna"],
+                correctAnswer: 0,
+                tooltip: "leader"
+            },
+            {
+                gender: "(en)",
+                noun: "b<u>y</u>ggare",
+                options: ["byggarna", "byggaren", "byggen", "byggorna"],
+                correctAnswer: 0,
+                tooltip: "builder"
+            },
+            {
+                gender: "(en)",
+                noun: "förf<u>a</u>ttare",
+                options: ["författarna", "författaren", "författen", "författorna"],
+                correctAnswer: 0,
+                tooltip: "author"
+            },
+            {
+                gender: "(en)",
+                noun: "m<u>å</u>lare",
+                options: ["målarna", "målaren", "målen", "målorna"],
+                correctAnswer: 0,
+                tooltip: "painter"
+            },
+            {
+                gender: "(en)",
+                noun: "sp<u>e</u>lare",
+                options: ["spelarna", "spelaren", "spelen", "spelorna"],
+                correctAnswer: 0,
+                tooltip: "player"
+            },
+            {
+                gender: "(en)",
+                noun: "<u>ä</u>gare",
+                options: ["ägarna", "ägaren", "ägen", "ägorna"],
+                correctAnswer: 0,
+                tooltip: "owner"
+            },
+            {
+                gender: "(en)",
+                noun: "l<u>ä</u>rare",
+                options: ["lärarna", "läraren", "lären", "lärorna"],
+                correctAnswer: 0,
+                tooltip: "teacher"
+            },
+            {
+                gender: "(en)",
+                noun: "bes<u>ö</u>kare",
+                options: ["besökarna", "besökaren", "besöken", "besökorna"],
+                correctAnswer: 0,
+                tooltip: "visitor"
+            },
+            {
+                gender: "(en)",
+                noun: "f<u>o</u>rskare",
+                options: ["forskarna", "forskaren", "forsken", "forskorna"],
+                correctAnswer: 0,
+                tooltip: "researcher"
+            },
+            {
+                gender: "(en)",
+                noun: "fl<u>i</u>cka",
+                options: ["flickorna", "flickarna", "flickerna", "flickan"],
+                correctAnswer: 0,
+                tooltip: "girl"
+            },
+            {
+                gender: "(en)",
+                noun: "m<u>ö</u>ssa",
+                options: ["mössorna", "mössarna", "mösserna", "mössan"],
+                correctAnswer: 0,
+                tooltip: "cap"
+            },
+            {
+                gender: "(en)",
+                noun: "kl<u>o</u>cka",
+                options: ["klockorna", "klockarna", "klockerna", "klockan"],
+                correctAnswer: 0,
+                tooltip: "clock"
+            },
+            {
+                gender: "(en)",
+                noun: "fl<u>a</u>ska",
+                options: ["flaskorna", "flaskarna", "flaskerna", "flaskan"],
+                correctAnswer: 0,
+                tooltip: "bottle"
+            },
+            {
+                gender: "(en)",
+                noun: "v<u>ä</u>ska",
+                options: ["väskorna", "väskarna", "väskerna", "väskan"],
+                correctAnswer: 0,
+                tooltip: "bag"
+            },
+            {
+                gender: "(en)",
+                noun: "g<u>a</u>ta",
+                options: ["gatorna", "gatarna", "gaterna", "gatan"],
+                correctAnswer: 0,
+                tooltip: "street"
+            },
+            {
+                gender: "(en)",
+                noun: "fl<u>u</u>ga",
+                options: ["flugorna", "flugarna", "flugerna", "flugan"],
+                correctAnswer: 0,
+                tooltip: "fly"
+            },
+            {
+                gender: "(en)",
+                noun: "g<u>å</u>va",
+                options: ["gåvorna", "gåvarna", "gåverna", "gåvan"],
+                correctAnswer: 0,
+                tooltip: "gift"
+            },
+            {
+                gender: "(en)",
+                noun: "h<u>ö</u>na",
+                options: ["hönorna", "hönarna", "hönerna", "hönan"],
+                correctAnswer: 0,
+                tooltip: "hen"
+            },
+            {
+                gender: "(en)",
+                noun: "p<u>ä</u>rla",
+                options: ["pärlorna", "pärlarna", "pärlerna", "pärlan"],
+                correctAnswer: 0,
+                tooltip: "pearl"
+            },
+            {
+                gender: "(ett)",
+                noun: "b<u>a</u>rn",
+                options: ["barnen", "barnerna", "barnarna", "barnorna"],
+                correctAnswer: 0,
+                tooltip: "child"
+            },
+            {
+                gender: "(ett)",
+                noun: "f<u>ä</u>lt",
+                options: ["fälten", "fälterna", "fältarna", "fältorna"],
+                correctAnswer: 0,
+                tooltip: "field"
+            },
+            {
+                gender: "(ett)",
+                noun: "h<u>e</u>m",
+                options: ["hemmen", "hemmerna", "hemmarna", "hemmorna"],
+                correctAnswer: 0,
+                tooltip: "home"
+            },
+            {
+                gender: "(ett)",
+                noun: "hj<u>u</u>l",
+                options: ["hjulen", "hjulerna", "hjularna", "hjulorna"],
+                correctAnswer: 0,
+                tooltip: "wheel"
+            },
+            {
+                gender: "(ett)",
+                noun: "h<u>o</u>rn",
+                options: ["hornen", "hornerna", "hornarna", "hornorna"],
+                correctAnswer: 0,
+                tooltip: "horn"
+            },
+            {
+                gender: "(ett)",
+                noun: "h<u>u</u>s",
+                options: ["husen", "huserna", "husarna", "husorna"],
+                correctAnswer: 0,
+                tooltip: "house"
+            },
+            {
+                gender: "(ett)",
+                noun: "<u>å</u>r",
+                options: ["åren", "årerna", "årarna", "årorna"],
+                correctAnswer: 0,
+                tooltip: "year"
+            },
+            {
+                gender: "(ett)",
+                noun: "k<u>o</u>rt",
+                options: ["korten", "korterna", "kortarna", "kortorna"],
+                correctAnswer: 0,
+                tooltip: "card"
+            },
+            {
+                gender: "(ett)",
+                noun: "b<u>o</u>rd",
+                options: ["borden", "borderna", "bordarna", "bordorna"],
+                correctAnswer: 0,
+                tooltip: "table"
+            },
+            {
+                gender: "(ett)",
+                noun: "sv<u>a</u>r",
+                options: ["svaren", "svarerna", "svararna", "svarorna"],
+                correctAnswer: 0,
+                tooltip: "answer"
+            },
+            {
+                gender: "(en)",
+                noun: "medic<u>i</u>n",
+                options: ["medicinerna", "medicinarna", "medicinorna", "medicin"],
+                correctAnswer: 0,
+                tooltip: "medicine"
+            },
+            {
+                gender: "(en)",
+                noun: "gran<u>a</u>t",
+                options: ["granaterna", "granatarna", "granatorna", "granat"],
+                correctAnswer: 0,
+                tooltip: "grenade"
+            },
+            {
+                gender: "(en)",
+                noun: "rab<u>a</u>tt",
+                options: ["rabatterna", "rabattarna", "rabattorna", "rabatt"],
+                correctAnswer: 0,
+                tooltip: "discount"
+            },
+            {
+                gender: "(en)",
+                noun: "direkt<u>ö</u>r",
+                options: ["direktörerna", "direktörarna", "direktörorna", "direktör"],
+                correctAnswer: 0,
+                tooltip: "director/vice-president"
+            },
+            {
+                gender: "(ett)",
+                noun: "parapl<u>y</u>",
+                options: ["paraplyerna", "paraplyarna", "paraplyorna", "paraplyn"],
+                correctAnswer: 0,
+                tooltip: "umbrella"
+            },
+            {
+                gender: "(en)",
+                noun: "rak<u>e</u>t",
+                options: ["raketerna", "raketarna", "raketorna", "raket"],
+                correctAnswer: 0,
+                tooltip: "rocket"
+            },
+            {
+                gender: "(ett)",
+                noun: "staffl<u>i</u>",
+                options: ["stafflierna", "staffliarna", "staffliorna", "stafflin"],
+                correctAnswer: 0,
+                tooltip: "easel"
+            },
+            {
+                gender: "(en)",
+                noun: "att<u>a</u>ck",
+                options: ["attackerna", "attackarna", "attackorna", "attack"],
+                correctAnswer: 0,
+                tooltip: "attack"
+            },
+            {
+                gender: "(en)",
+                noun: "met<u>o</u>d",
+                options: ["metoderna", "metodarna", "metodorna", "metod"],
+                correctAnswer: 0,
+                tooltip: "method"
+            },
+            {
+                gender: "(en)",
+                noun: "sign<u>a</u>l",
+                options: ["signalerna", "signalarna", "signalorna", "signal"],
+                correctAnswer: 0,
+                tooltip: "signal"
+            },
+            {
+                gender: "(en)",
+                noun: "ir<u>a</u>nier",
+                options: ["iranierna", "iraniarna", "iraniorna", "iranien"],
+                correctAnswer: 0,
+                tooltip: "Iranian"
+            },
+            {
+                gender: "(en)",
+                noun: "<u>i</u>ndier",
+                options: ["indierna", "indiarna", "indiorna", "indien"],
+                correctAnswer: 0,
+                tooltip: "Indian"
+            },
+            {
+                gender: "(en)",
+                noun: "m<u>u</u>siker",
+                options: ["musikerna", "musikari", "musikiorna", "musikien"],
+                correctAnswer: 0,
+                tooltip: "musician"
+            },
+            {
+                gender: "(en)",
+                noun: "bot<u>a</u>niker",
+                options: ["botanikerna", "botanikarna", "botanikiorna", "botanikien"],
+                correctAnswer: 0,
+                tooltip: "botanist"
+            },
+            {
+                gender: "(en)",
+                noun: "t<u>e</u>kniker",
+                options: ["teknikerna", "teknikarna", "teknikiorna", "teknikien"],
+                correctAnswer: 0,
+                tooltip: "technician"
+            },
+            {
+                gender: "(en)",
+                noun: "kr<u>i</u>tiker",
+                options: ["kritikerna", "kritikarna", "kritikiorna", "kritikien"],
+                correctAnswer: 0,
+                tooltip: "critic/reviewer"
+            },
+            {
+                gender: "(en)",
+                noun: "<u>o</u>ptiker",
+                options: ["optikerna", "optikarna", "optikiorna", "optikien"],
+                correctAnswer: 0,
+                tooltip: "optician"
+            },
+            {
+                gender: "(en)",
+                noun: "sk<u>e</u>ptiker",
+                options: ["skeptikerna", "skeptikarna", "skeptikiorna", "skeptikien"],
+                correctAnswer: 0,
+                tooltip: "skeptic"
+            },
+            {
+                gender: "(en)",
+                noun: "alg<u>e</u>rier",
+                options: ["algerierna", "algeriarna", "algeriorna", "algerien"],
+                correctAnswer: 0,
+                tooltip: "Algerian"
+            },
+            {
+                gender: "(en)",
+                noun: "ha<u>i</u>tier",
+                options: ["haitierna", "haitiarna", "haitiorna", "haitiien"],
+                correctAnswer: 0,
+                tooltip: "Haitian"
+            }
+        ];
+</script>
+<script src="1from4.js"></script>
+</body>
+</html>
