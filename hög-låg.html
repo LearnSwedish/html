@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ekonomiska kretsloppet</title>
+<style>
+  :root {
+    --bg: #f9f9f9;
+    --text: #222;
+    --card: #fff;
+    --accent: #0077cc;
+  }
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+  h1 {
+    font-size: 1.3em;
+    margin: 0.4em 0;
+  }
+  /* Knapp för ordlista */
+  .info-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1.2em;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  button {
+    flex: 1;
+    padding: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    background: #ddd;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button.active {
+    background: var(--accent);
+    color: white;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    width: 95%;
+    padding: 10px;
+    text-align: left;
+    line-height: 1.4;
+    font-size: 0.95em;
+  }
+  .actor {
+    margin-bottom: 6px;
+  }
+  .actor h2 {
+    font-size: 1em;
+    color: var(--accent);
+    margin: 4px 0;
+  }
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    width: 90%;
+    max-width: 350px;
+    text-align: left;
+    font-size: 0.95em;
+  }
+  .modal h2 {
+    margin-top: 0;
+    color: var(--accent);
+    text-align: center;
+  }
+  .close-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 1em;
+    display: block;
+    margin: 10px auto 0;
+  }
+  .term {
+    font-weight: bold;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<button class="info-btn" id="openModal">?</button>
+
+<h1>Ekonomiska kretsloppet</h1>
+
+<div class="toggle">
+  <button id="highBtn" class="active">Högkonjunktur</button>
+  <button id="lowBtn">Lågkonjunktur</button>
+</div>
+
+<div id="infoBox" class="card"></div>
+
+<!-- Modal -->
+<div id="wordModal" class="modal">
+  <div class="modal-content">
+    <h2>Ordlista</h2>
+    <div><span class="term">Inflation:</span> När priserna stiger och pengarna blir mindre värda.</div>
+    <div><span class="term">BNP:</span> Summan av allt som produceras i ett land på ett år.</div>
+    <div><span class="term">HDI:</span> Ett mått på hur bra människor har det – tar hänsyn till pengar, utbildning och hälsa.</div>
+    <div><span class="term">Penningpolitik:</span> När Riksbanken försöker styra ekonomin genom att ändra räntan.</div>
+    <div><span class="term">Styrränta:</span> Räntan som Riksbanken bestämmer och som påverkar alla andra räntor.</div>
+    <div><span class="term">Finanspolitik:</span> När regeringen påverkar ekonomin genom skatter och hur mycket pengar som används i samhället.</div>
+    <button class="close-btn" id="closeModal">Stäng</button>
+  </div>
+</div>
+
+<script>
+const data = {
+  hög: [
+    {namn: "Hushåll", text: "Fler har jobb och pengar. Man handlar mer."},
+    {namn: "Företag", text: "Säljer mycket, tjänar mer, anställer fler."},
+    {namn: "Banker", text: "Lånar ut mer pengar till både hushåll och företag."},
+    {namn: "Offentlig sektor", text: "Får in mer skatt och kan satsa mer på vård och skola."}
+  ],
+  låg: [
+    {namn: "Hushåll", text: "Färre har jobb. Man handlar mindre."},
+    {namn: "Företag", text: "Säljer mindre, tjänar mindre, kan behöva säga upp folk."},
+    {namn: "Banker", text: "Lånar ut mindre eftersom fler har svårt att betala tillbaka."},
+    {namn: "Offentlig sektor", text: "Får in mindre skatt och måste spara pengar."}
+  ]
+};
+
+const infoBox = document.getElementById("infoBox");
+const highBtn = document.getElementById("highBtn");
+const lowBtn = document.getElementById("lowBtn");
+const modal = document.getElementById("wordModal");
+const openModal = document.getElementById("openModal");
+const closeModal = document.getElementById("closeModal");
+
+function show(mode) {
+  infoBox.innerHTML = data[mode].map(a =>
+    `<div class="actor"><h2>${a.namn}</h2><p>${a.text}</p></div>`
+  ).join("");
+  highBtn.classList.toggle("active", mode === "hög");
+  lowBtn.classList.toggle("active", mode === "låg");
+}
+
+openModal.addEventListener("click", () => modal.style.display = "flex");
+closeModal.addEventListener("click", () => modal.style.display = "none");
+modal.addEventListener("click", e => { if (e.target === modal) modal.style.display = "none"; });
+
+highBtn.addEventListener("click", () => show("hög"));
+lowBtn.addEventListener("click", () => show("låg"));
+
+show("hög");
+</script>
+
+</body>
+</html>
