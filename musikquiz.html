@@ -14,7 +14,7 @@ body {
   margin: 0;
   padding: 0;
 }
-h1 { margin: 20px; }
+h1 { margin: 20px; font-size: 1.5rem; }
 .container {
   background: #222;
   margin: 20px auto;
@@ -30,6 +30,8 @@ button, select {
   padding: 10px 15px;
   margin: 8px;
   font-size: 1rem;
+  width: 90%;
+  max-width: 300px;
 }
 button:hover, select:hover { background: #ffdb4d; }
 audio { display: none; }
@@ -77,21 +79,21 @@ audio { display: none; }
 
 <script>
 const pieces = [
-  {file:"Bach-Air", composer:"Johann Sebastian Bach", title:"Air", era:"Barock"},
-  {file:"Händel", composer:"Georg Friedrich Händel", title:"Hallelujakören ur Messias", era:"Barock"},
-  {file:"Vivaldi", composer:"Antonio Vivaldi", title:"Våren ur De fyra årstiderna", era:"Barock"},
-  {file:"Haydn", composer:"Joseph Haydn", title:"Kejsarkvartetten", era:"Wienklassicism"},
-  {file:"Mozart-Eine", composer:"Wolfgang Amadeus Mozart", title:"Eine kleine Nachtmusik", era:"Wienklassicism"},
-  {file:"Mozart-Trollflöjten", composer:"Wolfgang Amadeus Mozart", title:"Nattens drottning ur Trollflöjten", era:"Wienklassicism"},
-  {file:"Beethoven-5", composer:"Ludwig van Beethoven", title:"Symfoni nr 5 (Ödessymfonin)", era:"Wienklassicism"},
-  {file:"Beethoven-Für", composer:"Ludwig van Beethoven", title:"Für Elise", era:"Wienklassicism"},
-  {file:"Chopin", composer:"Frédéric Chopin", title:"Nocturne opus 9 nummer 2", era:"Romantik"},
-  {file:"Grieg", composer:"Edvard Grieg", title:"I Bergakungens sal ur Peer Gynt", era:"Romantik"},
-  {file:"Tjajkovskij", composer:"Pjotr Tjajkovskij", title:"Svansjön", era:"Romantik"},
-  {file:"Verdi", composer:"Giuseppe Verdi", title:"La donna è mobile ur Rigoletto", era:"Romantik"},
-  {file:"Wagner", composer:"Richard Wagner", title:"Tristan och Isolde", era:"Romantik"},
-  {file:"Strauss", composer:"Richard Strauss", title:"Also sprach Zarathustra", era:"Romantik"},
-  {file:"Bach-Toccata", composer:"Johann Sebastian Bach", title:"Toccata och fuga", era:"Barock"}
+  {mp3:"https://learnswedish.github.io/html/Bach-Air.mp3", composer:"Johann Sebastian Bach", title:"Air", era:"Barock"},
+  {mp3:"https://learnswedish.github.io/html/Bach-Toccata.mp3", composer:"Johann Sebastian Bach", title:"Toccata och fuga", era:"Barock"},
+  {mp3:"https://learnswedish.github.io/html/Handel.mp3", composer:"Georg Friedrich Händel", title:"Hallelujakören ur Messias", era:"Barock"},
+  {mp3:"https://learnswedish.github.io/html/Vivaldi.mp3", composer:"Antonio Vivaldi", title:"Våren ur De fyra årstiderna", era:"Barock"},
+  {mp3:"https://learnswedish.github.io/html/Haydn.mp3", composer:"Joseph Haydn", title:"Kejsarkvartetten", era:"Wienklassicism"},
+  {mp3:"https://learnswedish.github.io/html/Mozart-Eine.mp3", composer:"Wolfgang Amadeus Mozart", title:"Eine kleine Nachtmusik", era:"Wienklassicism"},
+  {mp3:"https://learnswedish.github.io/html/Mozart-Trollflojten.mp3", composer:"Wolfgang Amadeus Mozart", title:"Nattens drottning ur Trollflöjten", era:"Wienklassicism"},
+  {mp3:"https://learnswedish.github.io/html/Beethoven-5.mp3", composer:"Ludwig van Beethoven", title:"Symfoni nr 5 (Ödessymfonin)", era:"Wienklassicism"},
+  {mp3:"https://learnswedish.github.io/html/Beethoven-Fur.mp3", composer:"Ludwig van Beethoven", title:"Für Elise", era:"Wienklassicism"},
+  {mp3:"https://learnswedish.github.io/html/Chopin.mp3", composer:"Frédéric Chopin", title:"Nocturne opus 9 nummer 2", era:"Romantik"},
+  {mp3:"https://learnswedish.github.io/html/Grieg.mp3", composer:"Edvard Grieg", title:"I Bergakungens sal ur Peer Gynt", era:"Romantik"},
+  {mp3:"https://learnswedish.github.io/html/Tjajkovskij.mp3", composer:"Pjotr Tjajkovskij", title:"Svansjön", era:"Romantik"},
+  {mp3:"https://learnswedish.github.io/html/Verdi.mp3", composer:"Giuseppe Verdi", title:"La donna è mobile ur Rigoletto", era:"Romantik"},
+  {mp3:"https://learnswedish.github.io/html/Wagner.mp3", composer:"Richard Wagner", title:"Tristan och Isolde", era:"Romantik"},
+  {mp3:"https://learnswedish.github.io/html/Strauss.mp3", composer:"Richard Strauss", title:"Also sprach Zarathustra", era:"Romantik"}
 ];
 
 // Dropdown-listor
@@ -115,11 +117,22 @@ pieces.forEach(p => {
   titleSelect.appendChild(opt);
 });
 
-let current = 0;
+let remaining = [...pieces];
+let current = null;
+
 function loadPiece() {
-  current = Math.floor(Math.random() * pieces.length);
-  const p = pieces[current];
-  player.src = `https://learnswedish.github.io/html/${p.file}.mp3`;
+  if (remaining.length === 0) {
+    feedback.innerHTML = "🎉 Du har gått igenom alla stycken!";
+    document.getElementById("playBtn").disabled = true;
+    document.getElementById("checkBtn").disabled = true;
+    document.getElementById("nextBtn").disabled = true;
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * remaining.length);
+  current = remaining.splice(randomIndex, 1)[0];
+
+  player.src = current.mp3;
   composerSelect.value = "";
   titleSelect.value = "";
   document.getElementById("eraSelect").value = "";
@@ -129,7 +142,8 @@ function loadPiece() {
 document.getElementById("playBtn").onclick = () => player.play();
 
 document.getElementById("checkBtn").onclick = () => {
-  const p = pieces[current];
+  if (!current) return;
+
   const composer = composerSelect.value;
   const title = titleSelect.value;
   const era = document.getElementById("eraSelect").value;
@@ -140,16 +154,17 @@ document.getElementById("checkBtn").onclick = () => {
     return;
   }
 
-  if (composer === p.composer && title === p.title && era === p.era) {
+  if (composer === current.composer && title === current.title && era === current.era) {
     feedback.textContent = "Rätt! 🎶";
     feedback.className = "feedback correct";
   } else {
-    feedback.innerHTML = `Fel. <br>Rätt svar: <br><strong>${p.composer}</strong> – ${p.title} (${p.era})`;
+    feedback.innerHTML = `Fel. <br>Rätt svar: <br><strong>${current.composer}</strong> – ${current.title} (${current.era})`;
     feedback.className = "feedback wrong";
   }
 };
 
 document.getElementById("nextBtn").onclick = loadPiece;
+
 loadPiece();
 </script>
 </body>
