@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klassisk musik – flashcards</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background: #1a1a1a;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  h1 {
+    margin: 20px 0;
+    font-size: 1.5rem;
+  }
+  .card {
+    width: 90%;
+    max-width: 400px;
+    height: 250px;
+    perspective: 1000px;
+    margin-bottom: 20px;
+  }
+  .inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.7s;
+    transform-style: preserve-3d;
+    border-radius: 16px;
+  }
+  .card.flipped .inner {
+    transform: rotateY(180deg);
+  }
+  .front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .front {
+    background: #292929;
+    font-size: 5rem;
+    color: #ffcc00;
+  }
+  .back {
+    background: #222;
+    transform: rotateY(180deg);
+    flex-direction: column;
+    padding: 20px;
+  }
+  button {
+    background: #ffcc00;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #ffdb4d;
+  }
+  i {
+    pointer-events: none;
+  }
+  audio {
+    display: none;
+  }
+  .italic {
+    font-style: italic;
+    margin-top: 6px;
+    color: #ccc;
+  }
+</style>
+</head>
+<body>
+
+<h1>Klassisk musik – flashcards</h1>
+
+<div class="card" id="musicCard">
+  <div class="inner">
+    <div class="front">
+      <i class="fa-solid fa-music"></i>
+    </div>
+    <div class="back" id="info"></div>
+  </div>
+</div>
+
+<button id="playBtn">▶ Spela</button>
+<button id="flipBtn">↩ Vänd</button>
+<button id="nextBtn">⏭ Nästa</button>
+
+<audio id="player"></audio>
+
+<script>
+const pieces = [
+  {file:"Bach-Air", composer:"Johann Sebastian Bach", title:"Air ur Orkestersvit nr 3 i D-dur (BWV 1068)", era:"Barock"},
+  {file:"Händel", composer:"Georg Friedrich Händel", title:"Hallelujakören ur Messias", era:"Barock"},
+  {file:"Vivaldi", composer:"Antonio Vivaldi", title:"Våren ur De fyra årstiderna", era:"Barock"},
+  {file:"Haydn", composer:"Joseph Haydn", title:"Stråkkvartett nr 77 i C-dur, op. 76 nr 3 'Kejsarkvartetten'", era:"Wienklassicism"},
+  {file:"Mozart-Eine", composer:"Wolfgang Amadeus Mozart", title:"Eine kleine Nachtmusik", era:"Wienklassicism"},
+  {file:"Mozart-Trollflöjten", composer:"Wolfgang Amadeus Mozart", title:"Nattens drottnings aria ur Trollflöjten", era:"Wienklassicism"},
+  {file:"Beethoven-5", composer:"Ludwig van Beethoven", title:"Symfoni nr 5 i c-moll, första satsen", era:"Wienklassicism", note:"<em>Tillhör egentligen övergången till romantiken.</em>"},
+  {file:"Beethoven-Für", composer:"Ludwig van Beethoven", title:"Für Elise", era:"Wienklassicism", note:"<em>Tillhör egentligen romantiken.</em>"},
+  {file:"Chopin", composer:"Frédéric Chopin", title:"Nocturne op. 9 nr 2", era:"Romantik"},
+  {file:"Grieg", composer:"Edvard Grieg", title:"I Bergakungens sal ur Peer Gynt", era:"Romantik"},
+  {file:"Tjajkovskij", composer:"Pjotr Tjajkovskij", title:"Svansjön", era:"Romantik"},
+  {file:"Verdi", composer:"Giuseppe Verdi", title:"La donna è mobile ur Rigoletto", era:"Romantik"},
+  {file:"Wagner", composer:"Richard Wagner", title:"Förspel och Liebestod ur Tristan och Isolde", era:"Romantik"},
+  {file:"Strauss", composer:"Richard Strauss", title:"Also sprach Zarathustra, op. 30", era:"Romantik"},
+  {file:"Bach-Toccata", composer:"Johann Sebastian Bach", title:"Toccata och fuga i d-moll (BWV 565)", era:"Barock"}
+];
+
+let index = 0;
+
+const player = document.getElementById("player");
+const info = document.getElementById("info");
+const card = document.getElementById("musicCard");
+
+function loadPiece() {
+  const p = pieces[index];
+  player.src = `https://learnswedish.github.io/html/${p.file}.mp3`;
+  info.innerHTML = `
+    <strong>${p.composer}</strong><br>
+    ${p.title}<br>
+    <br><strong>Epok:</strong> ${p.era}
+    ${p.note ? "<br>" + p.note : ""}
+  `;
+  card.classList.remove("flipped");
+}
+
+document.getElementById("playBtn").onclick = () => player.play();
+document.getElementById("flipBtn").onclick = () => card.classList.toggle("flipped");
+document.getElementById("nextBtn").onclick = () => {
+  index = (index + 1) % pieces.length;
+  loadPiece();
+};
+
+loadPiece();
+</script>
+</body>
+</html>
