@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klassisk musik – quiz</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #1a1a1a;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+h1 { margin: 20px; }
+.container {
+  background: #222;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 16px;
+  max-width: 450px;
+}
+button, select {
+  background: #ffcc00;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin: 8px;
+  font-size: 1rem;
+}
+button:hover, select:hover { background: #ffdb4d; }
+audio { display: none; }
+.feedback {
+  margin-top: 10px;
+  font-weight: bold;
+}
+.correct { color: #80ff80; }
+.wrong { color: #ff8080; }
+</style>
+</head>
+<body>
+
+<h1>Klassisk musik – quiz</h1>
+
+<div class="container">
+  <p>Klicka på <strong>Spela</strong> för att höra stycket, och välj rätt alternativ:</p>
+  <button id="playBtn">▶ Spela</button><br><br>
+
+  <label>Kompositör:</label><br>
+  <select id="composerSelect">
+    <option value="">Välj...</option>
+  </select><br><br>
+
+  <label>Stycke:</label><br>
+  <select id="titleSelect">
+    <option value="">Välj...</option>
+  </select><br><br>
+
+  <label>Epok:</label><br>
+  <select id="eraSelect">
+    <option value="">Välj...</option>
+    <option>Barock</option>
+    <option>Wienklassicism</option>
+    <option>Romantik</option>
+  </select><br><br>
+
+  <button id="checkBtn">Kontrollera</button>
+  <button id="nextBtn">Nästa</button>
+
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<audio id="player" type="audio/mpeg"></audio>
+
+<script>
+const pieces = [
+  {file:"Bach-Air", composer:"Johann Sebastian Bach", title:"Air", era:"Barock"},
+  {file:"Händel", composer:"Georg Friedrich Händel", title:"Hallelujakören ur Messias", era:"Barock"},
+  {file:"Vivaldi", composer:"Antonio Vivaldi", title:"Våren ur De fyra årstiderna", era:"Barock"},
+  {file:"Haydn", composer:"Joseph Haydn", title:"Kejsarkvartetten", era:"Wienklassicism"},
+  {file:"Mozart-Eine", composer:"Wolfgang Amadeus Mozart", title:"Eine kleine Nachtmusik", era:"Wienklassicism"},
+  {file:"Mozart-Trollflöjten", composer:"Wolfgang Amadeus Mozart", title:"Nattens drottning ur Trollflöjten", era:"Wienklassicism"},
+  {file:"Beethoven-5", composer:"Ludwig van Beethoven", title:"Symfoni nr 5 (Ödessymfonin)", era:"Wienklassicism"},
+  {file:"Beethoven-Für", composer:"Ludwig van Beethoven", title:"Für Elise", era:"Wienklassicism"},
+  {file:"Chopin", composer:"Frédéric Chopin", title:"Nocturne opus 9 nummer 2", era:"Romantik"},
+  {file:"Grieg", composer:"Edvard Grieg", title:"I Bergakungens sal ur Peer Gynt", era:"Romantik"},
+  {file:"Tjajkovskij", composer:"Pjotr Tjajkovskij", title:"Svansjön", era:"Romantik"},
+  {file:"Verdi", composer:"Giuseppe Verdi", title:"La donna è mobile ur Rigoletto", era:"Romantik"},
+  {file:"Wagner", composer:"Richard Wagner", title:"Tristan och Isolde", era:"Romantik"},
+  {file:"Strauss", composer:"Richard Strauss", title:"Also sprach Zarathustra", era:"Romantik"},
+  {file:"Bach-Toccata", composer:"Johann Sebastian Bach", title:"Toccata och fuga", era:"Barock"}
+];
+
+// Dropdown-listor
+const composerSelect = document.getElementById("composerSelect");
+const titleSelect = document.getElementById("titleSelect");
+const player = document.getElementById("player");
+const feedback = document.getElementById("feedback");
+
+const composers = [...new Set(pieces.map(p => p.composer))];
+composers.forEach(c => {
+  const opt = document.createElement("option");
+  opt.textContent = c;
+  opt.value = c;
+  composerSelect.appendChild(opt);
+});
+
+pieces.forEach(p => {
+  const opt = document.createElement("option");
+  opt.textContent = p.title;
+  opt.value = p.title;
+  titleSelect.appendChild(opt);
+});
+
+let current = 0;
+function loadPiece() {
+  current = Math.floor(Math.random() * pieces.length);
+  const p = pieces[current];
+  player.src = `https://learnswedish.github.io/html/${p.file}.mp3`;
+  composerSelect.value = "";
+  titleSelect.value = "";
+  document.getElementById("eraSelect").value = "";
+  feedback.textContent = "";
+}
+
+document.getElementById("playBtn").onclick = () => player.play();
+
+document.getElementById("checkBtn").onclick = () => {
+  const p = pieces[current];
+  const composer = composerSelect.value;
+  const title = titleSelect.value;
+  const era = document.getElementById("eraSelect").value;
+
+  if (!composer || !title || !era) {
+    feedback.textContent = "Välj alla alternativ först.";
+    feedback.className = "feedback wrong";
+    return;
+  }
+
+  if (composer === p.composer && title === p.title && era === p.era) {
+    feedback.textContent = "Rätt! 🎶";
+    feedback.className = "feedback correct";
+  } else {
+    feedback.innerHTML = `Fel. <br>Rätt svar: <br><strong>${p.composer}</strong> – ${p.title} (${p.era})`;
+    feedback.className = "feedback wrong";
+  }
+};
+
+document.getElementById("nextBtn").onclick = loadPiece;
+loadPiece();
+</script>
+</body>
+</html>
