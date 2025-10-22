@@ -30,8 +30,8 @@
     color: #fff;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 15px;
+    justify-content: center; /* centrera innehållet */
+    padding: 0 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     z-index: 100;
   }
@@ -46,12 +46,27 @@
     font-size: 1.1rem;
   }
 
+  /* === Flytande knapp till höger === */
   #theme-toggle {
-    background: transparent;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+    background: rgba(255,255,255,0.2);
     border: none;
-    color: inherit;
-    font-size: 1.2rem;
+    color: #fff;
+    font-size: 1.3rem;
     cursor: pointer;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  body.dark #theme-toggle {
+    background: rgba(255,255,255,0.15);
+    color: #eee;
   }
 
   h1 {
@@ -136,11 +151,11 @@
 </head>
 <body>
   <div id="topbar">
-    <div id="score">Poäng: 0 / 20</div>
-    <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+    <div id="score">Poäng: 0 / 35</div>
+    <button id="theme-toggle" title="Växla tema"><i class="fas fa-moon"></i></button>
   </div>
 
-  <h1>🎵 Musikhistoria – Barocken, Klassicismen och Romantiken</h1>
+  <h1>🎵 Musikhistoria<br />Barocken, Klassicismen och Romantiken</h1>
   <div id="quiz-container"></div>
   <button id="restart-btn">Börja om</button>
 
@@ -158,14 +173,29 @@ const quizData = [
   {q:"Hur påverkade upplysningen kyrkans och kungens makt över musiken?", a:["Deras makt minskade när människor började tänka själva","Deras makt ökade genom fler beställningar av musik","De styrde musiken ännu hårdare än tidigare i historien","De förbjöd konserter i städerna och på landsbygden"], c:0},
   {q:"Vilken stad blev musikens centrum under klassicismen?", a:["Rom","Wien","Paris","Berlin"], c:1},
   {q:"Vad betyder tema i klassisk musik?", a:["En kort melodi som återkommer flera gånger","En särskild rytm i slutet av en symfoni","En text som berättar vad musiken handlar om","En samling instrument i en orkester"], c:0},
-  {q:"Vad är skillnaden mellan terassdynamik och crescendo/diminuendo?", a:["Terassdynamik ändras plötsligt, crescendo gradvis","Crescendo används i barocken, terassdynamik i klassicismen","Crescendo betyder att musiken blir tystare","Terassdynamik betyder att musiken går snabbare"], c:0},
+  {q:"Vad är skillnaden mellan terassdynamik och crescendo/diminuendo?", a:["Terassdynamik ändras plötsligt, crescendo/diminuendo gradvis","Crescendo används i barocken, terassdynamik i klassicismen","Crescendo betyder att musiken blir tystare","Terassdynamik betyder att musiken går snabbare"], c:0},
   {q:"Varför blev pianot viktigare än cembalon under klassicismen?", a:["Pianot kunde spela både starkt och svagt","Cembalon var för dyr att bygga","Pianot tog mindre plats i orkestern","Cembalon blev förbjuden av kyrkan"], c:0},
   {q:"Vad är skillnaden mellan en sonat och en symfoni?", a:["En sonat är för ett eller två instrument, en symfoni för orkester","En symfoni är kortare än en sonat och bygger på en känd melodi","En sonat är alltid för piano, aldrig för något annat instrument","En symfoni saknar melodier, det är bara massa harmonier"], c:0},
   {q:"Vilken kvinnlig kompositör är känd från klassicismen?", a:["Marianna Martines","Barbara Strozzi","Clara Schumann","Fanny Mendelssohn"], c:0},
   {q:"Vad betyder det att man under romantiken ”romantiserade” världen?", a:["Man förskönade verkligheten och drömde sig bort","Man beskrev vardagen i många olika detaljer","Man skrev mest musik om krig, vetenskap och forskning","Man slutade använda känslor i musiken, bara ljud"], c:0},
   {q:"Vilka teman inspirerade romantikens kompositörer?", a:["Sagor och naturen","Politik och vetenskap","Teknik och uppfinningar","Städer och fabriker"], c:0},
   {q:"Vad menas med programmusik och nationalromantik?", a:["Musik som berättar en historia eller hyllar ett land","Musik som bara spelas i kyrkan under gudstjänsten","Musik som är gjord för program i radio och tv","Musik som alltid saknar text, bara instrumenten hörs"], c:0},
-  {q:"Hur förändrades musiklivet under 1800-talet?", a:["Kvinnor och vanligt folk fick större utrymme, kyrkan och kungen mindre","Kyrkan tog tillbaka makten över musiken, det blev mer religiös musik","Vetenskapen tog över och musik handlade mer om matematik och forskning","Endast adel fick spela och sjunga medan musik var förbjudet på landet"], c:0}
+  {q:"Hur förändrades musiklivet under 1800-talet?", a:["Kvinnor och vanligt folk fick större utrymme, kyrkan och kungen mindre","Kyrkan tog tillbaka makten över musiken, det blev mer religiös musik","Vetenskapen tog över och musik handlade mer om matematik och forskning","Endast adel fick spela och sjunga medan musik var förbjudet på landet"], c:0},
+  {q:"Vad betyder ordet barock ursprungligen?", a:["Ett ord för något snirkligt och överdrivet","Ett ord för något enkelt och rakt","Ett ord för något religiöst och heligt","Ett ord för något gammalt och bortglömt"], c:0},
+  {q:"Varför skrev nästan all barockmusik på beställning?", a:["Kompositörerna var anställda av hov och kyrka","Kompositörerna saknade egna instrument","Kompositörerna arbetade för skolor och universitet","Kompositörerna skrev musik för tävlingar"], c:0},
+  {q:"Vad kallas den flerstämmiga teknik som Bach ofta använde där stämmorna härmar varandra?", a:["Fuga","Sonat","Koral","Aria"], c:0},
+  {q:"Vad är ett oratorium och hur skiljer det sig från en opera?", a:["Ett oratorium framförs som konsert, inte som scenföreställning","Ett oratorium är ett kortare musikstycke utan sång","Ett oratorium innehåller bara instrumentalmusik","Ett oratorium är en dans med kör och orkester"], c:0},
+  {q:"Vilken kompositör skrev Messias med den berömda Hallelujahkören?", a:["Georg Friedrich Händel","Johann Sebastian Bach","Antonio Vivaldi","Henry Purcell"], c:0},
+  {q:"Varför anses Bach vara barockens kulmen?", a:["Hans musik sammanfattar hela epokens stil och teknik","Han uppfann det första pianot med 88 tangenter","Han grundade en världberömd orkester i Wien","Han skrev den allra första operan, Tristan och Isolde"], c:0},
+  {q:"Vad betyder ordet klassisk i det här sammanhanget?", a:["Något fullkomligt, balanserat och tidlöst","Något snabbt och rytmiskt","Något gammalt och omodernt","Något heligt och kyrkligt"], c:0},
+  {q:"Vilken kompositör brukar man säga förde över musiken från klassicism till romantik?", a:["Ludwig van Beethoven","Joseph Haydn","Wolfgang Amadeus Mozart","Franz Schubert"], c:0},
+  {q:"Vad är typiskt för melodier i klassicismen jämfört med barocken?", a:["De är kortare, tydligare och mer balanserade","De är längre, svårare och mer invecklade","De är rytmiskt oregelbundna och svåra","De byggs upp av långa toner som upprepas"], c:0},
+  {q:"Vad är en opera buffa?", a:["En komisk opera med vardagliga personer","En allvarlig opera med religiösa teman","En opera utan sång och text","En opera som bara spelas i kyrkor"], c:0},
+  {q:"Hur påverkar upplysningstidens idéer om jämlikhet musikens innehåll?", a:["Musik skrivs för en bredare publik, inte bara för överklassen","Musik skrivs enbart för kungar, adel och rika personer","Musik förbjuds i salonger och utanför huvudstäderna","Musik blir enklare för att spara pengar och tid"], c:0},
+  {q:"Vad ville man uppnå med musikens balans och elegans?", a:["Ordning och harmoni i form och känsla","En dramatisk och storslagen effekt","En oregelbunden och fri struktur","En rytmisk och folklig ton"], c:0},
+  {q:"Vad betyder ordet virtuos?", a:["En musiker som är mycket tekniskt skicklig","En sångare i en kyrkokör","En tonsättare av folkmelodier","En dirigent för stora orkestrar"], c:0},
+  {q:"Varför växer symfoniorkestrarna under romantiken?", a:["För att skapa större ljud och starkare känslor","För att göra konserter kortare och enklare","För att det fanns fler små scener","För att instrumenten blev billigare"], c:0},
+  {q:"Vad var en salong under 1800-talet?", a:["Ett hem där man samlades för musik och samtal","Ett torg där orkestrar uppträdde","En konsertsal för kungliga fester","En kyrka där man framförde oratorier"], c:0}
 ];
 
 let shuffledQuestions = [];
