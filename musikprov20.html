@@ -8,10 +8,11 @@
 <style>
   body {
     font-family: "Segoe UI", sans-serif;
-    background-color: #f0f0f0;
+    background-color: #f4f4f4;
     color: #222;
     margin: 0;
-    padding-top: 70px; /* plats för den fasta poängraden */
+    padding-top: 70px;
+    line-height: 1.5;
   }
 
   body.dark {
@@ -30,9 +31,8 @@
     color: #fff;
     display: flex;
     align-items: center;
-    justify-content: center; /* centrera innehållet */
-    padding: 0 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     z-index: 100;
   }
 
@@ -46,10 +46,9 @@
     font-size: 1.1rem;
   }
 
-  /* === Flytande knapp till höger === */
   #theme-toggle {
     position: absolute;
-    right: 30px;
+    right: 20px;
     top: 10px;
     background: rgba(255,255,255,0.2);
     border: none;
@@ -62,6 +61,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background 0.2s;
+  }
+
+  #theme-toggle:hover {
+    background: rgba(255,255,255,0.3);
   }
 
   body.dark #theme-toggle {
@@ -71,55 +75,68 @@
 
   h1 {
     text-align: center;
-    font-size: 1.3rem;
-    margin: 15px 10px;
+    font-size: 1.4rem;
+    margin: 20px 15px;
   }
 
   #quiz-container {
     width: 95%;
-    max-width: 600px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    padding: 20px;
-    margin: 10px auto 30px auto;
+    max-width: 650px;
+    margin: 20px auto 60px auto;
   }
 
-  body.dark #quiz-container {
+  .question-block {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    padding: 18px 20px;
+    margin-bottom: 25px;
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+  }
+
+  .question-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(0,0,0,0.18);
+  }
+
+  body.dark .question-block {
     background: #1e1e1e;
-    box-shadow: 0 2px 8px rgba(255,255,255,0.1);
+    box-shadow: 0 3px 8px rgba(255,255,255,0.05);
   }
 
   .question {
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 12px;
   }
 
   .options {
     list-style: none;
     padding: 0;
-    margin: 0 0 15px 0;
+    margin: 0;
   }
 
   .options li {
     background: #e0e0e0;
-    margin-bottom: 8px;
-    padding: 10px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  body.dark .options li {
-    background: #333;
+    transition: all 0.2s;
+    font-size: 0.95rem;
   }
 
   .options li:hover {
-    background: #ccc;
+    background: #d0d0d0;
+    transform: scale(1.01);
+  }
+
+  body.dark .options li {
+    background: #2c2c2c;
   }
 
   body.dark .options li:hover {
-    background: #444;
+    background: #3a3a3a;
   }
 
   .correct {
@@ -133,19 +150,28 @@
   }
 
   #restart-btn {
-    margin: 15px auto;
+    margin: 25px auto 40px auto;
     display: block;
-    padding: 10px 16px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     background-color: #1976D2;
     color: #fff;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+  }
+
+  #restart-btn:hover {
+    background-color: #1565C0;
+    transform: scale(1.02);
   }
 
   body.dark #restart-btn {
     background-color: #444;
+    color: #eee;
   }
 </style>
 </head>
@@ -155,9 +181,9 @@
     <button id="theme-toggle" title="Växla tema"><i class="fas fa-moon"></i></button>
   </div>
 
-  <h1>🎵 Musikhistoria<br />Barocken, Klassicismen och Romantiken</h1>
+  <h1>🎵 Musikhistoria<br>Barocken, Klassicismen och Romantiken</h1>
   <div id="quiz-container"></div>
-  <button id="restart-btn">Börja om</button>
+  <button id="restart-btn">🔁 Börja om</button>
 
 <script>
 const quizData = [
@@ -197,6 +223,7 @@ const quizData = [
   {q:"Varför växer symfoniorkestrarna under romantiken?", a:["För att skapa större ljud och starkare känslor","För att göra konserter kortare och enklare","För att det fanns fler små scener","För att instrumenten blev billigare"], c:0},
   {q:"Vad var en salong under 1800-talet?", a:["Ett hem där man samlades för musik och samtal","Ett torg där orkestrar uppträdde","En konsertsal för kungliga fester","En kyrka där man framförde oratorier"], c:0}
 ];
+
 
 let shuffledQuestions = [];
 let score = 0;
@@ -259,7 +286,6 @@ function updateScore() {
 }
 
 document.getElementById("restart-btn").addEventListener("click", startQuiz);
-
 document.getElementById("theme-toggle").addEventListener("click", () => {
   document.body.classList.toggle("dark");
   const icon = document.querySelector("#theme-toggle i");
