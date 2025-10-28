@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samordnande konjunktioner</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.x/css/all.min.css">
+
+<link rel="stylesheet" href="link.css">
+
+<style>
+#infoModal .modal-content {
+  text-align: left;
+}
+</style>
+
+<style>
+#infoModal .modal-content {
+  text-align: left;
+}
+</style>
+
+<script>
+const options = `
+<option value="">...</option>
+<option value="och">och</option>
+<option value="eller">eller</option>
+<option value="men">men</option>
+<option value="för">för</option>
+<option value="utan">utan</option>
+<option value="både">både</option>
+<option value="antingen">antingen</option>
+<option value="varken">varken</option>
+`;
+
+const optionsUpper = `
+<option value="">...</option>
+<option value="Och">Och</option>
+<option value="Eller">Eller</option>
+<option value="Men">Men</option>
+<option value="För">För</option>
+<option value="Utan">Utan</option>
+<option value="Både">Både</option>
+<option value="Antingen">Antingen</option>
+<option value="Varken">Varken</option>
+`;
+
+const sentences = [
+    // ----------------------------------------------------
+    // 🟩 OCH (5 meningar)
+    // ----------------------------------------------------
+    {
+        words: [
+            { word: "Erik", translation: "Erik" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "Sven dricker öl.", translation: "Sven are drinking beer." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi åt", translation: "We ate" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "skrattade hela kvällen.", translation: "laughed all evening." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon sjunger", translation: "She sings" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "spelar gitarr.", translation: "plays the guitar." }
+        ]
+    },
+    {
+        words: [
+            { word: "Dagen var lugn", translation: "The day was calm" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "varm.", translation: "warm." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag vet att du kommer", translation: "I know that you will come" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "att du stannar.", translation: "that you will stay." }
+        ]
+    },
+
+    // ----------------------------------------------------
+    // 🟨 ELLER (5 meningar)
+    // ----------------------------------------------------
+    {
+        words: [
+            { word: "Vill du ha kaffe", translation: "Do you want coffee" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "te?", translation: "tea?" }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi kan åka tåg", translation: "We can go by train" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "buss.", translation: "bus." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han undrade om hon skulle åka iväg", translation: "He wondered if she would leave" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "stanna hemma.", translation: "stay home." }
+        ]
+    },
+    {
+        words: [
+            { word: "Du får välja film", translation: "You get to choose film" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "bok.", translation: "book." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi ses på morgonen", translation: "We will see each other in the morning" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "på kvällen.", translation: "in the evening." }
+        ]
+    },
+
+    // ----------------------------------------------------
+    // 🟧 MEN (5 meningar)
+    // ----------------------------------------------------
+    {
+        words: [
+            { word: "Jag ville resa", translation: "I wanted to travel" },
+            { word: `<select data-correct="men" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "hade inga pengar.", translation: "had no money." }
+        ]
+    },
+    {
+        words: [
+            { word: "Det är svårt", translation: "It is hard" },
+            { word: `<select data-correct="men" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "roligt.", translation: "fun." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han är trött", translation: "He is tired" },
+            { word: `<select data-correct="men" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "fortsätter ändå.", translation: "continues anyway." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon sjunger fint", translation: "She sings nicely" },
+            { word: `<select data-correct="men" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "spelar dåligt.", translation: "plays badly." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han log", translation: "He smiled" },
+            { word: `<select data-correct="men" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "hans ögon var ledsna.", translation: "his eyes were sad." }
+        ]
+    },
+
+    // ----------------------------------------------------
+    // 🟦 FÖR (5 meningar)
+    // ----------------------------------------------------
+    {
+        words: [
+            { word: "Vi gick hem", translation: "We went home" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "det började regna.", translation: "it started to rain." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag stannade kvar", translation: "I stayed" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "jag ville hjälpa till.", translation: "I wanted to help." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon tog på sig jackan", translation: "She put on her jacket" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "det var kallt.", translation: "it was cold." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han log", translation: "He smiled" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "han kände sig lycklig.", translation: "he felt happy." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag gick upp tidigt", translation: "I got up early" },
+            { word: `<select data-correct="för" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "jag hade mycket att göra.", translation: "I had a lot to do." }
+        ]
+    },
+
+    // ----------------------------------------------------
+    // 🟥 UTAN (5 meningar)
+    // ----------------------------------------------------
+    {
+        words: [
+            { word: "Jag dricker inte kaffe", translation: "I don't drink coffee" },
+            { word: `<select data-correct="utan" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "te.", translation: "tea." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han köpte inte skjortan", translation: "He didn't buy the shirt" },
+            { word: `<select data-correct="utan" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "tröjan.", translation: "the sweater." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi reste inte till Norge", translation: "We didn't travel to Norway" },
+            { word: `<select data-correct="utan" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "till Danmark.", translation: "to Denmark." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon svarade inte kort", translation: "She didn’t answer briefly" },
+            { word: `<select data-correct="utan" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "utförligt.", translation: "in detail." }
+        ]
+    },
+    {
+        words: [
+            { word: "Barnen gick inte hem", translation: "The children didn't go home" },
+            { word: `<select data-correct="utan" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "till skolan.", translation: "to school." }
+        ]
+    },
+
+    // ----------------------------------------------------
+    // 🟪 BÅDE … OCH (5 meningar)
+    // ----------------------------------------------------
+    {
+        words: [
+		    { word: "Hon älskar", translation: "She loves" },
+            { word: `<select data-correct="både" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "musik", translation: "music" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "dans.", translation: "dance." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi hade gott om tid så vi besökte", translation: "We hade plenty of time so we visited" },
+            { word: `<select data-correct="både" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "museet", translation: "the museum" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "kyrkan.", translation: "the church." }
+        ]
+    },
+    {
+        words: [
+            { word: "Han är", translation: "He is" },
+            { word: `<select data-correct="både" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "stark", translation: "strong" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "klok.", translation: "wise." }
+        ]
+    },
+    {
+        words: [
+            { word: "Jag tycker", translation: "I like" },
+            { word: `<select data-correct="både" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "om att läsa", translation: "to read" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "att skriva.", translation: "to write." }
+        ]
+    },
+    {
+        words: [
+            { word: "De är väldigt rika.", translation: "They are very rich." },
+			{ word: "De har", translation: "They have" },
+            { word: `<select data-correct="både" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "flera stora bilar", translation: "several big cars" },
+            { word: `<select data-correct="och" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "en dyr båt.", translation: "an expensive boat." }
+        ]
+    },
+
+    // ----------------------------------------------------
+    // 🟫 ANTINGEN … ELLER (5 meningar)
+    // ----------------------------------------------------
+    {
+        words: [
+			{ word: "Vi går", translation: "We will go" },
+            { word: `<select data-correct="antingen" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "ut nu", translation: "out now" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "väntar tills regnet slutar.", translation: "wait until the rain stops." }
+        ]
+    },
+    {
+        words: [
+            { word: "Vi åker nu. Du måste", translation: "We leave now. You must" },
+            { word: `<select data-correct="antingen" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "stanna", translation: "stay" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "följa med.", translation: "come along." }
+        ]
+    },
+{
+    words: [
+        { word: "Barnen är trötta. Vi måste", translation: "The children are tired. We must" },
+        { word: `<select data-correct="antingen" onchange="evaluateAnswer(this)">${options}</select>` },
+        { word: "hitta ett hotell", translation: "find a hotel" },
+        { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+        { word: "sova i bilen.", translation: "sleep in the car." }
+    ]
+},
+    {
+        words: [
+            { word: "Du kan", translation: "You can" },
+            { word: `<select data-correct="antingen" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "betala nu", translation: "pay now" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "få en faktura.", translation: "receive an invoice." }
+        ]
+    },
+    {
+        words: [
+            { word: "Du får", translation: "You must" },
+            { word: `<select data-correct="antingen" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "följa reglerna", translation: "follow the rules" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "lämna klubben.", translation: "leave the club." }
+        ]
+    },
+
+    // ----------------------------------------------------
+    // ⬛ VARKEN … ELLER (5 meningar)
+    // ----------------------------------------------------
+    {
+        words: [
+            { word: "Hon var arg och ville", translation: "She was angry and wanted" },
+            { word: `<select data-correct="varken" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "lyssna", translation: "to listen" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "prata.", translation: "to talk." }
+        ]
+    },
+    {
+        words: [
+            { word: "Helt bortkastad tid. Filmen var", translation: "A complete waste of time. The film was" },
+            { word: `<select data-correct="varken" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "spännande", translation: "exciting" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "rolig.", translation: "funny." }
+        ]
+    },
+    {
+        words: [
+            { word: "Det var så mycket väsen.", translation: "There was so much noise." },
+			{ word: "Vi hörde", translation: "We heard" },
+            { word: `<select data-correct="varken" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "musiken", translation: "the music" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "sångerskan.", translation: "the (female) singer." }
+        ]
+    },
+    {
+        words: [
+            { word: "Hon är lat. Hon vill", translation: "She is lazy. She wants" },
+            { word: `<select data-correct="varken" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "gå i skolan", translation: "to go to school" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "hjälpta till hemma.", translation: "help out at home." }
+        ]
+    },
+    {
+        words: [
+            { word: "Tävlingen ställdes in, så det blev", translation: "The competition was cancelled, so there was" },
+            { word: `<select data-correct="varken" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "vinst", translation: "a win" },
+            { word: `<select data-correct="eller" onchange="evaluateAnswer(this)">${options}</select>` },
+            { word: "förlust.", translation: "a loss." }
+        ]
+    }
+];
+
+
+</script>
+
+<script src="link.js" defer></script>
+</head>
+
+<body>
+
+<div class="score-container">
+  <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+  <div class="dark-mode-toggle">
+    <label class="switch"><input type="checkbox" id="darkModeSwitch"><span class="slider"></span></label>
+    <span>Dark mode</span>
+  </div>
+  <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+    <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+  </button>
+  <button class="start-over" onclick="startOver()">
+    <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+  </button>
+</div>
+
+<div class="hamburger-menu" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+
+<div class="menu-overlay" id="menuOverlay">
+  <div class="close-button" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
+  <div class="menu-item">Score:&nbsp;<span id="score">0</span> / <span class="score-max"></span></div>
+  <div class="menu-item" onclick="toggleDarkMode()"><i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span></div>
+  <div class="menu-item" onclick="showInfo()"><i class="fas fa-info-circle"></i> Info</div>
+  <div class="menu-item" onclick="openMenuURL()"><i class="fas fa-book"></i> Key</div>
+  <div class="menu-item" onclick="startOverAndCloseMenu()"><i class="fas fa-rotate-left"></i> Start over</div>
+</div>
+
+<h1 class="page-title"><i class="fas fa-link" style="margin-right:8px;"></i> Pick the correct coordinating conjunction</h1>
+<p>Read the "Info" to understand what this exercise is about.</p>
+
+<div class="container">
+  <div class="sentences" id="sentences"></div>
+</div>
+
+<div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+  <div class="modal-content">
+    <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+    <h2 id="infoModalTitle">Coordinating conjunctions</h2><br />
+    <p>
+    A coordinating conjunction (or coordinating connective) is a word or expression that links (typically) two parts of a sentence that are equally important — that is, elements on the same grammatical level. These parts can be words, phrases, or clauses. Typical coordinating conjunctions are <em><strong>och</em></strong> (and), <em><strong>eller</em></strong> (or), <em><strong>men</em></strong> (but), <em><strong>utan</em></strong> (but rather), <em><strong>varken … eller</em></strong> (neither … nor), <em><strong>antingen … eller</em></strong> (either … or), and <em><strong>för</em></strong> (for/because).</p><br />
+	<p>A few examples:</p><br />
+	<p>
+	Han har både <u>hund</u> och <u>katt</u>. (He has both a dog and a cat.)<br />
+	Hon <u>spelar tennis</u> eller <u>läser bok</u>. (She plays tennis or reads a book.)<br />
+	<u>Vi gick hem</u> för <u>vi blev trötta</u>. (We went home because we got tired.) <br />
+	<u>Thomas är glad</u> men <u>Sara är arg</u>. (Thomas is happy but Sara is angry.)</p><br />
+    <p>Try to choose the correct one for each sentence!</p>
+  </div>
+</div>
+
+<div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+  <div class="modal-content">
+    <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+    <h2 id="congratulationsModalTitle">Congratulations!</h2>
+    <p>You have answered all the questions correctly!</p>
+  </div>
+</div>
+
+</body>
+</html>
