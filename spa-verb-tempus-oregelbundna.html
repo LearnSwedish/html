@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oregelbundna verb – tempus</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    background-color: #f9fafb;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  body.dark {
+    background-color: #1c1c1e;
+    color: #f1f1f1;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .stats {
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .card {
+    max-width: 400px;
+    width: 100%;
+    background: #fff;
+    color: #222;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    text-align: center;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  body.dark .card {
+    background: #2a2a2d;
+    color: #f1f1f1;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: none;
+    background-color: #007aff;
+    color: white;
+    transition: background 0.3s;
+    cursor: pointer;
+  }
+
+  button:hover { background-color: #005bb5; }
+
+  .correct { background-color: #2ecc71 !important; }
+  .wrong { background-color: #e74c3c !important; }
+
+  .dark-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #555;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.4em;
+    cursor: pointer;
+    transition: background 0.3s;
+	display: flex;
+align-items: center;
+justify-content: center;
+  }
+
+  .dark-toggle:hover {
+    background: #777;
+  }
+
+  .sentence {
+    font-style: italic;
+    margin-top: 10px;
+  }
+
+  .restart {
+    margin-top: 20px;
+    background-color: #ff9500;
+  }
+
+  .restart:hover {
+    background-color: #cc7a00;
+  }
+</style>
+</head>
+<body>
+
+<button class="dark-toggle" id="themeBtn" onclick="toggleDark()">🌙</button>
+
+<h1>Oregelbundna verb – tempus</h1>
+<div class="stats" id="stats">Fråga: 0 / 0 • Rätt: 0</div>
+
+<div class="card" id="quiz">
+  <h2 id="verb"></h2>
+  <p class="sentence" id="sentence"></p>
+  <div id="options"></div>
+</div>
+
+<button id="restartBtn" class="restart" style="display:none;" onclick="restartQuiz()">🔄 Börja om</button>
+
+<script>
+const verbs = [
+  {
+    infinitive: "tener",
+    sv: "ha",
+    forms: {
+      presens: ["tengo","tienes","tiene","tenemos","tenéis","tienen"],
+      preteritum: ["tuve","tuviste","tuvo","tuvimos","tuvisteis","tuvieron"],
+      perfekt: ["he tenido","has tenido","ha tenido","hemos tenido","habéis tenido","han tenido"],
+      futurum: ["voy a tener","vas a tener","va a tener","vamos a tener","vais a tener","van a tener"]
+    },
+    svTempus: {
+      presens: ["Jag har","Du har","Han/hon har","Vi har","Ni har","De har"],
+      preteritum: ["Jag hade","Du hade","Han/hon hade","Vi hade","Ni hade","De hade"],
+      perfekt: ["Jag har haft","Du har haft","Han/hon har haft","Vi har haft","Ni har haft","De har haft"],
+      futurum: ["Jag ska ha","Du ska ha","Han/hon ska ha","Vi ska ha","Ni ska ha","De ska ha"]
+    }
+  },
+  {
+    infinitive: "ir",
+    sv: "gå / åka",
+    forms: {
+      presens: ["voy","vas","va","vamos","vais","van"],
+      preteritum: ["fui","fuiste","fue","fuimos","fuisteis","fueron"],
+      perfekt: ["he ido","has ido","ha ido","hemos ido","habéis ido","han ido"],
+      futurum: ["voy a ir","vas a ir","va a ir","vamos a ir","vais a ir","van a ir"]
+    },
+    svTempus: {
+      presens: ["Jag går","Du går","Han/hon går","Vi går","Ni går","De går"],
+      preteritum: ["Jag gick","Du gick","Han/hon gick","Vi gick","Ni gick","De gick"],
+      perfekt: ["Jag har gått","Du har gått","Han/hon har gått","Vi har gått","Ni har gått","De har gått"],
+      futurum: ["Jag ska gå","Du ska gå","Han/hon ska gå","Vi ska gå","Ni ska gå","De ska gå"]
+    }
+  },
+  {
+    infinitive: "ser",
+    sv: "vara (permanent)",
+    forms: {
+      presens: ["soy","eres","es","somos","sois","son"],
+      preteritum: ["fui","fuiste","fue","fuimos","fuisteis","fueron"],
+      perfekt: ["he sido","has sido","ha sido","hemos sido","habéis sido","han sido"],
+      futurum: ["voy a ser","vas a ser","va a ser","vamos a ser","vais a ser","van a ser"]
+    },
+    svTempus: {
+      presens: ["Jag är","Du är","Han/hon är","Vi är","Ni är","De är"],
+      preteritum: ["Jag var","Du var","Han/hon var","Vi var","Ni var","De var"],
+      perfekt: ["Jag har varit","Du har varit","Han/hon har varit","Vi har varit","Ni har varit","De har varit"],
+      futurum: ["Jag ska vara","Du ska vara","Han/hon ska vara","Vi ska vara","Ni ska vara","De ska vara"]
+    }
+  },
+  {
+    infinitive: "estar",
+    sv: "vara (tillfälligt)",
+    forms: {
+      presens: ["estoy","estás","está","estamos","estáis","están"],
+      preteritum: ["estuve","estuviste","estuvo","estuvimos","estuvisteis","estuvieron"],
+      perfekt: ["he estado","has estado","ha estado","hemos estado","habéis estado","han estado"],
+      futurum: ["voy a estar","vas a estar","va a estar","vamos a estar","vais a estar","van a estar"]
+    },
+    svTempus: {
+      presens: ["Jag är","Du är","Han/hon är","Vi är","Ni är","De är"],
+      preteritum: ["Jag var","Du var","Han/hon var","Vi var","Ni var","De var"],
+      perfekt: ["Jag har varit","Du har varit","Han/hon har varit","Vi har varit","Ni har varit","De har varit"],
+      futurum: ["Jag ska vara","Du ska vara","Han/hon ska vara","Vi ska vara","Ni ska vara","De ska vara"]
+    }
+  },
+  {
+    infinitive: "hacer",
+    sv: "göra",
+    forms: {
+      presens: ["hago","haces","hace","hacemos","hacéis","hacen"],
+      preteritum: ["hice","hiciste","hizo","hicimos","hicisteis","hicieron"],
+      perfekt: ["he hecho","has hecho","ha hecho","hemos hecho","habéis hecho","han hecho"],
+      futurum: ["voy a hacer","vas a hacer","va a hacer","vamos a hacer","vais a hacer","van a hacer"]
+    },
+    svTempus: {
+      presens: ["Jag gör","Du gör","Han/hon gör","Vi gör","Ni gör","De gör"],
+      preteritum: ["Jag gjorde","Du gjorde","Han/hon gjorde","Vi gjorde","Ni gjorde","De gjorde"],
+      perfekt: ["Jag har gjort","Du har gjort","Han/hon har gjort","Vi har gjort","Ni har gjort","De har gjort"],
+      futurum: ["Jag ska göra","Du ska göra","Han/hon ska göra","Vi ska göra","Ni ska göra","De ska göra"]
+    }
+  },
+  {
+    infinitive: "salir",
+    sv: "gå ut",
+    forms: {
+      presens: ["salgo","sales","sale","salimos","salís","salen"],
+      preteritum: ["salí","saliste","salió","salimos","salisteis","salieron"],
+      perfekt: ["he salido","has salido","ha salido","hemos salido","habéis salido","han salido"],
+      futurum: ["voy a salir","vas a salir","va a salir","vamos a salir","vais a salir","van a salir"]
+    },
+    svTempus: {
+      presens: ["Jag går ut","Du går ut","Han/hon går ut","Vi går ut","Ni går ut","De går ut"],
+      preteritum: ["Jag gick ut","Du gick ut","Han/hon gick ut","Vi gick ut","Ni gick ut","De gick ut"],
+      perfekt: ["Jag har gått ut","Du har gått ut","Han/hon har gått ut","Vi har gått ut","Ni har gått ut","De har gått ut"],
+      futurum: ["Jag ska gå ut","Du ska gå ut","Han/hon ska gå ut","Vi ska gå ut","Ni ska gå ut","De ska gå ut"]
+    }
+  },
+  {
+    infinitive: "poner",
+    sv: "lägga / ställa",
+    forms: {
+      presens: ["pongo","pones","pone","ponemos","ponéis","ponen"],
+      preteritum: ["puse","pusiste","puso","pusimos","pusisteis","pusieron"],
+      perfekt: ["he puesto","has puesto","ha puesto","hemos puesto","habéis puesto","han puesto"],
+      futurum: ["voy a poner","vas a poner","va a poner","vamos a poner","vais a poner","van a poner"]
+    },
+    svTempus: {
+      presens: ["Jag lägger","Du lägger","Han/hon lägger","Vi lägger","Ni lägger","De lägger"],
+      preteritum: ["Jag lade","Du lade","Han/hon lade","Vi lade","Ni lade","De lade"],
+      perfekt: ["Jag har lagt","Du har lagt","Han/hon har lagt","Vi har lagt","Ni har lagt","De har lagt"],
+      futurum: ["Jag ska lägga","Du ska lägga","Han/hon ska lägga","Vi ska lägga","Ni ska lägga","De ska lägga"]
+    }
+  },
+  {
+    infinitive: "saber",
+    sv: "veta / kunna",
+    forms: {
+      presens: ["sé","sabes","sabe","sabemos","sabéis","saben"],
+      preteritum: ["supe","supiste","supo","supimos","supisteis","supieron"],
+      perfekt: ["he sabido","has sabido","ha sabido","hemos sabido","habéis sabido","han sabido"],
+      futurum: ["voy a saber","vas a saber","va a saber","vamos a saber","vais a saber","van a saber"]
+    },
+    svTempus: {
+      presens: ["Jag vet","Du vet","Han/hon vet","Vi vet","Ni vet","De vet"],
+      preteritum: ["Jag visste","Du visste","Han/hon visste","Vi visste","Ni visste","De visste"],
+      perfekt: ["Jag har vetat","Du har vetat","Han/hon har vetat","Vi har vetat","Ni har vetat","De har vetat"],
+      futurum: ["Jag ska veta","Du ska veta","Han/hon ska veta","Vi ska veta","Ni ska veta","De ska veta"]
+    }
+  },
+  {
+    infinitive: "decir",
+    sv: "säga",
+    forms: {
+      presens: ["digo","dices","dice","decimos","decís","dicen"],
+      preteritum: ["dije","dijiste","dijo","dijimos","dijisteis","dijeron"],
+      perfekt: ["he dicho","has dicho","ha dicho","hemos dicho","habéis dicho","han dicho"],
+      futurum: ["voy a decir","vas a decir","va a decir","vamos a decir","vais a decir","van a decir"]
+    },
+    svTempus: {
+      presens: ["Jag säger","Du säger","Han/hon säger","Vi säger","Ni säger","De säger"],
+      preteritum: ["Jag sa","Du sa","Han/hon sa","Vi sa","Ni sa","De sa"],
+      perfekt: ["Jag har sagt","Du har sagt","Han/hon har sagt","Vi har sagt","Ni har sagt","De har sagt"],
+      futurum: ["Jag ska säga","Du ska säga","Han/hon ska säga","Vi ska säga","Ni ska säga","De ska säga"]
+    }
+  }
+];
+
+const pronouns = ["yo","tú","él/ella","nosotros","vosotros","ellos"];
+const tenses = ["presens","preteritum","perfekt","futurum"];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+
+function generateQuestions(){
+  questions=[];
+  verbs.forEach(v=>{
+    tenses.forEach(t=>{
+      pronouns.forEach((p,i)=>{
+        questions.push({
+          verb:v,
+          tense:t,
+          pronounIndex:i,
+          correct:v.forms[t][i],
+          swedish:v.svTempus[t][i]
+        });
+      });
+    });
+  });
+  questions.sort(()=>0.5-Math.random());
+}
+
+function startQuiz(){
+  generateQuestions();
+  currentIndex=0; score=0;
+  document.getElementById("restartBtn").style.display="none";
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(currentIndex>=questions.length){
+    document.getElementById("verb").textContent="Övningen är klar!";
+    document.getElementById("sentence").textContent=`Du fick ${score} av ${questions.length} rätt.`;
+    document.getElementById("options").innerHTML="";
+    document.getElementById("restartBtn").style.display="block";
+    updateStats();
+    return;
+  }
+
+  const q=questions[currentIndex];
+  document.getElementById("verb").textContent=q.swedish;
+  document.getElementById("sentence").textContent = "";
+
+  const optionsContainer=document.getElementById("options");
+  optionsContainer.innerHTML="";
+
+  let wrongTenses=tenses.filter(t=>t!==q.tense);
+  wrongTenses=wrongTenses.sort(()=>0.5-Math.random()).slice(0,3);
+
+  const allOptions=[q.correct,...wrongTenses.map(t=>q.verb.forms[t][q.pronounIndex])]
+                    .sort(()=>0.5-Math.random());
+
+  allOptions.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.onclick=()=>checkAnswer(btn,opt,q.correct);
+    optionsContainer.appendChild(btn);
+  });
+
+  updateStats();
+}
+
+function checkAnswer(btn,choice,correctAnswer){
+  const buttons=document.querySelectorAll("#options button");
+  buttons.forEach(b=>b.disabled=true);
+
+  if(choice===correctAnswer){btn.classList.add("correct");score++;}
+  else{
+    btn.classList.add("wrong");
+    const correctBtn=Array.from(buttons).find(b=>b.textContent===correctAnswer);
+    if(correctBtn) correctBtn.classList.add("correct");
+  }
+
+  currentIndex++;
+  updateStats();
+  setTimeout(nextQuestion,1500);
+}
+
+function updateStats(){
+  document.getElementById("stats").textContent=
+    `Fråga: ${Math.min(currentIndex+1,questions.length)} / ${questions.length} • Rätt: ${score}`;
+}
+
+function toggleDark(){
+  const body=document.body;
+  const btn=document.getElementById("themeBtn");
+  body.classList.toggle("dark");
+  btn.textContent=body.classList.contains("dark")?"☀️":"🌙";
+}
+
+function restartQuiz(){ startQuiz(); }
+
+startQuiz();
+</script>
+
+
+
+
+</body>
+</html>

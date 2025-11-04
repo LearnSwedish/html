@@ -219,7 +219,7 @@ function nextQuestion() {
 
   const q = questions[currentIndex];
   document.getElementById("verb").textContent = q.swedish;
-  document.getElementById("sentence").textContent = `(${q.verb.sv})`;
+  document.getElementById("sentence").textContent = "";
 
   const optionsContainer = document.getElementById("options");
   optionsContainer.innerHTML = "";
@@ -228,8 +228,22 @@ function nextQuestion() {
   let wrongTenses = tenses.filter(t => t !== q.tense);
   wrongTenses = wrongTenses.sort(() => 0.5 - Math.random()).slice(0,3);
 
-  const allOptions = [q.correct, ...wrongTenses.map(t => q.verb.forms[t][q.pronounIndex])]
-                     .sort(() => 0.5 - Math.random());
+// Skapa svarsalternativ och ta bort eventuella dubbletter
+let allOptions = [q.correct, ...wrongTenses.map(t => q.verb.forms[t][q.pronounIndex])];
+
+// Filtrera bort dubbletter
+allOptions = [...new Set(allOptions)];
+
+// Om färre än 4 alternativ återstår, fyll på med slumpade från andra verb
+while (allOptions.length < 4) {
+  const randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
+  const randomTense = tenses[Math.floor(Math.random() * tenses.length)];
+  const randomForm = randomVerb.forms[randomTense][q.pronounIndex];
+  if (!allOptions.includes(randomForm)) allOptions.push(randomForm);
+}
+
+// Slumpa ordningen
+allOptions = allOptions.sort(() => 0.5 - Math.random());
 
   allOptions.forEach(opt => {
     const btn = document.createElement("button");
