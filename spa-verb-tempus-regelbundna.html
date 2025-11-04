@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regelbundna verb – tempus</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    background-color: #f9fafb;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  body.dark {
+    background-color: #1c1c1e;
+    color: #f1f1f1;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .stats {
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .card {
+    max-width: 400px;
+    width: 100%;
+    background: #fff;
+    color: #222;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    text-align: center;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  body.dark .card {
+    background: #2a2a2d;
+    color: #f1f1f1;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: none;
+    background-color: #007aff;
+    color: white;
+    transition: background 0.3s;
+    cursor: pointer;
+  }
+
+  button:hover { background-color: #005bb5; }
+
+  .correct { background-color: #2ecc71 !important; }
+  .wrong { background-color: #e74c3c !important; }
+
+  .dark-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #555;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.4em;
+    cursor: pointer;
+    transition: background 0.3s;
+	display: flex;
+align-items: center;
+justify-content: center;
+  }
+
+  .dark-toggle:hover {
+    background: #777;
+  }
+
+  .sentence {
+    font-style: italic;
+    margin-top: 10px;
+  }
+
+  .restart {
+    margin-top: 20px;
+    background-color: #ff9500;
+  }
+
+  .restart:hover {
+    background-color: #cc7a00;
+  }
+</style>
+</head>
+<body>
+
+<button class="dark-toggle" id="themeBtn" onclick="toggleDark()">🌙</button>
+
+<h1>Regelbundna verb – tempus</h1>
+<div class="stats" id="stats">Fråga: 0 / 0 • Rätt: 0</div>
+
+<div class="card" id="quiz">
+  <h2 id="verb"></h2>
+  <p class="sentence" id="sentence"></p>
+  <div id="options"></div>
+</div>
+
+<button id="restartBtn" class="restart" style="display:none;" onclick="restartQuiz()">🔄 Börja om</button>
+
+<script>
+const verbs = [
+  {
+    infinitive: "hablar",
+    sv: "prata",
+    forms: {
+      presens: ["hablo", "hablas", "habla", "hablamos", "habláis", "hablan"],
+      preteritum: ["hablé", "hablaste", "habló", "hablamos", "hablasteis", "hablaron"],
+      perfekt: ["he hablado", "has hablado", "ha hablado", "hemos hablado", "habéis hablado", "han hablado"],
+      futurum: ["voy a hablar", "vas a hablar", "va a hablar", "vamos a hablar", "vais a hablar", "van a hablar"]
+    },
+    svTempus: {
+      presens: ["Jag pratar", "Du pratar", "Han/hon pratar", "Vi pratar", "Ni pratar", "De pratar"],
+      preteritum: ["Jag pratade", "Du pratade", "Han/hon pratade", "Vi pratade", "Ni pratade", "De pratade"],
+      perfekt: ["Jag har pratat", "Du har pratat", "Han/hon har pratat", "Vi har pratat", "Ni har pratat", "De har pratat"],
+      futurum: ["Jag ska prata", "Du ska prata", "Han/hon ska prata", "Vi ska prata", "Ni ska prata", "De ska prata"]
+    }
+  },
+  {
+    infinitive: "comprar",
+    sv: "köpa",
+    forms: {
+      presens: ["compro", "compras", "compra", "compramos", "compráis", "compran"],
+      preteritum: ["compré", "compraste", "compró", "compramos", "comprasteis", "compraron"],
+      perfekt: ["he comprado", "has comprado", "ha comprado", "hemos comprado", "habéis comprado", "han comprado"],
+      futurum: ["voy a comprar", "vas a comprar", "va a comprar", "vamos a comprar", "vais a comprar", "van a comprar"]
+    },
+    svTempus: {
+      presens: ["Jag köper", "Du köper", "Han/hon köper", "Vi köper", "Ni köper", "De köper"],
+      preteritum: ["Jag köpte", "Du köpte", "Han/hon köpte", "Vi köpte", "Ni köpte", "De köpte"],
+      perfekt: ["Jag har köpt", "Du har köpt", "Han/hon har köpt", "Vi har köpt", "Ni har köpt", "De har köpt"],
+      futurum: ["Jag ska köpa", "Du ska köpa", "Han/hon ska köpa", "Vi ska köpa", "Ni ska köpa", "De ska köpa"]
+    }
+  },
+  {
+    infinitive: "escuchar",
+    sv: "lyssna",
+    forms: {
+      presens: ["escucho", "escuchas", "escucha", "escuchamos", "escucháis", "escuchan"],
+      preteritum: ["escuché", "escuchaste", "escuchó", "escuchamos", "escuchasteis", "escucharon"],
+      perfekt: ["he escuchado", "has escuchado", "ha escuchado", "hemos escuchado", "habéis escuchado", "han escuchado"],
+      futurum: ["voy a escuchar", "vas a escuchar", "va a escuchar", "vamos a escuchar", "vais a escuchar", "van a escuchar"]
+    },
+    svTempus: {
+      presens: ["Jag lyssnar", "Du lyssnar", "Han/hon lyssnar", "Vi lyssnar", "Ni lyssnar", "De lyssnar"],
+      preteritum: ["Jag lyssnade", "Du lyssnade", "Han/hon lyssnade", "Vi lyssnade", "Ni lyssnade", "De lyssnade"],
+      perfekt: ["Jag har lyssnat", "Du har lyssnat", "Han/hon har lyssnat", "Vi har lyssnat", "Ni har lyssnat", "De har lyssnat"],
+      futurum: ["Jag ska lyssna", "Du ska lyssna", "Han/hon ska lyssna", "Vi ska lyssna", "Ni ska lyssna", "De ska lyssna"]
+    }
+  }
+];
+
+const pronouns = ["yo", "tú", "él/ella", "nosotros", "vosotros", "ellos"];
+const tenses = ["presens", "preteritum", "perfekt", "futurum"];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+
+function generateQuestions() {
+  questions = [];
+  verbs.forEach(v => {
+    tenses.forEach(t => {
+      pronouns.forEach((p, i) => {
+        questions.push({
+          verb: v,
+          tense: t,
+          pronounIndex: i,
+          correct: v.forms[t][i],
+          swedish: v.svTempus[t][i]
+        });
+      });
+    });
+  });
+  questions.sort(() => 0.5 - Math.random());
+}
+
+function startQuiz() {
+  generateQuestions();
+  currentIndex = 0;
+  score = 0;
+  document.getElementById("restartBtn").style.display = "none";
+  nextQuestion();
+}
+
+function nextQuestion() {
+  if (currentIndex >= questions.length) {
+    document.getElementById("verb").textContent = "Övningen är klar!";
+    document.getElementById("sentence").textContent = `Du fick ${score} av ${questions.length} rätt.`;
+    document.getElementById("options").innerHTML = "";
+    document.getElementById("restartBtn").style.display = "block";
+    updateStats();
+    return;
+  }
+
+  const q = questions[currentIndex];
+  document.getElementById("verb").textContent = q.swedish;
+  document.getElementById("sentence").textContent = `(${q.verb.sv})`;
+
+  const optionsContainer = document.getElementById("options");
+  optionsContainer.innerHTML = "";
+
+  // Skapa svarsalternativ: samma verb, olika tempus (inkl rätt)
+  let wrongTenses = tenses.filter(t => t !== q.tense);
+  wrongTenses = wrongTenses.sort(() => 0.5 - Math.random()).slice(0,3);
+
+  const allOptions = [q.correct, ...wrongTenses.map(t => q.verb.forms[t][q.pronounIndex])]
+                     .sort(() => 0.5 - Math.random());
+
+  allOptions.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(btn, opt, q.correct);
+    optionsContainer.appendChild(btn);
+  });
+
+  updateStats();
+}
+
+function checkAnswer(btn, choice, correctAnswer) {
+  const buttons = document.querySelectorAll("#options button");
+  buttons.forEach(b => b.disabled = true);
+
+  if (choice === correctAnswer) {
+    btn.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+    const correctBtn = Array.from(buttons).find(b => b.textContent === correctAnswer);
+    if (correctBtn) correctBtn.classList.add("correct");
+  }
+
+  currentIndex++;
+  updateStats();
+  setTimeout(nextQuestion, 1500);
+}
+
+function updateStats() {
+  document.getElementById("stats").textContent =
+    `Fråga: ${Math.min(currentIndex+1, questions.length)} / ${questions.length} • Rätt: ${score}`;
+}
+
+function toggleDark() {
+  const body = document.body;
+  const btn = document.getElementById("themeBtn");
+  body.classList.toggle("dark");
+  btn.textContent = body.classList.contains("dark") ? "☀️" : "🌙";
+}
+
+function restartQuiz() {
+  startQuiz();
+}
+
+startQuiz();
+</script>
+
+
+
+</body>
+</html>
