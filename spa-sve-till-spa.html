@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Svenska → Spanska meningar</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    background-color: #f9fafb;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+  }
+  body.dark { background-color: #1c1c1e; color: #f1f1f1; }
+
+  h1 { text-align: center; margin-bottom: 10px; }
+  .stats { margin-bottom: 20px; font-weight: 500; }
+
+  .card {
+    max-width: 500px; width: 100%;
+    background: #fff; color: #222;
+    border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    text-align: center;
+    transition: background 0.3s, color 0.3s;
+  }
+  body.dark .card { background: #2a2a2d; color: #f1f1f1; }
+
+  button {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: none;
+    background-color: #007aff;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button:hover { background-color: #005bb5; }
+  .correct { background-color: #2ecc71 !important; }
+  .wrong { background-color: #e74c3c !important; }
+
+  .dark-toggle {
+    position: fixed;
+    top: 10px; right: 10px;
+    background: #555; color: #fff;
+    border: none; border-radius: 50%;
+    width: 40px; height: 40px; font-size: 1.4em;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s;
+  }
+  .dark-toggle:hover { background: #777; }
+
+  .restart {
+    margin-top: 20px;
+    background-color: #ff9500;
+  }
+  .restart:hover { background-color: #cc7a00; }
+</style>
+</head>
+<body>
+
+<button class="dark-toggle" id="themeBtn" onclick="toggleDark()">🌙</button>
+<h1>Översätt till spanska</h1>
+<div class="stats" id="stats">Fråga: 0 / 0 • Rätt: 0</div>
+
+<div class="card" id="quiz">
+  <h2 id="question"></h2>
+  <div id="options"></div>
+</div>
+
+<button id="restartBtn" class="restart" style="display:none;" onclick="restartQuiz()">🔄 Börja om</button>
+
+<script>
+const questions = [
+{ sv:"Jag har tvättat mig redan.", correct:"Ya me he lavado.", options:["Ya me he lavado.","Me he lavado ya.","Ya me lavo.","Me lavé ya."] },
+{ sv:"Har du också tvättat dig?", correct:"¿Te has lavado también?", options:["¿Te has lavado también?","¿Te lavas también?","¿Te lavaste también?","¿Te estás lavando también?"] },
+{ sv:"Paula har kammat sig varje dag.", correct:"Paula se ha peinado cada día.", options:["Paula se ha peinado cada día.","Paula se peina cada día.","Paula ha peinado cada día.","Paula se ha peinó cada día."] },
+{ sv:"Vi har kammat oss idag också.", correct:"Nos hemos peinado hoy también.", options:["Nos hemos peinado hoy también.","Nos peinamos hoy también.","Nos estamos peinando hoy también.","Nos lavamos hoy también."] },
+{ sv:"Jag badar hela sommaren.", correct:"Me baño todo el verano.", options:["Me baño todo el verano.","Estoy bañándome todo el verano.","Me he bañado todo el verano.","Me bañé todo el verano."] },
+{ sv:"Jag ska bada hela sommaren.", correct:"Voy a bañarme todo el verano.", options:["Voy a bañarme todo el verano.","Me voy a bañar todo el verano.","Voy a baño todo el verano.","Bañaré todo el verano."] },
+{ sv:"Jag har badat hela sommaren.", correct:"Me he bañado todo el verano.", options:["Me he bañado todo el verano.","He bañado todo el verano.","Me bañé todo el verano.","Me estoy bañando todo el verano."] },
+{ sv:"I år har mina kusiner badat hela sommaren.", correct:"Este año mis primos se han bañado todo el verano.", options:["Este año mis primos se han bañado todo el verano.","Este año mis primos se bañaron todo el verano.","Este año mis primos se bañan todo el verano.","Este año mis primos han bañado todo el verano."] },
+{ sv:"Jag tvättade mig igår.", correct:"Me lavé ayer.", options:["Me lavé ayer.","Me lavo ayer.","Me he lavado ayer.","Lavé ayer."] },
+{ sv:"Tvättade du också dig?", correct:"¿Te lavaste también?", options:["¿Te lavaste también?","¿Te lavas también?","¿Te has lavado también?","¿Te estás lavando también?"] },
+{ sv:"Paula kammade sig igår.", correct:"Paula se peinó ayer.", options:["Paula se peinó ayer.","Paula se ha peinado ayer.","Paula se peina ayer.","Paula peinó ayer."] },
+{ sv:"Vi kammade oss också.", correct:"Nos peinamos también.", options:["Nos peinamos también.","Nos hemos peinado también.","Nos peinábamos también.","Nos lavamos también."] },
+{ sv:"De duschade för en vecka sedan.", correct:"Se ducharon hace una semana.", options:["Se ducharon hace una semana.","Se han duchado hace una semana.","Se duchan hace una semana.","Ducharon hace una semana."] },
+{ sv:"Jag tänker mycket nu.", correct:"Pienso mucho ahora.", options:["Pienso mucho ahora.","Estoy pensando mucho ahora.","Pensé mucho ahora.","Penso mucho ahora."] },
+{ sv:"Vi stänger dörren.", correct:"Cerramos la puerta.", options:["Cerramos la puerta.","Estamos cerrando la puerta.","Hemos cerrado la puerta.","Cerramos puerta."] },
+{ sv:"Paula börjar imorgon klockan åtta.", correct:"Paula empieza mañana a las ocho.", options:["Paula empieza mañana a las ocho.","Paula comienza mañana a las ocho.","Paula empieza a las ocho mañana.","Paula empezó mañana a las ocho."] },
+{ sv:"Mina kusiner kommer tillbaka på måndag.", correct:"Mis primos vuelven el lunes.", options:["Mis primos vuelven el lunes.","Mis primos regresan el lunes.","Mis primos volverán el lunes.","Mis primos vienen el lunes."] },
+{ sv:"Spelar du fotboll varje dag?", correct:"¿Juegas al fútbol cada día?", options:["¿Juegas al fútbol cada día?","¿Juegas fútbol todos los días?","¿Juegas fútbol cada día?","¿Tú juegas al fútbol cada día?"] },
+{ sv:"Ni äter alltid lunch klockan 12:00.", correct:"Siempre almorzáis a las doce.", options:["Siempre almorzáis a las doce.","Almorzáis siempre a las doce.","Siempre coméis a las doce.","Coméis siempre a las doce."] },
+{ sv:"Peter ska äta imorgon.", correct:"Pedro va a comer mañana.", options:["Pedro va a comer mañana.","Pedro comerá mañana.","Pedro come mañana.","Pedro va comer mañana."] },
+{ sv:"De ska prata spanska på lördag.", correct:"Van a hablar español el sábado.", options:["Van a hablar español el sábado.","Van a hablar en español el sábado.","Hablarán español el sábado.","Hablan español el sábado."] },
+{ sv:"Pojkarna ska plugga på biblioteket.", correct:"Los chicos van a estudiar en la biblioteca.", options:["Los chicos van a estudiar en la biblioteca.","Los chicos estudiarán en la biblioteca.","Los chicos estudian en la biblioteca.","Los chicos van estudiar en la biblioteca."] },
+{ sv:"Du ska åka till Spanien.", correct:"Vas a ir a España.", options:["Vas a ir a España.","Vas ir a España.","Irás a España.","Tú vas a España."] },
+{ sv:"När ska du åka?", correct:"¿Cuándo vas a ir?", options:["¿Cuándo vas a ir?","¿Cuándo irás?","¿Cuándo vas?","¿Vas cuándo?"] },
+{ sv:"Felipe och Carmela ska åka till Madrid imorgon.", correct:"Felipe y Carmela van a ir a Madrid mañana.", options:["Felipe y Carmela van a ir a Madrid mañana.","Felipe y Carmela van a Madrid mañana.","Felipe y Carmela irán a Madrid mañana.","Felipe y Carmela van ir a Madrid mañana."] },
+{ sv:"Var ska ni äta på fredag?", correct:"¿Dónde vais a comer el viernes?", options:["¿Dónde vais a comer el viernes?","¿Dónde comeréis el viernes?","¿Dónde coméis el viernes?","¿Vais dónde a comer el viernes?"] },
+{ sv:"Jag har pratat mycket idag.", correct:"He hablado mucho hoy.", options:["He hablado mucho hoy.","Hablé mucho hoy.","Estoy hablando mucho hoy.","Hablaré mucho hoy."] },
+{ sv:"Vi har druckit en stor läsk.", correct:"Hemos bebido un refresco grande.", options:["Hemos bebido un refresco grande.","Bebimos un refresco grande.","Bebimos un grande refresco.","Hemos bebido refresco grande."] },
+{ sv:"Har du ätit en smörgås?", correct:"¿Has comido un bocadillo?", options:["¿Has comido un bocadillo?","¿Comiste un bocadillo?","¿Has comido bocadillo?","¿Tú comiste un bocadillo?"] },
+{ sv:"Paula har bott i Valencia.", correct:"Paula ha vivido en Valencia.", options:["Paula ha vivido en Valencia.","Paula vivió en Valencia.","Paula vive en Valencia.","Paula viviendo en Valencia."] },
+{ sv:"Carlos har skrivit ett brev.", correct:"Carlos ha escrito una carta.", options:["Carlos ha escrito una carta.","Carlos escribió una carta.","Carlos ha escribido una carta.","Carlos escribe una carta."] },
+{ sv:"Jag har sett en råtta på ICA Täby.", correct:"He visto una rata en ICA Täby.", options:["He visto una rata en ICA Täby.","Vi una rata en ICA Täby.","He mirado una rata en ICA Täby.","He visto un ratón en ICA Täby."] },
+{ sv:"Vad har de gjort idag?", correct:"¿Qué han hecho hoy?", options:["¿Qué han hecho hoy?","¿Qué hacen hoy?","¿Qué hicieron hoy?","¿Qué están haciendo hoy?"] },
+{ sv:"De har åkt tillbaka till Spanien idag.", correct:"Hoy han vuelto a España.", options:["Hoy han vuelto a España.","Han regresado a España hoy.","Han ido a España hoy.","Se fueron a España hoy."] },
+{ sv:"Igår åt Carlos ett äpple.", correct:"Ayer Carlos comió una manzana.", options:["Ayer Carlos comió una manzana.","Carlos comió una manzana ayer.","Carlos ha comido una manzana ayer.","Ayer Carlos comía una manzana."] },
+{ sv:"Jag spelade fotboll igår.", correct:"Jugué al fútbol ayer.", options:["Jugué al fútbol ayer.","He jugado al fútbol ayer.","Juego al fútbol ayer.","Jugaba al fútbol ayer."] },
+{ sv:"Vi åt klockan sju igår.", correct:"Comimos a las siete ayer.", options:["Comimos a las siete ayer.","Hemos comido a las siete ayer.","Comimos ayer a las siete.","Comíamos a las siete ayer."] },
+{ sv:"Bodde du i Spanien i fjol?", correct:"¿Viviste en España el año pasado?", options:["¿Viviste en España el año pasado?","¿Has vivido en España el año pasado?","¿Vives en España el año pasado?","¿Tú viviste en España el año pasado?"] },
+{ sv:"Lisa och Carlos sjöng i skolan igår.", correct:"Lisa y Carlos cantaron en la escuela ayer.", options:["Lisa y Carlos cantaron en la escuela ayer.","Lisa y Carlos cantan en la escuela ayer.","Lisa y Carlos han cantado en la escuela ayer.","Lisa y Carlos cantaban en la escuela ayer."] },
+{ sv:"Hostade ni mycket igår?", correct:"¿Tosisteis mucho ayer?", options:["¿Tosisteis mucho ayer?","¿Habéis tosido mucho ayer?","¿Toséis mucho ayer?","¿Tosabais mucho ayer?"] },
+{ sv:"Igår köpte jag en svart hund.", correct:"Ayer compré un perro negro.", options:["Ayer compré un perro negro.","Compré un perro negro ayer.","He comprado un perro negro ayer.","Ayer compraba un perro negro."] },
+{ sv:"De hyrde ett litet hus i södra Spanien.", correct:"Alquilaron una casa pequeña en el sur de España.", options:["Alquilaron una casa pequeña en el sur de España.","Han alquilado una casa pequeña en el sur de España.","Alquilaban una casa pequeña en el sur de España.","Ellos alquilaron casa pequeña en el sur de España."] },
+{ sv:"Lisa sprang 5 kilometer igår.", correct:"Lisa corrió cinco kilómetros ayer.", options:["Lisa corrió cinco kilómetros ayer.","Lisa ha corrido cinco kilómetros ayer.","Lisa corría cinco kilómetros ayer.","Lisa corre cinco kilómetros ayer."] },
+{ sv:"Var sprang ni?", correct:"¿Dónde corristeis?", options:["¿Dónde corristeis?","¿Dónde habéis corrido?","¿Dónde corréis?","¿Dónde corrieron?"] },
+{ sv:"Vi sprang i skogen, nära Skrylle.", correct:"Corrimos en el bosque, cerca de Skrylle.", options:["Corrimos en el bosque, cerca de Skrylle.","Hemos corrido en el bosque, cerca de Skrylle.","Corríamos en el bosque, cerca de Skrylle.","Corremos en el bosque, cerca de Skrylle."] },
+{ sv:"Jag lärde mig lite av varje.", correct:"Aprendí un poco de todo.", options:["Aprendí un poco de todo.","He aprendido un poco de todo.","Aprendo un poco de todo.","Aprendía un poco de todo."] },
+{ sv:"Vi lärde oss ingenting.", correct:"No aprendimos nada.", options:["No aprendimos nada.","No hemos aprendido nada.","No aprendíamos nada.","No aprendemos nada."] },
+{ sv:"Columbus upptäckte Amerika.", correct:"Colón descubrió América.", options:["Colón descubrió América.","Colón ha descubierto América.","Colón descubre América.","Colón descubría América."] },
+{ sv:"Christoffer Dohrmann upptäckte radium, eller hur?", correct:"¿Cristóbal Dohrmann descubrió el radio, verdad?", options:["¿Cristóbal Dohrmann descubrió el radio, verdad?","¿Cristóbal Dohrmann ha descubierto el radio, verdad?","¿Cristóbal Dohrmann descubre el radio, verdad?","¿Descubrió Cristóbal Dohrmann el radio, verdad?"] },
+{ sv:"Öppnade du dörren eller stängde du fönstret?", correct:"¿Abriste la puerta o cerraste la ventana?", options:["¿Abriste la puerta o cerraste la ventana?","¿Has abierto la puerta o has cerrado la ventana?","¿Abrías la puerta o cerrabas la ventana?","¿Abriste la puerta o cierras la ventana?"] },
+{ sv:"Vi drack några läsk och åt lite chips.", correct:"Bebimos unos refrescos y comimos unas patatas.", options:["Bebimos unos refrescos y comimos unas patatas.","Hemos bebido unos refrescos y comido unas patatas.","Bebimos refrescos y comimos patatas.","Bebíamos unos refrescos y comíamos unas patatas."] },
+{ sv:"Bonzo var en enastående hund.", correct:"Bonzo fue un perro extraordinario.", options:["Bonzo fue un perro extraordinario.","Bonzo era un perro extraordinario.","Bonzo ha sido un perro extraordinario.","Bonzo está un perro extraordinario."] },
+{ sv:"Paula och Mikaela var i Malmö igår.", correct:"Paula y Mikaela estuvieron en Malmö ayer.", options:["Paula y Mikaela estuvieron en Malmö ayer.","Paula y Mikaela estuvieron ayer en Malmö.","Paula y Mikaela estaban en Malmö ayer.","Paula y Mikaela han estado en Malmö ayer."] },
+{ sv:"Var du där också?", correct:"¿Estuviste allí también?", options:["¿Estuviste allí también?","¿Has estado allí también?","¿Eras allí también?","¿Estás allí también?"] },
+{ sv:"Vad gjorde ni igår, pojkar?", correct:"¿Qué hicisteis ayer, chicos?", options:["¿Qué hicisteis ayer, chicos?","¿Qué hicieron ayer, chicos?","¿Qué habéis hecho ayer, chicos?","¿Qué hacen ayer, chicos?"] },
+{ sv:"Först gjorde vi tårtor. Sedan bäddade vi sängen.", correct:"Primero hicimos tartas. Luego hicimos la cama.", options:["Primero hicimos tartas. Luego hicimos la cama.","Primero hicimos pasteles. Después hicimos la cama.","Primero hemos hecho tartas. Luego hicimos la cama.","Primero hicimos tartas y después hacemos la cama."] },
+{ sv:"Igår hade du examen, inte sant?", correct:"¿Ayer tuviste el examen, verdad?", options:["¿Ayer tuviste el examen, verdad?","¿Ayer has tenido el examen, verdad?","¿Tuviste ayer el examen, verdad?","¿Tenías el examen ayer, verdad?"] },
+{ sv:"Jag sade inget.", correct:"No dije nada.", options:["No dije nada.","No he dicho nada.","No decía nada.","No digo nada."] },
+{ sv:"Vad sade du, då?", correct:"¿Qué dijiste entonces?", options:["¿Qué dijiste entonces?","¿Qué has dicho entonces?","¿Qué decías entonces?","¿Qué dijiste, verdad?"] },
+{ sv:"Pedro sade sanningen till polisen.", correct:"Pedro dijo la verdad a la policía.", options:["Pedro dijo la verdad a la policía.","Pedro ha dicho la verdad a la policía.","Pedro decía la verdad a la policía.","Pedro dice la verdad a la policía."] },
+{ sv:"Mina kusiner sade att skolan är bättre än ett arbete.", correct:"Mis primos dijeron que la escuela es mejor que un trabajo.", options:["Mis primos dijeron que la escuela es mejor que un trabajo.","Mis primos han dicho que la escuela es mejor que un trabajo.","Mis primos decían que la escuela es mejor que un trabajo.","Mis primos dicen que la escuela es mejor que un trabajo."] },
+{ sv:"Din storebror åkte till Barcelona igår.", correct:"Tu hermano mayor fue a Barcelona ayer.", options:["Tu hermano mayor fue a Barcelona ayer.","Tu hermano mayor ha ido a Barcelona ayer.","Tu hermano mayor iba a Barcelona ayer.","Tu hermano mayor va a Barcelona ayer."] },
+{ sv:"Min lillasyster åkte till Argentina i fjol.", correct:"Mi hermana menor fue a Argentina el año pasado.", options:["Mi hermana menor fue a Argentina el año pasado.","Mi hermana menor ha ido a Argentina el año pasado.","Mi hermana menor iba a Argentina el año pasado.","Mi hermana pequeña fue a Argentina el año pasado."] },
+{ sv:"Jag vill sluta klockan sju idag.", correct:"Quiero terminar a las siete hoy.", options:["Quiero terminar a las siete hoy.","Deseo terminar a las siete hoy.","Voy a terminar a las siete hoy.","Quiero terminando a las siete hoy."] },
+{ sv:"Paula brukar äta klockan 12:00.", correct:"Paula suele comer a las doce.", options:["Paula suele comer a las doce.","Paula come a las doce.","Paula está comiendo a las doce.","Paula ha comido a las doce."] },
+{ sv:"Vi kan tala spanska, engelska och svenska.", correct:"Podemos hablar español, inglés y sueco.", options:["Podemos hablar español, inglés y sueco.","Sabemos hablar español, inglés y sueco.","Hablamos español, inglés y sueco.","Podemos hablar en español, inglés y sueco."] },
+{ sv:"Pojkarna ska sjunga imorgon.", correct:"Los chicos van a cantar mañana.", options:["Los chicos van a cantar mañana.","Los chicos cantarán mañana.","Los chicos cantan mañana.","Los chicos van cantar mañana."] },
+{ sv:"Vill ni köpa glass eller godis?", correct:"¿Queréis comprar helado o dulces?", options:["¿Queréis comprar helado o dulces?","¿Queréis helado o dulces?","¿Queréis comprar un helado o un dulce?","¿Queréis coméis helado o dulces?"] },
+{ sv:"Jag måste ta en citronläsk nu.", correct:"Tengo que tomar un refresco de limón ahora.", options:["Tengo que tomar un refresco de limón ahora.","Debo tomar un refresco de limón ahora.","Tengo que bebo un refresco de limón ahora.","Necesito tomar un refresco de limón ahora."] },
+{ sv:"Lisa och Pedro kan inte ta tåget klockan 16:00 idag.", correct:"Lisa y Pedro no pueden tomar el tren a las cuatro hoy.", options:["Lisa y Pedro no pueden tomar el tren a las cuatro hoy.","Lisa y Pedro no podrán tomar el tren a las cuatro hoy.","Lisa y Pedro no toman el tren a las cuatro hoy.","Lisa y Pedro no han podido tomar el tren a las cuatro hoy."] },
+{ sv:"Vill de inte köpa tidningen nu?", correct:"¿No quieren comprar el periódico ahora?", options:["¿No quieren comprar el periódico ahora?","¿No compran el periódico ahora?","¿No quisieron comprar el periódico ahora?","¿No van a comprar el periódico ahora?"] },
+{ sv:"Flickorna brukar alltid köpa böcker i kiosken.", correct:"Las chicas suelen comprar libros en el quiosco.", options:["Las chicas suelen comprar libros en el quiosco.","Las chicas compran libros en el quiosco.","Las chicas han comprado libros en el quiosco.","Las chicas compraban libros en el quiosco."] },
+{ sv:"Vi ska inte åka till bergen på måndag.", correct:"No vamos a ir a las montañas el lunes.", options:["No vamos a ir a las montañas el lunes.","No iremos a las montañas el lunes.","No vamos a las montañas el lunes.","No hemos ido a las montañas el lunes."] },
+{ sv:"Vi brukar ju åka på söndagar.", correct:"Solemos ir los domingos.", options:["Solemos ir los domingos.","Vamos los domingos.","Siempre vamos los domingos.","Solemos ir a los domingos."] },
+{ sv:"Vill ni inte köpa något att äta?", correct:"¿No queréis comprar algo para comer?", options:["¿No queréis comprar algo para comer?","¿No vais a comprar algo para comer?","¿No compráis algo para comer?","¿No quisisteis comprar algo para comer?"] },
+{ sv:"Lisa vill sluta klockan fem imorgon.", correct:"Lisa quiere terminar a las cinco mañana.", options:["Lisa quiere terminar a las cinco mañana.","Lisa va a terminar a las cinco mañana.","Lisa desea terminar a las cinco mañana.","Lisa termina a las cinco mañana."] },
+{ sv:"De brukar äta frukost klockan 09:00 på lördagar.", correct:"Suelen desayunar a las nueve los sábados.", options:["Suelen desayunar a las nueve los sábados.","Desayunan a las nueve los sábados.","Suelen comer a las nueve los sábados.","Desayunarán a las nueve los sábados."] },
+{ sv:"Du kan tala spanska, engelska och svenska.", correct:"Puedes hablar español, inglés y sueco.", options:["Puedes hablar español, inglés y sueco.","Sabes hablar español, inglés y sueco.","Hablas español, inglés y sueco.","Puedes hablar en español, inglés y sueco."] },
+{ sv:"Flickorna ska simma nästa vecka.", correct:"Las chicas van a nadar la próxima semana.", options:["Las chicas van a nadar la próxima semana.","Las chicas nadarán la próxima semana.","Las chicas nadan la próxima semana.","Las chicas van nadar la próxima semana."] },
+{ sv:"Vill han köpa päron eller äpplen?", correct:"¿Quiere comprar peras o manzanas?", options:["¿Quiere comprar peras o manzanas?","¿Compra peras o manzanas?","¿Va a comprar peras o manzanas?","¿Quiere comprar manzana o pera?"] },
+{ sv:"Vi måste ta en hamburgare idag.", correct:"Tenemos que tomar una hamburguesa hoy.", options:["Tenemos que tomar una hamburguesa hoy.","Debemos tomar una hamburguesa hoy.","Tomamos una hamburguesa hoy.","Hemos tomado una hamburguesa hoy."] },
+{ sv:"Jag kan inte ta tåget klockan 16:00 nästa tisdag.", correct:"No puedo tomar el tren a las cuatro el martes que viene.", options:["No puedo tomar el tren a las cuatro el martes que viene.","No podré tomar el tren a las cuatro el martes que viene.","No puedo tomar tren a las cuatro el martes que viene.","No puedo coger el tren a las cuatro el martes que viene."] },
+{ sv:"Vill du inte köpa mopeden i eftermiddag?", correct:"¿No quieres comprar la moto esta tarde?", options:["¿No quieres comprar la moto esta tarde?","¿No compras la moto esta tarde?","¿No quisiste comprar la moto esta tarde?","¿No vas a comprar la moto esta tarde?"] },
+{ sv:"Din bror brukar alltid köpa godis i kiosken på fredagar.", correct:"Tu hermano suele comprar dulces en el quiosco los viernes.", options:["Tu hermano suele comprar dulces en el quiosco los viernes.","Tu hermano compra dulces en el quiosco los viernes.","Tu hermano ha comprado dulces en el quiosco los viernes.","Tu hermano compraba dulces en el quiosco los viernes."] },
+{ sv:"Fredde ska inte åka till Bjärred på söndag.", correct:"Fredde no va a ir a Bjärred el domingo.", options:["Fredde no va a ir a Bjärred el domingo.","Fredde no irá a Bjärred el domingo.","Fredde no va a Bjärred el domingo.","Fredde no fue a Bjärred el domingo."] },
+{ sv:"Du brukar ju sjunga på lördagar, inte sant?", correct:"¿Sueles cantar los sábados, verdad?", options:["¿Sueles cantar los sábados, verdad?","¿Cantas los sábados, verdad?","¿Has cantado los sábados, verdad?","¿Sueles cantas los sábados, verdad?"] },
+{ sv:"Vill du inte köpa något att äta?", correct:"¿No quieres comprar algo para comer?", options:["¿No quieres comprar algo para comer?","¿No vas a comprar algo para comer?","¿No compras algo para comer?","¿No quisiste comprar algo para comer?"] },
+{ sv:"Jag är snorhungrig!", correct:"¡Tengo muchísima hambre!", options:["¡Tengo muchísima hambre!","¡Estoy muy hambriento!","¡Tengo hambre!","¡Soy hambriento!"] },
+{ sv:"Min katt är stor.", correct:"Mi gato es grande.", options:["Mi gato es grande.","Mi gato está grande.","El gato es grande.","Mi gata es grande."] },
+{ sv:"Mina hundar är svarta och vita.", correct:"Mis perros son negros y blancos.", options:["Mis perros son negros y blancos.","Mis perros están negros y blancos.","Los perros son negros y blancos.","Mis perros eran negros y blancos."] },
+{ sv:"Dina hus är stora.", correct:"Tus casas son grandes.", options:["Tus casas son grandes.","Tus casas están grandes.","Las casas son grandes.","Tus casa son grandes."] },
+{ sv:"Hans mamma heter Carmela.", correct:"Su madre se llama Carmela.", options:["Su madre se llama Carmela.","Su mamá se llama Carmela.","Su madre llama Carmela.","Su madre es Carmela."] },
+{ sv:"Hennes pappa heter Pedro.", correct:"Su padre se llama Pedro.", options:["Su padre se llama Pedro.","Su papá se llama Pedro.","Su padre llama Pedro.","Su padre es Pedro."] },
+{ sv:"Mitt hus är vitt.", correct:"Mi casa es blanca.", options:["Mi casa es blanca.","Mi casa está blanca.","La casa es blanca.","Mi casas es blanca."] },
+{ sv:"Dina katter är stora.", correct:"Tus gatos son grandes.", options:["Tus gatos son grandes.","Tus gatos están grandes.","Los gatos son grandes.","Tus gata son grandes."] },
+{ sv:"Hans hundar heter Buster och Pluto.", correct:"Sus perros se llaman Buster y Pluto.", options:["Sus perros se llaman Buster y Pluto.","Sus perros llaman Buster y Pluto.","Sus perros son Buster y Pluto.","Sus perros están Buster y Pluto."] },
+{ sv:"Din kusin heter Alfonso.", correct:"Tu primo se llama Alfonso.", options:["Tu primo se llama Alfonso.","Tu primo llama Alfonso.","El primo se llama Alfonso.","Tu primo es Alfonso."] },
+{ sv:"Min syster heter Karin.", correct:"Mi hermana se llama Karin.", options:["Mi hermana se llama Karin.","Mi hermana llama Karin.","La hermana se llama Karin.","Mi hermana es Karin."] },
+{ sv:"Din katt heter Felino.", correct:"Tu gato se llama Felino.", options:["Tu gato se llama Felino.","Tu gato llama Felino.","El gato se llama Felino.","Tu gato es Felino."] },
+{ sv:"Min favoritfärg är gul.", correct:"Mi color favorito es el amarillo.", options:["Mi color favorito es el amarillo.","Mi color favorito está amarillo.","Mi color favorito es amarillo.","El color favorito mío es el amarillo."] },
+{ sv:"Hur mår du?", correct:"¿Cómo estás?", options:["¿Cómo estás?","¿Cómo te sientes?","¿Cómo eres?","¿Cómo te llamas?"] },
+{ sv:"Var ligger Caracas?", correct:"¿Dónde está Caracas?", options:["¿Dónde está Caracas?","¿Dónde es Caracas?","¿Dónde queda Caracas?","¿Dónde hay Caracas?"] },
+{ sv:"Var bor vi?", correct:"¿Dónde vivimos?", options:["¿Dónde vivimos?","¿Dónde estamos?","¿Dónde vivimos nosotros?","¿Dónde habitamos?"] },
+{ sv:"Hur många pojkar finns det här?", correct:"¿Cuántos chicos hay aquí?", options:["¿Cuántos chicos hay aquí?","¿Cuántos chicos están aquí?","¿Cuántos chicos son aquí?","¿Cuántos hay chicos aquí?"] },
+{ sv:"Hur mycket kostar en läsk?", correct:"¿Cuánto cuesta un refresco?", options:["¿Cuánto cuesta un refresco?","¿Cuánto vale un refresco?","¿Cuánto cuesta refresco?","¿Cuánto es un refresco?"] },
+{ sv:"Hur många syskon har du?", correct:"¿Cuántos hermanos tienes?", options:["¿Cuántos hermanos tienes?","¿Cuántos hermanos hay?","¿Tienes cuántos hermanos?","¿Cuántos hermanos tú tienes?"] },
+{ sv:"Varifrån är du?", correct:"¿De dónde eres?", options:["¿De dónde eres?","¿Dónde eres?","¿De dónde estás?","¿De dónde vienes?"] },
+{ sv:"Vad betyder 'hund'?", correct:"¿Qué significa 'hund'?", options:["¿Qué significa 'hund'?","¿Qué es 'hund'?","¿Qué quiere decir 'hund'?","¿Qué significa la palabra 'hund'?"] },
+{ sv:"Hur många systrar har du?", correct:"¿Cuántas hermanas tienes?", options:["¿Cuántas hermanas tienes?","¿Tienes cuántas hermanas?","¿Cuántas hermanas hay?","¿Cuántas hermanas tú tienes?"] },
+{ sv:"Vad kostar den?", correct:"¿Cuánto cuesta?", options:["¿Cuánto cuesta?","¿Qué cuesta?","¿Cuánto vale?","¿Cuánto es?"] },
+{ sv:"Vad är klockan?", correct:"¿Qué hora es?", options:["¿Qué hora es?","¿Cuál es la hora?","¿Qué es la hora?","¿Qué hora hay?"] },
+{ sv:"Den är fem (05:00).", correct:"Son las cinco.", options:["Son las cinco.","Es las cinco.","Son cinco.","Está las cinco."] },
+{ sv:"Den är halv sex (05:30).", correct:"Son las cinco y media.", options:["Son las cinco y media.","Son cinco y media.","Es las cinco y media.","Son las seis menos media."] },
+{ sv:"Den är kvart över nio (09:15).", correct:"Son las nueve y cuarto.", options:["Son las nueve y cuarto.","Son las nueve y quince.","Es las nueve y cuarto.","Son las nueve y cinco."] },
+{ sv:"Den är tre (03:00).", correct:"Son las tres.", options:["Son las tres.","Es las tres.","Son tres.","Está las tres."] },
+{ sv:"Den är kvart i sju (06:45).", correct:"Son las siete menos cuarto.", options:["Son las siete menos cuarto.","Son las seis y cuarenta y cinco.","Son siete menos cuarto.","Es las siete menos cuarto."] },
+{ sv:"Hur dags slutar du idag?", correct:"¿A qué hora terminas hoy?", options:["¿A qué hora terminas hoy?","¿Cuándo terminas hoy?","¿A qué hora tú terminas hoy?","¿A qué hora acabas hoy?"] },
+{ sv:"Jag slutar klockan sju (19:00).", correct:"Termino a las siete.", options:["Termino a las siete.","Acabo a las siete.","Trabajo hasta las siete.","Termino las siete."] },
+{ sv:"Vi spelar fotboll klockan halv nio (08:30).", correct:"Jugamos al fútbol a las ocho y media.", options:["Jugamos al fútbol a las ocho y media.","Jugamos fútbol a las ocho y media.","Estamos jugando al fútbol a las ocho y media.","Jugamos al fútbol a las ocho y treinta."] },
+{ sv:"Paula har spanska klockan två (14:00).", correct:"Paula tiene español a las dos.", options:["Paula tiene español a las dos.","Paula estudia español a las dos.","Paula tiene clase de español a las dos.","Paula aprende español a las dos."] },
+{ sv:"Matchen börjar klockan kvart över åtta (20:15).", correct:"El partido empieza a las ocho y cuarto.", options:["El partido empieza a las ocho y cuarto.","El partido comienza a las ocho y cuarto.","Empieza el partido a las ocho y cuarto.","El partido empieza a las ocho y quince."] },
+{ sv:"Har ni spanska klockan kvart i elva (10:45)?", correct:"¿Tenéis español a las once menos cuarto?", options:["¿Tenéis español a las once menos cuarto?","¿Tenéis clase de español a las once menos cuarto?","¿Tenéis español a las diez y cuarenta y cinco?","¿Estudiáis español a las once menos cuarto?"] },
+{ sv:"Jag är trött.", correct:"Estoy cansado.", options:["Estoy cansado.","Soy cansado.","Estoy cansada.","Tengo cansado."] },
+{ sv:"Hon är glad.", correct:"Ella está contenta.", options:["Ella está contenta.","Ella es contenta.","Ella está feliz.","Ella tiene contenta."] },
+{ sv:"Vi är i skolan.", correct:"Estamos en la escuela.", options:["Estamos en la escuela.","Somos en la escuela.","Estamos a la escuela.","Estamos en escuela."] },
+{ sv:"Han är sjuk idag.", correct:"Él está enfermo hoy.", options:["Él está enfermo hoy.","Él es enfermo hoy.","Él está malo hoy.","Él tiene enfermo hoy."] },
+{ sv:"Jag är från Sverige.", correct:"Soy de Suecia.", options:["Soy de Suecia.","Estoy de Suecia.","Vengo de Suecia.","Soy Suecia."] },
+{ sv:"De är hemma nu.", correct:"Están en casa ahora.", options:["Están en casa ahora.","Son en casa ahora.","Están a casa ahora.","Están casa ahora."] },
+{ sv:"Har du en bror?", correct:"¿Tienes un hermano?", options:["¿Tienes un hermano?","¿Tienes hermano?","¿Tú tienes un hermano?","¿Tienes un hermano, verdad?"] },
+{ sv:"Jag har två systrar.", correct:"Tengo dos hermanas.", options:["Tengo dos hermanas.","Yo tengo dos hermanas.","Tengo hermanas dos.","Tengo dos hermana."] },
+{ sv:"Vi har en liten bil.", correct:"Tenemos un coche pequeño.", options:["Tenemos un coche pequeño.","Tenemos un carro pequeño.","Tenemos coche pequeño.","Tenemos un coche chico."] },
+{ sv:"Har ni tid idag?", correct:"¿Tenéis tiempo hoy?", options:["¿Tenéis tiempo hoy?","¿Tenéis un tiempo hoy?","¿Tienen tiempo hoy?","¿Tenéis tiempo ahora?"] },
+{ sv:"Paula har en röd cykel.", correct:"Paula tiene una bicicleta roja.", options:["Paula tiene una bicicleta roja.","Paula tiene bicicleta roja.","Paula tiene una bici roja.","Paula tiene una bicicleta color rojo."] },
+{ sv:"Jag heter Johan.", correct:"Me llamo Johan.", options:["Me llamo Johan.","Soy Johan.","Me llamo Juan.","Yo soy Johan."] },
+{ sv:"Vad heter du?", correct:"¿Cómo te llamas?", options:["¿Cómo te llamas?","¿Cuál es tu nombre?","¿Qué te llamas?","¿Cómo tú te llamas?"] },
+{ sv:"Var bor du?", correct:"¿Dónde vives?", options:["¿Dónde vives?","¿Dónde tú vives?","¿Dónde estás viviendo?","¿Dónde vives tú?"] },
+{ sv:"Jag bor i Lund.", correct:"Vivo en Lund.", options:["Vivo en Lund.","Yo vivo en Lund.","Estoy en Lund.","Vivo a Lund."] },
+{ sv:"Hon bor i Madrid.", correct:"Ella vive en Madrid.", options:["Ella vive en Madrid.","Vive en Madrid.","Ella está en Madrid.","Ella ha vivido en Madrid."] },
+{ sv:"Vi bor i ett stort hus.", correct:"Vivimos en una casa grande.", options:["Vivimos en una casa grande.","Vivimos en casa grande.","Estamos en una casa grande.","Vivimos en un grande casa."] },
+{ sv:"Var ligger huset?", correct:"¿Dónde está la casa?", options:["¿Dónde está la casa?","¿Dónde es la casa?","¿Dónde hay la casa?","¿Dónde queda la casa?"] },
+{ sv:"Vad gör du nu?", correct:"¿Qué haces ahora?", options:["¿Qué haces ahora?","¿Qué estás haciendo ahora?","¿Qué tú haces ahora?","¿Qué haces tú ahora?"] },
+{ sv:"Jag studerar spanska.", correct:"Estudio español.", options:["Estudio español.","Yo estudio español.","Estoy estudiando español.","Estudio el español."] },
+{ sv:"Vi arbetar i Malmö.", correct:"Trabajamos en Malmö.", options:["Trabajamos en Malmö.","Estamos trabajando en Malmö.","Trabajamos a Malmö.","Nosotros trabajamos en Malmö."] },
+{ sv:"De arbetar mycket.", correct:"Trabajan mucho.", options:["Trabajan mucho.","Están trabajando mucho.","Trabajan muy.","Ellos trabajan mucho."] },
+{ sv:"Vad studerar ni?", correct:"¿Qué estudiáis?", options:["¿Qué estudiáis?","¿Qué estudian?","¿Qué estudiáis vosotros?","¿Qué estáis estudiando?"] },
+{ sv:"Jag gillar glass.", correct:"Me gusta el helado.", options:["Me gusta el helado.","Me gusta helado.","Me gustan los helados.","Me encanta el helado."] },
+{ sv:"Tycker du om musik?", correct:"¿Te gusta la música?", options:["¿Te gusta la música?","¿Te gusta música?","¿Te gustan la música?","¿Te gusta la canción?"] },
+{ sv:"Vi gillar att resa.", correct:"Nos gusta viajar.", options:["Nos gusta viajar.","Nos gusta ir de viaje.","Nos gusta viajar mucho.","Nos encantan viajar."] },
+{ sv:"De gillar hundar.", correct:"Les gustan los perros.", options:["Les gustan los perros.","Les gusta los perros.","Les gustan perros.","Les encantan los perros."] },
+{ sv:"Jag tycker om kaffe.", correct:"Me gusta el café.", options:["Me gusta el café.","Me encanta el café.","Me gusta café.","Me gustan los cafés."] },
+{ sv:"Jag dricker kaffe varje morgon.", correct:"Bebo café cada mañana.", options:["Bebo café cada mañana.","Tomo café cada mañana.","Bebo el café cada mañana.","Bebo café todos los días."] },
+{ sv:"Vad dricker du?", correct:"¿Qué bebes?", options:["¿Qué bebes?","¿Qué tomas?","¿Qué estás bebiendo?","¿Qué bebes tú?"] },
+{ sv:"Jag äter frukost klockan sju.", correct:"Desayuno a las siete.", options:["Desayuno a las siete.","Como a las siete.","Yo desayuno a las siete.","Desayuno las siete."] },
+{ sv:"Vi äter middag klockan sex.", correct:"Cenamos a las seis.", options:["Cenamos a las seis.","Comemos a las seis.","Estamos cenando a las seis.","Nosotros cenamos a las seis."] },
+{ sv:"Vad äter du till lunch?", correct:"¿Qué comes para el almuerzo?", options:["¿Qué comes para el almuerzo?","¿Qué almuerzas?","¿Qué comes al almuerzo?","¿Qué estás comiendo para el almuerzo?"] },
+{ sv:"Han äter pizza idag.", correct:"Él come pizza hoy.", options:["Él come pizza hoy.","Él está comiendo pizza hoy.","Come pizza hoy.","Él ha comido pizza hoy."] },
+{ sv:"Vi ska äta pasta imorgon.", correct:"Vamos a comer pasta mañana.", options:["Vamos a comer pasta mañana.","Comeremos pasta mañana.","Vamos comer pasta mañana.","Nosotros vamos a comer pasta mañana."] },
+{ sv:"Vad ska ni göra i helgen?", correct:"¿Qué vais a hacer el fin de semana?", options:["¿Qué vais a hacer el fin de semana?","¿Qué haréis el fin de semana?","¿Qué hacéis el fin de semana?","¿Qué vais hacer el fin de semana?"] },
+{ sv:"Vi ska spela fotboll.", correct:"Vamos a jugar al fútbol.", options:["Vamos a jugar al fútbol.","Jugaremos al fútbol.","Vamos a jugar fútbol.","Vamos jugar al fútbol."] },
+{ sv:"De ska titta på film.", correct:"Van a ver una película.", options:["Van a ver una película.","Verán una película.","Van ver una película.","Van a mirar una película."] },
+{ sv:"Vad ska du göra imorgon?", correct:"¿Qué vas a hacer mañana?", options:["¿Qué vas a hacer mañana?","¿Qué harás mañana?","¿Qué haces mañana?","¿Vas qué a hacer mañana?"] },
+{ sv:"Jag ska läsa en bok.", correct:"Voy a leer un libro.", options:["Voy a leer un libro.","Leeré un libro.","Voy leer un libro.","Voy a leer libro."] },
+{ sv:"Paula ska skriva ett brev.", correct:"Paula va a escribir una carta.", options:["Paula va a escribir una carta.","Paula escribirá una carta.","Paula va escribir una carta.","Paula va a escribir carta."] },
+{ sv:"Vi ska resa till Spanien.", correct:"Vamos a viajar a España.", options:["Vamos a viajar a España.","Viajaremos a España.","Vamos viajar a España.","Nosotros vamos a viajar a España."] },
+{ sv:"När ska ni resa?", correct:"¿Cuándo vais a viajar?", options:["¿Cuándo vais a viajar?","¿Cuándo viajaréis?","¿Cuándo viajan?","¿Vais cuándo a viajar?"] },
+{ sv:"Jag ska köpa en ny bil.", correct:"Voy a comprar un coche nuevo.", options:["Voy a comprar un coche nuevo.","Voy a comprar un carro nuevo.","Compraré un coche nuevo.","Voy comprar un coche nuevo."] },
+{ sv:"Vill du dricka något?", correct:"¿Quieres beber algo?", options:["¿Quieres beber algo?","¿Quieres tomar algo?","¿Quieres beber un poco?","¿Tú quieres beber algo?"] },
+{ sv:"Jag vill sova nu.", correct:"Quiero dormir ahora.", options:["Quiero dormir ahora.","Deseo dormir ahora.","Voy a dormir ahora.","Quiero duermo ahora."] },
+{ sv:"Vi måste studera ikväll.", correct:"Tenemos que estudiar esta noche.", options:["Tenemos que estudiar esta noche.","Debemos estudiar esta noche.","Vamos a estudiar esta noche.","Tenemos estudiar esta noche."] },
+{ sv:"De kan sjunga bra.", correct:"Pueden cantar bien.", options:["Pueden cantar bien.","Saben cantar bien.","Ellos pueden cantar bien.","Pueden cantan bien."] },
+{ sv:"Jag vet inte.", correct:"No sé.", options:["No sé.","No lo sé.","No saber.","No sé nada."] },
+{ sv:"Vet du vad klockan är?", correct:"¿Sabes qué hora es?", options:["¿Sabes qué hora es?","¿Conoces qué hora es?","¿Sabes la hora?","¿Sabes qué es la hora?"] }
+];
+
+
+let currentIndex = 0;
+let score = 0;
+let used = [];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function startQuiz() {
+  currentIndex = 0;
+  score = 0;
+  used = shuffle([...questions]);
+  document.getElementById("restartBtn").style.display = "none";
+  nextQuestion();
+}
+
+function nextQuestion() {
+  if (currentIndex >= used.length) {
+    document.getElementById("question").textContent = "Övningen är klar!";
+    document.getElementById("options").innerHTML =
+      `<p>Du fick ${score} av ${used.length} rätt.</p>`;
+    document.getElementById("restartBtn").style.display = "block";
+    updateStats();
+    return;
+  }
+
+  const q = used[currentIndex];
+  document.getElementById("question").textContent = q.sv;
+  const opt = document.getElementById("options");
+  opt.innerHTML = "";
+
+  // skapa 3 slumpmässiga felalternativ + rätt svar
+  let wrongs = [];
+  while (wrongs.length < 3) {
+    const r = questions[Math.floor(Math.random() * questions.length)];
+    if (r.correct !== q.correct && !wrongs.includes(r.correct)) wrongs.push(r.correct);
+  }
+  const options = shuffle([q.correct, ...wrongs]);
+
+  options.forEach(txt => {
+    const b = document.createElement("button");
+    b.textContent = txt;
+    b.onclick = () => checkAnswer(b, txt, q.correct);
+    opt.appendChild(b);
+  });
+
+  updateStats();
+}
+
+function checkAnswer(btn, choice, correct) {
+  const buttons = document.querySelectorAll("#options button");
+  buttons.forEach(b => b.disabled = true);
+
+  if (choice === correct) {
+    btn.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+    const correctBtn = Array.from(buttons).find(b => b.textContent === correct);
+    if (correctBtn) correctBtn.classList.add("correct");
+  }
+
+  currentIndex++;
+  updateStats();
+  setTimeout(nextQuestion, 1500);
+}
+
+function updateStats() {
+  document.getElementById("stats").textContent =
+    `Fråga: ${Math.min(currentIndex + 1, used.length)} / ${used.length} • Rätt: ${score}`;
+}
+
+function toggleDark() {
+  const body = document.body;
+  const btn = document.getElementById("themeBtn");
+  body.classList.toggle("dark");
+  btn.textContent = body.classList.contains("dark") ? "☀️" : "🌙";
+}
+
+function restartQuiz() { startQuiz(); }
+
+startQuiz();
+</script>
+
+</body>
+</html>
