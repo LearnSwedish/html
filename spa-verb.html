@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spanska verb – betydelseövning</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    background-color: #f9fafb;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  body.dark {
+    background-color: #1c1c1e;
+    color: #f1f1f1;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .stats {
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .card {
+    max-width: 400px;
+    width: 100%;
+    background: #fff;
+    color: #222;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    text-align: center;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  body.dark .card {
+    background: #2a2a2d;
+    color: #f1f1f1;
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: none;
+    background-color: #007aff;
+    color: white;
+    transition: background 0.3s;
+    cursor: pointer;
+  }
+
+  button:hover { background-color: #005bb5; }
+
+  .correct { background-color: #2ecc71 !important; }
+  .wrong { background-color: #e74c3c !important; }
+
+  .dark-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #555;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.4em;
+    cursor: pointer;
+    transition: background 0.3s;
+	display: flex;
+align-items: center;
+justify-content: center;
+  }
+
+  .dark-toggle:hover {
+    background: #777;
+  }
+
+  .sentence {
+    font-style: italic;
+    margin-top: 10px;
+  }
+
+  .restart {
+    margin-top: 20px;
+    background-color: #ff9500;
+  }
+
+  .restart:hover {
+    background-color: #cc7a00;
+  }
+</style>
+</head>
+<body>
+
+<button class="dark-toggle" id="themeBtn" onclick="toggleDark()">🌙</button>
+
+<h1>Spanska verb – betydelseövning</h1>
+<div class="stats" id="stats">Fråga: 0 / 0 • Rätt: 0</div>
+
+<div class="card" id="quiz">
+  <h2 id="verb"></h2>
+  <p class="sentence" id="sentence"></p>
+  <div id="options"></div>
+</div>
+
+<button id="restartBtn" class="restart" style="display:none;" onclick="restartQuiz()">🔄 Börja om</button>
+
+<script>
+const verbs = [
+  {es:"hablar", sv:"prata", ex:"Yo hablo con mis amigos."},
+  {es:"comprar", sv:"köpa", ex:"Nosotros compramos pan cada día."},
+  {es:"escuchar", sv:"lyssna", ex:"Ella escucha música en su habitación."},
+  {es:"tener", sv:"ha", ex:"Tengo un gato blanco."},
+  {es:"ir", sv:"gå / åka", ex:"Vamos al cine."},
+  {es:"ser", sv:"vara (permanent)", ex:"Ella es profesora."},
+  {es:"estar", sv:"vara (tillfälligt)", ex:"Estoy cansado hoy."},
+  {es:"hacer", sv:"göra", ex:"Ellos hacen la tarea."},
+  {es:"salir", sv:"gå ut", ex:"Salimos de casa a las ocho."},
+  {es:"poner", sv:"lägga / ställa", ex:"Pongo la mesa."},
+  {es:"saber", sv:"veta / kunna", ex:"No sé la respuesta."},
+  {es:"decir", sv:"säga", ex:"Ella dice la verdad."},
+  {es:"lavarse", sv:"tvätta sig", ex:"Me lavo las manos antes de comer."},
+  {es:"pintarse", sv:"sminka sig / måla sig", ex:"Ella se pinta los labios."},
+  {es:"pensar", sv:"tänka", ex:"Pienso mucho en mis vacaciones."},
+  {es:"cerrar", sv:"stänga", ex:"Cierra la puerta, por favor."},
+  {es:"empezar", sv:"börja", ex:"La clase empieza a las nueve."},
+  {es:"jugar", sv:"spela / leka", ex:"Los niños juegan en el parque."},
+  {es:"poder", sv:"kunna", ex:"No puedo ir contigo hoy."},
+  {es:"volver", sv:"komma tillbaka", ex:"Volvemos a casa tarde."},
+  {es:"contar", sv:"räkna / berätta", ex:"Te cuento un secreto."},
+  {es:"soler", sv:"bruka / ha för vana", ex:"Suelo correr por las mañanas."},
+  {es:"almorzar", sv:"äta lunch", ex:"Almorzamos juntos en la escuela."},
+  {es:"comer", sv:"äta", ex:"Comemos pescado los viernes."},
+  {es:"vivir", sv:"bo / leva", ex:"Vivo en Suecia."},
+  {es:"beber", sv:"dricka", ex:"Bebo agua todos los días."},
+  {es:"querer", sv:"vilja / älska", ex:"Quiero aprender español."}
+];
+
+let shuffled = [];
+let currentIndex = 0;
+let score = 0;
+
+function shuffle(array) {
+  return array.sort(() => 0.5 - Math.random());
+}
+
+function startQuiz() {
+  shuffled = shuffle([...verbs]);
+  currentIndex = 0;
+  score = 0;
+  document.getElementById("restartBtn").style.display = "none";
+  nextVerb();
+}
+
+function nextVerb() {
+  if (currentIndex >= shuffled.length) {
+    document.getElementById("verb").textContent = "Övningen är klar!";
+    document.getElementById("sentence").textContent = `Du fick ${score} av ${shuffled.length} rätt.`;
+    document.getElementById("options").innerHTML = "";
+    document.getElementById("restartBtn").style.display = "block";
+    updateStats();
+    return;
+  }
+
+  const currentVerb = shuffled[currentIndex];
+  document.getElementById("verb").textContent = currentVerb.es;
+  document.getElementById("sentence").textContent = currentVerb.ex;
+
+  const optionsContainer = document.getElementById("options");
+  optionsContainer.innerHTML = "";
+
+  let wrong = verbs.filter(v => v.sv !== currentVerb.sv);
+  wrong = shuffle(wrong).slice(0,3);
+  const allOptions = shuffle([...wrong.map(v => v.sv), currentVerb.sv]);
+
+  allOptions.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(btn, opt, currentVerb.sv);
+    optionsContainer.appendChild(btn);
+  });
+
+  updateStats();
+}
+
+function checkAnswer(btn, choice, correctAnswer) {
+  const buttons = document.querySelectorAll("#options button");
+  buttons.forEach(b => b.disabled = true);
+
+  if (choice === correctAnswer) {
+    btn.classList.add("correct");
+    score++;
+  } else {
+    btn.classList.add("wrong");
+    const correctBtn = Array.from(buttons).find(b => b.textContent === correctAnswer);
+    if (correctBtn) correctBtn.classList.add("correct");
+  }
+
+  currentIndex++;
+  updateStats();
+  setTimeout(nextVerb, 1500);
+}
+
+function updateStats() {
+  document.getElementById("stats").textContent = `Fråga: ${Math.min(currentIndex+1, shuffled.length)} / ${shuffled.length} • Rätt: ${score}`;
+}
+
+function toggleDark() {
+  const body = document.body;
+  const btn = document.getElementById("themeBtn");
+  body.classList.toggle("dark");
+  btn.textContent = body.classList.contains("dark") ? "☀️" : "🌙";
+}
+
+function restartQuiz() {
+  startQuiz();
+}
+
+startQuiz();
+</script>
+
+</body>
+</html>
