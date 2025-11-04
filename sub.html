@@ -21,7 +21,18 @@
   text-align: left;
 }
 
-.more-info-btn {
+/* === Placering och layout för sista raden i modalen === */
+.info-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+/* === Ljusläge === */
+.info-with-button .more-info-btn {
   background-color: #f1c40f;
   color: #1c1c1e;
   border: none;
@@ -29,22 +40,25 @@
   border-radius: 6px;
   font-size: 1em;
   cursor: pointer;
-  float: right;
-  margin-top: 20px;
   transition: background-color 0.3s, color 0.3s;
+  margin-left: 15px;
 }
 
-.more-info-btn:hover {
+.info-with-button .more-info-btn:hover {
   background-color: #ffd60a;
 }
 
-/* Anpassning för dark mode */
-body.dark-mode .more-info-btn {
+/* === Dark mode-varianter === */
+body.dark-mode .info-with-button {
+  color: #e8e8ea;
+}
+
+body.dark-mode .info-with-button .more-info-btn {
   background-color: #3a3a3c;
   color: #f1c40f;
 }
 
-body.dark-mode .more-info-btn:hover {
+body.dark-mode .info-with-button .more-info-btn:hover {
   background-color: #555;
 }
 </style>
@@ -524,15 +538,13 @@ const sentences = [
       Det började snöa <u>när</u> jag gick hem. (It began to snow <em>when</em> I was walking home.)<br />
     </p><br />
 
-    <p>Try to choose the correct subjunction for each sentence!</p>
-
-    <!-- More Info Button -->
-    <div class="modal-footer">
-      <button id="moreInfoButton" class="more-info-btn" 
-              onclick="window.open('sub-more-on.html', '_blank', 'noopener,noreferrer')">
-        More info
-      </button>
-    </div>
+    <p class="info-with-button">
+  Try to choose the correct subjunction for each sentence!
+  <button id="moreInfoButton" class="more-info-btn" 
+          onclick="window.open('sub-more-on.html', '_blank', 'noopener,noreferrer')">
+    More info
+  </button>
+</p>
   </div>
 </div>
 
@@ -546,3 +558,4 @@ const sentences = [
 
 </body>
 </html>
+
