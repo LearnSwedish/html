@@ -182,19 +182,19 @@ const verbs = [
   }
 ];
 
-const pronouns = ["yo", "tú", "él/ella", "nosotros", "vosotros", "ellos"];
-const tenses = ["presens", "preteritum", "perfekt", "futurum"];
+const pronouns = ["yo","tú","él/ella","nosotros","vosotros","ellos"];
+const tenses = ["presens","preteritum","perfekt","futurum"];
 
 let questions = [];
 let currentIndex = 0;
 let score = 0;
 
-function generateQuestions() {
-  questions = [];
-  verbs.forEach(v => {
-    tenses.forEach(t => {
-      pronouns.forEach((p, i) => {
-        questions.push({
+function generateQuestions(){
+  const temp = [];
+  verbs.forEach(v=>{
+    tenses.forEach(t=>{
+      pronouns.forEach((p,i)=>{
+        temp.push({
           verb: v,
           tense: t,
           pronounIndex: i,
@@ -204,101 +204,93 @@ function generateQuestions() {
       });
     });
   });
+
+  // Ta bort dubbletter baserat på svensk fråga
+  const seen = new Set();
+  questions = temp.filter(q => {
+    if (seen.has(q.swedish)) return false;
+    seen.add(q.swedish);
+    return true;
+  });
+
+  // Slumpa ordning på frågorna
   questions.sort(() => 0.5 - Math.random());
 }
 
-function startQuiz() {
+
+function startQuiz(){
   generateQuestions();
-  currentIndex = 0;
-  score = 0;
-  document.getElementById("restartBtn").style.display = "none";
+  currentIndex=0; score=0;
+  document.getElementById("restartBtn").style.display="none";
   nextQuestion();
 }
 
-function nextQuestion() {
-  if (currentIndex >= questions.length) {
-    document.getElementById("verb").textContent = "Övningen är klar!";
-    document.getElementById("sentence").textContent = `Du fick ${score} av ${questions.length} rätt.`;
-    document.getElementById("options").innerHTML = "";
-    document.getElementById("restartBtn").style.display = "block";
+function nextQuestion(){
+  if(currentIndex>=questions.length){
+    document.getElementById("verb").textContent="Övningen är klar!";
+    document.getElementById("sentence").textContent=`Du fick ${score} av ${questions.length} rätt.`;
+    document.getElementById("options").innerHTML="";
+    document.getElementById("restartBtn").style.display="block";
     updateStats();
     return;
   }
 
-  const q = questions[currentIndex];
-  document.getElementById("verb").textContent = q.swedish;
+  const q=questions[currentIndex];
+  document.getElementById("verb").textContent=q.swedish;
   document.getElementById("sentence").textContent = "";
 
-  const optionsContainer = document.getElementById("options");
-  optionsContainer.innerHTML = "";
+  const optionsContainer=document.getElementById("options");
+  optionsContainer.innerHTML="";
 
-  // Skapa svarsalternativ: samma verb, olika tempus (inkl rätt)
-  let wrongTenses = tenses.filter(t => t !== q.tense);
-  wrongTenses = wrongTenses.sort(() => 0.5 - Math.random()).slice(0,3);
+  let wrongTenses=tenses.filter(t=>t!==q.tense);
+  wrongTenses=wrongTenses.sort(()=>0.5-Math.random()).slice(0,3);
 
-// Skapa svarsalternativ och ta bort eventuella dubbletter
-let allOptions = [q.correct, ...wrongTenses.map(t => q.verb.forms[t][q.pronounIndex])];
+  const allOptions=[q.correct,...wrongTenses.map(t=>q.verb.forms[t][q.pronounIndex])]
+                    .sort(()=>0.5-Math.random());
 
-// Filtrera bort dubbletter
-allOptions = [...new Set(allOptions)];
-
-// Om färre än 4 alternativ återstår, fyll på med slumpade från andra verb
-while (allOptions.length < 4) {
-  const randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
-  const randomTense = tenses[Math.floor(Math.random() * tenses.length)];
-  const randomForm = randomVerb.forms[randomTense][q.pronounIndex];
-  if (!allOptions.includes(randomForm)) allOptions.push(randomForm);
-}
-
-// Slumpa ordningen
-allOptions = allOptions.sort(() => 0.5 - Math.random());
-
-  allOptions.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.onclick = () => checkAnswer(btn, opt, q.correct);
+  allOptions.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.onclick=()=>checkAnswer(btn,opt,q.correct);
     optionsContainer.appendChild(btn);
   });
 
   updateStats();
 }
 
-function checkAnswer(btn, choice, correctAnswer) {
-  const buttons = document.querySelectorAll("#options button");
-  buttons.forEach(b => b.disabled = true);
+function checkAnswer(btn,choice,correctAnswer){
+  const buttons=document.querySelectorAll("#options button");
+  buttons.forEach(b=>b.disabled=true);
 
-  if (choice === correctAnswer) {
-    btn.classList.add("correct");
-    score++;
-  } else {
+  if(choice===correctAnswer){btn.classList.add("correct");score++;}
+  else{
     btn.classList.add("wrong");
-    const correctBtn = Array.from(buttons).find(b => b.textContent === correctAnswer);
-    if (correctBtn) correctBtn.classList.add("correct");
+    const correctBtn=Array.from(buttons).find(b=>b.textContent===correctAnswer);
+    if(correctBtn) correctBtn.classList.add("correct");
   }
 
   currentIndex++;
   updateStats();
-  setTimeout(nextQuestion, 1500);
+  setTimeout(nextQuestion,1500);
 }
 
-function updateStats() {
-  document.getElementById("stats").textContent =
-    `Fråga: ${Math.min(currentIndex+1, questions.length)} / ${questions.length} • Rätt: ${score}`;
+function updateStats(){
+  document.getElementById("stats").textContent=
+    `Fråga: ${Math.min(currentIndex+1,questions.length)} / ${questions.length} • Rätt: ${score}`;
 }
 
-function toggleDark() {
-  const body = document.body;
-  const btn = document.getElementById("themeBtn");
+function toggleDark(){
+  const body=document.body;
+  const btn=document.getElementById("themeBtn");
   body.classList.toggle("dark");
-  btn.textContent = body.classList.contains("dark") ? "☀️" : "🌙";
+  btn.textContent=body.classList.contains("dark")?"☀️":"🌙";
 }
 
-function restartQuiz() {
-  startQuiz();
-}
+function restartQuiz(){ startQuiz(); }
 
 startQuiz();
 </script>
+
 
 
 

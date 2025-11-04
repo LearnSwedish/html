@@ -19,44 +19,76 @@
     transition: background 0.3s, color 0.3s;
   }
   body.dark { background-color: #1c1c1e; color: #f1f1f1; }
+
   h1 { text-align: center; margin-bottom: 10px; }
   .stats { margin-bottom: 20px; font-weight: 500; }
+
   .card {
     max-width: 400px; width: 100%;
     background: #fff; color: #222;
     border-radius: 12px; padding: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    text-align: center; transition: background 0.3s, color 0.3s;
+    text-align: center;
+    transition: background 0.3s, color 0.3s;
   }
   body.dark .card { background: #2a2a2d; color: #f1f1f1; }
+
   button {
-    display: block; width: 100%; margin: 8px 0; padding: 10px;
-    font-size: 1.1em; border-radius: 8px; border: none;
-    background-color: #007aff; color: white;
-    transition: background 0.3s; cursor: pointer;
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: none;
+    background-color: #007aff;
+    color: white;
+    transition: background 0.2s;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
   }
+
+  /* Neutraliserar alla systemfärger och focus-stilar */
+  button::-moz-focus-inner { border: 0; }
+  button:focus,
+  button:focus-visible,
+  button:active {
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: #007aff !important;
+    filter: none !important;
+  }
+
   button:hover { background-color: #005bb5; }
+
   .correct { background-color: #2ecc71 !important; }
   .wrong { background-color: #e74c3c !important; }
+
   .dark-toggle {
-    position: fixed; top: 10px; right: 10px;
-    background: #555; color: #fff; border: none;
-    border-radius: 50%; width: 40px; height: 40px;
-    font-size: 1.4em; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #555;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.4em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background 0.3s;
   }
   .dark-toggle:hover { background: #777; }
-  .restart { margin-top: 20px; background-color: #ff9500; }
+
+  .restart {
+    margin-top: 20px;
+    background-color: #ff9500;
+  }
   .restart:hover { background-color: #cc7a00; }
-  button, button:focus, button:visited {
-  background-color: #007aff !important;
-  color: white !important;
-  outline: none;
-}
-button:active {
-  filter: brightness(0.95);
-}
 </style>
 </head>
 <body>
@@ -196,61 +228,117 @@ const verbs = [
   }
 ];
 
-const pronouns=["yo","tú","él/ella","nosotros","vosotros","ellos"];
-const tenses=["presens","preteritum","perfekt","futurum"];
-let questions=[],currentIndex=0,score=0;
+const pronouns = ["yo","tú","él/ella","nosotros","vosotros","ellos"];
+const tenses = ["presens","preteritum","perfekt","futurum"];
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
 
 function generateQuestions(){
-  questions=[];
+  const temp = [];
   verbs.forEach(v=>{
     tenses.forEach(t=>{
       pronouns.forEach((p,i)=>{
-        questions.push({verb:v,tense:t,pronounIndex:i,correct:v.forms[t][i],swedish:v.svTempus[t][i]});
+        temp.push({
+          verb: v,
+          tense: t,
+          pronounIndex: i,
+          correct: v.forms[t][i],
+          swedish: v.svTempus[t][i]
+        });
       });
     });
   });
-  questions.sort(()=>0.5-Math.random());
+
+  // Ta bort dubbletter baserat på svensk fråga
+  const seen = new Set();
+  questions = temp.filter(q => {
+    if (seen.has(q.swedish)) return false;
+    seen.add(q.swedish);
+    return true;
+  });
+
+  // Slumpa ordning på frågorna
+  questions.sort(() => 0.5 - Math.random());
 }
-function startQuiz(){generateQuestions();currentIndex=0;score=0;document.getElementById("restartBtn").style.display="none";nextQuestion();}
+
+
+function startQuiz(){
+  generateQuestions();
+  currentIndex=0; score=0;
+  document.getElementById("restartBtn").style.display="none";
+  nextQuestion();
+}
+
 function nextQuestion(){
   if(currentIndex>=questions.length){
     document.getElementById("verb").textContent="Övningen är klar!";
-    document.getElementById("options").innerHTML=`<p>Du fick ${score} av ${questions.length} rätt.</p>`;
-    document.getElementById("restartBtn").style.display="block";updateStats();return;
+    document.getElementById("sentence").textContent=`Du fick ${score} av ${questions.length} rätt.`;
+    document.getElementById("options").innerHTML="";
+    document.getElementById("restartBtn").style.display="block";
+    updateStats();
+    return;
   }
+
   const q=questions[currentIndex];
   document.getElementById("verb").textContent=q.swedish;
-  const opt=document.getElementById("options");opt.innerHTML="";
-  let wrongTenses=tenses.filter(t=>t!==q.tense).sort(()=>0.5-Math.random()).slice(0,3);
-  let allOptions=[q.correct,...wrongTenses.map(t=>q.verb.forms[t][q.pronounIndex])];
-  allOptions=[...new Set(allOptions)];
-  while(allOptions.length<4){
-    const rv=verbs[Math.floor(Math.random()*verbs.length)];
-    const rt=tenses[Math.floor(Math.random()*tenses.length)];
-    const rf=rv.forms[rt][q.pronounIndex];
-    if(!allOptions.includes(rf)) allOptions.push(rf);
-  }
-  allOptions.sort(()=>0.5-Math.random());
-  allOptions.forEach(optTxt=>{
-    const b=document.createElement("button");
-    b.textContent=optTxt;
-    b.onclick=()=>checkAnswer(b,optTxt,q.correct);
-    opt.appendChild(b);
+  document.getElementById("sentence").textContent = "";
+
+  const optionsContainer=document.getElementById("options");
+  optionsContainer.innerHTML="";
+
+  let wrongTenses=tenses.filter(t=>t!==q.tense);
+  wrongTenses=wrongTenses.sort(()=>0.5-Math.random()).slice(0,3);
+
+  const allOptions=[q.correct,...wrongTenses.map(t=>q.verb.forms[t][q.pronounIndex])]
+                    .sort(()=>0.5-Math.random());
+
+  allOptions.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.textContent=opt;
+    btn.onclick=()=>checkAnswer(btn,opt,q.correct);
+    optionsContainer.appendChild(btn);
   });
+
   updateStats();
 }
-function checkAnswer(btn,choice,correct){
-  const bs=document.querySelectorAll("#options button");
-  bs.forEach(b=>b.disabled=true);
-  if(choice===correct){btn.classList.add("correct");score++;}
-  else{btn.classList.add("wrong");const cb=[...bs].find(b=>b.textContent===correct);if(cb)cb.classList.add("correct");}
-  currentIndex++;updateStats();setTimeout(nextQuestion,1500);
+
+function checkAnswer(btn,choice,correctAnswer){
+  const buttons=document.querySelectorAll("#options button");
+  buttons.forEach(b=>b.disabled=true);
+
+  if(choice===correctAnswer){btn.classList.add("correct");score++;}
+  else{
+    btn.classList.add("wrong");
+    const correctBtn=Array.from(buttons).find(b=>b.textContent===correctAnswer);
+    if(correctBtn) correctBtn.classList.add("correct");
+  }
+
+  currentIndex++;
+  updateStats();
+  setTimeout(nextQuestion,1500);
 }
-function updateStats(){document.getElementById("stats").textContent=`Fråga: ${Math.min(currentIndex+1,questions.length)} / ${questions.length} • Rätt: ${score}`;}
-function toggleDark(){const b=document.body,btn=document.getElementById("themeBtn");b.classList.toggle("dark");btn.textContent=b.classList.contains("dark")?"☀️":"🌙";}
-function restartQuiz(){startQuiz();}
+
+function updateStats(){
+  document.getElementById("stats").textContent=
+    `Fråga: ${Math.min(currentIndex+1,questions.length)} / ${questions.length} • Rätt: ${score}`;
+}
+
+function toggleDark(){
+  const body=document.body;
+  const btn=document.getElementById("themeBtn");
+  body.classList.toggle("dark");
+  btn.textContent=body.classList.contains("dark")?"☀️":"🌙";
+}
+
+function restartQuiz(){ startQuiz(); }
+
 startQuiz();
 </script>
+
+
+
 
 </body>
 </html>

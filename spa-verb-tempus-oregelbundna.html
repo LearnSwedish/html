@@ -286,22 +286,33 @@ let currentIndex = 0;
 let score = 0;
 
 function generateQuestions(){
-  questions=[];
+  const temp = [];
   verbs.forEach(v=>{
     tenses.forEach(t=>{
       pronouns.forEach((p,i)=>{
-        questions.push({
-          verb:v,
-          tense:t,
-          pronounIndex:i,
-          correct:v.forms[t][i],
-          swedish:v.svTempus[t][i]
+        temp.push({
+          verb: v,
+          tense: t,
+          pronounIndex: i,
+          correct: v.forms[t][i],
+          swedish: v.svTempus[t][i]
         });
       });
     });
   });
-  questions.sort(()=>0.5-Math.random());
+
+  // Ta bort dubbletter baserat på svensk fråga
+  const seen = new Set();
+  questions = temp.filter(q => {
+    if (seen.has(q.swedish)) return false;
+    seen.add(q.swedish);
+    return true;
+  });
+
+  // Slumpa ordning på frågorna
+  questions.sort(() => 0.5 - Math.random());
 }
+
 
 function startQuiz(){
   generateQuestions();
