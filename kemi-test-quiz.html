@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kemi – Atomens hemligheter (Åk 9)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f8f9fa;
+  color: #111;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark {
+  background-color: #1c1c1e;
+  color: #f8f9fa;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+#dark-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: #f1c40f;
+  color: #000;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: background 0.3s;
+}
+#dark-toggle:hover { background: #ffd60a; }
+
+.quiz-box {
+  max-width: 600px;
+  width: 100%;
+  background: #fff;
+  color: #111;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark .quiz-box {
+  background: #2c2c2e;
+  color: #f8f9fa;
+}
+button.option {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: #e9ecef;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+body.dark button.option {
+  background: #3a3a3c;
+  color: #fff;
+}
+button.option:hover { background: #dfe3e6; }
+body.dark button.option:hover { background: #4a4a4c; }
+.correct { background: #2ecc71 !important; color: #fff !important; }
+.wrong { background: #e74c3c !important; color: #fff !important; }
+#next-btn {
+  margin-top: 10px;
+  background: #0078d7;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+}
+#next-btn:hover { background: #005fa3; }
+#score { margin-top: 15px; font-weight: 600; text-align: center; }
+</style>
+</head>
+<body>
+<button id="dark-toggle" title="Byt tema"><i class="fas fa-moon"></i></button>
+
+<h1>Kemi – Atomens hemligheter</h1>
+<div class="quiz-box">
+  <div id="question"></div>
+  <div id="options"></div>
+  <button id="next-btn" style="display:none;">Nästa</button>
+  <div id="score"></div>
+</div>
+
+<script>
+const questions = [
+{q:"Vad består alla ämnen av?", a:["Av atomer","Av molekyler och kristaller","Av små partiklar kallade joner","Av protoner och neutroner"], c:0},
+{q:"Vilken laddning har en proton?", a:["Positiv","Negativ","Neutral","Växlande"], c:0},
+{q:"Vilken laddning har en elektron?", a:["Negativ","Positiv","Neutral","Den saknar laddning"], c:0},
+{q:"Vilken partikel i atomen saknar laddning?", a:["Neutronen","Elektronen","Protonen","Fotonen"], c:0},
+{q:"Vad kallas de elektroner som finns i det yttersta skalet?", a:["Valenselektroner","Grundelektroner","Ytprotoner","Fria elektroner"], c:0},
+{q:"Vad visar ett grundämnes atomnummer?", a:["Antalet protoner i kärnan","Antalet elektronskal","Antalet neutroner i kärnan","Antalet valenselektroner"], c:0},
+{q:"Hur många elektroner får plats i K-skalet?", a:["2","4","6","8"], c:0},
+{q:"Hur många elektroner får plats i L-skalet?", a:["8","10","12","16"], c:0},
+{q:"Vilken atom har atomnummer 1?", a:["Väte","Helium","Litium","Syre"], c:0},
+{q:"Vilken atom har atomnummer 8?", a:["Syre","Kväve","Kol","Fluor"], c:0},
+{q:"Vad kallas en vågrät rad i periodiska systemet?", a:["Period","Grupp","Skal","Serie"], c:0},
+{q:"Vad kallas en lodrät kolumn i periodiska systemet?", a:["Grupp","Period","Familj","Rad"], c:0},
+{q:"Vilka atomer har lika många elektronskal?", a:["Atomer i samma period","Atomer i samma grupp","Atomer i samma familj","Atomer med samma atomnummer"], c:0},
+{q:"Vilka atomer har lika många valenselektroner?", a:["Atomer i samma grupp","Atomer i samma period","Atomer med samma massa","Atomer i samma rad"], c:0},
+{q:"Vad kallas atomer som har fulla elektronskal?", a:["Ädelgaser","Alkalimetaller","Halogener","Ädelmetaller"], c:0},
+{q:"Vad kallas den ryske kemist som skapade periodiska systemet?", a:["Mendelejev","Lavoisier","Dalton","Bohr"], c:0},
+{q:"Vad händer när en metall reagerar med en icke-metall?", a:["Det bildas joner","De smälter samman","Det bildas fria atomer","De byter plats i systemet"], c:0},
+{q:"Vad kallas den bindning som håller ihop joner?", a:["Jonbindning","Molekylbindning","Metallbindning","Vätebindning"], c:0},
+{q:"Vilken typ av ämne leder ström i vattenlösning?", a:["Jonförening","Molekylförening","Ädelgas","Icke-metall"], c:0},
+{q:"Vad består vanligt koksalt av?", a:["Natriumjoner och kloridjoner","Syre och väte","Magnesium och syre","Kol och syre"], c:0},
+{q:"Vad heter den kemiska formeln för koksalt?", a:["NaCl","H2O","CO2","O2"], c:0},
+{q:"Vad händer när koksalt löses i vatten?", a:["Jonerna separeras","Molekylerna delas","Protonerna försvinner","Kärnorna smälter"], c:0},
+{q:"Vad kallas bindningen mellan icke-metaller som delar elektroner?", a:["Molekylbindning","Jonbindning","Metallbindning","Hydridbindning"], c:0},
+{q:"Vad betyder begreppet 'elektronparbindning'?", a:["Att två atomer delar ett elektronpar","Att en atom ger bort elektroner","Att en atom tar upp två elektroner","Att protoner delas"], c:0},
+{q:"Vad består en vattenmolekyl av?", a:["Två väte och en syre","Två syre och en väte","Ett väte och två syre","Tre syre"], c:0},
+{q:"Vilken formel har vatten?", a:["H2O","CO2","O2","H2"], c:0},
+{q:"Vilken formel har koldioxid?", a:["CO2","H2O","CH4","NaCl"], c:0},
+{q:"Vilken formel har metan?", a:["CH4","CO2","NH3","H2O"], c:0},
+{q:"Vad kallas varianter av samma grundämne med olika antal neutroner?", a:["Isotoper","Joner","Molekyler","Protoner"], c:0},
+{q:"Vilken isotop används för att bestämma hur gammalt organiskt material är?", a:["Kol-14","Kol-12","Kol-13","Kol-16"], c:0},
+{q:"Vad mäts atommassa i?", a:["u (universella massenheter)","g (gram)","mol","kg"], c:0},
+{q:"Vad väger en proton ungefär?", a:["1 u","0,5 u","2 u","0,1 u"], c:0},
+{q:"Vad väger en neutron ungefär?", a:["1 u","0,5 u","2 u","0,1 u"], c:0},
+{q:"Vad kallas den enhet kemister använder för att mäta mängden atomer?", a:["Mol","Gram","Liter","Partikel"], c:0},
+{q:"Hur många partiklar finns i en mol?", a:["6,022 × 10²³","6,022 × 10²⁰","1 × 10⁶","3,14 × 10¹⁰"], c:0},
+{q:"Hur mycket väger en mol väteatomer?", a:["1 g","2 g","10 g","12 g"], c:0},
+{q:"Hur mycket väger en mol vattenmolekyler (H2O)?", a:["18 g","10 g","12 g","20 g"], c:0},
+{q:"Vad innebär koncentrationen 1 M (en molar)?", a:["1 mol löst ämne per liter lösning","1 mol ämne per gram","1 mol ämne per sekund","1 mol per 100 ml"], c:0},
+{q:"Vad kallas den bindning som håller ihop metaller?", a:["Metallbindning","Jonbindning","Molekylbindning","Vätebindning"], c:0},
+{q:"Vilken gas består av molekyler där två syreatomer sitter ihop?", a:["O2","O3","CO2","H2O"], c:0},
+{q:"Vilken gas består av molekyler med två väteatomer?", a:["H2","O2","CO2","CH4"], c:0},
+{q:"Vilken gas är ädelgas med två elektroner?", a:["Helium","Neon","Argon","Väte"], c:0},
+{q:"Vilken familj finns längst till höger i periodiska systemet?", a:["Ädelgaser","Halogener","Alkalimetaller","Metaller"], c:0},
+{q:"Vilken grupp i periodiska systemet innehåller metaller som reagerar kraftigt med vatten?", a:["Alkalimetaller","Ädelgaser","Halogener","Icke-metaller"], c:0},
+{q:"Vilken grupp innehåller reaktiva icke-metaller som gärna tar upp en elektron?", a:["Halogener","Ädelgaser","Alkalimetaller","Metalljoner"], c:0},
+{q:"Vad är gemensamt för alla ämnen i samma grupp?", a:["De har lika många valenselektroner","De har lika många protoner","De har lika många elektronskal","De har samma massa"], c:0},
+{q:"Vilken partikel styr ett ämnes kemiska egenskaper mest?", a:["Valenselektronerna","Protonerna","Neutronerna","Atomkärnan"], c:0},
+{q:"Vad händer när magnesium brinner i syre?", a:["Det bildas magnesiumoxid","Det bildas koldioxid","Det bildas vatten","Det bildas kväveoxid"], c:0},
+{q:"Vad händer när kalcium reagerar med fluor?", a:["Det bildas kalciumfluorid","Det bildas kalciumoxid","Det bildas koldioxid","Det bildas kaliumoxid"], c:0},
+{q:"Vad kallas en fast struktur där joner sitter ordnade i mönster?", a:["Kristall","Molekyl","Atom","Isotop"], c:0},
+{q:"Hur mycket av en atom består av tomrum?", a:["Nästan allt","Ungefär hälften","En tredjedel","En tiondel"], c:0},
+{q:"Vad är det som håller elektronerna kvar runt kärnan?", a:["Dragningskraften mellan positiva och negativa laddningar","Tyngdkraften","Neutronernas fält","Atomens rörelse"], c:0}
+];
+
+// slumpa ordning
+questions.sort(() => Math.random() - 0.5);
+let index = 0, score = 0;
+
+function nextQuestion() {
+  document.getElementById("next-btn").style.display = "none";
+  const q = questions[index];
+  const shuffled = q.a.map((x,i)=>[x,i]).sort(()=>Math.random()-0.5);
+  document.getElementById("question").innerHTML = `<h3>${index+1}. ${q.q}</h3>`;
+  const opt = document.getElementById("options");
+  opt.innerHTML = "";
+  shuffled.forEach(pair=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    btn.textContent=pair[0];
+    btn.onclick=()=>checkAnswer(btn,pair[1]===q.c);
+    opt.appendChild(btn);
+  });
+}
+function checkAnswer(btn,correct){
+  const buttons=document.querySelectorAll(".option");
+  buttons.forEach(b=>b.disabled=true);
+  if(correct){btn.classList.add("correct");score++;}
+  else{btn.classList.add("wrong");buttons.forEach(b=>{if(b.textContent===questions[index].a[questions[index].c])b.classList.add("correct");});}
+  document.getElementById("score").textContent=`Poäng: ${score} / ${questions.length}`;
+  document.getElementById("next-btn").style.display="block";
+}
+document.getElementById("next-btn").addEventListener("click",()=>{
+  index++;
+  if(index<questions.length) nextQuestion();
+  else {
+    document.getElementById("question").innerHTML="<h2>Klart!</h2>";
+    document.getElementById("options").innerHTML="";
+    document.getElementById("next-btn").style.display="none";
+    document.getElementById("score").textContent=`Slutresultat: ${score} av ${questions.length}`;
+  }
+});
+document.getElementById("dark-toggle").addEventListener("click",()=>{
+  document.body.classList.toggle("dark");
+  const icon=document.querySelector("#dark-toggle i");
+  icon.classList.toggle("fa-sun");icon.classList.toggle("fa-moon");
+});
+nextQuestion();
+</script>
+</body>
+</html>
