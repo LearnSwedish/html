@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouns – def to indef</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f6f8;
+    color: #2c3e50;
+    padding: 20px;
+    margin: 0;
+    transition: background 0.4s, color 0.4s;
+    line-height: 1.6;
+}
+body.dark { background: #121212; color: #e0e0e0; }
+
+h1 {
+    text-align: center;
+    margin-bottom: 5px;
+    color: #3498db;
+    font-weight: 700;
+}
+body.dark h1 { color: #9b59b6; }
+
+p {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    color: #7f8c8d;
+}
+body.dark p { color: #bdc3c7; }
+
+/* --- Dark toggle --- */
+.toggle {
+    position: fixed; top: 15px; right: 20px;
+    background: #ecf0f1; border: none; border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    z-index: 10;
+}
+.toggle i { color: #34495e; font-size: 1.2em; }
+body.dark .toggle { background: #2c3e50; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); }
+body.dark .toggle i { color: #ecf0f1; }
+.toggle:hover { transform: scale(1.05); }
+
+/* --- Buttons --- */
+.switch-btn, .grammar-btn {
+    width: 140px;
+    height: 36px;              /* exakt höjd */
+    line-height: 36px;         /* vertikal centrering av texten */
+    text-align: center;
+    position: fixed;
+    right: 12px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.9em;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0;                /* ta bort padding helt */
+}
+.switch-btn:hover, .grammar-btn:hover { background: #2980b9; transform: scale(1.05); }
+body.dark .switch-btn, body.dark .grammar-btn { background: #9b59b6; }
+body.dark .switch-btn:hover, body.dark .grammar-btn:hover { background: #8e44ad; }
+
+.switch-btn { top: 65px; }
+.grammar-btn { top: 110px; }
+
+/* --- Container --- */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+body.dark .container {
+    background: #1e1e1e;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Table --- */
+/* === Stabil layout & scroll === */
+html {
+  scrollbar-gutter: stable; /* hindrar hopp vid sidbyte */
+}
+
+/* === Tabell === */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;       /* fixerar kolumnbredder */
+}
+th:first-child, td:first-child {
+    width: 45%;                /* kolumn 1 */
+}
+th:last-child, td:last-child {
+    width: 55%;                /* kolumn 2 */
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ebedef;
+    position: relative;
+}
+tr:last-child td { border-bottom: none; }
+
+th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+/* === Dark mode för tabell === */
+body.dark th, 
+body.dark td {
+    border-bottom: 1px solid #2c2c2c;
+}
+body.dark th {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+}
+
+/* === Textfält === */
+input {
+    width: 90%;                /* lika bredd i båda övningarna */
+    max-width: none;
+    padding: 8px 10px;
+    border: 2px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 1em;
+    background: inherit;
+    color: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.3s, background-color 0.3s;
+    display: block;
+    margin: 0 auto;
+}
+input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+/* === Dark mode för input === */
+body.dark input {
+    border-color: #555;
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+}
+body.dark input:focus {
+    border-color: #9b59b6;
+    box-shadow: 0 0 5px rgba(155, 89, 182, 0.5);
+}
+
+/* === Feedback === */
+.correct { background-color: #e6ffe6 !important; border-color: #2ecc71 !important; }
+body.dark .correct { background-color: #294a29 !important; border-color: #27ae60 !important; }
+
+.incorrect { background-color: #ffe6e6 !important; border-color: #e74c3c !important; }
+body.dark .incorrect { background-color: #4a2929 !important; border-color: #c0392b !important; }
+
+
+/* --- Tooltip --- */
+.tooltip-container { position: relative; display: inline-block; cursor: help; }
+.tooltip {
+    visibility: hidden;
+    background-color: #34495e;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 10;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    font-size: 0.9em;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #34495e transparent transparent transparent;
+}
+.tooltip-container:hover .tooltip { visibility: visible; opacity: 1; }
+
+/* --- Modal --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 20;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-content {
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    position: relative;
+    animation: slideDown 0.4s ease;
+}
+body.dark .modal-content { background-color: #1e1e1e; color: #f1f1f1; }
+@keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1.4em;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+.close-btn:hover {
+    color: #e74c3c;
+    transform: rotate(90deg);
+}
+</style>
+</head>
+<body>
+
+<!-- Dark mode toggle -->
+<button class="toggle" onclick="toggleDark()" title="Växla mörkt läge"><i class="fas fa-moon"></i></button>
+
+<!-- Switch buttons -->
+<a href="noun-def-to-indef.html" class="switch-btn" title="Practise the opposite direction.">Opposite exercise</a>
+<button class="grammar-btn" onclick="openModal()" title="Grammar explanation">Grammar info</button>
+
+<!-- Modal -->
+<div id="grammarModal" class="modal" onclick="outsideClick(event)">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal()">&times;</button>
+    <h2>Grammar: Nouns in Swedish</h2>
+    <p>In Swedish, there are two genders: <strong>common (en-words)</strong> and <strong>neuter (ett-words)</strong>.</p>
+    <p><strong>Indefinite form (a/an):</strong><br>
+    → <em>en</em> + common noun: <strong>en student</strong> – a student<br>
+    → <em>ett</em> + neuter noun: <strong>ett år</strong> – a year</p>
+    <p><strong>Definite form (the):</strong> add <strong>-en</strong> or <strong>-et</strong> to the end:<br>
+    → <strong>lägenheten</strong> – the flat, <strong>året</strong> – the year</p>
+    <p>If the noun ends in a vowel, use <strong>-n</strong> or <strong>-t</strong> instead:<br>
+    → <strong>tunnelbanan</strong> – the underground, <strong>schemat</strong> – the timetable</p>
+  </div>
+</div>
+
+<div class="container">
+    <h1>Nouns – definite form</h1>
+    <p>Write the definite form of the nouns. Get instant feedback as you type!<br>
+    Hover over the base form to see the translation into British English.</p>
+
+    <table id="quiz">
+        <thead>
+            <tr>
+                <th>Base form (Indefinite)</th>
+                <th>Definite form (Your answer)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+const nouns = [
+    {indef: "en jacka", def: "jackan", en: "a jacket"},
+    {indef: "ett berg", def: "berget", en: "a mountain"},
+    {indef: "en pojke", def: "pojken", en: "a boy"},
+    {indef: "ett ägg", def: "ägget", en: "an egg"},
+    {indef: "en skola", def: "skolan", en: "a school"},
+    {indef: "ett tak", def: "taket", en: "a roof"},
+    {indef: "en flod", def: "floden", en: "a river"},
+    {indef: "ett hav", def: "havet", en: "a sea / ocean"},
+    {indef: "en gata", def: "gatan", en: "a street"},
+    {indef: "ett bord", def: "bordet", en: "a table"},
+    {indef: "en stolpe", def: "stolpen", en: "a post / pole"},
+    {indef: "ett tåg", def: "tåget", en: "a train"},
+    {indef: "en klocka", def: "klockan", en: "a clock / watch"},
+    {indef: "ett hjul", def: "hjulet", en: "a wheel"},
+    {indef: "en vägg", def: "väggen", en: "a wall"},
+    {indef: "ett tält", def: "tältet", en: "a tent"},
+    {indef: "en blomma", def: "blomman", en: "a flower"},
+    {indef: "ett ben", def: "benet", en: "a leg / bone"},
+    {indef: "en fot", def: "foten", en: "a foot"},
+    {indef: "ett golv", def: "golvet", en: "a floor"},
+    {indef: "en säng", def: "sängen", en: "a bed"},
+    {indef: "ett rep", def: "repet", en: "a rope"},
+    {indef: "en soffa", def: "soffan", en: "a sofa"},
+    {indef: "ett rum", def: "rummet", en: "a room"},
+    {indef: "en byxa", def: "byxan", en: "a pair of trousers"},
+    {indef: "ett kort", def: "kortet", en: "a card"},
+    {indef: "en hatt", def: "hatten", en: "a hat"},
+    {indef: "ett glas", def: "glaset", en: "a glass"},
+    {indef: "en sko", def: "skon", en: "a shoe"},
+    {indef: "ett armband", def: "armbandet", en: "a bracelet / wristband"},
+    {indef: "en kappa", def: "kappan", en: "a coat"},
+    {indef: "ett örhänge", def: "örhänget", en: "an earring"},
+    {indef: "en sked", def: "skeden", en: "a spoon"},
+    {indef: "ett bälte", def: "bältet", en: "a belt"},
+    {indef: "en kniv", def: "kniven", en: "a knife"},
+    {indef: "ett kök", def: "köket", en: "a kitchen"},
+    {indef: "en tallrik", def: "tallriken", en: "a plate"},
+    {indef: "ett bad", def: "badet", en: "a bath"},
+    {indef: "en dörr", def: "dörren", en: "a door"},
+    {indef: "en låda", def: "lådan", en: "a box"}
+];
+
+const tableBody = document.querySelector("#quiz tbody");
+
+function checkAnswer(index) {
+    const input = document.getElementById("ans" + index);
+    const val = input.value.trim().toLowerCase();
+    const correctDef = nouns[index].def.toLowerCase();
+    input.classList.remove("correct", "incorrect");
+    if (val === "") return;
+    if (val === correctDef) input.classList.add("correct");
+    else input.classList.add("incorrect");
+}
+
+nouns.forEach((n, i) => {
+    const row = document.createElement("tr");
+    const indefCell = document.createElement("td");
+    const tooltipContainer = document.createElement("span");
+    tooltipContainer.className = "tooltip-container";
+    tooltipContainer.innerHTML = `${i + 1}. ${n.indef} <span class="tooltip">${n.en}</span>`;
+    indefCell.appendChild(tooltipContainer);
+    const inputCell = document.createElement("td");
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "ans" + i;
+    input.autocomplete = "off";
+    input.placeholder = "Write the definite form here...";
+    input.addEventListener("input", () => checkAnswer(i));
+    inputCell.appendChild(input);
+    row.appendChild(indefCell);
+    row.appendChild(inputCell);
+    tableBody.appendChild(row);
+});
+
+function toggleDark() {
+    const body = document.body;
+    body.classList.toggle("dark");
+    const icon = document.querySelector(".toggle i");
+    icon.classList.toggle("fa-moon");
+    icon.classList.toggle("fa-sun");
+}
+
+/* --- Modal logic --- */
+function openModal() { document.getElementById("grammarModal").style.display = "flex"; }
+function closeModal() { document.getElementById("grammarModal").style.display = "none"; }
+function outsideClick(event) {
+  const modal = document.getElementById("grammarModal");
+  if (event.target === modal) closeModal();
+}
+</script>
+</body>
+</html>

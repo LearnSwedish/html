@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouns – indef to def</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f6f8;
+    color: #2c3e50;
+    padding: 20px;
+    margin: 0;
+    transition: background 0.4s, color 0.4s;
+    line-height: 1.6;
+}
+body.dark { background: #121212; color: #e0e0e0; }
+
+h1 {
+    text-align: center;
+    margin-bottom: 5px;
+    color: #3498db;
+    font-weight: 700;
+}
+body.dark h1 { color: #9b59b6; }
+
+p {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    color: #7f8c8d;
+}
+body.dark p { color: #bdc3c7; }
+
+.toggle {
+    position: fixed; top: 15px; right: 20px;
+    background: #ecf0f1; border: none; border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    z-index: 10;
+}
+.toggle i { color: #34495e; font-size: 1.2em; }
+body.dark .toggle { background: #2c3e50; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); }
+body.dark .toggle i { color: #ecf0f1; }
+.toggle:hover { transform: scale(1.05); }
+
+/* Ny knapp för att växla övning */
+.switch-btn {
+    position: fixed;
+    top: 65px;
+    right: 12px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 8px 14px;
+    font-size: 0.9em;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: background 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+.switch-btn:hover { background: #2980b9; transform: scale(1.05); }
+body.dark .switch-btn { background: #9b59b6; }
+body.dark .switch-btn:hover { background: #8e44ad; }
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+body.dark .container {
+    background: #1e1e1e;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* === Stabil layout & scroll === */
+html {
+  scrollbar-gutter: stable; /* hindrar hopp vid sidbyte */
+}
+
+/* === Tabell === */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;       /* fixerar kolumnbredder */
+}
+th:first-child, td:first-child {
+    width: 45%;                /* kolumn 1 */
+}
+th:last-child, td:last-child {
+    width: 55%;                /* kolumn 2 */
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ebedef;
+    position: relative;
+}
+tr:last-child td { border-bottom: none; }
+
+th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+/* === Dark mode för tabell === */
+body.dark th, 
+body.dark td {
+    border-bottom: 1px solid #2c2c2c;
+}
+body.dark th {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+}
+
+/* === Textfält === */
+input {
+    width: 90%;                /* lika bredd i båda övningarna */
+    max-width: none;
+    padding: 8px 10px;
+    border: 2px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 1em;
+    background: inherit;
+    color: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.3s, background-color 0.3s;
+    display: block;
+    margin: 0 auto;
+}
+input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+/* === Dark mode för input === */
+body.dark input {
+    border-color: #555;
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+}
+body.dark input:focus {
+    border-color: #9b59b6;
+    box-shadow: 0 0 5px rgba(155, 89, 182, 0.5);
+}
+
+/* === Feedback === */
+.correct { background-color: #e6ffe6 !important; border-color: #2ecc71 !important; }
+body.dark .correct { background-color: #294a29 !important; border-color: #27ae60 !important; }
+
+.incorrect { background-color: #ffe6e6 !important; border-color: #e74c3c !important; }
+body.dark .incorrect { background-color: #4a2929 !important; border-color: #c0392b !important; }
+
+
+.tooltip-container { position: relative; display: inline-block; cursor: help; }
+.tooltip {
+    visibility: hidden;
+    background-color: #34495e;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 10;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    font-size: 0.9em;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #34495e transparent transparent transparent;
+}
+.tooltip-container:hover .tooltip { visibility: visible; opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- Dark mode toggle -->
+<button class="toggle" onclick="toggleDark()" title="Växla mörkt läge"><i class="fas fa-moon"></i></button>
+
+<!-- Switch button -->
+<a href="noun-indef-to-def.html" class="switch-btn" title="Practise the opposite direction.">Opposite exercise</a>
+
+<div class="container">
+    <h1>Nouns – indefinite form</h1>
+    <p>Write the <strong>indefinite form</strong> of the nouns (including <em>en</em> or <em>ett</em>). Get instant feedback as you type!<br>
+    Hover over the definite form to see the translation into British English.</p>
+
+    <table id="quiz">
+        <thead>
+            <tr>
+                <th>Definite form</th>
+                <th>Indefinite form (Your answer)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+const nouns = [
+    {def: "jackan", indef: "en jacka", en: "a jacket"},
+    {def: "berget", indef: "ett berg", en: "a mountain"},
+    {def: "pojken", indef: "en pojke", en: "a boy"},
+    {def: "ägget", indef: "ett ägg", en: "an egg"},
+    {def: "skolan", indef: "en skola", en: "a school"},
+    {def: "taket", indef: "ett tak", en: "a roof"},
+    {def: "floden", indef: "en flod", en: "a river"},
+    {def: "havet", indef: "ett hav", en: "a sea / ocean"},
+    {def: "gatan", indef: "en gata", en: "a street"},
+    {def: "bordet", indef: "ett bord", en: "a table"},
+    {def: "stolpen", indef: "en stolpe", en: "a post / pole"},
+    {def: "tåget", indef: "ett tåg", en: "a train"},
+    {def: "klockan", indef: "en klocka", en: "a clock / watch"},
+    {def: "hjulet", indef: "ett hjul", en: "a wheel"},
+    {def: "väggen", indef: "en vägg", en: "a wall"},
+    {def: "tältet", indef: "ett tält", en: "a tent"},
+    {def: "blomman", indef: "en blomma", en: "a flower"},
+    {def: "benet", indef: "ett ben", en: "a leg / bone"},
+    {def: "foten", indef: "en fot", en: "a foot"},
+    {def: "golvet", indef: "ett golv", en: "a floor"},
+    {def: "sängen", indef: "en säng", en: "a bed"},
+    {def: "repet", indef: "ett rep", en: "a rope"},
+    {def: "soffan", indef: "en soffa", en: "a sofa"},
+    {def: "rummet", indef: "ett rum", en: "a room"},
+    {def: "byxan", indef: "en byxa", en: "a pair of trousers"},
+    {def: "kortet", indef: "ett kort", en: "a card"},
+    {def: "hatten", indef: "en hatt", en: "a hat"},
+    {def: "glaset", indef: "ett glas", en: "a glass"},
+    {def: "skon", indef: "en sko", en: "a shoe"},
+    {def: "armbandet", indef: "ett armband", en: "a bracelet / wristband"},
+    {def: "kappan", indef: "en kappa", en: "a coat"},
+    {def: "örhänget", indef: "ett örhänge", en: "an earring"},
+    {def: "skeden", indef: "en sked", en: "a spoon"},
+    {def: "bältet", indef: "ett bälte", en: "a belt"},
+    {def: "kniven", indef: "en kniv", en: "a knife"},
+    {def: "köket", indef: "ett kök", en: "a kitchen"},
+    {def: "tallriken", indef: "en tallrik", en: "a plate"},
+    {def: "badet", indef: "ett bad", en: "a bath"},
+    {def: "dörren", indef: "en dörr", en: "a door"},
+    {def: "lådan", indef: "en låda", en: "a box"}
+];
+
+const tableBody = document.querySelector("#quiz tbody");
+
+function checkAnswer(index) {
+    const input = document.getElementById("ans" + index);
+    const val = input.value.trim().toLowerCase();
+    const correctIndef = nouns[index].indef.toLowerCase();
+
+    input.classList.remove("correct", "incorrect");
+    if (val === "") return;
+    if (val === correctIndef) input.classList.add("correct");
+    else input.classList.add("incorrect");
+}
+
+nouns.forEach((n, i) => {
+    const row = document.createElement("tr");
+    const defCell = document.createElement("td");
+    const tooltipContainer = document.createElement("span");
+    tooltipContainer.className = "tooltip-container";
+    tooltipContainer.innerHTML = `${i + 1}. ${n.def} <span class="tooltip">${n.en}</span>`;
+    defCell.appendChild(tooltipContainer);
+
+    const inputCell = document.createElement("td");
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "ans" + i;
+    input.placeholder = "Write the indefinite form here...";
+    input.autocomplete = "off";
+    input.addEventListener("input", () => checkAnswer(i));
+
+    inputCell.appendChild(input);
+    row.appendChild(defCell);
+    row.appendChild(inputCell);
+    tableBody.appendChild(row);
+});
+
+function toggleDark() {
+    const body = document.body;
+    body.classList.toggle("dark");
+    const icon = document.querySelector(".toggle i");
+    icon.classList.toggle("fa-moon");
+    icon.classList.toggle("fa-sun");
+}
+</script>
+</body>
+</html>
