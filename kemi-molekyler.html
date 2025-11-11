@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Molekylquiz</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f9fafb;
+    --text: #111;
+    --card: #fff;
+    --accent: #0078d7;
+  }
+  body.dark {
+    --bg: #1c1c1e;
+    --text: #f1f1f1;
+    --card: #2c2c2e;
+    --accent: #4dabf7;
+  }
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 10px;
+    transition: background 0.3s, color 0.3s;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  header button {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+  }
+  h2 { margin-top: 0; }
+  .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    font-size: 1em;
+  }
+  select {
+    flex: 1;
+    padding: 6px;
+    font-size: 1em;
+  }
+  .row button {
+    background: var(--accent);
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .buttons {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+  }
+  .result {
+    margin-top: 15px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 style="font-size:1.2em;">🧪 Molekylquiz</h1>
+  <button id="toggleTheme"><i class="fas fa-moon"></i></button>
+</header>
+
+<div class="card">
+  <h2 id="questionTitle"></h2>
+  <p id="formulaText"></p>
+
+  <div id="answerArea"></div>
+
+  <div class="buttons">
+    <button onclick="checkAnswer()">Rätta</button>
+    <button onclick="showAnswer()">Visa facit</button>
+    <button onclick="newMolecule()">Ny molekyl 🔄</button>
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const molecules = [
+  {name: "vatten", formula: "H2O", atoms: {H:2, O:1}},
+  {name: "vätemolekylen", formula: "H2", atoms: {H:2}},
+  {name: "syrgasmolekylen", formula: "O2", atoms: {O:2}},
+  {name: "koldioxid", formula: "CO2", atoms: {C:1,O:2}},
+  {name: "kolmonoxid", formula: "CO", atoms: {C:1,O:1}},
+  {name: "metan", formula: "CH4", atoms: {C:1,H:4}},
+  {name: "etan", formula: "C2H6", atoms: {C:2,H:6}},
+  {name: "etanol", formula: "C2H5OH", atoms: {C:2,H:6,O:1}},
+  {name: "ammoniak", formula: "NH3", atoms: {N:1,H:3}},
+  {name: "ozon", formula: "O3", atoms: {O:3}},
+  {name: "väteperoxid", formula: "H2O2", atoms: {H:2,O:2}},
+  {name: "kvävgas", formula: "N2", atoms: {N:2}},
+  {name: "svaveldioxid", formula: "SO2", atoms: {S:1,O:2}},
+  {name: "svaveltrioxid", formula: "SO3", atoms: {S:1,O:3}},
+  {name: "glukos", formula: "C6H12O6", atoms: {C:6,H:12,O:6}},
+  {name: "sackaros", formula: "C12H22O11", atoms: {C:12,H:22,O:11}},
+  {name: "ättiksyra", formula: "CH3COOH", atoms: {C:2,H:4,O:2}},
+  {name: "propan", formula: "C3H8", atoms: {C:3,H:8}},
+  {name: "butan", formula: "C4H10", atoms: {C:4,H:10}},
+  {name: "klorväte", formula: "HCl", atoms: {H:1,Cl:1}},
+  {name: "natriumklorid", formula: "NaCl", atoms: {Na:1,Cl:1}},
+  {name: "kalciumkarbonat", formula: "CaCO3", atoms: {Ca:1,C:1,O:3}},
+  {name: "ammoniumnitrat", formula: "NH4NO3", atoms: {N:2,H:4,O:3}},
+  {name: "kvävedioxid", formula: "NO2", atoms: {N:1,O:2}},
+  {name: "metanol", formula: "CH3OH", atoms: {C:1,H:4,O:1}},
+  {name: "formaldehyd", formula: "CH2O", atoms: {C:1,H:2,O:1}},
+  {name: "aceton", formula: "C3H6O", atoms: {C:3,H:6,O:1}}
+];
+
+const elements = ["H","O","C","N","S","Cl","Na","Ca"];
+let current = null;
+
+function createRow(){
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const input = document.createElement("input");
+  input.type = "number";
+  input.min = "0";
+  input.placeholder = "#";
+
+  const select = document.createElement("select");
+  const empty = document.createElement("option");
+  empty.value = "";
+  empty.textContent = "Välj grundämne";
+  select.appendChild(empty);
+  elements.forEach(el=>{
+    const opt = document.createElement("option");
+    opt.value = el;
+    opt.textContent = el;
+    select.appendChild(opt);
+  });
+
+  const addBtn = document.createElement("button");
+  addBtn.innerHTML = "<i class='fas fa-plus'></i>";
+  addBtn.onclick = ()=>document.getElementById("answerArea").appendChild(createRow());
+
+  row.appendChild(input);
+  row.appendChild(select);
+  row.appendChild(addBtn);
+
+  return row;
+}
+
+function newMolecule(){
+  document.getElementById("result").textContent = "";
+  document.getElementById("answerArea").innerHTML = "";
+  document.getElementById("answerArea").appendChild(createRow());
+
+  current = molecules[Math.floor(Math.random()*molecules.length)];
+  document.getElementById("questionTitle").textContent = 
+    `Vad består ${current.name} av?`;
+  document.getElementById("formulaText").textContent = 
+    `Den kemiska beteckningen är ${current.formula}.`;
+}
+
+function checkAnswer(){
+  const rows = document.querySelectorAll("#answerArea .row");
+  const answer = {};
+  rows.forEach(r=>{
+    const num = parseInt(r.querySelector("input").value);
+    const el = r.querySelector("select").value;
+    if(el && !isNaN(num) && num>0){ answer[el] = (answer[el]||0)+num; }
+  });
+
+  const correct = current.atoms;
+  let ok = Object.keys(correct).length === Object.keys(answer).length &&
+           Object.keys(correct).every(k => correct[k]===answer[k]);
+
+  document.getElementById("result").textContent = ok ? 
+    "✅ Rätt!" : "❌ Inte riktigt. Försök igen!";
+}
+
+function showAnswer(){
+  const parts = Object.entries(current.atoms)
+    .map(([el,n])=>`${n} ${el}`)
+    .join(", ");
+  document.getElementById("result").textContent = 
+    `💡 Facit: ${current.name} består av ${parts}.`;
+}
+
+document.getElementById("toggleTheme").onclick = ()=>{
+  document.body.classList.toggle("dark");
+  const icon = document.querySelector("#toggleTheme i");
+  icon.classList.toggle("fa-moon");
+  icon.classList.toggle("fa-sun");
+};
+
+newMolecule();
+</script>
+</body>
+</html>
