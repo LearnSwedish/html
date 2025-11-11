@@ -92,6 +92,7 @@
     margin-top: 15px;
     font-weight: 600;
   }
+  sub { font-size: 0.8em; vertical-align: sub; }
 </style>
 </head>
 <body>
@@ -150,6 +151,11 @@ const molecules = [
 const elements = ["H","O","C","N","S","Cl","Na","Ca"];
 let current = null;
 
+// ersätter siffror med nedsänkta <sub>-taggar
+function formatFormula(f) {
+  return f.replace(/(\d+)/g, "<sub>$1</sub>");
+}
+
 function createRow(){
   const row = document.createElement("div");
   row.className = "row";
@@ -190,8 +196,8 @@ function newMolecule(){
   current = molecules[Math.floor(Math.random()*molecules.length)];
   document.getElementById("questionTitle").textContent = 
     `Vad består ${current.name} av?`;
-  document.getElementById("formulaText").textContent = 
-    `Den kemiska beteckningen är ${current.formula}.`;
+  document.getElementById("formulaText").innerHTML = 
+    `Den kemiska beteckningen är ${formatFormula(current.formula)}.`;
 }
 
 function checkAnswer(){
