@@ -148,10 +148,22 @@ const molecules = [
   {name: "aceton", formula: "C3H6O", atoms: {C:3,H:6,O:1}}
 ];
 
-const elements = ["H","O","C","N","S","Cl","Na","Ca"];
+// Svenska namn med (er)
+const elementLabels = {
+  Ca: "kalciumatom(er)",
+  Cl: "kloratom(er)",
+  C:  "kolatom(er)",
+  N:  "kväveatom(er)",
+  Na: "natriumatom(er)",
+  O:  "syreatom(er)",
+  S:  "svavelatom(er)",
+  H:  "väteatom(er)"
+};
+
+const elements = Object.keys(elementLabels);
 let current = null;
 
-// ersätter siffror med nedsänkta <sub>-taggar
+// nedsänkta siffror
 function formatFormula(f) {
   return f.replace(/(\d+)/g, "<sub>$1</sub>");
 }
@@ -168,12 +180,12 @@ function createRow(){
   const select = document.createElement("select");
   const empty = document.createElement("option");
   empty.value = "";
-  empty.textContent = "Välj grundämne";
+  empty.textContent = "Välj atomer";
   select.appendChild(empty);
   elements.forEach(el=>{
     const opt = document.createElement("option");
     opt.value = el;
-    opt.textContent = el;
+    opt.textContent = elementLabels[el];
     select.appendChild(opt);
   });
 
@@ -219,7 +231,7 @@ function checkAnswer(){
 
 function showAnswer(){
   const parts = Object.entries(current.atoms)
-    .map(([el,n])=>`${n} ${el}`)
+    .map(([el,n])=>`${n} ${elementLabels[el].toLowerCase()}`)
     .join(", ");
   document.getElementById("result").textContent = 
     `💡 Facit: ${current.name} består av ${parts}.`;
