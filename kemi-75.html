@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kemiquiz – Atomer och molekyler</title>
+
+<!-- Font Awesome för ikoner -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+<style>
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f9fafb;
+  color: #111;
+  margin: 0;
+  padding: 0 10px;
+  transition: background 0.3s, color 0.3s;
+}
+body.dark {
+  background-color: #121212;
+  color: #eee;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+}
+h1 { font-size: 1.3em; margin: 0; }
+
+button {
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover { background: #005fa3; }
+
+#quiz {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.question-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background 0.3s;
+}
+body.dark .question-card { background: #1e1e1e; box-shadow: none; }
+
+.question-card.correct { border: 2px solid #2ecc71; }
+.question-card.incorrect { border: 2px solid #e74c3c; }
+
+.answers button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 6px 0;
+  background: #f1f1f1;
+  color: #111;
+}
+body.dark .answers button { background: #2a2a2a; color: #eee; }
+.answers button.correct { background: #2ecc71; color: #fff; }
+.answers button.incorrect { background: #e74c3c; color: #fff; }
+
+#result {
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 20px 0;
+}
+
+.toggle {
+  background: none;
+  border: none;
+  font-size: 1.3em;
+  cursor: pointer;
+  color: inherit;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔬 Kemiquiz – Atomer och molekyler</h1>
+  <button class="toggle" onclick="toggleDarkMode()" title="Dark mode"><i class="fas fa-moon"></i></button>
+</header>
+
+<div id="quiz"></div>
+<div id="result"></div>
+<div style="text-align:center;">
+  <button onclick="restartQuiz()">Starta om</button>
+</div>
+
+<script>
+const questions = [
+{q:"Vad betyder det att en vattenmolekyl är polär?",a:"Att elektronerna är ojämnt fördelade eftersom syreatomen drar starkare i dem, vilket gör att molekylen får en positiv och en negativ sida.",w:["Att syret har fler elektroner än väte.","Att vatten har lika laddning på båda sidor.","Att molekylen saknar elektroner."]},
+{q:"Vad står \"u\" för i den universella massenheten?",a:"Unified atomic mass unit (enhetlig atommassenhet)",w:["Universal unit","Unified molecular unit","Universal micro unit"]},
+{q:"Vad finns i atomens kärna som är positivt laddat?",a:"Protoner",w:["Elektroner","Neutroner","Positroner"]},
+{q:"Vilka partiklar i kärnan saknar laddning?",a:"Neutroner",w:["Protoner","Elektroner","Fotoner"]},
+{q:"Var i atomen finns protoner och neutroner?",a:"I kärnan",w:["I elektronskalen","Utanför atomen","I atomens moln"]},
+{q:"Varför hålls elektronerna kvar runt atomkärnan?",a:"För att de negativt laddade elektronerna och de positivt laddade protonerna dras till varandra.",w:["För att neutronerna stöter bort elektronerna.","För att elektronerna är tyngre än protonerna.","För att elektronerna sitter fast i skalet."]},
+{q:"Varför är en atom oladdad?",a:"För att den har lika många protoner som elektroner och deras laddningar tar ut varandra.",w:["För att neutronerna neutraliserar protonerna.","För att protonerna saknar laddning.","För att elektronerna rör sig snabbt runt kärnan."]},
+{q:"Hur många elektroner finns det i en neutral atom jämfört med protoner?",a:"Lika många elektroner som protoner.",w:["Fler elektroner än protoner.","Färre elektroner än protoner.","Det beror på atomens temperatur."]},
+{q:"Hur många protoner finns i kärnan hos en heliumatom?",a:"Två",w:["Tre","Fyra","En"]},
+{q:"Hur många neutroner finns i kärnan hos en heliumatom?",a:"Två",w:["En","Tre","Fyra"]},
+{q:"Hur många elektroner kretsar runt kärnan i en heliumatom?",a:"Två",w:["Fyra","Tre","En"]},
+{q:"Vad kännetecknar ett grundämne?",a:"Det består av bara en sorts atomer.",w:["Det består av flera olika sorters atomer.","Det innehåller både atomer och molekyler.","Det bildas när atomer delas."]},
+{q:"Varför finns det ungefär lika många grundämnen som atomslag?",a:"För att varje grundämne består av sin egen unika sorts atom.",w:["För att alla grundämnen har samma antal neutroner.","För att atomer kan byta plats mellan grundämnen.","För att antalet atomer förändras med temperaturen."]},
+{q:"Ungefär hur många olika grundämnen känner man till?",a:"Lite mer än 100.",w:["Cirka 50","Cirka 200","Fler än 500"]},
+{q:"Vilket grundämne har de minsta atomerna?",a:"Väte",w:["Helium","Syre","Kväve"]},
+{q:"Hur många protoner finns i kärnan hos en väteatom?",a:"En",w:["Två","Tre","Noll"]},
+{q:"Vilket grundämne kommer efter väte i ordning efter antalet protoner?",a:"Helium",w:["Litium","Syre","Kväve"]},
+{q:"Vad betyder det att järn har atomnumret 26?",a:"Att järnatomen har 26 protoner i sin kärna.",w:["Att järnatomen har 26 elektroner i sitt yttersta skal.","Att järnatomen har 26 neutroner.","Att järnatomen väger 26 u."]},
+{q:"Hur många protoner finns i kärnan hos en järnatom?",a:"26",w:["13","56","14"]},
+{q:"Vad kallas de banor där elektronerna rör sig runt kärnan?",a:"Elektronskal",w:["Elektronringar","Elektronbanor","Elektronfält"]},
+{q:"Vilket elektronskal ligger närmast atomkärnan?",a:"K-skalet",w:["L-skalet","M-skalet","N-skalet"]},
+{q:"Hur många elektroner får plats i K-skalet?",a:"2",w:["4","6","8"]},
+{q:"Hur många elektroner får plats i L-skalet?",a:"8",w:["2","4","6"]},
+{q:"Hur många elektroner får plats i M-skalet?",a:"8",w:["10","12","16"]},
+{q:"Vad kallas elektronerna i det yttersta skalet?",a:"Valenselektroner",w:["Kärnelektroner","Fria elektroner","Grundelektroner"]},
+{q:"Varför är valenselektronerna viktiga?",a:"För att de bestämmer ämnets kemiska egenskaper.",w:["För att de ger atomen dess massa.","För att de sitter närmast kärnan.","För att de styr atomens färg."]},
+{q:"Vilket skal innehåller valenselektronerna?",a:"Det yttersta skalet.",w:["K-skalet","L-skalet","M-skalet"]},
+{q:"Vad kallas det när en atom har fulla elektronskal?",a:"Ädelgasstruktur",w:["Grundstruktur","Jonstruktur","Atomkärnstruktur"]},
+{q:"Vad strävar atomer efter att uppnå?",a:"Fulla elektronskal (ädelgasstruktur)",w:["Fler neutroner","Färre protoner","Tomma elektronskal"]},
+{q:"Varför vill atomer uppnå ädelgasstruktur?",a:"För att bli stabila.",w:["För att bli laddade.","För att kunna byta plats med andra atomer.","För att bilda nya kärnor."]},
+{q:"Vad kallas en vågrät rad i det periodiska systemet?",a:"En period",w:["En grupp","En sektion","En nivå"]},
+{q:"Vad har alla atomer i samma period gemensamt?",a:"De har lika många elektronskal.",w:["De har lika många protoner.","De har lika många neutroner.","De har lika många valenselektroner."]},
+{q:"Vad kallas en lodrät kolumn i det periodiska systemet?",a:"En grupp",w:["En period","En rad","En sektion"]},
+{q:"Vad har atomerna i samma grupp gemensamt (förutom helium)?",a:"De har lika många valenselektroner.",w:["De har lika många protoner.","De har lika många neutroner.","De har lika många elektronskal."]},
+{q:"Varför har ämnen i samma grupp ofta liknande egenskaper?",a:"För att de har lika många valenselektroner.",w:["För att de har lika många elektronskal.","För att de väger lika mycket.","För att de består av samma isotoper."]},
+{q:"Vad kan metaller göra vid kemiska reaktioner?",a:"De kan lämna ifrån sig elektroner.",w:["De kan ta upp protoner.","De kan ta upp elektroner.","De kan lämna ifrån sig neutroner."]},
+{q:"Hur många valenselektroner har de flesta metaller?",a:"1–3",w:["4–6","7–8","9–10"]},
+{q:"Vad gör icke-metaller ofta vid kemiska reaktioner?",a:"De tar emot elektroner.",w:["De lämnar ifrån sig elektroner.","De delar protoner.","De avger neutroner."]},
+{q:"Hur många valenselektroner har icke-metaller oftast?",a:"4–8",w:["1–3","9–10","0–2"]},
+{q:"Vilka ämnen har fria atomer?",a:"Ädelgaser",w:["Metaller","Icke-metaller","Halogener"]},
+{q:"Vad bildas ofta när en metall reagerar med en icke-metall?",a:"Joner",w:["Neutroner","Molekyler av ädelgaser","Protoner"]},
+{q:"Vad händer när natrium och klor blandas?",a:"Reaktionen blir explosiv.",w:["Ingenting händer.","En gas bildas långsamt.","En vätska bildas utan värme."]},
+{q:"Vad gör natriumatomerna i reaktionen med klor?",a:"De lämnar över sina valenselektroner till kloratomerna.",w:["De tar emot elektroner från klor.","De delar elektroner med klor.","De avger protoner till klor."]},
+{q:"Vilken typ av kemisk bindning uppstår när natrium lämnar över elektroner till klor?",a:"Jonbindning",w:["Kovalent bindning","Metallbindning","Vätebindning"]},
+{q:"Vad händer ofta med jonföreningar i vatten?",a:"De löses upp.",w:["De smälter.","De avdunstar.","De bildar gas."]},
+{q:"Vad händer med jonbindningarna när en jonförening löses i vatten?",a:"De bryts upp mellan jonerna.",w:["De blir starkare.","De bildar nya elektronskal.","De försvinner helt och jonerna förintas."]},
+{q:"Hur sitter atomerna ihop i gaser som väte, syre, kväve och klor?",a:"De sitter ihop i par och bildar molekyler.",w:["De är alltid fria atomer.","De sitter ihop i stora jonföreningar.","De bildar metalliska kristaller."]},
+{q:"Vilka ämnen är exempel på kemiska föreningar som består av molekyler?",a:"Vatten, koldioxid och metan.",w:["Natriumklorid, järn och silver.","Syre, väte och klor.","Guld, kväve och helium."]},
+{q:"Vad kallas de krafter som håller ihop atomerna i en molekyl?",a:"Molekylbindningar.",w:["Jonbindningar","Metallbindningar","Magnetbindningar"]},
+{q:"Vad gör de två väteatomerna när de bildar en molekyl?",a:"De delar på sina valenselektroner.",w:["De byter plats på sina protoner.","De avger elektroner till varandra.","De smälter samman till en jon."]},
+{q:"Vad händer med elektronparet i en vätemolekyl?",a:"Det kretsar runt båda atomerna.",w:["Det rör sig bara runt den ena atomen.","Det försvinner när bindningen bildas.","Det stannar i atomkärnan."]},
+{q:"Vilken typ av bindning bildas när två atomer delar elektroner?",a:"Molekylbindning (kovalent bindning)",w:["Jonbindning","Metallbindning","Vätebindning"]},
+{q:"Hur många andra atomer kan en kolatom binda samtidigt?",a:"Fyra",w:["Två","Tre","Fem"]},
+{q:"Varför kan en kolatom binda fyra andra atomer?",a:"För att den har fyra valenselektroner.",w:["För att den har fyra protoner.","För att den saknar neutroner.","För att den är en metall."]},
+{q:"Hur många elektroner behöver en syreatom ta upp för att få fulla skal?",a:"Två",w:["En","Tre","Fyra"]},
+{q:"Vilka två partiklar i atomkärnan väger ungefär lika mycket?",a:"Protonen och neutronen",w:["Elektronen och protonen","Neutronen och elektronen","Protonen och positronen"]},
+{q:"Hur mycket väger en proton eller neutron ungefär?",a:"Cirka 1 u",w:["Cirka 0,5 u","Cirka 2 u","Cirka 10 u"]},
+{q:"Hur många protoner finns i en vanlig kolatom (kol-12)?",a:"6",w:["12","8","4"]},
+{q:"Hur många neutroner finns i en vanlig kolatom (kol-12)?",a:"6",w:["12","8","4"]},
+{q:"Hur många neutroner finns i kärnan hos vanligt väte?",a:"Ingen",w:["En","Två","Tre"]},
+{q:"Vad har de tre isotoperna av väte gemensamt?",a:"De har samma atomnummer (samma antal protoner).",w:["De har samma masstal.","De har samma antal neutroner.","De har olika atomnummer."]},
+{q:"Varför väger isotoperna av väte olika mycket?",a:"För att de innehåller olika antal neutroner.",w:["För att de har olika antal protoner.","För att de har olika antal elektronskal.","För att de har olika laddning."]},
+{q:"Ungefär hur många elektroner behövs för att tillsammans väga 1 u?",a:"Nästan 2 000",w:["Cirka 200","Cirka 20 000","Exakt 1 000"]}
+];
+
+function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
+
+function renderQuiz(){
+  const quizDiv=document.getElementById("quiz");
+  quizDiv.innerHTML="";
+  const shuffled=shuffle([...questions]);
+  shuffled.forEach((qObj,index)=>{
+    const card=document.createElement("div");
+    card.className="question-card";
+    const q=document.createElement("p");
+    q.textContent=`${index+1}. ${qObj.q}`;
+    card.appendChild(q);
+
+    const ansDiv=document.createElement("div");
+    ansDiv.className="answers";
+    const allAnswers=shuffle([qObj.a,...qObj.w]);
+    allAnswers.forEach(ans=>{
+      const btn=document.createElement("button");
+      btn.textContent=ans;
+      btn.onclick=()=>checkAnswer(btn,ans===qObj.a,card,ansDiv);
+      ansDiv.appendChild(btn);
+    });
+    card.appendChild(ansDiv);
+    quizDiv.appendChild(card);
+  });
+}
+
+let correctCount = 0;
+let totalAnswered = 0;
+
+function checkAnswer(button, isCorrect, card, ansDiv) {
+  const buttons = ansDiv.querySelectorAll("button");
+  buttons.forEach(b => b.disabled = true);
+  totalAnswered++;
+
+  if (isCorrect) {
+    button.classList.add("correct");
+    card.classList.add("correct");
+    correctCount++;
+  } else {
+    button.classList.add("incorrect");
+    card.classList.add("incorrect");
+    // Markera rätt svar
+    buttons.forEach(b => {
+      if (b.textContent === card.dataset.correct) {
+        b.classList.add("correct");
+      }
+    });
+  }
+  updateResult();
+}
+
+function updateResult() {
+  const result = document.getElementById("result");
+  result.textContent = `Rätt: ${correctCount} av ${totalAnswered} frågor (${questions.length} totalt)`;
+}
+
+function restartQuiz() {
+  correctCount = 0;
+  totalAnswered = 0;
+  document.getElementById("result").textContent = "";
+  renderQuiz();
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+  const icon = document.querySelector(".toggle i");
+  if (document.body.classList.contains("dark")) {
+    icon.classList.replace("fa-moon", "fa-sun");
+  } else {
+    icon.classList.replace("fa-sun", "fa-moon");
+  }
+}
+
+// Ladda quizet vid start
+window.onload = () => {
+  renderQuiz();
+};
+</script>
+</body>
+</html>
