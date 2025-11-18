@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards – Svenska / Holländska</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: #f5f5f5;
+        color: #111;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        transition: background 0.3s, color 0.3s;
+        overflow: hidden;
+    }
+    body.dark {
+        background: #121212;
+        color: #eee;
+    }
+
+    #darkToggle {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 26px;
+        cursor: pointer;
+        z-index: 20;
+    }
+
+    #directionToggle {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        font-size: 18px;
+        padding: 6px 12px;
+        background: #007acc;
+        color: white;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        z-index: 20;
+    }
+    body.dark #directionToggle {
+        background: #0d6efd;
+    }
+
+    #header {
+        text-align: center;
+        padding: 15px;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .card-container {
+        perspective: 1000px;
+        margin: auto;
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+    }
+
+    .card {
+        width: 100%;
+        height: 240px;
+        border-radius: 15px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .flipped {
+        transform: rotateY(180deg);
+    }
+
+    .side {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        font-size: 32px;
+        text-align: center;
+        background: white;
+        color: #111;
+    }
+    body.dark .side {
+        background: #1e1e1e;
+        color: #eee;
+    }
+
+    .back {
+        transform: rotateY(180deg);
+    }
+
+    #controls {
+        text-align: center;
+        padding-bottom: 25px;
+    }
+
+    button.navbtn {
+        background: #007acc;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 8px;
+        color: white;
+        font-size: 20px;
+        margin: 0 10px;
+    }
+    body.dark .navbtn {
+        background: #0d6efd;
+    }
+
+    /* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 50;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    width: 90%;           /* samma som card-container */
+    max-width: 400px;     /* samma som card-container */
+    height: 240px;        /* samma höjd som kortet */
+    border-radius: 15px;  /* exakt samma rundning */
+    background: white;
+    padding: 20px;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+body.dark .modal-content {
+    background: #1e1e1e;
+    color: #eee;
+}
+	
+    .close {
+        float: right;
+        font-size: 28px;
+        cursor: pointer;
+    }
+
+#gramBtn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    background: #007acc;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 15;
+}
+
+body.dark #gramBtn {
+    background: #0d6efd;
+}
+
+/* När kortet är vänt (NL → SE, svenska på baksidan):
+   - flytta knappen visuellt till nederkant HÖGER igen
+   - rotera så att texten inte är spegelvänd */
+.card.flipped #gramBtn {
+    margin-left: 40px;        /* behåll högerplacering */
+    right: auto;         /* stäng av vänsterplacering */
+    transform: rotateY(180deg);
+}
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        padding: 6px;
+        border-bottom: 1px solid #ccc;
+    }
+	
+
+</style>
+</head>
+
+<body>
+
+<!-- Modal -->
+<div id="grammarModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <h2 id="modalWord"></h2>
+        <table>
+            <tr><th>onbepaald enkelvoud</th><td id="sIndef"></td></tr>
+            <tr><th>bepaald enkelvoud</th><td id="sDef"></td></tr>
+            <tr><th>onbepaald meervoud</th><td id="pIndef"></td></tr>
+            <tr><th>bepaald meervoud</th><td id="pDef"></td></tr>
+        </table>
+    </div>
+</div>
+
+<button id="directionToggle">SE → NL</button>
+<div id="darkToggle">🌙</div>
+<div id="header">Flashcards</div>
+
+<div class="card-container">
+    <div id="card" class="card">
+        <div id="front" class="side"></div>
+        <button id="gramBtn" style="display:none;">Grammatica</button>
+        <div id="back" class="side back"></div>
+    </div>
+</div>
+
+<div id="controls">
+    <button id="prevBtn" class="navbtn">⬅️</button>
+    <button id="nextBtn" class="navbtn">➡️</button>
+</div>
+
+<script>
+// =========================
+// DATA
+// =========================
+let DATA = [
+{ sv:"erfarenhet", nl:"ervaring" },
+{ sv:"löneanspråk", nl:"salarisverwachting" },
+{ sv:"arbetsbelastning", nl:"werkbelasting" },
+{ sv:"bakgrund", nl:"achtergrond" },
+{ sv:"utbildning", nl:"opleiding" },
+{ sv:"kompetens", nl:"competentie / vaardigheid" },
+{ sv:"arbetslivserfarenhet", nl:"werkervaring" },
+{ sv:"ansvar", nl:"verantwoordelijkheid" },
+{ sv:"arbetsuppgift", nl:"werktaak / taak" },
+{ sv:"tjänst", nl:"functie / positie" },
+{ sv:"roll", nl:"rol" },
+{ sv:"mål", nl:"doel" },
+{ sv:"personlighet", nl:"persoonlijkheid" },
+{ sv:"drivkraft", nl:"drijfveer / motivatie" },
+{ sv:"möjlighet", nl:"mogelijkheid / kans" },
+{ sv:"utmaning", nl:"uitdaging" },
+{ sv:"trivsel", nl:"werkplezier / welzijn" },
+{ sv:"arbetsmiljö", nl:"werkomgeving" },
+{ sv:"resultat", nl:"resultaat" },
+{ sv:"situation", nl:"situatie" },
+{ sv:"problem", nl:"probleem" },
+{ sv:"lösning", nl:"oplossing" },
+{ sv:"konflikt", nl:"conflict" },
+{ sv:"missförstånd", nl:"misverstand" },
+{ sv:"planering", nl:"planning" },
+{ sv:"strategi", nl:"strategie" },
+{ sv:"fokus", nl:"focus" },
+{ sv:"tidsram", nl:"tijdsbestek / tijdsframe" },
+{ sv:"introduktion", nl:"introductie" },
+{ sv:"utvecklingsmöjlighet", nl:"ontwikkelingsmogelijkheid" },
+{ sv:"arbetskultur", nl:"werkcultuur" },
+{ sv:"schema", nl:"rooster / schema" },
+{ sv:"styrka", nl:"sterke punt" },
+{ sv:"svaghet", nl:"zwakte" },
+{ sv:"prestation", nl:"prestatie" },
+{ sv:"förmåga", nl:"vermogen / capaciteit" },
+{ sv:"egenskap", nl:"eigenschap" },
+{ sv:"arbetsgrupp", nl:"werkgroep / team" },
+{ sv:"kollega", nl:"collega" },
+{ sv:"chef", nl:"leidinggevende / chef" },
+{ sv:"ansvarstagande", nl:"verantwoordelijkheidsgevoel" },
+{ sv:"utveckling", nl:"ontwikkeling" },
+{ sv:"förbättring", nl:"verbetering" },
+{ sv:"beslut", nl:"beslissing" },
+{ sv:"feedback", nl:"feedback" },
+{ sv:"lösningsförmåga", nl:"probleemoplossend vermogen" },
+{ sv:"arbetsupplevelse", nl:"werkervaring" },
+{ sv:"kommunikation", nl:"communicatie" },
+{ sv:"struktur", nl:"structuur" },
+{ sv:"projekt", nl:"project" },
+{ sv:"arbetsprocess", nl:"werkproces" },
+{ sv:"introduktionsperiod", nl:"inwerkperiode / introductieperiode" }
+];
+
+// =========================
+// GRAMMATIKDATA (FYLL PÅ FRITT)
+// =========================
+const GRAMMAR = {
+
+    "erfarenhet": {
+        sIndef: "en erfarenhet",
+        sDef:   "erfarenheten",
+        pIndef: "erfarenheter",
+        pDef:   "erfarenheterna"
+    },
+
+    "löneanspråk": {
+        sIndef: "ett löneanspråk",
+        sDef:   "löneanspråket",
+        pIndef: "löneanspråk",
+        pDef:   "löneanspråken"
+    },
+
+    "arbetsbelastning": {
+        sIndef: "en arbetsbelastning",
+        sDef:   "arbetsbelastningen",
+        pIndef: "arbetsbelastningar",
+        pDef:   "arbetsbelastningarna"
+    },
+
+    "bakgrund": {
+        sIndef: "en bakgrund",
+        sDef:   "bakgrunden",
+        pIndef: "bakgrunder",
+        pDef:   "bakgrunderna"
+    },
+
+    "utbildning": {
+        sIndef: "en utbildning",
+        sDef:   "utbildningen",
+        pIndef: "utbildningar",
+        pDef:   "utbildningarna"
+    },
+
+    "kompetens": {
+        sIndef: "en kompetens",
+        sDef:   "kompetensen",
+        pIndef: "kompetenser",
+        pDef:   "kompetenserna"
+    },
+
+    "arbetslivserfarenhet": {
+        sIndef: "en arbetslivserfarenhet",
+        sDef:   "arbetslivserfarenheten",
+        pIndef: "arbetslivserfarenheter",
+        pDef:   "arbetslivserfarenheterna"
+    },
+
+    "ansvar": {
+        sIndef: "ett ansvar",
+        sDef:   "ansvaret",
+        pIndef: "ansvar",
+        pDef:   "ansvaren"
+    },
+
+    "arbetsuppgift": {
+        sIndef: "en arbetsuppgift",
+        sDef:   "arbetsuppgiften",
+        pIndef: "arbetsuppgifter",
+        pDef:   "arbetsuppgifterna"
+    },
+
+    "tjänst": {
+        sIndef: "en tjänst",
+        sDef:   "tjänsten",
+        pIndef: "tjänster",
+        pDef:   "tjänsterna"
+    },
+
+    "roll": {
+        sIndef: "en roll",
+        sDef:   "rollen",
+        pIndef: "roller",
+        pDef:   "rollerna"
+    },
+
+    "mål": {
+        sIndef: "ett mål",
+        sDef:   "målet",
+        pIndef: "mål",
+        pDef:   "målen"
+    },
+
+    "personlighet": {
+        sIndef: "en personlighet",
+        sDef:   "personligheten",
+        pIndef: "personligheter",
+        pDef:   "personligheterna"
+    },
+
+    "drivkraft": {
+        sIndef: "en drivkraft",
+        sDef:   "drivkraften",
+        pIndef: "drivkrafter",
+        pDef:   "drivkrafterna"
+    },
+
+    "möjlighet": {
+        sIndef: "en möjlighet",
+        sDef:   "möjligheten",
+        pIndef: "möjligheter",
+        pDef:   "möjligheterna"
+    },
+
+    "utmaning": {
+        sIndef: "en utmaning",
+        sDef:   "utmaningen",
+        pIndef: "utmaningar",
+        pDef:   "utmaningarna"
+    },
+
+    "trivsel": {
+        sIndef: "en trivsel",
+        sDef:   "trivseln",
+        pIndef: "—",
+        pDef:   "—"
+    },
+
+    "arbetsmiljö": {
+        sIndef: "en arbetsmiljö",
+        sDef:   "arbetsmiljön",
+        pIndef: "arbetsmiljöer",
+        pDef:   "arbetsmiljöerna"
+    },
+
+    "resultat": {
+        sIndef: "ett resultat",
+        sDef:   "resultatet",
+        pIndef: "resultat",
+        pDef:   "resultaten"
+    },
+
+    "situation": {
+        sIndef: "en situation",
+        sDef:   "situationen",
+        pIndef: "situationer",
+        pDef:   "situationerna"
+    },
+
+    "problem": {
+        sIndef: "ett problem",
+        sDef:   "problemet",
+        pIndef: "problem",
+        pDef:   "problemen"
+    },
+
+    "lösning": {
+        sIndef: "en lösning",
+        sDef:   "lösningen",
+        pIndef: "lösningar",
+        pDef:   "lösningarna"
+    },
+
+    "konflikt": {
+        sIndef: "en konflikt",
+        sDef:   "konflikten",
+        pIndef: "konflikter",
+        pDef:   "konflikterna"
+    },
+
+    "missförstånd": {
+        sIndef: "ett missförstånd",
+        sDef:   "missförståndet",
+        pIndef: "missförstånd",
+        pDef:   "missförstånden"
+    },
+
+    "planering": {
+        sIndef: "en planering",
+        sDef:   "planeringen",
+        pIndef: "planeringar",
+        pDef:   "planeringarna"
+    },
+
+    "strategi": {
+        sIndef: "en strategi",
+        sDef:   "strategin",
+        pIndef: "strategier",
+        pDef:   "strategierna"
+    },
+
+    "fokus": {
+        sIndef: "ett fokus",
+        sDef:   "fokuset",
+        pIndef: "fokus",
+        pDef:   "fokusen"
+    },
+
+    "tidsram": {
+        sIndef: "en tidsram",
+        sDef:   "tidsramen",
+        pIndef: "tidsramar",
+        pDef:   "tidsramarna"
+    },
+
+    "introduktion": {
+        sIndef: "en introduktion",
+        sDef:   "introduktionen",
+        pIndef: "introduktioner",
+        pDef:   "introduktionerna"
+    },
+
+    "utvecklingsmöjlighet": {
+        sIndef: "en utvecklingsmöjlighet",
+        sDef:   "utvecklingsmöjligheten",
+        pIndef: "utvecklingsmöjligheter",
+        pDef:   "utvecklingsmöjligheterna"
+    },
+
+    "arbetskultur": {
+        sIndef: "en arbetskultur",
+        sDef:   "arbetskulturen",
+        pIndef: "arbetskulturer",
+        pDef:   "arbetskulturerna"
+    },
+
+    "schema": {
+        sIndef: "ett schema",
+        sDef:   "schemat",
+        pIndef: "scheman",
+        pDef:   "schemana"
+    },
+
+    "styrka": {
+        sIndef: "en styrka",
+        sDef:   "styrkan",
+        pIndef: "styrkor",
+        pDef:   "styrkorna"
+    },
+
+    "svaghet": {
+        sIndef: "en svaghet",
+        sDef:   "svagheten",
+        pIndef: "svagheter",
+        pDef:   "svagheterna"
+    },
+
+    "prestation": {
+        sIndef: "en prestation",
+        sDef:   "prestationen",
+        pIndef: "prestationer",
+        pDef:   "prestationerna"
+    },
+
+    "förmåga": {
+        sIndef: "en förmåga",
+        sDef:   "förmågan",
+        pIndef: "förmågor",
+        pDef:   "förmågorna"
+    },
+
+    "egenskap": {
+        sIndef: "en egenskap",
+        sDef:   "egenskapen",
+        pIndef: "egenskaper",
+        pDef:   "egenskaperna"
+    },
+
+    "arbetsgrupp": {
+        sIndef: "en arbetsgrupp",
+        sDef:   "arbetsgruppen",
+        pIndef: "arbetsgrupper",
+        pDef:   "arbetsgrupperna"
+    },
+
+    "kollega": {
+        sIndef: "en kollega",
+        sDef:   "kollegan",
+        pIndef: "kollegor",
+        pDef:   "kollegorna"
+    },
+
+    "chef": {
+        sIndef: "en chef",
+        sDef:   "chefen",
+        pIndef: "chefer",
+        pDef:   "cheferna"
+    },
+
+    "ansvarstagande": {
+        sIndef: "ett ansvarstagande",
+        sDef:   "ansvarstagandet",
+        pIndef: "ansvarstaganden",
+        pDef:   "ansvarstagandena"
+    },
+
+    "utveckling": {
+        sIndef: "en utveckling",
+        sDef:   "utvecklingen",
+        pIndef: "utvecklingar",
+        pDef:   "utvecklingarna"
+    },
+
+    "förbättring": {
+        sIndef: "en förbättring",
+        sDef:   "förbättringen",
+        pIndef: "förbättringar",
+        pDef:   "förbättringarna"
+    },
+
+    "beslut": {
+        sIndef: "ett beslut",
+        sDef:   "beslutet",
+        pIndef: "beslut",
+        pDef:   "besluten"
+    },
+
+    "lösningsförmåga": {
+        sIndef: "en lösningsförmåga",
+        sDef:   "lösningsförmågan",
+        pIndef: "lösningsförmågor",
+        pDef:   "lösningsförmågorna"
+    },
+
+    "arbetsupplevelse": {
+        sIndef: "en arbetsupplevelse",
+        sDef:   "arbetsupplevelsen",
+        pIndef: "arbetsupplevelser",
+        pDef:   "arbetsupplevelserna"
+    },
+
+    "kommunikation": {
+        sIndef: "en kommunikation",
+        sDef:   "kommunikationen",
+        pIndef: "kommunikationer",
+        pDef:   "kommunikationerna"
+    },
+
+    "struktur": {
+        sIndef: "en struktur",
+        sDef:   "strukturen",
+        pIndef: "strukturer",
+        pDef:   "strukturerna"
+    },
+
+    "projekt": {
+        sIndef: "ett projekt",
+        sDef:   "projektet",
+        pIndef: "projekt",
+        pDef:   "projekten"
+    },
+
+    "arbetsprocess": {
+        sIndef: "en arbetsprocess",
+        sDef:   "arbetsprocessen",
+        pIndef: "arbetsprocesser",
+        pDef:   "arbetsprocesserna"
+    },
+
+    "introduktionsperiod": {
+        sIndef: "en introduktionsperiod",
+        sDef:   "introduktionsperioden",
+        pIndef: "introduktionsperioder",
+        pDef:   "introduktionsperioderna"
+    }
+
+};
+
+
+// =========================
+// LOGIK
+// =========================
+let index = 0;
+let direction = "se-nl";
+
+const card = document.getElementById("card");
+const front = document.getElementById("front");
+const back = document.getElementById("back");
+const directionToggle = document.getElementById("directionToggle");
+const gramBtn = document.getElementById("gramBtn");
+const modal = document.getElementById("grammarModal");
+const closeModal = document.getElementById("closeModal");
+const darkToggle = document.getElementById("darkToggle"); // Lade till darkToggle här
+const prevBtn = document.getElementById("prevBtn"); // Lade till prevBtn här
+const nextBtn = document.getElementById("nextBtn"); // Lade till nextBtn här
+
+function shuffle() {
+    DATA.sort(() => Math.random() - 0.5);
+}
+shuffle();
+
+// Uppdaterad för att alltid kolla det svenska ordet (DATA[index].sv) för grammatik,
+// men endast visa knappen om det svenska ordet är på den synliga (ej-vända) sidan
+function updateGramBtn() {
+    const swedishIsFront = (direction === "se-nl");
+    const isFlipped = card.classList.contains("flipped");
+    const hasGrammar = !!GRAMMAR[DATA[index].sv];
+
+    // Svenska är synlig om:
+    // – riktning SE→NL + kortet inte är vänt
+    // – riktning NL→SE + kortet ÄR vänt
+    const swedishVisible =
+        (swedishIsFront && !isFlipped) ||
+        (!swedishIsFront && isFlipped);
+
+    if (hasGrammar && swedishVisible) {
+        gramBtn.style.display = "block";
+    } else {
+        gramBtn.style.display = "none";
+    }
+}
+
+
+function showCard() {
+    if (direction === "se-nl") {
+        front.textContent = DATA[index].sv;
+        back.textContent = DATA[index].nl;
+        document.title = "Flashcards – Svenska / Holländska"; // Uppdatera titel
+    } else {
+        front.textContent = DATA[index].nl;
+        back.textContent = DATA[index].sv;
+        document.title = "Flashcards – Holländska / Svenska"; // Uppdatera titel
+    }
+    // Säkerställ att vi inte är i vänt läge när vi byter kort
+    card.classList.remove("flipped"); 
+    updateGramBtn(); // Uppdatera knappen när nytt kort visas
+}
+
+function nextCard() {
+    index = (index + 1) % DATA.length;
+    showCard();
+}
+
+function prevCard() {
+    index = (index - 1 + DATA.length) % DATA.length;
+    showCard();
+}
+
+showCard();
+
+card.onclick = (e) => {
+    if (e.target === gramBtn) return;
+
+    card.classList.toggle("flipped");
+    updateGramBtn();
+};
+
+darkToggle.onclick = () => {
+    document.body.classList.toggle("dark");
+    darkToggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+};
+
+directionToggle.onclick = () => {
+    direction = (direction === "se-nl") ? "nl-se" : "se-nl";
+    directionToggle.textContent = (direction === "se-nl") ? "SE → NL" : "NL → SE";
+    showCard();
+    updateGramBtn();
+};
+
+let startX = 0;
+
+card.addEventListener("touchstart", e => startX = e.changedTouches[0].clientX);
+card.addEventListener("touchend", e => {
+    // Tillåt inte svep om modalen är öppen
+    if(modal.style.display === "flex") return; 
+    
+    const diff = e.changedTouches[0].clientX - startX;
+    if (diff > 50) prevCard();
+    if (diff < -50) nextCard();
+});
+
+prevBtn.onclick = prevCard;
+nextBtn.onclick = nextCard;
+
+gramBtn.onclick = (event) => {
+    event.stopPropagation();
+
+    // Ordet är alltid DATA[index].sv (det svenska ordet) eftersom knappen 
+    // endast visas när DATA[index].sv är på framsidan (direction="se-nl" och ej flipped)
+    const word = DATA[index].sv;
+    const g = GRAMMAR[word];
+    if (!g) return;
+
+    modal.style.display = "flex";
+    document.getElementById("modalWord").textContent = word;
+    document.getElementById("sIndef").textContent = g.sIndef;
+    document.getElementById("sDef").textContent = g.sDef;
+    document.getElementById("pIndef").textContent = g.pIndef;
+    document.getElementById("pDef").textContent = g.pDef;
+};
+
+closeModal.onclick = () => modal.style.display = "none";
+modal.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+</script>
+
+</body>
+</html>
