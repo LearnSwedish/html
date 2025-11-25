@@ -1,0 +1,1265 @@
+
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>från | till | hos | vid</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="att-ha.css">
+
+<style>
+    #infoModal .modal-content {
+        text-align: left;
+    }
+</style>
+	
+    <script>
+
+const sentences = [
+
+
+
+/* -------- 1. HOS -------- */
+{
+    words: [
+        { word: "Vi ska äta middag", translation: "We’re having dinner" },
+        { word: `<select data-correct="hos" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "at" },
+        { word: "Anna.", translation: "Anna's place." }
+    ]
+},
+{
+    words: [
+        { word: "Barnen sov över", translation: "The children stayed over" },
+        { word: `<select data-correct="hos" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "at" },
+        { word: "farmor.", translation: "their grandmother’s." }
+    ]
+},
+{
+    words: [
+        { word: "Jag har bokat en tid", translation: "I’ve booked an appointment" },
+        { word: `<select data-correct="hos" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "with" },
+        { word: "tandläkaren.", translation: "the dentist." }
+    ]
+},
+{
+    words: [
+        { word: "Han är", translation: "He is" },
+        { word: `<select data-correct="hos" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "at" },
+        { word: "läkaren just nu.", translation: "the doctor’s right now." }
+    ]
+},
+{
+    words: [
+        { word: "Vi stannade en vecka", translation: "We stayed for a week" },
+        { word: `<select data-correct="hos" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "with" },
+        { word: "våra vänner i Göteborg.", translation: "our friends in Gothenburg." }
+    ]
+},
+
+/* -------- 2. VID -------- */
+{
+    words: [
+        { word: "Vi möttes", translation: "We met" },
+        { word: `<select data-correct="vid" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "by" },
+        { word: "stranden.", translation: "the beach." }
+    ]
+},
+{
+    words: [
+        { word: "Bilen stod parkerad", translation: "The car was parked" },
+        { word: `<select data-correct="vid" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "by" },
+        { word: "vägen.", translation: "the road." }
+    ]
+},
+{
+    words: [
+        { word: "Huset ligger", translation: "The house is" },
+        { word: `<select data-correct="vid" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "by" },
+        { word: "sjön.", translation: "the lake." }
+    ]
+},
+{
+    words: [
+        { word: "De satt och åt", translation: "They sat eating" },
+        { word: `<select data-correct="vid" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "at" },
+        { word: "bordet.", translation: "the table." }
+    ]
+},
+{
+    words: [
+        { word: "Barnen väntade", translation: "The children waited" },
+        { word: `<select data-correct="vid" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "at" },
+        { word: "busshållplatsen.", translation: "the bus stop." }
+    ]
+},
+
+/* -------- 3. FRÅN -------- */
+{
+    words: [
+        { word: "Vi körde", translation: "We drove" },
+        { word: `<select data-correct="från" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "from" },
+        { word: "Malmö till Ystad.", translation: "Malmö to Ystad." }
+    ]
+},
+{
+    words: [
+        { word: "Hon sprang", translation: "She ran" },
+        { word: `<select data-correct="från" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "from" },
+        { word: "affären till parken.", translation: "the shop to the park." }
+    ]
+},
+{
+    words: [
+        { word: "Flyget lyfter", translation: "The plane departs" },
+        { word: `<select data-correct="från" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "from" },
+        { word: "Kastrup.", translation: "Copenhagen Airport." }
+    ]
+},
+{
+    words: [
+        { word: "Röken steg", translation: "The smoke rose" },
+        { word: `<select data-correct="från" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "from" },
+        { word: "skorstenen.", translation: "the chimney." }
+    ]
+},
+{
+    words: [
+        { word: "Han flyttade", translation: "He moved" },
+        { word: `<select data-correct="från" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "from" },
+        { word: "landet in till stan.", translation: "the countryside into town." }
+    ]
+},
+/* -------- 4. TILL -------- */
+{
+    words: [
+        { word: "Vi åkte", translation: "We went" },
+        { word: `<select data-correct="till" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "to" },
+        { word: "stranden i morse.", translation: "the beach this morning." }
+    ]
+},
+{
+    words: [
+        { word: "Hon flyttade", translation: "She moved" },
+        { word: `<select data-correct="till" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "to" },
+        { word: "Norge.", translation: "Norway." }
+    ]
+},
+{
+    words: [
+        { word: "Vi ska gå", translation: "We’re going" },
+        { word: `<select data-correct="till" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "to" },
+        { word: "affären.", translation: "the shop." }
+    ]
+},
+{
+    words: [
+        { word: "Barnen sprang", translation: "The children ran" },
+        { word: `<select data-correct="till" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "to" },
+        { word: "parken.", translation: "the park." }
+    ]
+},
+{
+    words: [
+        { word: "Tåget går", translation: "The train goes" },
+        { word: `<select data-correct="till" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "to" },
+        { word: "Köpenhamn.", translation: "Copenhagen." }
+    ]
+},
+
+/* -------- 5. GENOM -------- */
+{
+    words: [
+        { word: "Vi gick", translation: "We walked" },
+        { word: `<select data-correct="genom" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "through" },
+        { word: "skogen.", translation: "the forest." }
+    ]
+},
+{
+    words: [
+        { word: "Solen sken", translation: "The sun shone" },
+        { word: `<select data-correct="genom" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "through" },
+        { word: "fönstret.", translation: "the window." }
+    ]
+},
+{
+    words: [
+        { word: "Tåget körde", translation: "The train went" },
+        { word: `<select data-correct="genom" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "through" },
+        { word: "tunneln.", translation: "the tunnel." }
+    ]
+},
+{
+    words: [
+        { word: "Han simmade", translation: "He swam" },
+        { word: `<select data-correct="genom" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "across" },
+        { word: "älven.", translation: "the river." }
+    ]
+},
+{
+    words: [
+        { word: "Vi tog oss", translation: "We made our way" },
+        { word: `<select data-correct="genom" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "through" },
+        { word: "folkmassan.", translation: "the crowd." }
+    ]
+},
+
+/* -------- 6. LÄNGS -------- */
+{
+    words: [
+        { word: "Vi promenerade", translation: "We walked" },
+        { word: `<select data-correct="längs" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "along" },
+        { word: "stranden.", translation: "the beach." }
+    ]
+},
+{
+    words: [
+        { word: "De cyklade", translation: "They cycled" },
+        { word: `<select data-correct="längs" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "along" },
+        { word: "ån.", translation: "the river." }
+    ]
+},
+{
+    words: [
+        { word: "Det går en stig", translation: "There is a path" },
+        { word: `<select data-correct="längs" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "along" },
+        { word: "bäcken.", translation: "the brook." }
+    ]
+},
+{
+    words: [
+        { word: "Bilarna stod parkerade", translation: "Cars were parked" },
+        { word: `<select data-correct="längs" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "along" },
+        { word: "gatan.", translation: "the street." }
+    ]
+},
+{
+    words: [
+        { word: "Vi sprang", translation: "We ran" },
+        { word: `<select data-correct="längs" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "along" },
+        { word: "spåret.", translation: "the track." }
+    ]
+},
+/* -------- 7. ÖVER -------- */
+{
+    words: [
+        { word: "Vi gick", translation: "We walked" },
+        { word: `<select data-correct="över" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "across" },
+        { word: "bron.", translation: "the bridge." }
+    ]
+},
+{
+    words: [
+        { word: "Örnen flög", translation: "The eagle flew" },
+        { word: `<select data-correct="över" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "over" },
+        { word: "huset.", translation: "the house." }
+    ]
+},
+{
+    words: [
+        { word: "Han hoppade", translation: "He jumped" },
+        { word: `<select data-correct="över" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "over" },
+        { word: "staketet.", translation: "the fence." }
+    ]
+},
+{
+    words: [
+        { word: "De körde", translation: "They drove" },
+        { word: `<select data-correct="över" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "across" },
+        { word: "fältet.", translation: "the field." }
+    ]
+},
+{
+    words: [
+        { word: "Barnen sprang", translation: "The children ran" },
+        { word: `<select data-correct="över" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "across" },
+        { word: "gräsmattan.", translation: "the lawn." }
+    ]
+},
+
+/* -------- 8. MOT -------- */
+{
+    words: [
+        { word: "Vi gick", translation: "We walked" },
+        { word: `<select data-correct="mot" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "towards" },
+        { word: "centrum.", translation: "the city centre." }
+    ]
+},
+{
+    words: [
+        { word: "Hon sprang", translation: "She ran" },
+        { word: `<select data-correct="mot" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "towards" },
+        { word: "stranden.", translation: "the beach." }
+    ]
+},
+{
+    words: [
+        { word: "Båten styrde", translation: "The boat headed" },
+        { word: `<select data-correct="mot" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "towards" },
+        { word: "kusten.", translation: "the coast." }
+    ]
+},
+{
+    words: [
+        { word: "Han tittade", translation: "He looked" },
+        { word: `<select data-correct="mot" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "towards" },
+        { word: "horisonten.", translation: "the horizon." }
+    ]
+},
+{
+    words: [
+        { word: "Tåget rullade", translation: "The train rolled" },
+        { word: `<select data-correct="mot" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "towards" },
+        { word: "Göteborg.", translation: "Gothenburg." }
+    ]
+},
+
+/* -------- 9. IN I -------- */
+{
+    words: [
+        { word: "Hon gick", translation: "She walked" },
+        { word: `<select data-correct="in i" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "into" },
+        { word: "huset.", translation: "the house." }
+    ]
+},
+{
+    words: [
+        { word: "Katten sprang", translation: "The cat ran" },
+        { word: `<select data-correct="in i" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "into" },
+        { word: "köket.", translation: "the kitchen." }
+    ]
+},
+{
+    words: [
+        { word: "Vi klev", translation: "We got" },
+        { word: `<select data-correct="in i" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "into" },
+        { word: "bilen.", translation: "the car." }
+    ]
+},
+{
+    words: [
+        { word: "Barnen rusade", translation: "The children rushed" },
+        { word: `<select data-correct="in i" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "into" },
+        { word: "klassrummet.", translation: "the classroom." }
+    ]
+},
+{
+    words: [
+        { word: "Han hoppade", translation: "He jumped" },
+        { word: `<select data-correct="in i" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "into" },
+        { word: "taxin.", translation: "the taxi." }
+    ]
+},
+/* -------- 10. IN PÅ -------- */
+{
+    words: [
+        { word: "Hon gick", translation: "She went" },
+        { word: `<select data-correct="in på" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "into" },
+        { word: "banken.", translation: "the bank." }
+    ]
+},
+{
+    words: [
+        { word: "Vi steg", translation: "We stepped" },
+        { word: `<select data-correct="in på" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "into" },
+        { word: "kontoret.", translation: "the office." }
+    ]
+},
+{
+    words: [
+        { word: "Han kom", translation: "He came" },
+        { word: `<select data-correct="in på" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "onto" },
+        { word: "gården.", translation: "the yard." }
+    ]
+},
+{
+    words: [
+        { word: "Vi släpptes", translation: "We were allowed" },
+        { word: `<select data-correct="in på" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "onto" },
+        { word: "området.", translation: "the site." }
+    ]
+},
+{
+    words: [
+        { word: "Hon gick", translation: "She walked" },
+        { word: `<select data-correct="in på" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "into" },
+        { word: "restaurangen.", translation: "the restaurant." }
+    ]
+},
+
+/* -------- 11. UT UR -------- */
+{
+    words: [
+        { word: "Han sprang", translation: "He ran" },
+        { word: `<select data-correct="ut ur" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "out of" },
+        { word: "huset.", translation: "the house." }
+    ]
+},
+{
+    words: [
+        { word: "Katten smet", translation: "The cat slipped" },
+        { word: `<select data-correct="ut ur" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "out of" },
+        { word: "lägenheten.", translation: "the flat." }
+    ]
+},
+{
+    words: [
+        { word: "Vi gick", translation: "We got" },
+        { word: `<select data-correct="ut ur" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "out of" },
+        { word: "bilen.", translation: "the car." }
+    ]
+},
+{
+    words: [
+        { word: "Röken vällde", translation: "Smoke poured" },
+        { word: `<select data-correct="ut ur" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "out of" },
+        { word: "fönstret.", translation: "the window." }
+    ]
+},
+{
+    words: [
+        { word: "Hon stormade", translation: "She stormed" },
+        { word: `<select data-correct="ut ur" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="hos">hos</option>
+            <option value="vid">vid</option>
+            <option value="från">från</option>
+            <option value="till">till</option>
+            <option value="genom">genom</option>
+            <option value="längs">längs</option>
+            <option value="över">över</option>
+            <option value="mot">mot</option>
+            <option value="in i">in i</option>
+            <option value="in på">in på</option>
+            <option value="ut ur">ut ur</option>
+        </select>`, translation: "out of" },
+        { word: "rummet.", translation: "the room." }
+    ]
+}
+
+];
+
+    </script>
+	
+	<script src="att-ha.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title"><i class="fas fa-question" aria-hidden="true" style="margin-right: 8px;"></i> Pick the correct preposition: från | till | hos | vid etc.</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+<div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+    <div class="modal-content">
+        <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+        <h2 id="infoModalTitle">Swedish Prepositions: How They Work</h2>
+        <br /><br />
+        <p><strong>Placement (where something is located)</strong></p><br />
+        <p>
+            <strong>på</strong> – being on a surface or within a defined public place.<br>
+            <strong>i</strong> – being in an enclosed or clearly bounded space.<br>
+            <strong>hos</strong> – being at someone’s home or premises.<br>
+            <strong>vid</strong> – being next to, by, or beside something.
+        </p>
+<br />
+        <p><em>
+                The prepositions “på” and “i” are slightly unusual; 
+                <a href="https://learnswedish.github.io/html/i-pa.html" target="_blank" rel="noopener noreferrer">
+                    you can find an exercise focusing specifically on these two here
+                </a>.
+            </em></p>
+        <br>
+
+        <p><strong>Movement (direction or change of location)</strong></p><br />
+        <p>
+            <strong>över</strong> – moving across or over something.<br>
+            <strong>mot</strong> – moving towards something.<br>
+            <strong>från</strong> – moving away from a place.<br>
+            <strong>till</strong> – moving to a place or destination.<br>
+            <strong>genom</strong> – moving through something.<br>
+            <strong>längs</strong> – moving along something.<br>
+            <strong>in i</strong> – moving into an enclosed space.<br>
+            <strong>in på</strong> – moving onto or into a defined area or surface.<br>
+            <strong>ut ur</strong> – moving out of an enclosed space.
+        </p>
+
+    </div>
+</div>
+
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
