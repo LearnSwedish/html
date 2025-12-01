@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rumsadverb – övning</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.x/css/all.min.css">
+
+<link rel="stylesheet" href="adverb.css">
+
+<style>
+#infoModal .modal-content {
+  text-align: left;
+}
+.dialogue-word {
+    display: block;
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+  .indented ul {
+    margin-left: 30px;
+  }
+</style>
+
+<script>
+
+const adverbGroups = {
+    där:     ["där", "dit", "därifrån"],
+    här:     ["här", "hit", "härifrån"],
+    hemma:   ["hemma", "hem", "hemifrån"],
+    inne:    ["inne", "in", "inifrån"],
+    ute:     ["ute", "ut", "utifrån"],
+    uppe:    ["uppe", "upp", "uppifrån"],
+    nere:    ["nere", "ner", "nerifrån"],
+    var:     ["var", "vart", "varifrån"],
+    framme:  ["framme", "fram", "framifrån"],
+    borta:   ["borta", "bort", "bortifrån"]
+};
+
+const sentences = [
+
+    {
+        group: "där",
+        words: [
+            { word: "– Var är mötet?", translation: "Where is the meeting?", newline: true },
+            { word: "– På andra våningen. Vi ses", translation: "On the second floor. We'll meet" },
+            { word: `<select data-correct="där"></select>`, translation: "there." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "där",
+        words: [
+            { word: "– Jag hittar inte min jacka.", translation: "I can't find my jacket.", newline: true },
+            { word: "– Den ligger", translation: "It's" },
+            { word: `<select data-correct="där"></select>`, translation: "where" },
+            { word: "du lade den.", translation: "you put it.", newline: true }
+        ]
+    },
+    {
+        group: "där",
+        words: [
+            { word: "– Jag hoppas att restaurangen finns kvar.", translation: "I hope the restaurant is still there.", newline: true },
+            { word: "– Ta det lugnt, den var", translation: "Relax, it was" },
+            { word: `<select data-correct="där"></select>`, translation: "there" },
+            { word: "igår.", translation: "yesterday.", newline: true }
+        ]
+    },
+    {
+        group: "där",
+        words: [
+            { word: "– Men han skulle väl stanna kvar", translation: "But he was supposed to stay" },
+            { word: `<select data-correct="där"></select>?`, translation: "there?" },
+			{ word: "?", newline: true },
+            { word: "– Nej, han reste", translation: "No, he travelled" },
+            { word: `<select data-correct="därifrån"></select>`, translation: "from there" },
+            { word: "igår.", translation: "yesterday.", newline: true }
+        ]
+    },
+    {
+        group: "där",
+        words: [
+            { word: "– Hon sa att hon skulle åka hem. Var är det?", translation: "She said she was going home. Where is that?", newline: true },
+            { word: "– Till Iran. Hon kommer", translation: "To Iran. She comes" },
+            { word: `<select data-correct="därifrån"></select>`, translation: "from there." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "där",
+        words: [
+            { word: "– Ska du följa med till biblioteket?", translation: "Are you coming with us to the library?", newline: true },
+            { word: "– Ni kan gå så länge, jag kommer", translation: "You can go ahead, I'll come" },
+            { word: `<select data-correct="dit"></select>`, translation: "there" },
+            { word: "efter lunch.", translation: "after lunch.", newline: true }
+        ]
+    },
+    {
+        group: "där",
+        words: [
+            { word: "– Ska vi ta bussen till farmor?", translation: "Shall we take the bus to grandma?", newline: true },
+            { word: "– Det blir krångligt. Vi tar bilen", translation: "That’ll be complicated. We'll take the car" },
+            { word: `<select data-correct="dit"></select>`, translation: "there." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "där",
+        words: [
+            { word: "– Ska vi ta bilen?", translation: "Shall we take the car?", newline: true },
+            { word: "– Nej, det är nära, vi kan gå", translation: "No, it's close, we can walk" },
+            { word: `<select data-correct="dit"></select>`, translation: "there." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "där",
+        words: [
+            { word: "– Tog du bussen hem igår?", translation: "Did you take the bus home yesterday?", newline: true },
+            { word: "– Nej, det går inga bussar", translation: "No, there are no buses" },
+            { word: `<select data-correct="därifrån"></select>`, translation: "from there" },
+            { word: "på lördagar.", translation: "on Saturdays.", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– Var ska jag lägga böckerna?", translation: "Where should I put the books?", newline: true },
+            { word: "– Ställ dem", translation: "Put them" },
+            { word: `<select data-correct="här"></select>`, translation: "here" },
+            { word: "på bordet.", translation: "on the table.", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– Var är nycklarna?", translation: "Where are the keys?", newline: true },
+            { word: "– De ligger", translation: "They are lying" },
+            { word: `<select data-correct="här"></select>`, translation: "here" },
+            { word: "bredvid lampan.", translation: "next to the lamp.", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– Ska vi ses på stan?", translation: "Shall we meet in town?", newline: true },
+            { word: "– Nej, vi ses", translation: "No, we'll meet" },
+            { word: `<select data-correct="här"></select>`, translation: "here" },
+            { word: "istället.", translation: "instead.", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– Varför kommer katten hela tiden?", translation: "Why does the cat keep coming?", newline: true },
+            { word: "– Den kommer", translation: "It comes" },
+            { word: `<select data-correct="hit"></select>`, translation: "here (towards me)" },
+            { word: "för att få mat.", translation: "to get food.", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– Behöver du hjälp?", translation: "Do you need help?", newline: true },
+            { word: "– Ja, kan du komma", translation: "Yes, can you come" },
+            { word: `<select data-correct="hit"></select>`, translation: "here?" },
+			{ word: "?", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– Idag kommer John hem.", translation: "John is coming home today.", newline: true },
+            { word: "– Va?! Kommer han", translation: "What?! Is he coming" },
+            { word: `<select data-correct="hit"></select>`, translation: "here!?" },
+			{ word: "!?", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– När går bussen?", translation: "When does the bus leave?", newline: true },
+            { word: "– Den går", translation: "It leaves" },
+            { word: `<select data-correct="härifrån"></select>`, translation: "from here" },
+            { word: "klockan tio.", translation: "at ten o’clock.", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– Ska du åka redan?", translation: "Are you leaving already?", newline: true },
+            { word: "– Ja, jag måste åka", translation: "Yes, I have to leave" },
+            { word: `<select data-correct="härifrån"></select>`, translation: "from here" },
+            { word: "om fem minuter.", translation: "in five minutes.", newline: true }
+        ]
+    },
+    {
+        group: "här",
+        words: [
+            { word: "– Vilken fantastisk utsikt!", translation: "What a fantastic view!", newline: true },
+            { word: "– Ja, man ser hela staden", translation: "Yes, you can see the whole city" },
+            { word: `<select data-correct="härifrån"></select>`, translation: "from here." },
+			{ word: ".", newline: true }
+        ]
+    },
+
+    // -----------------------
+    // GRUPP: HEMMA
+    // -----------------------
+    {
+        group: "hemma",
+        words: [
+            { word: "– Var är barnen?", translation: "Where are the children?", newline: true },
+            { word: "– De är", translation: "They are" },
+            { word: `<select data-correct="hemma"></select>`, translation: "at home" },
+            { word: "och gör sina läxor.", translation: "doing their homework.", newline: true }
+        ]
+    },
+    {
+        group: "hemma",
+        words: [
+            { word: "– Jobbar du idag?", translation: "Are you working today?", newline: true },
+            { word: "– Nej, jag är", translation: "No, I'm" },
+            { word: `<select data-correct="hemma"></select>`, translation: "at home" },
+            { word: "och vilar.", translation: "resting.", newline: true }
+        ]
+    },
+    {
+        group: "hemma",
+        words: [
+            { word: "– Ska vi äta ute ikväll?", translation: "Shall we eat out tonight?", newline: true },
+            { word: "– Nej, vi stannar", translation: "No, we'll stay" },
+            { word: `<select data-correct="hemma"></select>`, translation: "at home." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "hemma",
+        words: [
+            { word: "– Vart ska du när du är klar i affären?", translation: "Where are you going when you're done in the shop?", newline: true },
+            { word: "– Jag ska", translation: "I'm going" },
+            { word: `<select data-correct="hem"></select>`, translation: "home" },
+            { word: "och laga mat.", translation: "to cook dinner.", newline: true }
+        ]
+    },
+    {
+        group: "hemma",
+        words: [
+            { word: "– Är du på väg någonstans?", translation: "Are you on your way somewhere?", newline: true },
+            { word: "– Ja, jag går", translation: "Yes, I'm going" },
+            { word: `<select data-correct="hem"></select>`, translation: "home." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "hemma",
+        words: [
+            { word: "– När åker ni?", translation: "When are you leaving?", newline: true },
+            { word: "– Vi kör", translation: "We're driving" },
+            { word: `<select data-correct="hem"></select>`, translation: "home" },
+            { word: "så fort mötet är slut.", translation: "as soon as the meeting ends.", newline: true }
+        ]
+    },
+    {
+        group: "hemma",
+        words: [
+            { word: "– När körde du till jobbet imorse?", translation: "When did you drive to work this morning?", newline: true },
+            { word: "– Jag körde", translation: "I drove" },
+            { word: `<select data-correct="hemifrån"></select>`, translation: "from home" },
+            { word: "vid sju.", translation: "at seven.", newline: true }
+        ]
+    },
+    {
+        group: "hemma",
+        words: [
+            { word: "– Varför är du så tidig på jobbet?", translation: "Why are you so early at work?", newline: true },
+            { word: "– Jag gick", translation: "I left" },
+            { word: `<select data-correct="hemifrån"></select>`, translation: "from home" },
+            { word: "tidigare än vanligt.", translation: "earlier than usual.", newline: true }
+        ]
+    },
+    {
+        group: "hemma",
+        words: [
+            { word: "– Hur långt är det dit?", translation: "How far is it from here?", newline: true },
+            { word: "– Det är bara tre kilometer", translation: "It's only three kilometres" },
+            { word: `<select data-correct="hemifrån"></select>`, translation: "from home." },
+			{ word: ".", newline: true }
+        ]
+    },
+
+    // -----------------------
+    // GRUPP: INNE
+    // -----------------------
+    {
+        group: "inne",
+        words: [
+            { word: "– Var är hunden?", translation: "Where is the dog?", newline: true },
+            { word: "– Den är", translation: "It is" },
+            { word: `<select data-correct="inne"></select>`, translation: "inside" },
+            { word: "och sover.", translation: "sleeping.", newline: true }
+        ]
+    },
+    {
+        group: "inne",
+        words: [
+            { word: "– Ska vi sitta ute?", translation: "Shall we sit outside?", newline: true },
+            { word: "– Nej, jag vill hellre vara", translation: "No, I'd rather be" },
+            { word: `<select data-correct="inne"></select>`, translation: "inside." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "inne",
+        words: [
+            { word: "– Är barnen i trädgården?", translation: "Are the children in the garden?", newline: true },
+            { word: "– Nej, de är", translation: "No, they're" },
+            { word: `<select data-correct="inne"></select>`, translation: "inside." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "inne",
+        words: [
+            { word: "– Fryser du?", translation: "Are you cold?", newline: true },
+            { word: "– Ja, jag går", translation: "Yes, I'm going" },
+            { word: `<select data-correct="in"></select>`, translation: "inside" },
+            { word: "en stund.", translation: "for a bit.", newline: true }
+        ]
+    },
+    {
+        group: "inne",
+        words: [
+            { word: "– Vart sprang katten?", translation: "Where did the cat run?", newline: true },
+            { word: "– Den sprang", translation: "It ran" },
+            { word: `<select data-correct="in"></select>`, translation: "in" },
+            { word: "i huset.", translation: "into the house.", newline: true }
+        ]
+    },
+    {
+        group: "inne",
+        words: [
+            { word: "– Ska bilen stå där ute?", translation: "Should the car stay out there?", newline: true },
+            { word: "– Nej, jag ska köra", translation: "No, I'm going to drive" },
+            { word: `<select data-correct="in"></select>`, translation: "in" },
+            { word: "den i garaget.", translation: "it into the garage.", newline: true }
+        ]
+    },
+    {
+        group: "inne",
+        words: [
+            { word: "– Hörde du? Var det utomhus?", translation: "Did you hear that? Was it outside?", newline: true },
+            { word: "– Nej, det ljudet kom", translation: "No, that sound came" },
+            { word: `<select data-correct="inifrån"></select>`, translation: "from inside." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "inne",
+        words: [
+            { word: "– Varifrån kom den röken?", translation: "Where did that smoke come from?", newline: true },
+            { word: "– Den kom", translation: "It came" },
+            { word: `<select data-correct="inifrån"></select>`, translation: "from inside." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "inne",
+        words: [
+            { word: "– Har den här dörren fastnat?", translation: "Has this door got stuck?", newline: true },
+            { word: "– Nej, den kan bara öppnas", translation: "No, it can only be opened" },
+            { word: `<select data-correct="inifrån"></select>`, translation: "from inside." },
+			{ word: ".", newline: true }
+        ]
+    },
+
+    // -----------------------
+    // GRUPP: UTE
+    // -----------------------
+    {
+        group: "ute",
+        words: [
+            { word: "– Var är barnen?", translation: "Where are the children?", newline: true },
+            { word: "– De är", translation: "They're" },
+            { word: `<select data-correct="ute"></select>`, translation: "outside" },
+            { word: "och leker.", translation: "playing.", newline: true }
+        ]
+    },
+    {
+        group: "ute",
+        words: [
+            { word: "– Ska vi sitta i vardagsrummet?", translation: "Shall we sit in the living room?", newline: true },
+            { word: "– Nej, jag vill gärna vara", translation: "No, I'd rather be" },
+            { word: `<select data-correct="ute"></select>`, translation: "outside" },
+            { word: "en stund.", translation: "for a while.", newline: true }
+        ]
+    },
+    {
+        group: "ute",
+        words: [
+            { word: "– Var står bilen?", translation: "Where is the car parked?", newline: true },
+            { word: "– Den står", translation: "It's" },
+            { word: `<select data-correct="ute"></select>`, translation: "outside" },
+            { word: "på uppfarten.", translation: "on the driveway.", newline: true }
+        ]
+    },
+    {
+        group: "ute",
+        words: [
+            { word: "– Det är så varmt här inne.", translation: "It's so warm in here.", newline: true },
+            { word: "– Kom, vi går", translation: "Come on, let's go" },
+            { word: `<select data-correct="ut"></select>`, translation: "out" },
+            { word: "en minut.", translation: "for a minute.", newline: true }
+        ]
+    },
+    {
+        group: "ute",
+        words: [
+            { word: "– Var är brevet?", translation: "Where is the letter?", newline: true },
+            { word: "– Jag gick", translation: "I went" },
+            { word: `<select data-correct="ut"></select>`, translation: "out" },
+            { word: "och slängde det i tunnan.", translation: "and threw it in the bin.", newline: true }
+        ]
+    },
+    {
+        group: "ute",
+        words: [
+            { word: "– Vad gjorde katten?", translation: "What did the cat do?", newline: true },
+            { word: "– Den smet", translation: "It slipped" },
+            { word: `<select data-correct="ut"></select>`, translation: "out" },
+            { word: "genom dörren.", translation: "through the door.", newline: true }
+        ]
+    },
+    {
+        group: "ute",
+        words: [
+            { word: "– Herregud, vad kallt det är.", translation: "Good heavens, it's freezing.", newline: true },
+            { word: "– Ja, kylan tränger in", translation: "Yes, the cold is coming in" },
+            { word: `<select data-correct="utifrån"></select>`, translation: "from outside." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "ute",
+        words: [
+            { word: "– Vi kommer aldrig att klara detta.", translation: "We'll never be able to manage this.", newline: true },
+            { word: "– Vi kanske måste be om hjälp", translation: "We may need to ask for help" },
+            { word: `<select data-correct="utifrån"></select>`, translation: "from outside." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "ute",
+        words: [
+            { word: "– Kan du låsa dörren?", translation: "Can you lock the door?", newline: true },
+            { word: "– Den går bara att låsa", translation: "It can only be locked" },
+            { word: `<select data-correct="utifrån"></select>`, translation: "from the outside." },
+			{ word: ".", newline: true }
+        ]
+    },
+
+    // -----------------------
+    // GRUPP: UPPE
+    // -----------------------
+    {
+        group: "uppe",
+        words: [
+            { word: "– Var är hon?", translation: "Where is she?", newline: true },
+            { word: "– Hon är", translation: "She's" },
+            { word: `<select data-correct="uppe"></select>`, translation: "upstairs" },
+            { word: "på sitt rum.", translation: "in her room.", newline: true }
+        ]
+    },
+    {
+        group: "uppe",
+        words: [
+            { word: "– Var är verktygslådan?", translation: "Where is the toolbox?", newline: true },
+            { word: "– Den står", translation: "It's" },
+            { word: `<select data-correct="uppe"></select>`, translation: "up" },
+            { word: "på hyllan.", translation: "on the shelf.", newline: true }
+        ]
+    },
+    {
+        group: "uppe",
+        words: [
+            { word: "– Var ska vi sova?", translation: "Where shall we sleep?", newline: true },
+            { word: "– Vi sover", translation: "We'll sleep" },
+            { word: `<select data-correct="uppe"></select>`, translation: "upstairs" },
+            { word: "i gästrummet.", translation: "in the guest room.", newline: true }
+        ]
+    },
+    {
+        group: "uppe",
+        words: [
+            { word: "– Vart ska du?", translation: "Where are you going?", newline: true },
+            { word: "– Jag ska", translation: "I'm going" },
+            { word: `<select data-correct="upp"></select>`, translation: "up" },
+            { word: "på vinden en stund.", translation: "to the attic for a bit.", newline: true }
+        ]
+    },
+    {
+        group: "uppe",
+        words: [
+            { word: "– Kartongen står på vinden.", translation: "The box is in the attic.", newline: true },
+            { word: "– Okej, jag går", translation: "Okay, I'll go" },
+            { word: `<select data-correct="upp"></select>`, translation: "up" },
+            { word: "och hämtar den.", translation: "and fetch it.", newline: true }
+        ]
+    },
+    {
+        group: "uppe",
+        words: [
+            { word: "– Hur kom katten dit?", translation: "How did the cat get there?", newline: true },
+            { word: "– Den hoppade", translation: "It jumped" },
+            { word: `<select data-correct="upp"></select>`, translation: "up" },
+            { word: "på bordet.", translation: "onto the table.", newline: true }
+        ]
+    },
+    {
+        group: "uppe",
+        words: [
+            { word: "– Kom det där ljudet från källaren?", translation: "Did that sound come from the cellar?", newline: true },
+            { word: "– Nä, det kom", translation: "No, it came" },
+            { word: `<select data-correct="uppifrån"></select>`, translation: "from above." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "uppe",
+        words: [
+            { word: "– Var kommer han ifrån?", translation: "Where does he come from?", newline: true },
+            { word: "– Han är", translation: "He's" },
+            { word: `<select data-correct="uppifrån"></select>`, translation: "from up north." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "uppe",
+        words: [
+            { word: "– Vilken bok vill du ha?", translation: "Which book would you like?", newline: true },
+            { word: "– Den står på femte raden", translation: "It's on the fifth row" },
+            { word: `<select data-correct="uppifrån"></select>`, translation: "from the top." },
+			{ word: ".", newline: true }
+        ]
+    },
+
+    // -----------------------
+    // GRUPP: NERE
+    // -----------------------
+    {
+        group: "nere",
+        words: [
+            { word: "– Var är hunden?", translation: "Where is the dog?", newline: true },
+            { word: "– Den ligger", translation: "It's lying" },
+            { word: `<select data-correct="nere"></select>`, translation: "down" },
+            { word: "i hallen.", translation: "in the hallway.", newline: true }
+        ]
+    },
+    {
+        group: "nere",
+        words: [
+            { word: "– Var är cykeln?", translation: "Where is the bicycle?", newline: true },
+            { word: "– Den står", translation: "It's" },
+            { word: `<select data-correct="nere"></select>`, translation: "down" },
+            { word: "i källaren.", translation: "in the cellar.", newline: true }
+        ]
+    },
+    {
+        group: "nere",
+        words: [
+            { word: "– Var är hon?", translation: "Where is she?", newline: true },
+            { word: "– Hon står", translation: "She's standing" },
+            { word: `<select data-correct="nere"></select>`, translation: "down" },
+            { word: "vid porten.", translation: "at the entrance.", newline: true }
+        ]
+    },
+    {
+        group: "nere",
+        words: [
+            { word: "– Vart ska du?", translation: "Where are you going?", newline: true },
+            { word: "– Jag ska", translation: "I'm going" },
+            { word: `<select data-correct="ner"></select>`, translation: "down" },
+            { word: "i tvättstugan.", translation: "to the laundry room.", newline: true }
+        ]
+    },
+    {
+        group: "nere",
+        words: [
+            { word: "– Verktygslådan är i källaren.", translation: "The toolbox is in the cellar.", newline: true },
+            { word: "– Jag går", translation: "I'll go" },
+            { word: `<select data-correct="ner"></select>`, translation: "down" },
+            { word: "och hämtar den.", translation: "and fetch it.", newline: true }
+        ]
+    },
+    {
+        group: "nere",
+        words: [
+            { word: "– Hur kom katten dit?", translation: "How did the cat get there?", newline: true },
+            { word: "– Den hoppade", translation: "It jumped" },
+            { word: `<select data-correct="ner"></select>`, translation: "down" },
+            { word: "från stolen.", translation: "from the chair.", newline: true }
+        ]
+    },
+    {
+        group: "nere",
+        words: [
+            { word: "– Vilken underbar lägenhet!", translation: "What a wonderful flat!", newline: true },
+            { word: "– Ja, fast man hör bullret", translation: "Yes, although you can hear the noise" },
+            { word: `<select data-correct="nerifrån"></select>`, translation: "from below" },
+            { word: "gatan.", translation: "from the street.", newline: true }
+        ]
+    },
+    {
+        group: "nere",
+        words: [
+            { word: "– Ser du röken?", translation: "Do you see the smoke?", newline: true },
+            { word: "– Ja, den kommer", translation: "Yes, it's coming" },
+            { word: `<select data-correct="nerifrån"></select>`, translation: "from below" },
+            { word: "köket.", translation: "from the kitchen.", newline: true }
+        ]
+    },
+    {
+        group: "nere",
+        words: [
+            { word: "– Vilken burk ska jag ta?", translation: "Which jar should I take?", newline: true },
+            { word: "– Den står på andra raden", translation: "It's on the second row" },
+            { word: `<select data-correct="nerifrån"></select>`, translation: "from the bottom." },
+			{ word: ".", newline: true }
+        ]
+    },
+
+    // -----------------------
+    // GRUPP: VAR / VART / VARIFRÅN
+    // -----------------------
+    {
+        group: "var",
+        words: [
+            { word: "– Vi ska på möte nu.", translation: "We're going to a meeting now.", newline: true },
+            { word: "– Ja, men", translation: "Yes, but" },
+            { word: `<select data-correct="var"></select>`, translation: "where" },
+            { word: "ska vi vara?", translation: "will we be?", newline: true }
+        ]
+    },
+    {
+        group: "var",
+        words: [
+            { word: "– Vi ses vid bilen.", translation: "We'll meet by the car.", newline: true },
+            { word: "–", translation: "" },
+            { word: `<select data-correct="var"></select>`, translation: "Where" },
+            { word: "har du parkerat?", translation: "have you parked?", newline: true }
+        ]
+    },
+    {
+        group: "var",
+        words: [
+            { word: "– Hämtar du barnen vid lekplatsen?", translation: "Will you pick up the children at the playground?", newline: true },
+            { word: "– Ja, men jag vet inte", translation: "Yes, but I don't know" },
+            { word: `<select data-correct="var"></select>`, translation: "where" },
+            { word: "den ligger.", translation: "it is.", newline: true }
+        ]
+    },
+    {
+        group: "var",
+        words: [
+            { word: "– Ska du följa med?", translation: "Are you coming along?", newline: true },
+            { word: "–", translation: "" },
+            { word: `<select data-correct="vart"></select>`, translation: "Where to" },
+            { word: "är du på väg?", translation: "are you heading?", newline: true }
+        ]
+    },
+    {
+        group: "var",
+        words: [
+            { word: "– Vilken skön promenad.", translation: "What a lovely walk.", newline: true },
+            { word: "– Ja, men", translation: "Yes, but" },
+            { word: `<select data-correct="vart"></select>`, translation: "where to" },
+            { word: "leder den här vägen?", translation: "does this road lead?", newline: true }
+        ]
+    },
+    {
+        group: "var",
+        words: [
+            { word: "– Här är mitt paket.", translation: "Here is my parcel.", newline: true },
+            { word: "–", translation: "" },
+            { word: `<select data-correct="vart"></select>`, translation: "Where to" },
+            { word: "ska vi skicka det?", translation: "shall we send it?", newline: true }
+        ]
+    },
+    {
+        group: "var",
+        words: [
+            { word: "– Hörde du det där?", translation: "Did you hear that?", newline: true },
+            { word: "– Ja,", translation: "Yes," },
+            { word: `<select data-correct="varifrån"></select>`, translation: "where from" },
+            { word: "kommer musiken?", translation: "is the music coming?", newline: true }
+        ]
+    },
+    {
+        group: "var",
+        words: [
+            { word: "– Pyramiderna är antika batterier.", translation: "The pyramids are ancient batteries.", newline: true },
+            { word: "–", translation: "" },
+            { word: `<select data-correct="varifrån"></select>`, translation: "Where from" },
+            { word: "har du fått den idén?", translation: "did you get that idea?", newline: true }
+        ]
+    },
+    {
+        group: "var",
+        words: [
+            { word: "– Vi ska vara där klockan sex.", translation: "We need to be there at six.", newline: true },
+            { word: "–", translation: "" },
+            { word: `<select data-correct="varifrån"></select>`, translation: "Where from" },
+            { word: "går bussen?", translation: "does the bus leave?", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Hur långt är det kvar?", translation: "How far is it left?", newline: true },
+            { word: "– Vi är nästan", translation: "We're almost" },
+            { word: `<select data-correct="framme"></select>`, translation: "there." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Var sitter de?", translation: "Where are they sitting?", newline: true },
+            { word: "– De sitter långt", translation: "They’re sitting well" },
+            { word: `<select data-correct="framme"></select>`, translation: "to the front" },
+            { word: "i salen.", translation: "of the hall.", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Hur långt är det kvar?", translation: "How far is it left?", newline: true },
+            { word: "– Vi är", translation: "We'll be" },
+            { word: `<select data-correct="framme"></select>`, translation: "there" },
+            { word: "om två minuter.", translation: "in two minutes.", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Vart ska jag flytta bordet?", translation: "Where shall I move the table?", newline: true },
+            { word: "– Skjut det", translation: "Push it" },
+            { word: `<select data-correct="fram"></select>`, translation: "forward" },
+            { word: "till fönstret.", translation: "to the window.", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Jag hör inte vad läraren säger.", translation: "I can’t hear what the teacher is saying.", newline: true },
+            { word: "– Flytta", translation: "Move" },
+            { word: `<select data-correct="fram"></select>`, translation: "forward" },
+            { word: "så hör du bättre.", translation: "and you’ll hear better.", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Hur kommer jag till museet?", translation: "How do I get to the museum?", newline: true },
+            { word: "– Det ligger 300 meter rakt", translation: "It's 300 metres straight" },
+            { word: `<select data-correct="fram"></select>`, translation: "ahead." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Var stod skytten?", translation: "Where was the shooter standing?", newline: true },
+            { word: "– Skottet kom", translation: "The shot came" },
+            { word: `<select data-correct="framifrån"></select>`, translation: "from the front." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Har du fotografierna på mannen?", translation: "Do you have the photographs of the man?", newline: true },
+            { word: "– Ja, såhär ser han ut", translation: "Yes, this is what he looks like" },
+            { word: `<select data-correct="framifrån"></select>`, translation: "from the front" },
+            { word: "och här är ett i profil.", translation: "and here is one in profile.", newline: true }
+        ]
+    },
+    {
+        group: "framme",
+        words: [
+            { word: "– Är det den här tröjan du vill ha?", translation: "Is this the jumper you want?", newline: true },
+            { word: "– Hur ser den ut", translation: "What does it look like" },
+            { word: `<select data-correct="framifrån"></select>`, translation: "from the front." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Var är mobilen?", translation: "Where is the mobile?", newline: true },
+            { word: "– Den är", translation: "It's" },
+            { word: `<select data-correct="borta"></select>`, translation: "gone." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Har han hört av sig?", translation: "Has he been in touch?", newline: true },
+            { word: "– Nej, och idag upptäckte jag att pengarna är", translation: "No, and today I discovered that the money is" },
+            { word: `<select data-correct="borta"></select>`, translation: "gone." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Här har de ändrat helt.", translation: "They’ve completely changed things here.", newline: true },
+            { word: "– Ja, de försöker hålla bilarna", translation: "Yes, they're trying to keep the cars" },
+            { word: `<select data-correct="borta"></select>`, translation: "away" },
+            { word: "från centrum.", translation: "from the city centre.", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Finns det en affär här?", translation: "Is there a shop here?", newline: true },
+            { word: "– Det finns en liten kiosk längre", translation: "There's a small kiosk further" },
+            { word: `<select data-correct="bort"></select>`, translation: "along" },
+            { word: "på vägen.", translation: "the road.", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Ska jag flytta på stolen?", translation: "Shall I move the chair?", newline: true },
+            { word: "– Ja, dra", translation: "Yes, pull it" },
+            { word: `<select data-correct="bort"></select>`, translation: "away" },
+            { word: "lite från bordet.", translation: "a bit away from the table.", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Det här funkar inte längre!", translation: "This isn't working anymore!", newline: true },
+            { word: "– Nä, han måste", translation: "No, he has to" },
+            { word: `<select data-correct="bort"></select>`, translation: "go (away)." },
+			{ word: ".", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Varifrån hörde du musiken?", translation: "Where did you hear the music coming from?", newline: true },
+            { word: "– Den kom", translation: "It came" },
+            { word: `<select data-correct="bortifrån"></select>`, translation: "from over by" },
+            { word: "skolan.", translation: "the school.", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Den där kometen kommer från ett annat solsystem.", translation: "That comet comes from another solar system.", newline: true },
+            { word: "– Ja, visst är det fantastiskt att få hit något så långt", translation: "Yes, isn't it amazing to receive something from so far" },
+            { word: `<select data-correct="bortifrån"></select>`, translation: "away?" },
+			{ word: "?", newline: true }
+        ]
+    },
+    {
+        group: "borta",
+        words: [
+            { word: "– Vilka fantastiska kläder du har här i affären!", translation: "What fantastic clothes you have in this shop!", newline: true },
+            { word: "– Ja, vissa kommer långt", translation: "Yes, some come from far" },
+            { word: `<select data-correct="bortifrån"></select>`, translation: "away" },
+            { word: "och andra är tillverkade lokalt.", translation: "and others are made locally.", newline: true }
+        ]
+    }
+
+];
+</script>
+
+<script>
+function buildOptions(group) {
+    return `
+        <option value="">...</option>
+        ${adverbGroups[group].map(item => `<option value="${item}">${item}</option>`).join("")}
+    `;
+}
+</script>
+
+
+<script src="adverb.js" defer></script>
+</head>
+
+<body>
+
+<div class="score-container">
+  <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+  <div class="dark-mode-toggle">
+    <label class="switch"><input type="checkbox" id="darkModeSwitch"><span class="slider"></span></label>
+    <span>Dark mode</span>
+  </div>
+  <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+    <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+  </button>
+  <button class="start-over" onclick="startOver()">
+    <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+  </button>
+</div>
+
+<div class="hamburger-menu" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+
+<div class="menu-overlay" id="menuOverlay">
+  <div class="close-button" onclick="toggleMenu()"><i class="fas fa-times"></i></div>
+  <div class="menu-item">Score:&nbsp;<span id="score">0</span> / <span class="score-max"></span></div>
+  <div class="menu-item" onclick="toggleDarkMode()"><i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span></div>
+  <div class="menu-item" onclick="showInfo()"><i class="fas fa-info-circle"></i> Info</div>
+  <div class="menu-item" onclick="openMenuURL()"><i class="fas fa-book"></i> Key</div>
+  <div class="menu-item" onclick="startOverAndCloseMenu()"><i class="fas fa-rotate-left"></i> Start over</div>
+</div>
+
+<h1 class="page-title"><i class="fa-regular fa-compass" style="margin-right:8px;"></i> Choose the correct spatial adverbial</h1>
+<p>Read the "Info" to understand what this exercise is about.</p>
+
+<div class="container">
+  <div class="sentences" id="sentences"></div>
+</div>
+
+<div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+  <div class="modal-content">
+    <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+    <h2 id="infoModalTitle">Spatial adverbials</h2><br />
+<p>Swedish uses three-way systems to express (1) <strong>a state or position</strong> (i.e. här, <em>here</em>, (2) <strong>movement towards something</strong> (i.e. hit, <em>to this place (here)</em>, and (3) <strong>movement away from something</strong> (i.e. härifrån, <em>from this place (from here)</em>.</p><br />
+
+<p>1. Location (static position)</p>
+<div class="indented">
+<ul>
+    <li><strong>här</strong> = here</li>
+    <li><strong>där</strong> = there</li>
+    <li><strong>hemma</strong> = at home</li>
+    <li><strong>borta</strong> = gone</li>
+</ul>
+</div><br />
+
+<p>2. Movement to a position</p>
+<div class="indented">
+<ul>
+    <li><strong>hit</strong> = to here (cf. old-fashioned English <em>hither</em>)</li>
+    <li><strong>dit</strong> = to there (cf. old-fashioned English <em>thither</em>)</li>
+    <li><strong>hem</strong> = (to) home</li>
+    <li><strong>bort</strong> = away</li>
+</ul>
+</div><br />
+
+<p>3. Movement from that position</p>
+<div class="indented">
+<ul>
+    <li><strong>härifrån</strong> = from here</li>
+    <li><strong>därifrån</strong> = from there</li>
+    <li><strong>hemifrån</strong> = from home</li>
+    <li><strong>bortifrån</strong> = from far away</li>
+</ul>
+</div><br />
+<p>Tip: The shortest form (with the exception of "vart", <em>where to</em>) always expresses movement towards something. And anything that expresses movement from something will always contain the element "från".</p><br />
+    <p>Try to choose the correct spatial adverbial for each sentence!</p>
+  </div>
+</div>
+
+<div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+  <div class="modal-content">
+    <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+    <h2 id="congratulationsModalTitle">Congratulations!</h2>
+    <p>You have answered all the questions correctly!</p>
+  </div>
+</div>
+
+</body>
+</html>
