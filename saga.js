@@ -3435,7 +3435,7 @@ $(document).ready(function () {
         const iconWidth = $(this).outerWidth();
 
         const left = offset.left + (iconWidth / 2) - (tipWidth / 2);
-        const top  = offset.top - tipHeight - 10;
+        const top  = offset.top - tipHeight - 4;
 
         $infoTooltip.css({
             left: left,
