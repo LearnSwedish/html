@@ -1,0 +1,1157 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plural Challenge – irregular and regular</title>
+    
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+	
+	<!-- Link to External CSS -->
+    <link rel="stylesheet" href="1from4.css">
+   
+</head>
+<body>
+
+    <!-- Desktop Menu -->
+    <div class="desktop-menu">
+      <!-- Score Counter -->
+      <div class="score">Score:&nbsp; <span class="score-value">0</span>&nbsp;/&nbsp;<span class="total-score-value">0</span></div>
+      
+      <!-- Dark Mode Toggle -->
+      <div class="toggle" id="darkModeToggleDiv">
+          <label class="switch">
+              <input type="checkbox" id="darkModeSwitch">
+              <span class="slider"></span>
+          </label>
+          <span style="margin-left: 10px;">Dark mode</span>
+      </div>
+        
+      <!-- Info Button -->
+      <button class="info" id="info-button" onclick="openModal('infoModal')">
+        <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info 
+      </button>
+
+<!-- Next Level Button for Mobile -->
+<button class="restart" 
+        onclick="window.open('https://learnswedish.github.io/html/spindel-spindlar.html', '_blank'); closeMobileMenu()">
+    <i class="fas fa-arrow-left"></i>&nbsp;First level
+</button>	  
+      
+      <!-- Start Over Button -->
+      <button class="restart" onclick="startOver()">
+        <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over 
+      </button>
+    </div>
+	
+	<!-- Hamburger Icon for Mobile -->
+	<div class="hamburger-icon" onclick="toggleMobileMenu()">
+		<i id="hamburgerIcon" class="fas fa-bars"></i>
+	</div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+	<div class="score">Score:&nbsp; <span class="score-value">0</span>&nbsp;/&nbsp;<span class="total-score-value">0</span></div>
+        
+        <!-- Dark Mode Toggle for Mobile -->
+        <div class="toggle" onclick="toggleDarkModeMobile()">
+            <i class="fas fa-lightbulb" id="darkModeIcon"></i>
+            <span id="darkModeText">Dark mode</span>
+        </div>
+        
+        <!-- Info Button for Mobile -->
+        <button class="info" onclick="openOverlay()"> <!-- Call openOverlay here -->
+			<i class="fas fa-info-circle"></i>&nbsp;Info
+		</button>
+        
+        <!-- Start Over Button for Mobile -->
+        <button class="restart" onclick="closeMobileMenu(); startOver()">
+            <i class="fas fa-rotate-left"></i>&nbsp;Start over
+        </button>
+    </div>
+    
+    <!-- Page Title -->
+    <h1 class="page-title">Plural Challenge – irregular and regular</h1>
+    <p id="readinfo">Read the "Info" to understand what this exercise is about.</p>
+    
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <!-- Question Text -->
+    <h1 class="question-text" id="question-text">
+        <center><span class="gender" id="gender">(en)</span> <span class="highlight" id="noun">stol</span><br /></center>
+    </h1>
+    
+    <!-- Buttons Container -->
+    <div class="buttons" id="buttons-container">
+        <!-- Answer options will be inserted dynamically here -->
+    </div>
+    
+    <!-- Feedback Text -->
+    <p id="feedback" class="feedback"></p>
+    
+    <!-- Info Modal -->
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+<div class="modal-content">
+    <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+    <h2 id="infoModalTitle">Irregular plural patterns</h2>
+
+    <p>Most Swedish plural forms follow regular and predictable rules, but a number of nouns behave irregularly. Below you will find the most important groups and how to handle them. Keep an eye on (1) possible <u>stem vowel</u> changes, (2) how the noun <u>ends</u>, and (3) whether the word is a <u>loanword</u>.</p>
+
+    <p>If you don't know what the word means, you only need to hover it.</p>
+
+    <table>
+        <tr>
+            <th>Rule</th>
+            <th>What to do</th>
+        </tr>
+
+        <tr>
+            <td>1. Vowel change + -er (h<u>a</u>nd → h<u>ä</u>nder)</td>
+            <td>Change vowel + <strong>-er</strong></td>
+        </tr>
+
+        <tr>
+            <td>2. Vowel end (bak<u>e</u>lse → bakelser)</td>
+            <td>Just add <strong>-r</strong></td>
+        </tr>
+
+        <tr>
+            <td>3. Vowel + l/r (f<u>å</u>gel → fåglar)</td>
+            <td>Drop last vowel + <strong>-ar</strong></td>
+        </tr>
+
+        <tr>
+            <td>4. Loanwords |ium or |eum (mus<u>e</u>um → museer)</td>
+            <td>Drop <strong>-um</strong> + <strong>-er</strong></td>
+        </tr>
+
+        <tr>
+            <td>5. Highly irregular forms (<u>ö</u>ga → ögon)</td>
+            <td>Must be memorised</td>
+        </tr>
+
+    </table>
+</div>
+
+    </div>
+    
+		<!-- Mobile view info div -->
+<div id="mobileOverlay" class="mobile-overlay">
+    <button class="close-overlay-button" onclick="closeOverlay()">×</button>
+<div class="overlay-content">
+    <h2 id="infoModalTitle">Irregular plural<br />patterns</h2>
+    <p>Most Swedish plural forms follow predictable patterns, but a number of nouns behave irregularly. Here you will find the most important groups to keep in mind.</p><br />
+    <ol>
+        <li>Watch for <u>stem vowel</u> changes</li>
+        <li>Check how the noun <u>ends</u></li>
+        <li>Be aware of <u>loanword</u> patterns</li>
+    </ol>
+    <p>If you don't know what the word means, just click on it.</p>
+    <br />
+    <p>The symbol | indicates “ends with”.</p><br />
+    <p style="font-size:18px;"><strong>Rules</strong></p>
+
+    <ol start="1" style="list-style-type: decimal;">
+
+        <li>
+            <strong>Stem vowel change + -er</strong> (h<u>a</u>nd → h<u>ä</u>nder, b<u>o</u>k → b<u>ö</u>cker).<br />
+            Solution: change the vowel and add <strong>-er</strong>.
+        </li>
+
+        <li>
+            <strong>Ends in a vowel → add -r</strong> (bak<u>e</u>lse → bakelser, sk<u>o</u> → skor).<br />
+            Solution: add <strong>-r</strong>.
+        </li>
+
+        <li>
+            <strong>Ends in vowel + l/r → drop the final vowel</strong> (f<u>å</u>gel → fåglar, s<u>o</u>mmar → somrar).<br />
+            Solution: remove the final vowel, then add the ending.
+        </li>
+
+        <li>
+            <strong>Loanwords in |ium or |eum drop -um</strong> (mus<u>e</u>um → museer, laborat<u>o</u>rium → laboratorier).<br />
+            Solution: drop <strong>-um</strong> and add <strong>-er</strong>.
+        </li>
+
+        <li>
+            <strong>Highly irregular forms</strong> (h<u>u</u>vud → huvuden, <u>ö</u>ga → ögon, <u>ö</u>ra → öron).<br />
+            Solution: must be memorised.
+        </li>
+
+    </ol>
+</div>
+
+</div>
+
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Grattis!</h2>
+            <p>Du har svarat rätt på alla frågor!</p>
+        </div>
+    </div>
+    
+    <!-- Tooltip element -->
+    <div class="tooltip" id="custom-tooltip"></div>
+
+<script>
+// Array of questions with tooltips
+    const questions = [
+{
+    gender: "(en)",
+    noun: "art<u>i</u>kel",
+    options: ["artiklar", "artikelar", "artikelor", "artikeler"],
+    correctAnswer: 0,
+    tooltip: "article"
+},
+{
+    gender: "(en)",
+    noun: "<u>a</u>xel",
+    options: ["axlar", "axelar", "axelor", "axeler"],
+    correctAnswer: 0,
+    tooltip: "shoulder"
+},
+{
+    gender: "(en)",
+    noun: "c<u>i</u>rkel",
+    options: ["cirklar", "cirkelar", "cirkelor", "cirkeler"],
+    correctAnswer: 0,
+    tooltip: "circle"
+},
+{
+    gender: "(en)",
+    noun: "c<u>y</u>kel",
+    options: ["cyklar", "cykelar", "cykelor", "cykeler"],
+    correctAnswer: 0,
+    tooltip: "bicycle"
+},
+{
+    gender: "(en)",
+    noun: "f<u>å</u>gel",
+    options: ["fåglar", "fågelar", "fågelor", "fågeler"],
+    correctAnswer: 0,
+    tooltip: "bird"
+},
+{
+    gender: "(en)",
+    noun: "g<u>a</u>ffel",
+    options: ["gafflar", "gaffelar", "gaffelor", "gaffeler"],
+    correctAnswer: 0,
+    tooltip: "fork"
+},
+{
+    gender: "(en)",
+    noun: "h<u>i</u>mmel",
+    options: ["himlar", "himmelar", "himmelor", "himmeler"],
+    correctAnswer: 0,
+    tooltip: "sky"
+},
+{
+    gender: "(en)",
+    noun: "kl<u>ä</u>dsel",
+    options: ["klädslar", "klädselar", "klädselor", "klädseler"],
+    correctAnswer: 0,
+    tooltip: "upholstery"
+},
+{
+    gender: "(en)",
+    noun: "m<u>a</u>ndel",
+    options: ["mandlar", "mandelar", "mandelor", "mandeler"],
+    correctAnswer: 0,
+    tooltip: "almond"
+},
+{
+    gender: "(en)",
+    noun: "n<u>y</u>ckel",
+    options: ["nycklar", "nyckelar", "nyckelor", "nyckeler"],
+    correctAnswer: 0,
+    tooltip: "key"
+},
+{
+    gender: "(en)",
+    noun: "<u>o</u>rgel",
+    options: ["orglar", "orgelar", "orgelor", "orgeler"],
+    correctAnswer: 0,
+    tooltip: "organ"
+},
+{
+    gender: "(en)",
+    noun: "s<u>e</u>gel",
+    options: ["seglar", "segelar", "segelor", "segeler"],
+    correctAnswer: 0,
+    tooltip: "sail"
+},
+{
+    gender: "(en)",
+    noun: "s<u>i</u>ngel",
+    options: ["singlar", "singelar", "singelor", "singeler"],
+    correctAnswer: 0,
+    tooltip: "single (unattached)"
+},
+{
+    gender: "(en)",
+    noun: "sp<u>e</u>gel",
+    options: ["speglar", "spegelar", "spegelor", "spegeler"],
+    correctAnswer: 0,
+    tooltip: "mirror"
+},
+{
+    gender: "(en)",
+    noun: "sp<u>i</u>ndel",
+    options: ["spindlar", "spindelar", "spindelor", "spindeler"],
+    correctAnswer: 0,
+    tooltip: "spider"
+},
+{
+    gender: "(en)",
+    noun: "st<u>ö</u>vel",
+    options: ["stövlar", "stövelar", "stövelor", "stöveler"],
+    correctAnswer: 0,
+    tooltip: "boot"
+},
+{
+    gender: "(en)",
+    noun: "t<u>i</u>tel",
+    options: ["titlar", "titelar", "titelor", "titeler"],
+    correctAnswer: 0,
+    tooltip: "title"
+},
+{
+    gender: "(en)",
+    noun: "t<u>u</u>nnel",
+    options: ["tunnlar", "tunnelar", "tunnelor", "tunneler"],
+    correctAnswer: 0,
+    tooltip: "tunnel"
+},
+{
+    gender: "(en)",
+    noun: "v<u>ä</u>xel",
+    options: ["växlar", "växelar", "växelor", "växeler"],
+    correctAnswer: 0,
+    tooltip: "gear"
+},
+{
+    gender: "(en)",
+    noun: "<u>ä</u>ngel",
+    options: ["änglar", "ängelar", "ängelor", "ängeler"],
+    correctAnswer: 0,
+    tooltip: "angel"
+},
+{
+    gender: "(en)",
+    noun: "f<u>a</u>ster",
+    options: ["fastrar", "fasterar", "fasteror", "fasterer"],
+    correctAnswer: 0,
+    tooltip: "aunt"
+},
+{
+    gender: "(en)",
+    noun: "s<u>o</u>mmar",
+    options: ["somrar", "sommarar", "sommaror", "sommarer"],
+    correctAnswer: 0,
+    tooltip: "summer"
+},
+{
+    gender: "(en)",
+    noun: "f<u>i</u>nger",
+    options: ["fingrar", "fingerar", "fingeror", "fingerer"],
+    correctAnswer: 0,
+    tooltip: "finger"
+},
+{
+    gender: "(en)",
+    noun: "fj<u>ä</u>der",
+    options: ["fjädrar", "fjäderar", "fjäderor", "fjäderer"],
+    correctAnswer: 0,
+    tooltip: "feather"
+},
+{
+    gender: "(en)",
+    noun: "för<u>ä</u>lder",
+    options: ["föräldrar", "förälderar", "förälderor", "förälderer"],
+    correctAnswer: 0,
+    tooltip: "parent"
+},
+{
+    gender: "(en)",
+    noun: "<u>i</u>ller",
+    options: ["illrar", "illerar", "illeror", "illerer"],
+    correctAnswer: 0,
+    tooltip: "ferret"
+},
+{
+    gender: "(en)",
+    noun: "kr<u>a</u>ter",
+    options: ["kratrar", "kraterar", "krateror", "kraterer"],
+    correctAnswer: 0,
+    tooltip: "crater"
+},
+{
+    gender: "(en)",
+    noun: "min<u>i</u>ster",
+    options: ["ministrar", "ministerar", "ministeror", "ministerer"],
+    correctAnswer: 0,
+    tooltip: "minister"
+},
+{
+    gender: "(en)",
+    noun: "m<u>u</u>tter",
+    options: ["muttrar", "mutterar", "mutteror", "mutterer"],
+    correctAnswer: 0,
+    tooltip: "nut (metal fastener)"
+},
+{
+    gender: "(en)",
+    noun: "ork<u>e</u>ster",
+    options: ["orkestrar", "orkesterar", "orkesteror", "orkesterer"],
+    correctAnswer: 0,
+    tooltip: "orchestra"
+},
+{
+    gender: "(en)",
+    noun: "rep<u>o</u>rter",
+    options: ["reportrar", "reporterar", "reporteror", "reporterer"],
+    correctAnswer: 0,
+    tooltip: "reporter"
+},
+{
+    gender: "(en)",
+    noun: "rev<u>o</u>lver",
+    options: ["revolvrar", "revolverar", "revolveror", "revolverer"],
+    correctAnswer: 0,
+    tooltip: "revolver"
+},
+{
+    gender: "(en)",
+    noun: "s<u>e</u>ger",
+    options: ["segrar", "segerar", "segeror", "segerer"],
+    correctAnswer: 0,
+    tooltip: "victory"
+},
+{
+    gender: "(en)",
+    noun: "sem<u>e</u>ster",
+    options: ["semestrar", "semesterar", "semesteror", "semesterer"],
+    correctAnswer: 0,
+    tooltip: "holiday"
+},
+{
+    gender: "(en)",
+    noun: "sv<u>å</u>ger",
+    options: ["svågrar", "svågerar", "svågeror", "svågerer"],
+    correctAnswer: 0,
+    tooltip: "brother-in-law"
+},
+{
+    gender: "(en)",
+    noun: "s<u>y</u>ster",
+    options: ["systrar", "systerar", "systeror", "systerer"],
+    correctAnswer: 0,
+    tooltip: "sister"
+},
+{
+    gender: "(en)",
+    noun: "te<u>a</u>ter",
+    options: ["teatrar", "teaterar", "teateror", "teaterer"],
+    correctAnswer: 0,
+    tooltip: "theatre"
+},
+{
+    gender: "(en)",
+    noun: "t<u>i</u>ger",
+    options: ["tigrar", "tigerar", "tigeror", "tigerer"],
+    correctAnswer: 0,
+    tooltip: "tiger"
+},
+{
+    gender: "(en)",
+    noun: "v<u>i</u>nter",
+    options: ["vintrar", "vinterar", "vinteror", "vinterer"],
+    correctAnswer: 0,
+    tooltip: "winter"
+},
+{
+    gender: "(en)",
+    noun: "<u>å</u>ker",
+    options: ["åkrar", "åkerar", "åkeror", "åkerer"],
+    correctAnswer: 0,
+    tooltip: "field"
+},
+{
+    gender: "(ett)",
+    noun: "st<u>a</u>dium",
+    options: ["stadier", "stadiumar", "stadiumor", "stadiumer"],
+    correctAnswer: 0,
+    tooltip: "stadium"
+},
+{
+    gender: "(ett)",
+    noun: "akv<u>a</u>rium",
+    options: ["akvarier", "akvariumar", "akvariumor", "akvariumer"],
+    correctAnswer: 0,
+    tooltip: "aquarium"
+},
+{
+    gender: "(ett)",
+    noun: "dec<u>e</u>nnium",
+    options: ["decennier", "decenniumar", "decenniumor", "decenniumer"],
+    correctAnswer: 0,
+    tooltip: "decade"
+},
+{
+    gender: "(ett)",
+    noun: "jubil<u>e</u>um",
+    options: ["jubileer", "jubileumar", "jubileumor", "jubileumer"],
+    correctAnswer: 0,
+    tooltip: "jubilee"
+},
+{
+    gender: "(ett)",
+    noun: "mus<u>e</u>um",
+    options: ["museer", "museumar", "museumor", "museumer"],
+    correctAnswer: 0,
+    tooltip: "museum"
+},
+{
+    gender: "(ett)",
+    noun: "laborat<u>o</u>rium",
+    options: ["laboratorier", "laboratoriumar", "laboratoriumor", "laboratoriumer"],
+    correctAnswer: 0,
+    tooltip: "laboratory"
+},
+{
+    gender: "(ett)",
+    noun: "privil<u>e</u>gium",
+    options: ["privilegier", "privilegiumar", "privilegiumor", "privilegiumer"],
+    correctAnswer: 0,
+    tooltip: "privilege"
+},
+{
+    gender: "(ett)",
+    noun: "kr<u>a</u>nium",
+    options: ["kranier", "kraniumar", "kraniumor", "kraniumer"],
+    correctAnswer: 0,
+    tooltip: "skull"
+},
+{
+    gender: "(ett)",
+    noun: "mausol<u>e</u>um",
+    options: ["mausoleer", "mausoleumar", "mausoleumor", "mausoleumer"],
+    correctAnswer: 0,
+    tooltip: "mausoleum"
+},
+{
+    gender: "(ett)",
+    noun: "mil<u>e</u>nnium",
+    options: ["milennier", "milenniumar", "milenniumor", "milenniumer"],
+    correctAnswer: 0,
+    tooltip: "millennium"
+},
+{
+    gender: "(ett)",
+    noun: "semin<u>a</u>rium",
+    options: ["seminarier", "seminariumar", "seminariumor", "seminariumer"],
+    correctAnswer: 0,
+    tooltip: "seminar"
+},
+{
+    gender: "(en)",
+    noun: "str<u>a</u>nd",
+    options: ["stränder", "strandar", "strandor", "strander"],
+    correctAnswer: 0,
+    tooltip: "beach"
+},
+{
+    gender: "(ett)",
+    noun: "l<u>a</u>nd",
+    options: ["länder", "landar", "landor", "lander"],
+    correctAnswer: 0,
+    tooltip: "country"
+},
+{
+    gender: "(en)",
+    noun: "br<u>a</u>nd",
+    options: ["bränder", "brandar", "brandor", "brander"],
+    correctAnswer: 0,
+    tooltip: "fire"
+},
+{
+    gender: "(en)",
+    noun: "r<u>a</u>nd",
+    options: ["ränder", "randar", "randor", "rander"],
+    correctAnswer: 0,
+    tooltip: "stripe"
+},
+{
+    gender: "(en)",
+    noun: "h<u>ä</u>nd",
+    options: ["händer", "handar", "handor", "hander"],
+    correctAnswer: 0,
+    tooltip: "hand"
+},
+{
+    gender: "(en)",
+    noun: "t<u>a</u>nd",
+    options: ["tänder", "tandar", "tandor", "tander"],
+    correctAnswer: 0,
+    tooltip: "tooth"
+},
+{
+    gender: "(en)",
+    noun: "<u>a</u>nd",
+    options: ["änder", "andar", "andor", "ander"],
+    correctAnswer: 0,
+    tooltip: "duck"
+},
+{
+    gender: "(en)",
+    noun: "st<u>a</u>d",
+    options: ["städer", "stadar", "stador", "stader"],
+    correctAnswer: 0,
+    tooltip: "city"
+},
+{
+    gender: "(en)",
+    noun: "n<u>a</u>tt",
+    options: ["nätter", "nattar", "nattor", "natter"],
+    correctAnswer: 0,
+    tooltip: "night"
+},
+{
+    gender: "(en)",
+    noun: "b<u>o</u>k",
+    options: ["böcker", "bokar", "bokor", "boker"],
+    correctAnswer: 0,
+    tooltip: "book"
+},
+{
+    gender: "(en)",
+    noun: "f<u>o</u>t",
+    options: ["fötter", "fotar", "fotor", "foter"],
+    correctAnswer: 0,
+    tooltip: "foot"
+},
+{
+    gender: "(en)",
+    noun: "r<u>o</u>t",
+    options: ["rötter", "rotar", "rotor", "roter"],
+    correctAnswer: 0,
+    tooltip: "root"
+},
+{
+    gender: "(en)",
+    noun: "s<u>o</u>n",
+    options: ["söner", "sonar", "sonor", "soner"],
+    correctAnswer: 0,
+    tooltip: "son"
+},
+{
+    gender: "(en)",
+    noun: "<u>u</u>ppl<u>e</u>velse",
+    options: ["upplevelser", "upplevelsear", "upplevelseor", "upplevelseer"],
+    correctAnswer: 0,
+    tooltip: "experience"
+},
+{
+    gender: "(en)",
+    noun: "r<u>ö</u>relse",
+    options: ["rörelser", "rörelsear", "rörelseor", "rörelseer"],
+    correctAnswer: 0,
+    tooltip: "movement"
+},
+{
+    gender: "(en)",
+    noun: "<u>a</u>vv<u>i</u>kelse",
+    options: ["avvikelser", "avvikelsear", "avvikelseor", "avvikelseer"],
+    correctAnswer: 0,
+    tooltip: "deviation"
+},
+{
+    gender: "(en)",
+    noun: "besv<u>ä</u>rjelse",
+    options: ["besvärjelser", "besvärjelsear", "besvärjelseor", "besvärjelseer"],
+    correctAnswer: 0,
+    tooltip: "incantation"
+},
+{
+    gender: "(en)",
+    noun: "bet<u>y</u>delse",
+    options: ["betydelser", "betydelsear", "betydelseor", "betydelseer"],
+    correctAnswer: 0,
+    tooltip: "meaning"
+},
+{
+    gender: "(en)",
+    noun: "förb<u>i</u>ndelse",
+    options: ["förbindelser", "förbindelsear", "förbindelseor", "förbindelseer"],
+    correctAnswer: 0,
+    tooltip: "connection"
+},
+{
+    gender: "(en)",
+    noun: "st<u>y</u>relse",
+    options: ["styrelser", "styrelsear", "styrelseor", "styrelseer"],
+    correctAnswer: 0,
+    tooltip: "board (committee)"
+},
+{
+    gender: "(en)",
+    noun: "best<u>ä</u>mmelse",
+    options: ["bestämmelser", "bestämmelsear", "bestämmelseor", "bestämmelseer"],
+    correctAnswer: 0,
+    tooltip: "regulation"
+},
+{
+    gender: "(en)",
+    noun: "över<u>e</u>nsk<u>o</u>mmelse",
+    options: ["överenskommelser", "överenskommelsear", "överenskommelseor", "överenskommelseer"],
+    correctAnswer: 0,
+    tooltip: "agreement"
+},
+{
+    gender: "(en)",
+    noun: "fr<u>e</u>stelse",
+    options: ["frestelser", "frestelsear", "frestelseor", "frestelseer"],
+    correctAnswer: 0,
+    tooltip: "temptation"
+},
+{
+    gender: "(en)",
+    noun: "förb<u>a</u>nnelse",
+    options: ["förbannelser", "förbannelsear", "förbannelseor", "förbannelseer"],
+    correctAnswer: 0,
+    tooltip: "curse"
+},
+{
+    gender: "(ett)",
+    noun: "f<u>ä</u>ngelse",
+    options: ["fängelser", "fängelsear", "fängelseor", "fängelseer"],
+    correctAnswer: 0,
+    tooltip: "prison"
+},
+{
+    gender: "(en)",
+    noun: "förm<u>ö</u>rkelse",
+    options: ["förmörkelser", "förmörkelsear", "förmörkelseor", "förmörkelseer"],
+    correctAnswer: 0,
+    tooltip: "eclipse"
+},
+{
+    gender: "(en)",
+    noun: "förs<u>ä</u>ndelse",
+    options: ["försändelser", "försändelsear", "försändelseor", "försändelseer"],
+    correctAnswer: 0,
+    tooltip: "shipment"
+},
+{
+    gender: "(en)",
+    noun: "<u>a</u>ktie",
+    options: ["aktier", "aktiear", "aktieor", "aktieer"],
+    correctAnswer: 0,
+    tooltip: "share (stock)"
+},
+{
+    gender: "(en)",
+    noun: "bakt<u>e</u>rie",
+    options: ["bakterier", "bakteriear", "bakterieor", "bakterieer"],
+    correctAnswer: 0,
+    tooltip: "bacterium"
+},
+{
+    gender: "(en)",
+    noun: "f<u>i</u>ende",
+    options: ["fiender", "fiendear", "fiendeor", "fiendeer"],
+    correctAnswer: 0,
+    tooltip: "enemy"
+},
+{
+    gender: "(en)",
+    noun: "sk<u>o</u>",
+    options: ["skor", "skoar", "skoor", "skoer"],
+    correctAnswer: 0,
+    tooltip: "shoe"
+},
+{
+    gender: "(en)",
+    noun: "g<u>e</u>nre",
+    options: ["genrer", "genrear", "genreor", "genreer"],
+    correctAnswer: 0,
+    tooltip: "genre"
+},
+{
+    gender: "(en)",
+    noun: "l<u>i</u>nje",
+    options: ["linjer", "linjear", "linjeor", "linjeer"],
+    correctAnswer: 0,
+    tooltip: "line"
+},
+{
+    gender: "(en)",
+    noun: "j<u>ui</u>ce",
+    options: ["juicer", "juicear", "juiceor", "juiceer"],
+    correctAnswer: 0,
+    tooltip: "juice"
+},
+{
+    gender: "(en)",
+    noun: "k<u>o</u>",
+    options: ["kor", "koar", "koor", "koer"],
+    correctAnswer: 0,
+    tooltip: "cow"
+},
+{
+    gender: "(en)",
+    noun: "t<u>å</u>",
+    options: ["tår", "tåar", "tåor", "tåer"],
+    correctAnswer: 0,
+    tooltip: "toe"
+},
+{
+    gender: "(en)",
+    noun: "pass<u>a</u>ge",
+    options: ["passager", "passagear", "passageor", "passageer"],
+    correctAnswer: 0,
+    tooltip: "passage"
+},
+{
+    gender: "(en)",
+    noun: "ob<u>oe</u>",
+    options: ["oboer", "oboear", "oboeor", "oboeer"],
+    correctAnswer: 0,
+    tooltip: "oboe"
+},
+{
+    gender: "(en)",
+    noun: "st<u>u</u>die",
+    options: ["studier", "studiear", "studieor", "studieer"],
+    correctAnswer: 0,
+    tooltip: "study"
+},
+{
+    gender: "(en)",
+    noun: "kl<u>o</u>",
+    options: ["klor", "kloar", "kloor", "kloer"],
+    correctAnswer: 0,
+    tooltip: "claw"
+},
+{
+    gender: "(en)",
+    noun: "s<u>e</u>rie",
+    options: ["serier", "seriear", "serieor", "serieer"],
+    correctAnswer: 0,
+    tooltip: "series"
+},
+{
+    gender: "(en)",
+    noun: "vik<u>a</u>rie",
+    options: ["vikarier", "vikariear", "vikarieor", "vikarieer"],
+    correctAnswer: 0,
+    tooltip: "substitute teacher"
+},
+{
+    gender: "(en)",
+    noun: "kommiss<u>a</u>rie",
+    options: ["kommissarier", "kommissariear", "kommissarieor", "kommissarieer"],
+    correctAnswer: 0,
+    tooltip: "commissioner"
+},
+{
+    gender: "(en)",
+    noun: "d<u>a</u>te",
+    options: ["dater", "datear", "dateor", "dateer"],
+    correctAnswer: 0,
+    tooltip: "date (appointment/meeting)"
+},
+{
+    gender: "(en)",
+    noun: "h<u>u</u>stru",
+    options: ["hustrur", "hustruar", "hustruor", "hustruer"],
+    correctAnswer: 0,
+    tooltip: "wife"
+},
+{
+    gender: "(en)",
+    noun: "k<u>ä</u>nguru",
+    options: ["kängurur", "känguruar", "känguruor", "känguruer"],
+    correctAnswer: 0,
+    tooltip: "kangaroo"
+},
+{
+    gender: "(ett)",
+    noun: "h<u>u</u>vud",
+    options: ["huvuden", "huvudar", "huvudor", "huvuder"],
+    correctAnswer: 0,
+    tooltip: "head"
+},
+{
+    gender: "(ett)",
+    noun: "<u>ö</u>ra",
+    options: ["öron", "öraar", "öraor", "öraer"],
+    correctAnswer: 0,
+    tooltip: "ear"
+},
+{
+    gender: "(ett)",
+    noun: "<u>ö</u>ga",
+    options: ["ögon", "ögaar", "ögaor", "ögaer"],
+    correctAnswer: 0,
+    tooltip: "eye"
+},
+{
+    gender: "(ett)",
+    noun: "m<u>e</u>del",
+    options: ["medel", "medelar", "medelor", "medeler"],
+    correctAnswer: 0,
+    tooltip: "means"
+},
+{
+    gender: "(ett)",
+    noun: "ex<u>e</u>mpel",
+    options: ["exempel", "exempelar", "exempelor", "exempeler"],
+    correctAnswer: 0,
+    tooltip: "example"
+},
+{
+    gender: "(ett)",
+    noun: "sp<u>e</u>l",
+    options: ["spel", "spelar", "spelor", "speler"],
+    correctAnswer: 0,
+    tooltip: "game"
+},
+{
+    gender: "(ett)",
+    noun: "f<u>e</u>l",
+    options: ["fel", "felar", "felor", "feler"],
+    correctAnswer: 0,
+    tooltip: "mistake"
+},
+{
+    gender: "(ett)",
+    noun: "t<u>e</u>mpel",
+    options: ["tempel", "tempelar", "tempelor", "tempeler"],
+    correctAnswer: 0,
+    tooltip: "temple"
+},
+{
+    gender: "(en)",
+    noun: "m<u>ö</u>bel",
+    options: ["möbler", "möbelar", "möbelor", "möbeler"],
+    correctAnswer: 0,
+    tooltip: "piece of furniture"
+},
+{
+    gender: "(en)",
+    noun: "r<u>e</u>gel",
+    options: ["regler", "regelar", "regelor", "regeler"],
+    correctAnswer: 0,
+    tooltip: "rule"
+},
+{
+    gender: "(en)",
+    noun: "m<u>u</u>skel",
+    options: ["muskler", "muskelar", "muskelor", "muskeler"],
+    correctAnswer: 0,
+    tooltip: "muscle"
+},
+{
+    gender: "(en)",
+    noun: "f<u>o</u>rmel",
+    options: ["formler", "formelar", "formelor", "formeler"],
+    correctAnswer: 0,
+    tooltip: "formula"
+},
+{
+    gender: "(ett)",
+    noun: "kl<u>o</u>ster",
+    options: ["kloster", "klosterar", "klosteror", "klosterer"],
+    correctAnswer: 0,
+    tooltip: "monastery"
+},
+{
+    gender: "(ett)",
+    noun: "p<u>i</u>ller",
+    options: ["piller", "pillerar", "pilleror", "pillerer"],
+    correctAnswer: 0,
+    tooltip: "pill"
+},
+{
+    gender: "(ett)",
+    noun: "l<u>a</u>ger",
+    options: ["lager", "lagerar", "lageror", "lagerer"],
+    correctAnswer: 0,
+    tooltip: "storage / stock"
+},
+{
+    gender: "(ett)",
+    noun: "reg<u>i</u>ster",
+    options: ["register", "registerar", "registeror", "registerer"],
+    correctAnswer: 0,
+    tooltip: "register"
+},
+{
+    gender: "(ett)",
+    noun: "f<u>i</u>lter",
+    options: ["filter", "filterar", "filteror", "filterer"],
+    correctAnswer: 0,
+    tooltip: "filter"
+},
+{
+    gender: "(ett)",
+    noun: "<u>a</u>rmb<u>a</u>nd",
+    options: ["armband", "armbandar", "armbandor", "armbander"],
+    correctAnswer: 0,
+    tooltip: "bracelet"
+},
+{
+    gender: "(ett)",
+    noun: "förb<u>a</u>nd",
+    options: ["förband", "förbandar", "förbandor", "förbander"],
+    correctAnswer: 0,
+    tooltip: "bandage"
+},
+{
+    gender: "(en)",
+    noun: "gourm<u>a</u>nd",
+    options: ["gourmander", "gourmandar", "gourmandor", "gourmand"],
+    correctAnswer: 0,
+    tooltip: "gourmand"
+},
+{
+    gender: "(en)",
+    noun: "doktor<u>a</u>nd",
+    options: ["doktorander", "doktorandar", "doktorandor", "doktorand"],
+    correctAnswer: 0,
+    tooltip: "doctoral student"
+},
+{
+    gender: "(en)",
+    noun: "pil<u>o</u>t",
+    options: ["piloter", "pilotar", "pilotor", "pilot"],
+    correctAnswer: 0,
+    tooltip: "pilot"
+},
+{
+    gender: "(ett)",
+    noun: "h<u>o</u>t",
+    options: ["hot", "hotar", "hotor", "hoter"],
+    correctAnswer: 0,
+    tooltip: "threat"
+},
+{
+    gender: "(en)",
+    noun: "cypri<u>o</u>t",
+    options: ["cyprioter", "cypriotar", "cypriotor", "cypriot"],
+    correctAnswer: 0,
+    tooltip: "Cypriot"
+},
+{
+    gender: "(en)",
+    noun: "n<u>o</u>t",
+    options: ["noter", "notar", "notor", "not"],
+    correctAnswer: 0,
+    tooltip: "note (musical)"
+},
+{
+    gender: "(ett)",
+    noun: "bl<u>a</u>d",
+    options: ["blad", "bladar", "blador", "blader"],
+    correctAnswer: 0,
+    tooltip: "leaf / sheet"
+},
+{
+    gender: "(en)",
+    noun: "r<u>a</u>d",
+    options: ["rader", "radar", "rador", "rad"],
+    correctAnswer: 0,
+    tooltip: "row"
+},
+{
+    gender: "(en)",
+    noun: "k<u>o</u>stnad",
+    options: ["kostnader", "kostnadar", "kostnador", "kostnad"],
+    correctAnswer: 0,
+    tooltip: "cost"
+},
+{
+    gender: "(en)",
+    noun: "ambass<u>a</u>d",
+    options: ["ambassader", "ambassadar", "ambassador", "ambassad"],
+    correctAnswer: 0,
+    tooltip: "embassy"
+},
+{
+    gender: "(en)",
+    noun: "b<u>y</u>ggnad",
+    options: ["byggnader", "byggnadar", "byggnador", "byggnad"],
+    correctAnswer: 0,
+    tooltip: "building"
+},
+{
+    gender: "(en)",
+    noun: "marmel<u>a</u>d",
+    options: ["marmelader", "marmeladar", "marmelador", "marmelad"],
+    correctAnswer: 0,
+    tooltip: "marmalade"
+},
+{
+    gender: "(en)",
+    noun: "intervj<u>u</u>",
+    options: ["intervjuer", "intervjur", "intervjuor", "intervju"],
+    correctAnswer: 0,
+    tooltip: "interview"
+},
+{
+    gender: "(ett)",
+    noun: "tab<u>u</u>",
+    options: ["tabun", "tabur", "tabuor", "tabu"],
+    correctAnswer: 0,
+    tooltip: "taboo"
+},
+{
+    gender: "(en)",
+    noun: "plat<u>å</u>",
+    options: ["platåer", "platår", "platåor", "platå"],
+    correctAnswer: 0,
+    tooltip: "plateau"
+},
+{
+    gender: "(en)",
+    noun: "rid<u>å</u>",
+    options: ["ridåer", "ridår", "ridåor", "ridå"],
+    correctAnswer: 0,
+    tooltip: "curtain"
+},
+{
+    gender: "(ett)",
+    noun: "f<u>o</u>to",
+    options: ["foton", "fotor", "fotoor", "fotoer"],
+    correctAnswer: 0,
+    tooltip: "photo"
+},
+{
+    gender: "(ett)",
+    noun: "<u>e</u>ko",
+    options: ["ekon", "ekor", "ekoor", "ekoer"],
+    correctAnswer: 0,
+    tooltip: "echo"
+},
+{
+    gender: "(ett)",
+    noun: "fi<u>a</u>sko",
+    options: ["fiaskon", "fiaskor", "fiaskoor", "fiaskoer"],
+    correctAnswer: 0,
+    tooltip: "fiasco"
+}
+
+        ];
+</script>
+<script src="1from4.js"></script>
+</body>
+</html>
