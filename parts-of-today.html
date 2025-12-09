@@ -1,0 +1,1218 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Parts of a day</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+	body {
+	  font-family: sans-serif;
+	  padding: 20px;
+	  background-color: #f5f5f5;
+	  user-select: none;
+	}
+
+	h2 {
+	  text-align: center;
+	  margin-bottom: 30px;
+	}
+
+	.timeline-container {
+	  position: relative;
+	  width: 100%;
+	  max-width: 1400px;
+	  margin: auto;
+	  height: 250px;
+	}
+
+	.past-line, .future-line {
+	  position: absolute;
+	  top: 0;
+	  height: 8px;
+	  z-index: 1;
+	}
+	
+#bottomText {
+  margin-top: 200px;
+  font-size: 14px;
+  color: #333;
+  text-align: center; /* centrerar innehåll */
+}
+
+.bottom-table {
+  margin: auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1400px;
+  font-family: sans-serif;
+  table-layout: fixed; /* ← Lägger till detta */
+}
+
+.bottom-table thead {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.bottom-table th,
+.bottom-table td {
+  padding: 8px 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.bottom-table th:nth-child(1),
+.bottom-table td:nth-child(1) {
+  width: 130px;
+}
+
+.bottom-table th:nth-child(2),
+.bottom-table td:nth-child(2) {
+  width: 510px;
+}
+
+.bottom-table th:nth-child(3),
+.bottom-table td:nth-child(3) {
+  width: 760px;
+}
+
+
+.past-line {
+  background-image: linear-gradient(
+    to right,
+    #444444 0%,
+    #4e4e4e 6.7%,
+    #585858 13.3%,
+    #636363 20%,
+    #6d6d6d 26.7%,
+    #787878 33.3%,
+    #828282 40%,
+    #8d8d8d 46.7%,
+    #999999 53.3%,
+    #a6a6a6 60%,
+    #b3b3b3 66.7%,
+    #bfbfbf 73.3%,
+    #cccccc 80%,
+    #d9d9d9 93%,
+    darkorange 98%,
+    darkorange 100%
+  );
+  height: 10px;
+  position: absolute;
+  transform: translateY(-50%);
+  left: 0;
+  width: 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: right top; /* ← viktigt: visa slutet */
+  clip-path: inset(0 calc(100% - var(--now-x, 0px)) 0 0); /* ← nyckeln */
+  z-index: 1;
+}
+
+
+.future-line {
+  background-image: linear-gradient(
+    to right,
+    darkorange 0%,
+    darkorange 2%,
+    #a3eba3 7%,
+    #8fdf8f 20%,
+    #7ad57a 26.7%,
+    #66cc66 33.3%,
+    #59b959 40%,
+    #4ca64c 46.7%,
+    #3f923f 53.3%,
+    #337e33 60%,
+    #2c8a2c 66.7%,
+    #257f25 73.3%,
+    #1e741e 80%,
+    #196919 86.7%,
+    #145f14 93.3%,
+    #0f550f 100%
+  );
+  height: 10px;
+  position: absolute;
+  transform: translateY(-50%);
+  left: var(--now-x, 0px);
+  width: calc(100% - var(--now-x, 0px));
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: left top;
+  z-index: 1;
+}
+
+.gray-word {
+  color: gray;
+  font-weight: bold;
+}
+
+.orange-word {
+  color: darkorange;
+  font-weight: bold;
+}
+
+.green-word {
+  color: green;
+  font-weight: bold;
+}
+
+
+	.line-label {
+	  position: absolute;
+	  top: -20px;
+	  font-weight: bold;
+	  font-size: 14px;
+	  color: #444;
+	}
+
+	.past-label {
+	  left: 5%;
+	  transform: translateX(-50%);
+	}
+
+	.future-label {
+	  right: 5%;
+	  transform: translateX(50%);
+	}
+
+	.timeline {
+	  position: absolute;
+	  top: -30px;
+	  width: 4px;
+	  height: 425px;
+	  background-color: darkorange;
+	  z-index: 10;
+	  transform: translateX(-50%);
+	}
+
+	.now-dot {
+	  position: absolute;
+	  width: 40px;
+	  height: 40px;
+	  background-color: white;
+	  border: 4px solid darkorange;
+	  border-radius: 50%;
+	  cursor: grab;
+	  top: 380px;
+	  transform: translateX(-50%);
+	  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+	  z-index: 25;
+	}
+	  
+	.now-dot i {
+	  font-size: 16px;
+	  color: gray;
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  pointer-events: none;
+	}
+
+	.now-label {
+	  position: absolute;
+	  top: 310px;
+	  transform: translateX(-50%);
+	  background-color: white;
+	  border: 4px solid darkorange;
+	  padding: 11px 11px;
+	  border-radius: 50px;
+	  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+	  user-select: none;
+	  z-index: 25;
+	}
+
+	.segment {
+	  position: absolute;
+	  white-space: nowrap;
+	  top: 150px;
+	  font-size: 13px;
+	  height: 30px;
+	  text-align: left;
+	  padding-left: 6px;
+	  border-left: 1px solid grey;
+	  line-height: 30px;
+	  color: green;
+	  z-index: 10;
+	  user-select: none;
+	  opacity: 1;
+	  transform: translateY(0);
+	}
+	
+	.segment.name {
+	  color: black !important;
+	}
+
+	.segment.generally {
+	  top: 175px;
+	  color: black !important;
+	}
+
+	.segment.yesterday {
+	  top: 215px;
+	  color: #444444 !important;
+	}
+	
+	.segment.today {
+	  top: 245px;
+	}
+	
+	.segment.tomorrow {
+	  top: 275px;
+	  color: green !important;
+	}
+
+    .segment.past {
+	  color: #cc4c4c;
+	}
+
+
+	.clock {
+	  position: absolute;
+	  bottom: 120px;
+	  width: 100px;
+	  height: 100px;
+	  border: 4px solid darkorange;
+	  border-radius: 50%;
+	  background: radial-gradient(white, #eee);
+	  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+	  transform: translateX(-50%);
+	  z-index: 30;
+	  left: 0;
+	}
+
+	.number {
+	  position: absolute;
+	  width: 16px;
+	  height: 16px;
+	  font-size: 10px;
+	  font-family: "Segoe UI", sans-serif;
+	  font-weight: 600;
+	  text-align: center;
+	  color: darkorange;
+	  transform: translate(-50%, -50%);
+	  pointer-events: none;
+	}
+
+	.hand {
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  transform-origin: bottom center;
+	  border-radius: 2px;
+	}
+
+	.hour {
+	  width: 3px;
+	  height: 25px;
+	  background: black;
+	  z-index: 2;
+	}
+
+	.minute {
+	  width: 2px;
+	  height: 35px;
+	  background: grey;
+	  z-index: 1;
+	}
+
+	.center-dot {
+	  position: absolute;
+	  width: 6px;
+	  height: 6px;
+	  background: darkorange;
+	  border-radius: 50%;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  z-index: 3;
+	}
+  
+.segment-text-frozen {
+  font-size: 13px;
+}
+
+.segment-text-morph {
+  transition: 
+    color 0.3s ease-in-out, 
+    font-weight 0.2s ease-in-out,
+	font-size 0.2s ease-in-out,
+    opacity 0.3s ease-in-out, 
+    transform 0.3s ease-in-out;
+  opacity: 1;
+  transform: translateY(0);
+  will-change: opacity, transform;
+}
+
+.segment-text-morph.out {
+  opacity: 0;
+  transform: scale(0.98) translateY(-8px);
+  filter: blur(1px);
+}
+
+.segment-text-morph.in {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0);
+}
+
+	.segment-line {
+	  position: absolute;
+	  height: 3px;
+	  top: 208px;
+	  z-index: 5;
+	}
+
+.past-segment-line {
+  background-image: linear-gradient(
+    to right,
+    #444444 0%,
+    #4e4e4e 6.7%,
+    #585858 13.3%,
+    #636363 20%,
+    #6d6d6d 26.7%,
+    #787878 33.3%,
+    #828282 40%,
+    #8d8d8d 46.7%,
+    #999999 53.3%,
+    #a6a6a6 60%,
+    #b3b3b3 66.7%,
+    #bfbfbf 73.3%,
+    #cccccc 80%,
+    #d9d9d9 93%,
+    darkorange 98%,
+    darkorange 100%
+  );
+  height: 5px;
+  position: absolute;
+  transform: translateY(-50%);
+  left: 0;
+  width: 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: right top; /* ← viktigt: visa slutet */
+  clip-path: inset(0 calc(100% - var(--now-x, 0px)) 0 0); /* ← nyckeln */
+}
+
+.future-segment-line {
+  background-image: linear-gradient(
+    to right,
+    darkorange 0%,
+    darkorange 2%,
+    #a3eba3 7%,
+    #8fdf8f 20%,
+    #7ad57a 26.7%,
+    #66cc66 33.3%,
+    #59b959 40%,
+    #4ca64c 46.7%,
+    #3f923f 53.3%,
+    #337e33 60%,
+    #2c8a2c 66.7%,
+    #257f25 73.3%,
+    #1e741e 80%,
+    #196919 86.7%,
+    #145f14 93.3%,
+    #0f550f 100%
+  );
+  height: 5px;
+  position: absolute;
+  transform: translateY(-50%);
+  left: var(--now-x, 0px);
+  width: calc(100% - var(--now-x, 0px));
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: left top;
+}
+
+
+.floating-past-label {
+  position: absolute;
+  top: -26px;
+  font-size: 18px;
+  color: #444444; /* ändrad från #444 */
+  white-space: nowrap;
+  transform: translateX(-100%);
+  z-index: 30;
+  pointer-events: none;
+}
+
+.floating-future-label {
+  position: absolute;
+  top: -26px;
+  font-size: 18px;
+  color: #4cb84c;
+  white-space: nowrap;
+  transform: translateX(0);
+  z-index: 30;
+  pointer-events: none;
+}
+	
+	.label {
+  position: absolute;
+  left: -80px; /* Justera beroende på layoutbredd */
+  width: 70px;
+  font-size: 13px;
+  text-align: right;
+  color: #444;
+  font-weight: bold;
+  user-select: none;
+}
+
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+
+  .modal-content {
+    position: relative;
+    margin: 10% auto;
+    padding: 20px;
+    background-color: white;
+    width: 60%;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+  }
+
+  /* Position buttons at the top-right corner */
+  .top-right-btns {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 101; /* Keep buttons above other content */
+  }
+
+  .info-btn, .link-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .info-btn:hover, .link-btn:hover {
+    background-color: #45a049;
+  }
+
+  .link-btn {
+    background-color: #007BFF;
+  }
+
+  .link-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  
+
+
+</style>
+
+</head>
+<body>
+
+<h2>The parts of the day and how to express them</h2>
+
+<!-- Info Button and Link Button, placed at the top-right corner -->
+<div class="top-right-btns">
+  <button class="info-btn" id="infoBtn">Info</button>
+  <a href="https://www.google.com" target="_blank">
+    <button class="link-btn">Exercise</button>
+  </a>
+</div>
+
+<!-- Modal for Info -->
+<div class="modal" id="infoModal">
+  <div class="modal-content">
+    <span class="close" id="closeBtn">&times;</span>
+    <h3>About this page:</h3>
+    <p>This page is designed to visually represent five various ways the words for the parts of the day (e.g. morgon, eftermiddag, kväll) are used in Swedish:</p>
+    <ol>
+      <li>The names of the parts of the day ("name")</li>
+      <li>The expressions used for habitual or general reference to parts of the day ("habitual")</li>
+      <li>What the parts of the day are called for yesterday or any other specified past day ("yesterday")</li>
+      <li>What the parts of the day are called for today, including how they are referred to as they lie ahead, are active, or are in the past ("today"). This is the section where the timeline's current time indicator (the "Now line", a draggable line on the timeline) moves, updating the displayed text dynamically to reflect the corresponding time reference for that moment.</li>
+      <li>What the parts of the day are called for tomorrow ("tomorrow")</li>
+    </ol>
+    <p>At the bottom of the page, examples are displayed that match the current position of the "Now line".</p>
+  </div>
+</div>
+
+<div class="timeline-container" id="timelineArea">
+  <div class="past-line" id="pastLine"></div>
+  <div class="future-line" id="futureLine"></div>
+  
+  <!-- Lodrät linje + punkt + etikett -->
+  <div class="timeline" id="nowLine"></div>
+  <div class="now-dot" id="nowDot"><i class="fa-solid fa-left-right"></i></div>
+  <div class="now-label" id="nowLabel">Nu</div>
+  <div class="line-label floating-past-label" id="floatingPastLabel">Past</div>
+  <div class="line-label floating-future-label" id="floatingFutureLabel">Future</div>
+
+  <!-- Klockan -->
+  <div class="clock" id="clock">
+    <div class="hand hour" id="hourHand"></div>
+    <div class="hand minute" id="minuteHand"></div>
+    <div class="center-dot"></div>
+  </div>
+  
+  <div class="label" style="top: 157px;">name:</div>
+
+<!-- Segmentrad 1: Såhär kallas dygnets delar -->
+<div class="segment name" id="seg1n" style="left: 0%; width: 13.29%;">
+  <span class="segment-text-frozen">tidig morgon</span>
+</div>
+<div class="segment name" id="seg2n" style="left: 13.29%; width: 9.52%;">
+  <span class="segment-text-frozen">morgon</span>
+</div>
+<div class="segment name" id="seg3n" style="left: 22.81%; width: 13.29%;">
+  <span class="segment-text-frozen">förmiddag</span>
+</div>
+<div class="segment name" id="seg4n" style="left: 36.10%; width: 9.52%;">
+  <span class="segment-text-frozen">lunchtid</span>
+</div>
+<div class="segment name" id="seg5n" style="left: 45.62%; width: 18.05%;">
+  <span class="segment-text-frozen">eftermiddag</span>
+</div>
+<div class="segment name" id="seg6n" style="left: 63.67%; width: 18.05%;">
+  <span class="segment-text-frozen">kväll</span>
+</div>
+<div class="segment name" id="seg7n" style="left: 81.72%; width: 13.29%;">
+  <span class="segment-text-frozen">sen kväll</span>
+</div>
+<div class="segment name" id="seg8n" style="left: 95.01%; width: 4.99%;">
+  <span class="segment-text-frozen">natt</span>
+</div>
+	
+<div class="label" style="top: 182px;">habitual:</div>
+   
+<!-- Segmentrad 2: Såhär refererar man ALLMÄNT till dygnets delar -->
+<div class="segment generally" id="seg1g" style="left: 0%; width: 13.29%;">
+  <span class="segment-text-frozen">tidigt på morgonen</span>
+</div>
+<div class="segment generally" id="seg2g" style="left: 13.29%; width: 9.52%;">
+  <span class="segment-text-frozen">på morgonen</span>
+</div>
+<div class="segment generally" id="seg3g" style="left: 22.81%; width: 13.29%;">
+  <span class="segment-text-frozen">på förmiddagen</span>
+</div>
+<div class="segment generally" id="seg4g" style="left: 36.10%; width: 9.52%;">
+  <span class="segment-text-frozen">vid lunchtid</span>
+</div>
+<div class="segment generally" id="seg5g" style="left: 45.62%; width: 18.05%;">
+  <span class="segment-text-frozen">på eftermiddagen</span>
+</div>
+<div class="segment generally" id="seg6g" style="left: 63.67%; width: 18.05%;">
+  <span class="segment-text-frozen">på kvällen</span>
+</div>
+<div class="segment generally" id="seg7g" style="left: 81.72%; width: 13.29%;">
+  <span class="segment-text-frozen">sent på kvällen</span>
+</div>
+<div class="segment generally" id="seg8g" style="left: 95.01%; width: 4.99%;">
+  <span class="segment-text-frozen">på natten</span>
+</div>
+
+  <div class="segment-line past-segment-line" id="pastSegmentLine"></div>
+  <div class="segment-line future-segment-line" id="futureSegmentLine"></div>	
+
+<div class="label" style="top: 221px;">yesterday:</div>
+
+<!-- Segmentrad 3: Såhär refererar man till dygnets delar IGÅR -->
+<div class="segment yesterday" id="seg1y" style="left: 0%; width: 13.29%;">
+  <span class="segment-text-frozen">(tidigt) igår morse</span>
+</div>
+<div class="segment yesterday" id="seg2y" style="left: 13.29%; width: 9.52%;">
+  <span class="segment-text-frozen">igår morse</span>
+</div>
+<div class="segment yesterday" id="seg3y" style="left: 22.81%; width: 13.29%;">
+  <span class="segment-text-frozen">igår förmiddags</span>
+</div>
+<div class="segment yesterday" id="seg4y" style="left: 36.10%; width: 9.52%;">
+  <span class="segment-text-frozen">igår vid lunchtid</span>
+</div>
+<div class="segment yesterday" id="seg5y" style="left: 45.62%; width: 18.05%;">
+  <span class="segment-text-frozen">igår eftermiddags</span>
+</div>
+<div class="segment yesterday" id="seg6y" style="left: 63.67%; width: 18.05%;">
+  <span class="segment-text-frozen">igår kväll</span>
+</div>
+<div class="segment yesterday" id="seg7y" style="left: 81.72%; width: 13.29%;">
+  <span class="segment-text-frozen">sent igår kväll</span>
+</div>
+<div class="segment yesterday" id="seg8y" style="left: 95.01%; width: 4.99%;">
+  <span class="segment-text-frozen">nu i natt</span>
+</div>
+
+<div class="label" style="top: 251px;">today:</div>
+
+<!-- Segmentrad 4: Såhär refererar man till dygnets delar IDAG -->
+<div class="segment today" id="seg1td" style="left: 0%; width: 13.29%;">
+  <span class="segment-text-morph">nu på morgonen</span>
+</div>
+<div class="segment today" id="seg2td" style="left: 13.29%; width: 9.52%;">
+  <span class="segment-text-morph">senare på morgonen</span>
+</div>
+<div class="segment today" id="seg3td" style="left: 22.81%; width: 13.29%;">
+  <span class="segment-text-morph">på förmiddagen (idag)</span>
+</div>
+<div class="segment today" id="seg4td" style="left: 36.10%; width: 9.52%;">
+  <span class="segment-text-morph">vid lunchtid (idag)</span>
+</div>
+<div class="segment today" id="seg5td" style="left: 45.62%; width: 18.05%;">
+  <span class="segment-text-morph">i eftermiddag</span>
+</div>
+<div class="segment today" id="seg6td" style="left: 63.67%; width: 18.05%;">
+  <span class="segment-text-morph">i kväll</span>
+</div>
+<div class="segment today" id="seg7td" style="left: 81.72%; width: 13.29%;">
+  <span class="segment-text-morph">sent i kväll</span>
+</div>
+<div class="segment today" id="seg8td" style="left: 95.01%; width: 4.99%;">
+  <span class="segment-text-morph">i natt</span>
+</div>
+
+<div class="label" style="top: 281px;">tomorrow:</div>
+
+<!-- Segmentrad 5: Såhär refererar man till dygnets delar IMORGON -->
+<div class="segment tomorrow" id="seg1tm" style="left: 0%; width: 13.29%;">
+  <span class="segment-text-frozen">imorgon bitti</span>
+</div>
+<div class="segment tomorrow" id="seg2tm" style="left: 13.29%; width: 9.52%;">
+  <span class="segment-text-frozen">imorgon morgon</span>
+</div>
+<div class="segment tomorrow" id="seg3tm" style="left: 22.81%; width: 13.29%;">
+  <span class="segment-text-frozen">imorgon förmiddag</span>
+</div>
+<div class="segment tomorrow" id="seg4tm" style="left: 36.10%; width: 9.52%;">
+  <span class="segment-text-frozen">imorgon vid lunchtid</span>
+</div>
+<div class="segment tomorrow" id="seg5tm" style="left: 45.62%; width: 18.05%;">
+  <span class="segment-text-frozen">imorgon eftermiddag</span>
+</div>
+<div class="segment tomorrow" id="seg6tm" style="left: 63.67%; width: 18.05%;">
+  <span class="segment-text-frozen">imorgon kväll</span>
+</div>
+<div class="segment tomorrow" id="seg7tm" style="left: 81.72%; width: 13.29%;">
+  <span class="segment-text-frozen">sent imorgon kväll</span>
+</div>
+<div class="segment tomorrow" id="seg8tm" style="left: 95.01%; width: 4.99%;">
+  <span class="segment-text-frozen">imorgon natt</span>
+</div>
+
+</div>
+
+<script>
+  // Get modal and buttons
+  const infoModal = document.getElementById("infoModal");
+  const infoBtn = document.getElementById("infoBtn");
+  const closeBtn = document.getElementById("closeBtn");
+  const thresholds = [191.86, 329.35, 521.21, 658.70, 918.62, 1178.54, 1370.40, 1442.26];  // Brytpunkter
+
+  infoBtn.onclick = () => infoModal.style.display = "block";
+  closeBtn.onclick = () => infoModal.style.display = "none";
+  window.onclick = (event) => {
+    if (event.target == infoModal) infoModal.style.display = "none";
+  };
+
+  const nowLabel = document.getElementById("nowLabel");
+  const nowLine = document.getElementById("nowLine");
+  const nowDot = document.getElementById("nowDot");
+  const timelineArea = document.getElementById("timelineArea");
+  const clock = document.getElementById("clock");
+
+const segmentTransitions = [
+  {
+    id: "seg1td",
+    values: {
+      0: { text: "nu på morgonen", color: "darkorange", bold: true, fontSize: "14px" },
+      191.86: { text: "tidigare i morse", color: "#cccccc", bold: true, fontSize: "14px" },
+      329.35: { text: "(tidigt) i morse", color: "#bbbbbb", bold: true, fontSize: "13px" },
+      521.21: { text: "(tidigt) i morse", color: "#aaaaaa", bold: true, fontSize: "13px" },
+      658.70: { text: "(tidigt) i morse", color: "#999999", bold: true, fontSize: "13px" },
+      918.62: { text: "(tidigt) i morse", color: "#888888", bold: true, fontSize: "13px" },
+      1178.54: { text: "(tidigt) i morse", color: "#777777", bold: true, fontSize: "13px" },
+      1370.40: { text: "(tidigt) igår morse", color: "#666666", bold: true, fontSize: "13x" },
+      1442.26: { text: "(tidigt) igår morse", color: "#444444", bold: true, fontSize: "13px" }
+    }
+  },
+  {
+    id: "seg2td",
+    values: {
+      0: { text: "senare på morgonen", color: "#66cc66", bold: false, fontSize: "13px" },
+      191.86: { text: "nu på morgonen", color: "darkorange", bold: true, fontSize: "14px" },
+      329.35: { text: "i morse", color: "#cccccc", bold: true, fontSize: "14px" },
+      521.21: { text: "i morse", color: "#bbbbbb", bold: true, fontSize: "13px" },
+      658.70: { text: "i morse", color: "#aaaaaa", bold: true, fontSize: "13px" },
+      918.62: { text: "i morse", color: "#999999", bold: true, fontSize: "13px" },
+      1178.54: { text: "i morse", color: "#888888", bold: true, fontSize: "13px" },
+      1370.40: { text: "igår morse", color: "#777777", bold: true, fontSize: "13px" },
+      1442.26: { text: "igår morse", color: "#666666", bold: true, fontSize: "13px" }
+    }
+  },
+  {
+    id: "seg3td",
+    values: {
+      0: { text: "på förmiddagen (idag)", color: "#59b959", bold: false, fontSize: "13px" },
+      191.86: { text: "på förmiddagen (idag)", color: "#66cc66", bold: false, fontSize: "13px" },
+      329.35: { text: "nu på förmiddagen", color: "darkorange", bold: true, fontSize: "14px" },
+      521.21: { text: "i förmiddags", color: "#cccccc", bold: true, fontSize: "14px" },
+      658.70: { text: "i förmiddags", color: "#bbbbbb", bold: true, fontSize: "13px" },
+      918.62: { text: "i förmiddags", color: "#aaaaaa", bold: true, fontSize: "13px" },
+      1178.54: { text: "i förmiddags", color: "#999999", bold: true, fontSize: "13px" },
+      1370.40: { text: "igår förmiddags", color: "#888888", bold: true, fontSize: "13px" },
+      1442.26: { text: "igår förmiddags", color: "#777777", bold: true, fontSize: "13px" }
+    }
+  },
+  {
+    id: "seg4td",
+    values: {
+      0: { text: "vid lunchtid (idag)", color: "#4ca64c", bold: false, fontSize: "13px" },
+      191.86: { text: "vid lunchtid (idag)", color: "#59b959", bold: false, fontSize: "13px" },
+      329.35: { text: "vid lunchtid (idag)", color: "#66cc66", bold: false, fontSize: "13px" },
+      521.21: { text: "nu under lunchen", color: "darkorange", bold: true, fontSize: "14px" },
+      658.70: { text: "vid lunchtid (idag)", color: "#cccccc", bold: true, fontSize: "14px" },
+      918.62: { text: "vid lunchtid (idag)", color: "#bbbbbb", bold: true, fontSize: "13px" },
+      1178.54: { text: "vid lunchtid (idag)", color: "#aaaaaa", bold: true, fontSize: "13px" },
+      1370.40: { text: "igår vid lunchtid", color: "#999999", bold: true, fontSize: "13px" },
+      1442.26: { text: "igår vid lunchtid", color: "#888888", bold: true, fontSize: "13px" }
+    }
+  },
+  {
+    id: "seg5td",
+    values: {
+      0: { text: "i eftermiddag", color: "#3f923f", bold: false, fontSize: "13px" },
+      191.86: { text: "i eftermiddag", color: "#4ca64c", bold: false, fontSize: "13px" },
+      329.35: { text: "i eftermiddag", color: "#59b959", bold: false, fontSize: "13px" },
+      521.21: { text: "i eftermiddag", color: "#66cc66", bold: false, fontSize: "13px" },
+      658.70: { text: "nu i eftermiddag", color: "darkorange", bold: true, fontSize: "14px" },
+      918.62: { text: "i eftermiddags", color: "#cccccc", bold: true, fontSize: "14px" },
+      1178.54: { text: "i eftermiddags", color: "#bbbbbb", bold: true, fontSize: "13px" },
+      1370.40: { text: "igår eftermiddags", color: "#aaaaaa", bold: true, fontSize: "13px" },
+      1442.26: { text: "igår eftermiddags", color: "#999999", bold: true, fontSize: "13px" }
+    }
+  },
+  {
+    id: "seg6td",
+    values: {
+      0: { text: "i kväll", color: "#337e33", bold: false, fontSize: "13px" },
+      191.86: { text: "i kväll", color: "#3f923f", bold: false, fontSize: "13px" },
+      329.35: { text: "i kväll", color: "#4ca64c", bold: false, fontSize: "13px" },
+      521.21: { text: "i kväll", color: "#59b959", bold: false, fontSize: "13px" },
+      658.70: { text: "i kväll", color: "#66cc66", bold: false, fontSize: "13px" },
+      918.62: { text: "nu i kväll", color: "darkorange", bold: true, fontSize: "14px" },
+      1178.54: { text: "tidigare i kväll", color: "#cccccc", bold: true, fontSize: "14px" },
+      1370.40: { text: "(tidigt) igår kväll", color: "#bbbbbb", bold: true, fontSize: "13px" },
+      1442.26: { text: "(tidigt) igår kväll", color: "#aaaaaa", bold: true, fontSize: "13px" }
+    }
+  },
+  {
+    id: "seg7td",
+    values: {
+      0: { text: "sent i kväll", color: "#257f25", bold: false, fontSize: "13px" },
+      191.86: { text: "sent i kväll", color: "#337e33", bold: false, fontSize: "13px" },
+      329.35: { text: "sent i kväll", color: "#3f923f", bold: false, fontSize: "13px" },
+      521.21: { text: "sent i kväll", color: "#4ca64c", bold: false, fontSize: "13px" },
+      658.70: { text: "sent i kväll", color: "#59b959", false: true, fontSize: "13px" },
+      918.62: { text: "senare i kväll", color: "#66cc66", bold: true, fontSize: "14px" },
+      1178.54: { text: "nu i kväll", color: "darkorange", bold: true, fontSize: "14px" },
+      1370.40: { text: "sent igår kväll", color: "#cccccc", bold: true, fontSize: "13px" },
+      1442.26: { text: "sent igår kväll", color: "#bbbbbb", bold: true, fontSize: "13px" }
+    }
+  },
+  {
+    id: "seg8td",
+    values: {
+      0: { text: "i natt", color: "#196919", bold: false, fontSize: "13px" },
+      191.86: { text: "i natt", color: "#257f25", bold: false, fontSize: "13px" },
+      329.35: { text: "i natt", color: "#337e33", bold: false, fontSize: "13px" },
+      521.21: { text: "i natt", color: "#3f923f", bold: false, fontSize: "13px" },
+      658.70: { text: "i natt", color: "#4ca64c", bold: false, fontSize: "13px" },
+      918.62: { text: "i natt", color: "#59b959", bold: false, fontSize: "13px" },
+      1178.54: { text: "i natt", color: "#66cc66", bold: true, fontSize: "13px" },
+      1370.40: { text: "nu i natt", color: "darkorange", bold: true, fontSize: "14px" },
+      1442.26: { text: "nu i natt", color: "darkorange", bold: true, fontSize: "14px" },
+    }
+  }
+];
+
+
+function updateAllSegments(totalMinutes) {
+  for (const { id, values } of segmentTransitions) {
+    const el = document.getElementById(id)?.querySelector(".segment-text-morph");
+    if (!el) continue;
+
+    let bestMatch = null;
+    let bestThreshold = -1;
+    for (const [thresholdStr, obj] of Object.entries(values)) {
+      const threshold = parseFloat(thresholdStr);
+      if (totalMinutes >= threshold && threshold > bestThreshold) {
+        bestMatch = obj;
+        bestThreshold = threshold;
+      }
+    }
+
+    if (bestMatch) {
+      const { text, color, bold, fontSize } = bestMatch;
+
+if (el.textContent !== text) {
+  el.classList.remove("in");
+  el.classList.remove("out"); // viktig!
+  void el.offsetWidth; // tvinga ommålning (trigger reflow)
+
+  el.classList.add("out");
+
+  setTimeout(() => {
+    el.textContent = text;
+    el.classList.remove("out");
+    el.classList.add("in");
+  }, 150); // matcha .out-transition
+}
+
+      el.style.color = color || "";
+      el.style.fontWeight = bold ? "bold" : "normal";
+      if (fontSize) {
+        el.style.setProperty("--base-font-size", fontSize);
+        el.style.fontSize = "var(--base-font-size)";
+      }
+    }
+  }
+}
+
+function updateSegmentTexts() {
+  Object.entries(textSegments).forEach(([id, segment]) => {
+    const container = document.getElementById(id);
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    Object.entries(segment.values).forEach(([x, value]) => {
+      const span = document.createElement("span");
+      span.innerText = value.text;
+      span.style.position = "absolute";
+      span.style.left = `${x}px`;
+      span.style.color = value.color;
+      span.style.fontSize = value.fontSize;
+      span.style.fontWeight = value.bold ? "bold" : "normal";
+      span.style.whiteSpace = "nowrap";
+
+      const color = value.color.toLowerCase();
+
+      // 🟠 Svart kant för ljusgrå text i seg1td–seg8td
+      const greyStroke = ["#cccccc", "#bbbbbb", "#aaaaaa", "#999999"];
+      if (greyStroke.includes(color) && /^seg[1-8]td$/.test(id)) {
+        span.style.webkitTextStroke = "0.4px black";
+        span.style.paintOrder = "stroke fill";
+      }
+
+      // 🟢 Vit kant för mörkgrön text i seg1tf–seg8tf
+      const greenStroke = ["#3f923f", "#337e33", "#2c8a2c", "#257f25", "#1e741e", "#196919", "#145f14", "#0f550f"];
+      if (greenStroke.includes(color) && /^seg[1-8]tf$/.test(id)) {
+        span.style.webkitTextStroke = "0.4px white";
+        span.style.paintOrder = "stroke fill";
+      }
+
+      container.appendChild(span);
+    });
+  });
+}
+
+
+
+  for (let i = 1; i <= 12; i++) {
+    const angle = (i - 3) * (Math.PI * 2) / 12;
+    const radius = 40;
+    const x = 50 + radius * Math.cos(angle);
+    const y = 50 + radius * Math.sin(angle);
+    const number = document.createElement("div");
+    number.className = "number";
+    number.style.left = x + "px";
+    number.style.top = y + "px";
+    number.textContent = i;
+    clock.appendChild(number);
+  }
+
+  function setClock(hour, minute) {
+    const hourDeg = ((hour % 12) + minute / 60) * 30;
+    const minuteDeg = minute * 6;
+    document.getElementById("hourHand").style.transform = `translate(-50%, -100%) rotate(${hourDeg}deg)`;
+    document.getElementById("minuteHand").style.transform = `translate(-50%, -100%) rotate(${minuteDeg}deg)`;
+  }
+
+  setClock(4, 0);
+
+  let dragging = false;
+  nowDot.addEventListener("mousedown", () => dragging = true);
+  document.addEventListener("mouseup", () => dragging = false);
+
+  document.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    const bounds = timelineArea.getBoundingClientRect();
+    let x = e.clientX - bounds.left;
+    x = Math.max(0, Math.min(bounds.width, x));
+    setNowPosition(x, bounds.left);
+  });
+
+  function setNowPosition(x, offsetLeft) {
+    nowLabel.style.left = `${x}px`;
+    timelineArea.style.setProperty('--now-x', `${x}px`);
+    nowLine.style.left = `${x}px`;
+    nowDot.style.left = `${x}px`;
+    clock.style.left = `${x}px`;
+
+    updateClock(x);
+    const totalMinutes = (x / timelineArea.getBoundingClientRect().width) * 1442.26;
+    updateAllSegments(totalMinutes);
+    updateBottomText(totalMinutes);
+
+    const timelineWidth = timelineArea.getBoundingClientRect().width;
+    const pastPercent = (x / timelineWidth) * 100;
+    const futurePercent = 100 - pastPercent;
+
+    document.getElementById("pastLine").style.width = `${pastPercent}%`;
+    document.getElementById("futureLine").style.width = `${futurePercent}%`;
+    document.getElementById("pastSegmentLine").style.width = `${pastPercent}%`;
+    document.getElementById("futureSegmentLine").style.width = `${futurePercent}%`;
+    document.getElementById("floatingPastLabel").style.left = `${x - 10}px`;
+    document.getElementById("floatingFutureLabel").style.left = `${x + 10}px`;
+  }
+
+  let firstRender = true;
+
+  function updateClock(x) {
+    const timelineWidth = timelineArea.getBoundingClientRect().width;
+    const totalMinutes = (x / timelineWidth) * 1442.26;
+
+    let absoluteMinutes = 0;
+
+    if (totalMinutes >= 0 && totalMinutes < 191.56) {
+      const progress = totalMinutes / 191.56;
+      absoluteMinutes = 4 * 60 + progress * 180;
+    } else if (totalMinutes >= 191.56 && totalMinutes < 329.35) {
+      const progress = (totalMinutes - 191.56) / (329.35 - 191.56);
+      absoluteMinutes = 7 * 60 + progress * 120;
+    } else if (totalMinutes >= 329.35 && totalMinutes < 521.21) {
+      const progress = (totalMinutes - 329.35) / (521.21 - 329.35);
+      absoluteMinutes = 9 * 60 + progress * 180;
+    } else if (totalMinutes >= 521.21 && totalMinutes < 658.70) {
+      const progress = (totalMinutes - 521.21) / (658.70 - 521.21);
+      absoluteMinutes = 12 * 60 + progress * 60;
+    } else if (totalMinutes >= 658.70 && totalMinutes < 918.62) {
+      const progress = (totalMinutes - 658.70) / (918.62 - 658.70);
+      absoluteMinutes = 13 * 60 + progress * 240;
+    } else if (totalMinutes >= 918.62 && totalMinutes < 1178.54) {
+      const progress = (totalMinutes - 918.62) / (1178.54 - 918.62);
+      absoluteMinutes = 17 * 60 + progress * 240;
+    } else if (totalMinutes >= 1178.54 && totalMinutes < 1370.40) {
+      const progress = (totalMinutes - 1178.54) / (1370.40 - 1178.54);
+      absoluteMinutes = 21 * 60 + progress * 180;
+    } else if (totalMinutes >= 1370.40 && totalMinutes <= 1442.26) {
+      const progress = (totalMinutes - 1370.40) / (1442.26 - 1370.40);
+      absoluteMinutes = 0 + progress * 60;
+    } else {
+      absoluteMinutes = 1 * 60;
+    }
+
+    const h = Math.floor(absoluteMinutes / 60) % 12;
+    const m = Math.floor(absoluteMinutes % 60);
+    const hourDeg = h * 30 + (m / 60) * 30;
+    const minuteDeg = m * 6;
+
+    document.getElementById("hourHand").style.transform = `translate(-50%, -100%) rotate(${hourDeg}deg)`;
+    document.getElementById("minuteHand").style.transform = `translate(-50%, -100%) rotate(${minuteDeg}deg)`;
+  }
+
+function updateBottomText(totalMinutes) {
+  const bottomText = document.getElementById("bottomText");
+
+  // Rad 1
+  let partOfDay, text, comment;
+
+  if (totalMinutes < 191.86) {
+    partOfDay = "the morning";
+    text = 'Det regnar <span class="orange-word"><u>nu</u></span>, men lite <span class="green-word"><u>senare på morgonen</u></span> ska det bli soligt.';
+    comment = "\"<u>Nu</u>\" is always a relevant shorthand for the ongoing part. In early morning, the later part can be called \"<u>senare</u>\".";
+  } else if (totalMinutes < 329.35) {
+    partOfDay = "the morning";
+    text = '<span class="orange-word"><u>Nu</u></span> är det soligt, men <span class="gray-word"><u>tidigare i morse</u></span> regnade det.';
+    comment = "The first part of the morning is now referred to as \"<u>tidigare</u>\", and \"<u>i morse</u>\" is added (\"passed morning\").";
+  } else {
+    partOfDay = "the morning";
+    text = 'Det regnade <span class="gray-word"><u>tidigt i morse</u></span>, men <span class="gray-word"><u>sen</u></span> blev det riktigt fint.';
+    comment = "Once the morning has fully passed, both terms merge into \"<u>i morse</u>\", which can still be subdivided if needed.";
+  }
+
+  // Rad 2
+  let extraAbout, extraText, extraComment;
+
+  if (totalMinutes < 329.35) {
+    extraAbout = "the late morning";
+    extraText = 'Jag ska klippa gräset <span class="green-word"><u>på förmiddagen (idag)</u></span>.';
+    extraComment = "\"<u>På förmiddagen (idag)</u>\" refers either to something <u>upcoming</u> or <u>ongoing</u> – context or tense is they key.";
+  } else if (totalMinutes < 521.21) {
+    extraAbout = "the late morning";
+    extraText = 'Okej, <span class="orange-word"><u>nu</u></span> måste jag klippa gräset!';
+    extraComment = "All variants of \"<u>{nu; nu på förmiddagen; (nu) på förmiddagen idag}</u>\" would also work to refer to the ongoing part.";
+  } else {
+    extraAbout = "the late morning";
+    extraText = 'Jag klippte gräset <span class="gray-word"><u>i förmiddags</u></span>.';
+    extraComment = "Just as \"<u>i morse</u>\" is uniquely designed to refer to a <u>past</u> morning, \"<u>i förmiddags</u>\" does the same for the late morning.";
+
+  }
+
+  // Rad 3
+  let thirdAbout, thirdText, thirdComment;
+
+  if (totalMinutes < 521.21) {
+    thirdAbout = "the midday";
+    thirdText = 'Thomas kommer <span class="green-word"><u>vid lunchtid</u></span> för att låna bilen.';
+    thirdComment = "\"<u>Vid lunchtid (idag)</u>\" refers either to something <u>upcoming</u> or <u>passed</u> – in this case an upcoming part.";
+  } else if (totalMinutes < 658.70) {
+    thirdAbout = "the midday";
+    thirdText = 'Thomas kommer <span class="orange-word"><u>när som helst</u></span> för att låna bilen.';
+    thirdComment = "Since \"<u>vid</u>\" means \"<u>near</u>\", it must be dropped during ongoing time. We say \"<u>under lunchen</u>\" (during lunch) instead.";
+  } else {
+    thirdAbout = "the midday";
+    thirdText = 'Thomas var här <span class="gray-word"><u>vid lunchtid (idag)</u></span> och lånade bilen.';
+    thirdComment = "When midday has passed, we say \"<u>vid lunchtid (idag)</u>\" again. Ergo, \"<u>vid lunchtid</u>\" points neither forward nor backward.";
+  }
+  
+// Rad 4
+let fourthAbout, fourthText, fourthComment;
+
+if (totalMinutes < 658.70) {
+  fourthAbout = "the afternoon";
+  fourthText = 'Jag ska ta en promenad <span class="green-word"><u>i eftermiddag</u></span> om vädret tillåter.';
+  fourthComment = "\"<u>I eftermiddag</u>\" refers either to something <u>upcoming</u> or <u>ongoing</u> – context or tense solves it.";
+} else if (totalMinutes < 918.62) {
+  fourthAbout = "the afternoon";
+  fourthText = 'Jag tar en promenad <span class="orange-word"><u>nu</u></span>, jag är strax tillbaka.';
+  fourthComment = "You can also say \"<u>(nu) under eftermiddagen</u>\" (\"during this afternoon\") – or (again) just \"<u>nu</u>\".";
+} else {
+  fourthAbout = "the afternoon";
+  fourthText = 'Jag tog en promenad <span class="gray-word"><u>i eftermiddags</u></span>.';
+  fourthComment = "Joining the unique club of \"<u>i morse</u>\" and \"<u>i förmiddags</u>\" (past parts) is also \"<u>i eftermiddags</u>\" (a <u>passed</u> afternoon).";
+}
+
+// Rad 5
+let fifthAbout, fifthText, fifthComment;
+
+if (totalMinutes < 918.62) {
+  fifthAbout = "the evening";
+  fifthText = 'Det går en westernfilm på teve <span class="green-word"><u>i kväll</u></span>, och <span class="green-word"><u>sent i kväll</u></span> går det en deckare.';
+  fifthComment = "\"<u>I kväll</u>\" is either <u>upcoming</u> or <u>ongoing</u> (context/tense solution), while \"<u>sent i kväll</u>\" always is <u>upcoming</u>.";
+} else if (totalMinutes < 1178.54) {
+  fifthAbout = "the evening";
+  fifthText = 'Det går en westernfilm på teve <span class="orange-word"><u>just nu</u></span> och <span class="green-word"><u>senare i kväll</u></span> går det en deckare.';
+  fifthComment = "As soon as the evening sets in, the later part of the evening (if needed) is called \"<u>senare i kväll</u>\" (\"later this evening\").";
+} else if (totalMinutes < 1370.40) {
+  fifthAbout = "the evening";
+  fifthText = 'Vi tittade på en westernfilm <span class="gray-word"><u>tidigare i kväll</u></span> och <span class="orange-word"><u>nu</u></span> börjar en deckare.';
+  fifthComment = "The first part of the evening now becomes \"<u>tidigare i kväll</u>\". (In some dialects, they say \"<u>i kvällas</u>\" like \"i förmiddags\".)";
+} else {
+  fifthAbout = "the evening";
+  fifthText = '<span class="gray-word"><u>Igår kväll</u></span> tittade vi först på en westernfilm och <span class="gray-word"><u>sedan</u></span> på en deckare.';
+  fifthComment = "When the evening has passed, both parts merge into \"<u>igår kväll</u>\" (\"yesterday evening\") – compare with the morning.";
+}
+
+// Rad 6
+let sixthAbout, sixthText, sixthComment;
+
+if (totalMinutes < 1370.40) {
+  sixthAbout = "the night";
+  sixthText = 'Thomas kommer och lämnar tillbaka bilen <span class="green-word"><u>i natt</u></span>.';
+  sixthComment = "\"<u>I natt</u>\" refers either to an <u>upcoming</u>, <u>ongoing</u> or <u>passed</u> night – easy to remember – (context/tense solution).";
+} else {
+  sixthAbout = "the night";
+  sixthText = 'Thomas var här <span class="orange-word"><u>alldeles nyss</u></span> och lämnade bilen.';
+  sixthComment = "\"<u>I natt</u>\" refers either to an <u>upcoming</u>, <u>ongoing</u> or <u>passed</u> night – easy to remember – (context/tense solution).";
+}
+
+
+  // Lägg till alla tre raderna i tabellen
+  bottomText.innerHTML = `
+    <table class="bottom-table">
+      <thead>
+        <tr>
+          <th>Said about</th>
+          <th>Expression</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>${partOfDay}</td>
+          <td>${text}</td>
+          <td>${comment}</td>
+        </tr>
+        <tr>
+          <td>${extraAbout}</td>
+          <td>${extraText}</td>
+          <td>${extraComment}</td>
+        </tr>
+        <tr>
+          <td>${thirdAbout}</td>
+          <td>${thirdText}</td>
+          <td>${thirdComment}</td>
+        </tr>
+		<tr>
+          <td>${fourthAbout}</td>
+          <td>${fourthText}</td>
+          <td>${fourthComment}</td>
+        </tr>
+		<tr>
+          <td>${fifthAbout}</td>
+          <td>${fifthText}</td>
+          <td>${fifthComment}</td>
+        </tr>
+		<tr>
+          <td>${sixthAbout}</td>
+          <td>${sixthText}</td>
+          <td>${sixthComment}</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+}
+
+
+
+  window.addEventListener("load", () => {
+    requestAnimationFrame(() => {
+      const timelineBounds = timelineArea.getBoundingClientRect();
+      const seg1 = document.getElementById("seg1td");
+      const seg1Bounds = seg1.getBoundingClientRect();
+      const startX = seg1Bounds.left - timelineBounds.left;
+      setNowPosition(startX, timelineBounds.left);
+      firstRender = false;
+    });
+  });
+</script>
+
+
+<div id="bottomText">
+  Just a place holder for text.
+</div>
+
+</body>
+</html>
