@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Julackord – Piano</title>
+
+<style>
+:root {
+  --bg: #f6f7f9;
+  --card-bg: #ffffff;
+  --text: #111827;
+}
+
+/* ===== Grund ===== */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ===== Hamburger ===== */
+.menu-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 1000;
+  font-size: 26px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* ===== Sidomeny ===== */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 260px;
+  height: 100vh;
+  background: #1f2937;
+  padding: 20px;
+  box-shadow: -6px 0 20px rgba(0,0,0,0.25);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+}
+
+.side-menu.open {
+  transform: translateX(0);
+}
+
+.side-menu h2 {
+  color: #9ca3af;
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.side-menu button {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: #e5e7eb;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.side-menu button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ===== Låt ===== */
+.song {
+  display: none;
+  max-width: 90vw;
+  margin: 24px auto 40px;
+}
+
+.song.active {
+  display: block;
+}
+
+.song h1 {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.key {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* ===== Ackord ===== */
+.chord {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 0 4px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.chord-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: stretch;
+}
+
+.chord.small {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ===== Typografi ===== */
+.chord sup {
+  font-size: 0.65em;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.5em;
+}
+
+.slash {
+  font-weight: 500;
+}
+
+.bar {
+  margin: 0 6px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.repeat-section {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.repeat-section::before {
+  content: "";
+  position: absolute;   
+  top: 0;
+  bottom: 0;
+  border-left: 3px solid #555;
+  border-radius: 2px;
+}
+
+.repeat-label {
+  position: absolute;
+  left: -5px;
+  bottom: -16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+</style>
+</head>
+
+<body>
+
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+<aside class="side-menu" id="sideMenu">
+  <h2>Låtar</h2>
+  <button onclick="showSong('song-beginning')">It's Beginning ...</button>
+  <button onclick="showSong('song-snowman')">Snowman</button>
+  <button onclick="showSong('song-julen')">Julen är här</button>
+  <button onclick="showSong('song-jul-jul')">Jul, jul, strålande jul</button>
+</aside>
+
+<section class="song active" id="song-beginning">
+  <h1>It's Beginning ...</h1><br />
+
+  <div class="chords">
+
+<div class="repeat-section">
+<div class="repeat-label">x2</div>
+<!-- Rad 1 -->
+<div class="chord-row">
+  <div class="chord">F</div>
+  <div class="chord">F</div>
+  <div class="chord">F</div>
+  <div class="chord">F</div>
+</div>
+
+<!-- Rad 2 -->
+<div class="chord-row">
+  <div class="chord">F</div>
+  <div class="chord">A<sup>7</sup></div>
+  <div class="chord">Bb</div>
+  <div class="chord">D<sup>7</sup><span class="slash">/A</span></div>
+</div>
+
+<!-- Rad 3 -->
+<div class="chord-row">
+  <div class="chord">Gm</div>
+  <div class="chord">C<sup>7</sup></div>
+  <div class="chord">F</div>
+  <div class="chord">F<sup>6</sup></div>
+</div>
+
+<!-- Rad 4 -->
+<div class="chord-row">
+  <div class="chord">G<sup>7</sup></div>
+  <div class="chord">G<sup>7</sup></div>
+  <div class="chord">C<sup>7</sup></div>
+  <div class="chord">C<sup>7</sup></div>
+</div>
+
+<!-- Rad 5 -->
+<div class="chord-row">
+  <div class="chord">F</div>
+  <div class="chord">Bb</div>
+  <div class="chord">F</div>
+  <div class="chord">F</div>
+</div>
+
+<!-- Rad 6 -->
+<div class="chord-row">
+  <div class="chord">F</div>
+  <div class="chord">A<sup>7</sup></div>
+  <div class="chord">Bb</div>
+  <div class="chord">D<sup>7</sup><span class="slash">/A</span></div>
+</div>
+
+<!-- Rad 7 -->
+<div class="chord-row">
+  <div class="chord">Gm</div>
+  <div class="chord">C<sup>7</sup></div>
+  <div class="chord">F</div>
+  <div class="chord">D<sup>7</sup></div>
+</div>
+
+<!-- Rad 8 -->
+<div class="chord-row">
+  <div class="chord">Gm</div>
+  <div class="chord">C<sup>7</sup></div>
+  <div class="chord">F</div>
+  <div class="chord">F</div>
+</div>
+
+</div>
+
+<!-- Rad 9 -->
+<div class="chord-row">
+  <div class="chord">A<sup>7</sup></div>
+  <div class="chord">A<sup>7</sup></div>
+  <div class="chord small">Dm <span class="bar">|</span> A<sup>7</sup></div>
+  <div class="chord">Dm</div>
+</div>
+
+<!-- Rad 10 -->
+<div class="chord-row">
+  <div class="chord">G<sup>7</sup></div>
+  <div class="chord">G<sup>7</sup></div>
+  <div class="chord small">C<sup>7</sup> <span class="bar">|</span> G<sup>7</sup></div>
+  <div class="chord">C<sup>7</sup></div>
+</div>
+
+<!-- Rad 11 -->
+<div class="chord-row">
+  <div class="chord">C</div>
+  <div class="chord">G<sup>7</sup></div>
+  <div class="chord small">C <span class="bar">|</span> G<sup>7</sup></div>
+  <div class="chord">C<sup>7</sup></div>
+</div>
+
+  </div>
+</section>
+
+<section class="song" id="song-snowman">
+  <h1>Snowman</h1><br />
+
+  <div class="chords">
+
+    <!-- Intro -->
+    <div class="chord-row">
+      <div class="chord">D</div>
+      <div class="chord">D</div>
+      <div class="chord">D</div>
+      <div class="chord">D</div>
+    </div>
+
+    <!-- ===== Repetition x2 ===== -->
+    <div class="repeat-section">
+      <div class="repeat-label">x2</div>
+
+    <!-- Vers -->
+    <div class="chord-row">
+      <div class="chord">Em</div>
+      <div class="chord">Em</div>
+      <div class="chord">A<sup>7</sup></div>
+      <div class="chord">A<sup>7</sup></div>
+    </div>
+
+    <div class="chord-row">
+      <div class="chord">D</div>
+      <div class="chord">D</div>
+      <div class="chord">Bm</div>
+      <div class="chord">Bm</div>
+    </div>
+
+    <div class="chord-row">
+      <div class="chord">Em</div>
+      <div class="chord">Em</div>
+      <div class="chord">A<sup>7</sup></div>
+      <div class="chord">A<sup>7</sup></div>
+    </div>
+
+    <div class="chord-row">
+      <div class="chord">D</div>
+      <div class="chord">D</div>
+      <div class="chord">Bm</div>
+      <div class="chord">Bm</div>
+    </div>
+
+      <div class="chord-row">
+        <div class="chord">F<sup>#</sup></div>
+        <div class="chord">Bm</div>
+        <div class="chord">A<sup>7</sup></div>
+        <div class="chord">D</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">F<sup>#</sup></div>
+        <div class="chord">Bm</div>
+        <div class="chord">G</div>
+        <div class="chord">A<sup>7</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">F<sup>#</sup></div>
+        <div class="chord">Bm</div>
+        <div class="chord">G</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">F<sup>#</sup></div>
+        <div class="chord">Bm</div>
+        <div class="chord">G</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">F<sup>#</sup></div>
+        <div class="chord">Bm</div>
+        <div class="chord">G</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">F<sup>#</sup></div>
+        <div class="chord">Bm</div>
+        <div class="chord">G</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">D</div>
+        <div class="chord">D</div>
+        <div class="chord">D</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="song" id="song-julen">
+  <h1>Julen är här</h1><br />
+
+  <div class="chords">
+
+    <!-- ===== Repetition x2 ===== -->
+    <div class="repeat-section">
+      <div class="repeat-label">x2</div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">D</div>
+        <div class="chord">A</div>
+        <div class="chord small">A <span class="bar">|</span> F<sup>#</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">Bm</div>
+        <div class="chord">Bm</div>
+        <div class="chord">G</div>
+        <div class="chord">A<sup>7</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">D</div>
+        <div class="chord">A</div>
+        <div class="chord small">A <span class="bar">|</span> F<sup>#</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">Bm</div>
+        <div class="chord">Bm</div>
+        <div class="chord">G</div>
+        <div class="chord">A<sup>7</sup></div>
+      </div>
+
+      <!-- Endast två takter -->
+      <div class="chord-row">
+        <div class="chord">G</div>
+        <div class="chord">A<sup>7</sup></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">G</div>
+        <div class="chord">Em</div>
+        <div class="chord">A<sup>7</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">F<sup>#</sup>m</div>
+        <div class="chord">Bm</div>
+        <div class="chord">Em</div>
+        <div class="chord">A<sup>7</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">G</div>
+        <div class="chord">Em</div>
+        <div class="chord">A<sup>7</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">F<sup>#</sup>m</div>
+        <div class="chord">B<sup>7</sup></div>
+        <div class="chord">Em</div>
+        <div class="chord small">G <span class="bar">|</span> A<sup>7</sup></div>
+      </div>
+
+      <!-- Endast två takter -->
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">D</div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- ===== Mellandel ===== -->
+    <div class="chord-row">
+      <div class="chord">G</div>
+      <div class="chord">A<sup>7</sup></div>
+      <div class="chord">F<sup>#</sup>m</div>
+      <div class="chord">Bm</div>
+    </div>
+
+    <div class="chord-row">
+      <div class="chord">Em</div>
+      <div class="chord">A<sup>7</sup></div>
+      <div class="chord">D</div>
+      <div class="chord">D</div>
+    </div>
+
+    <div class="chord-row">
+      <div class="chord">Gm</div>
+      <div class="chord">C<sup>7</sup></div>
+      <div class="chord">F</div>
+      <div class="chord">Bb</div>
+    </div>
+
+    <div class="chord-row">
+      <div class="chord">E<span class="slash">/A</span></div>
+      <div class="chord">E</div>
+      <div class="chord">A</div>
+      <div class="chord">A<sup>7</sup></div>
+    </div>
+
+  </div>
+</section>
+
+<section class="song" id="song-jul-jul">
+  <h1>Jul, jul, strålande jul</h1><br />
+
+  <div class="chords">
+
+    <!-- ===== Repetition x2 ===== -->
+    <div class="repeat-section">
+      <div class="repeat-label">x2</div>
+
+      <div class="chord-row">
+        <div class="chord">A</div>
+        <div class="chord">Dm</div>
+        <div class="chord">A</div>
+        <div class="chord">Dm</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">A</div>
+        <div class="chord">D</div>
+        <div class="chord">E<sup>7</sup></div>
+        <div class="chord">A</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">D</div>
+        <div class="chord">E</div>
+        <div class="chord">D</div>
+        <div class="chord">E</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">Bm</div>
+        <div class="chord">C<sup>#</sup></div>
+        <div class="chord">Bm</div>
+        <div class="chord">C<sup>#</sup><sup>7</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">F<sup>#</sup>m</div>
+        <div class="chord">A<span class="slash">/E</span></div>
+        <div class="chord">C<sup>#</sup><span class="slash">/F</span></div>
+        <div class="chord">F<sup>#</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">Bm</div>
+        <div class="chord">F<sup>#</sup>m</div>
+        <div class="chord">Bm</div>
+        <div class="chord">C<sup>#</sup><sup>7</sup></div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">A</div>
+        <div class="chord">Dm</div>
+        <div class="chord">A</div>
+        <div class="chord">Dm</div>
+      </div>
+
+      <div class="chord-row">
+        <div class="chord">A</div>
+        <div class="chord">D</div>
+        <div class="chord">E<sup>7</sup></div>
+        <div class="chord">A</div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+function toggleMenu() {
+  document.getElementById("sideMenu").classList.toggle("open");
+}
+
+function showSong(id) {
+  // dölj alla låtar
+  document.querySelectorAll(".song").forEach(song => {
+    song.classList.remove("active");
+  });
+
+  // visa vald låt
+  document.getElementById(id).classList.add("active");
+
+  // stäng menyn
+  toggleMenu();
+
+  // scrolla till toppen (viktigt live)
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
+</script>
+
+</body>
+</html>
