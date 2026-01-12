@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<title>Verbet få | 5 betydelser</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Font Awesome Free -->
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+ crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --text: #1a1a1a;
+  --border: #d0d3da;
+  --muted: #666;
+  --accent: #4a6cf7;
+}
+
+body.dark {
+  --bg: #0f1220;
+  --card: #1a1f3a;
+  --text: #eaeaff;
+  --border: #2d335f;
+  --muted: #aab;
+  --accent: #7aa2ff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .3s, color .3s;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 20px 60px;
+  position: relative;
+}
+
+/* ===== Top Right Controls ===== */
+.top-right {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 100;
+}
+
+.score {
+  font-size: 1.5em;
+  color: var(--muted);
+}
+
+/* ===== Feedback: stor, centrerad, tydlig ===== */
+
+.feedback {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 32px;
+  letter-spacing: 0.04em;
+}
+
+/* Rätt / Fel */
+.feedback.correct {
+  color: #2e7d32; /* grön */
+}
+
+.feedback.wrong {
+  color: #c62828; /* röd */
+}
+
+/* Dark mode-varianter */
+body.dark .feedback.correct {
+  color: #6ee07a;
+}
+
+body.dark .feedback.wrong {
+  color: #ff6b6b;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, transform .2s;
+}
+
+.icon-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* ===== Main Card ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.8em;
+}
+
+.sentence {
+  margin: 30px 0;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,.02);
+  font-size: 1.3em;
+}
+
+/* ===== Answer Buttons ===== */
+.answers {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.answers button {
+  height: 64px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-size: 1.6em;
+  cursor: pointer;
+  transition: transform .1s, background .2s;
+}
+
+.answers button:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.answers button:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+/* ===== Feedback ===== */
+.feedback {
+  margin-top: 24px;
+  min-height: 1.5em;
+  font-weight: 500;
+}
+
+/* ===== Controls ===== */
+.controls {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.controls button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal {
+  background: var(--card);
+  color: var(--text);
+  width: min(600px, 90%);
+  border-radius: 18px;
+  padding: 30px;
+  position: relative;
+  animation: pop .25s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal h2 {
+  margin-top: 0;
+}
+
+.close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: transform .2s;
+}
+
+.close:hover {
+  transform: rotate(90deg);
+}
+
+/* Light mode: hover på control-knappar */
+
+.controls button:hover {
+  background: #eef1ff;
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+body.dark .sentence {
+  background: rgba(255,255,255,.04);
+}
+
+body.dark .feedback {
+  color: #ffffff;
+}
+
+body.dark .controls button:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+body.dark .modal {
+  box-shadow: 0 20px 50px rgba(0,0,0,.6);
+}
+
+body.dark .modal ul li {
+  color: #ffffff;
+}
+
+body.dark .score {
+  color: #ffffff;
+}
+
+body.dark .answers button:hover i.fa-solid {
+  color: #ffffff;
+}
+
+/* ===== Dark mode: control buttons ===== */
+
+body.dark .controls button {
+  background: #232863;
+  color: #ffffff;
+  border-color: #3a4090;
+}
+
+body.dark .controls button:disabled {
+  opacity: 0.35;
+  background: #1b1f4a;
+  color: #cfd3ff;
+  border-color: #2d326e;
+}
+
+body.dark .controls button:not(:disabled):hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* ===== Utility ===== */
+.hidden { display: none; }
+
+body.dark i.fa-solid {
+  color: #ffffff;
+}
+</style>
+</head>
+
+<body>
+<div class="top-right">
+  <div class="score" id="score">Rätt: 0 · Fel: 0</div>
+  <button class="icon-btn" id="themeToggle" title="Dark / light mode">
+    <i class="fa-solid fa-moon"></i>
+  </button>
+  <button class="icon-btn" id="infoBtn" title="Om övningen">
+    <i class="fa-solid fa-circle-info"></i>
+  </button>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h1>Verbet <em>få</em> – fem betydelser</h1>
+
+    <div class="sentence" id="sentence">–</div>
+
+    <div class="answers" id="answers">
+      <button data-v="1" title="att erhålla ngt (gåva, present, sjukdom)"><i class="fa-solid fa-gift"></i></button>
+	  <button data-v="2" title="att ha tillåtelse (att göra ngt etc)"><i class="fa-solid fa-check"></i></button>
+      <button data-v="3" title="att vara tvungen (att göra ngt etc) | måste"><i class="fa-solid fa-gavel"></i></button>
+      <button data-v="4" title="att ge upphov till ngt | att framkalla ngt"><i class="fa-solid fa-arrow-right"></i></button>
+      <button data-v="5" title="att erfara ngt | att uppleva ngt"><i class="fa-solid fa-eye"></i></button>
+
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="controls">
+      <button id="nextBtn" disabled>Nästa</button>
+      <button id="restartBtn">Börja om</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Modal ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="close" id="closeModal"><i class="fa-solid fa-xmark"></i></div>
+    <h2>Om övningen</h2>
+    <p>
+      I denna övning tränar du de fem huvudsakliga betydelserna av verbet
+      <em>få</em> i svenskan:
+    </p>
+    <ul>
+      <li><i class="fa-solid fa-gift"></i> att erhålla ngt (gåva, present, sjukdom): <strong>Jag fick feber igår.</strong></li>
+      <li><i class="fa-solid fa-check"></i> att ha tillåtelse (att göra ngt etc): <strong>Du får inte gå in där.</strong></li>
+      <li><i class="fa-solid fa-gavel"></i> att vara tvungen (att göra ngt etc) | måste: <strong>Du får betala nu!</strong></li>
+      <li><i class="fa-solid fa-arrow-right"></i> att ge upphov till ngt | att framkalla ngt: <strong>Hon får mig att skratta.</strong></li>
+      <li><i class="fa-solid fa-eye"></i> att erfara ngt | att uppleva ngt: <strong>Vi fick se hemska saker.</strong></li>
+    </ul>
+    <p>
+      Läs meningen och välj den ikon som bäst motsvarar betydelsen.
+    </p>
+  </div>
+</div>
+
+<script>
+/* ===============================
+   Data
+================================ */
+
+const sentences = [
+  // 1. erhålla (get)
+  { v: 1, t: "Du får den i gåva av mig." },
+  { v: 1, t: "Han ska försöka få arbetstillstånd." },
+  { v: 1, t: "Hon fick halsbandet till skänks." },
+  { v: 1, t: "I dopet fick han namnet Sven." },
+  { v: 1, t: "Hon ska försöka få bostad i innerstan." },
+  { v: 1, t: "Har du fått betalt än?" },
+  { v: 1, t: "Har blommorna fått vatten?" },
+
+  // 2. tillåtelse (may)
+  { v: 2, t: "Han får inte äta glass för sin pappa." },
+  { v: 2, t: "Hon får snart lämna sjukhuset." },
+  { v: 2, t: "Får jag störa dig ett ögonblick?" },
+  { v: 2, t: "Jag har inte fått sova på flera nätter." },
+  { v: 2, t: "Om jag får leva, så kommer jag hinna träffa honom igen." },
+  { v: 2, t: "Detta får bara inte ske." },
+  { v: 2, t: "Man får inte parkera här." },
+
+  // 3. måste (have to)
+  { v: 3, t: "200 man får lämna sina jobb." },
+  { v: 3, t: "Nu får du hålla tyst!" },
+  { v: 3, t: "Han fick finna sig i mycket." },
+  { v: 3, t: "Vi fick stå ute i regnet och vänta." },
+  { v: 3, t: "Jag får tacka så mycket." },
+  { v: 3, t: "Jag får se om jag kommer." },
+  { v: 3, t: "Nu får du ta konsekvenserna av ditt beslut." },
+
+  // 4. orsaka (cause)
+  { v: 4, t: "De kriminella försöker få vittnet att tiga." },
+  { v: 4, t: "Detta ska få folk att semestra i Sverige." },
+  { v: 4, t: "Företaget har fått fram en ny vara." },
+  { v: 4, t: "Forskarna har fått till stånd en lösning på problemet." },
+  { v: 4, t: "Hans uttalande fick många att reagera." },
+  { v: 4, t: "Kampanjen fick kunderna att ändra beteende." },
+  { v: 4, t: "Händelsen fick debatten att blossa upp igen." },
+
+  // 5. erfara (experience)
+  { v: 5, t: "Hon fick höra ett väldigt oväsen." },
+  { v: 5, t: "Vi fick veta igår att han åkt." },
+  { v: 5, t: "Jag fick se resultatet först på morgonen." },
+  { v: 5, t: "De fick känna lukten av rök." },
+  { v: 5, t: "Hon fick uppleva något helt oväntat." },
+  { v: 5, t: "Han fick erfara hur svårt arbetet var." },
+  { v: 5, t: "Vi fick plötsligt höra sanningen." }
+];
+
+/* ===============================
+   State
+================================ */
+
+let pool = [...sentences].sort(() => Math.random() - 0.5);
+let current = null;
+let right = 0;
+let wrong = 0;
+
+/* ===============================
+   Elements
+================================ */
+
+const sentenceEl = document.getElementById("sentence");
+const feedbackEl = document.getElementById("feedback");
+const scoreEl = document.getElementById("score");
+const nextBtn = document.getElementById("nextBtn");
+const buttons = document.querySelectorAll(".answers button");
+
+/* ===============================
+   Functions
+================================ */
+
+function updateScore() {
+  scoreEl.textContent = `Rätt: ${right} · Fel: ${wrong}`;
+}
+
+function nextSentence() {
+  if (pool.length === 0) {
+    sentenceEl.textContent = "Övningen är slut.";
+    feedbackEl.textContent = "";
+    feedbackEl.className = "feedback";
+    nextBtn.disabled = true;
+    return;
+  }
+
+  current = pool.pop();
+  sentenceEl.textContent = current.t;
+
+  feedbackEl.textContent = "";
+  feedbackEl.className = "feedback";
+
+  buttons.forEach(b => b.disabled = false);
+  nextBtn.disabled = true;
+}
+
+function handleAnswer(choice) {
+  buttons.forEach(b => b.disabled = true);
+  nextBtn.disabled = false;
+
+  feedbackEl.className = "feedback";
+
+  if (choice === current.v) {
+    right++;
+    feedbackEl.textContent = "RÄTT";
+    feedbackEl.classList.add("correct");
+  } else {
+    wrong++;
+    feedbackEl.textContent = "FEL";
+    feedbackEl.classList.add("wrong");
+  }
+
+  updateScore();
+}
+
+/* ===============================
+   Event bindings
+================================ */
+
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    handleAnswer(Number(btn.dataset.v));
+  });
+});
+
+nextBtn.addEventListener("click", nextSentence);
+
+document.getElementById("restartBtn").addEventListener("click", () => {
+  location.reload();
+});
+
+/* ===== Dark mode ===== */
+
+const themeToggle = document.getElementById("themeToggle");
+
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  themeToggle.innerHTML = document.body.classList.contains("dark")
+    ? '<i class="fa-solid fa-sun"></i>'
+    : '<i class="fa-solid fa-moon"></i>';
+});
+
+/* ===== Modal ===== */
+
+const overlay = document.getElementById("modalOverlay");
+
+document.getElementById("infoBtn").addEventListener("click", () => {
+  overlay.style.display = "flex";
+});
+
+document.getElementById("closeModal").addEventListener("click", () => {
+  overlay.style.display = "none";
+});
+
+overlay.addEventListener("click", e => {
+  if (e.target === overlay) {
+    overlay.style.display = "none";
+  }
+});
+
+/* ===============================
+   Init
+================================ */
+
+updateScore();
+nextSentence();
+</script>
+
+</body>
+</html>
