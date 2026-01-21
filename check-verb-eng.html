@@ -185,12 +185,6 @@ button[onclick] {
     color: var(--text);
 }
 
-Här är den uppdaterade koden. Jag har lagt till ett system för Dark Mode (med CSS-variabler) och en Info-modal med de animationer du efterfrågade.
-
-Uppdaterad HTML & CSS
-Lägg till detta i din <style>-del och uppdatera din <body>:
-
-CSS
 /* --- DARK MODE VARIABLER --- */
 [data-theme="dark"] {
     --bg: #121212;
@@ -310,7 +304,7 @@ CSS
 .random-buttons {
     display: flex;
     flex-direction: column; /* Staplar knapparna lodrätt */
-    gap: 8px;              /* Avstånd mellan knapparna */
+    gap: 7px;              /* Avstånd mellan knapparna */
     padding-top: 15px;
     border-top: 1px solid var(--border);
     width: 200px;           /* Gör hela containern bredare */
@@ -320,22 +314,25 @@ CSS
     background: var(--card-bg);
     border: 1px solid var(--border);
     color: var(--accent);
-    width: 100%;            /* Tar upp hela containerns bredd */
-    height: auto;           /* Låter höjden anpassa sig efter texten */
-    padding: 8px 12px;      /* Mer luft inuti knappen */
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    margin: 0; 
+    line-height: 1.4; /* Ger texten en stabil baslinje */
+    padding: 8px 12px;
     border-radius: 6px;
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    text-align: left;       /* Vänsterställd text ser proffsigare ut i listor */
+    text-align: left;
     transition: all 0.2s ease;
-    display: block;         /* Säkerställer att de tar upp en egen rad */
+    text-decoration: none; /* Tar bort länkens understreck */
 }
 
 .rnd-btn:hover {
     background: var(--accent);
     color: white;
-    transform: translateX(-5px); /* En liten knuff åt vänster vid hover */
+    transform: translateX(-5px);
 }
 
 /* Dölj texten "RANDOM" på små skärmar om det blir trångt */
@@ -357,18 +354,16 @@ CSS
     
 	<div class="random-buttons">
 		<span style="font-size: 0.75rem; color: var(--muted); margin-bottom: 5px; font-weight: bold;">RANDOM 10:</span>
-		
-		<button class="rnd-btn" onclick="slumpaVerb('1st conjugation')">1st conjugation</button>
-		
+		<button class="rnd-btn" onclick="slumpaVerb('1st conjugation')">1st conjugation</button>	
 		<button class="rnd-btn" onclick="slumpaVerb('2nd conjugation type A (-de)')">2nd conjugation (A)</button>
-		
 		<button class="rnd-btn" onclick="slumpaVerb('2nd conjugation type B (-te)')">2nd conjugation (B)</button>
-		
 		<button class="rnd-btn" onclick="slumpaVerb('3rd conjugation (-dde)')">3rd conjugation</button>
-		
 		<button class="rnd-btn" onclick="slumpaVerb('4th conjugation (strong)')">4th conjugation (strong)</button>
-		
 		<button class="rnd-btn" onclick="slumpaVerb('Irregular')">Irregular verb</button>
+
+		<div style="height: 10px; border-bottom: 1px solid var(--border); margin-bottom: 5px;"></div>
+	
+		<a href="https://learnswedish.github.io/html/verb-boost.html" class="rnd-btn" target="_blank">Practise verbs 🚀</a>
 	</div>
 </div>
 
@@ -2278,3 +2273,4 @@ document.querySelector("form").addEventListener("reset", () => {
 
 </body>
 </html>
+
