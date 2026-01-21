@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -391,13 +392,14 @@ CSS
     </ul> 
 
     <h2 style="margin-top: 1.5rem; color: var(--accent);">Sökmöjligheter</h2>
-    <p>Sök på <strong>svenska</strong> eller <strong>brittisk engelska (BE)</strong>:</p>
+    <p>Sök på <strong>svenska</strong> eller <strong>engelska</strong>. Begränsa eller kombinera din sökning med hjälp av <strong>mellanslag</strong> (AND) och <strong>kommatecken</strong> (OR).</p>
     
+	<p>Avgränsa sökningen med dessa alternativ:</p>
     <ul style="padding-left: 1.2rem;">
-        <li style="margin-bottom: 5px;"><strong>Smart:</strong> Sök del av ord, specifik konjugation eller CEFR-nivå</li>
-		<li style="margin-bottom: 5px;"><strong>Exakt:</strong> Sök poster som matchar hela sökningen.</li>
+        <li style="margin-bottom: 5px;"><strong>Innehåller:</strong> Sök poster med matchande innehåll (helt/delvis).</li>
+		<li style="margin-bottom: 5px;"><strong>Exakt:</strong> Sök poster som matchar söktermen i sin helhet.</li>
 		<li style="margin-bottom: 5px;"><strong>Inleds:</strong> Sök poster som inleds på särskilt sätt.</li>
-        <li style="margin-bottom: 5px;"><strong>Avslutas:</strong> Sök poster som avslutas på särskilt sätt..</li>
+        <li style="margin-bottom: 5px;"><strong>Avslutas:</strong> Sök poster som avslutas på särskilt sätt.</li>
     </ul>
     
     <p style="margin-top: 1rem; font-style: italic; color: var(--muted); font-size: 0.9rem;">
@@ -428,7 +430,7 @@ CSS
 	<div class="search-options">
 		<span class="label-text">Matchning:</span>
 		<div class="radio-group">
-			<label><input type="radio" name="matchning" value="del" checked> Smart</label>
+			<label><input type="radio" name="matchning" value="del" checked> Innehåll</label>
 			<label><input type="radio" name="matchning" value="hel"> Exakt</label>
 			<label><input type="radio" name="matchning" value="start"> Inleds</label>
 			<label><input type="radio" name="matchning" value="slut"> Avslutas</label>
@@ -501,10 +503,14 @@ modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) toggleModal(false);
 });
 
-// Stäng med ESC-tangenten
+// Rensa sökning och återställ vy med ESC-tangenten
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-        toggleModal(false);
+    if (e.key === 'Escape') {
+        sokInput.value = "";
+        clearBtn.style.display = "none";
+        document.getElementById("resultat").classList.remove("visible");
+        document.getElementById("klass").innerHTML = "";
+        sokInput.focus(); // Sätter markören i fältet så man kan skriva direkt igen
     }
 });
 
@@ -946,11 +952,11 @@ const VERB_LEXIKON = [
 { inf: "fundera", en: "ponder, consider", pres: "funderar", pret: "funderade", sup: "funderat", imp: "fundera", klass: "1:a konjugationen", cefr: "A1:v195" },
 { inf: "fungera", en: "function, work", pres: "fungerar", pret: "fungerade", sup: "fungerat", imp: "fungera", klass: "1:a konjugationen", cefr: "A1:v85" },
 { inf: "fylla", en: "fill", pres: "fyller", pret: "fyllde", sup: "fyllt", imp: "fyll", klass: "2:a konjugationen typ A (-de)", cefr: "A1:v188" },
-{ inf: "få", en: "receive, get", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v5" },
-{ inf: "få", en: "be allowed, have permission, may", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v6" },
-{ inf: "få", en: "have to, be required to", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v7" },
-{ inf: "få", en: "make sb do sth, get sb to do sth", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v8" },
-{ inf: "få", en: "to find out, learn", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v9" },
+{ inf: "få (erhållande)", en: "receive, get", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v5" },
+{ inf: "få (tillåtelse)", en: "be allowed, have permission, may", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v6" },
+{ inf: "få (förpliktelse)", en: "have to, be required to", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v7" },
+{ inf: "få (kausativ)", en: "make sb do sth, get sb to do sth", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v8" },
+{ inf: "få (inkoativ)", en: "to find out, learn", pres: "får", pret: "fick", sup: "fått", imp: "få", klass: "4:e konjugationen (starkt)", cefr: "A1:v9" },
 { inf: "fånga", en: "catch, capture", pres: "fångar", pret: "fångade", sup: "fångat", imp: "fånga", klass: "1:a konjugationen", cefr: "A2:v444" },
 { inf: "fälla", en: "fell, convict", pres: "fäller", pret: "fällde", sup: "fällt", imp: "fäll", klass: "2:a konjugationen typ A (-de)", cefr: "A2:v621" },
 { inf: "fängsla", en: "imprison, captivate", pres: "fängslar", pret: "fängslade", sup: "fängslat", imp: "fängsla", klass: "1:a konjugationen", cefr: "B2:v1006" },
@@ -1717,9 +1723,9 @@ const VERB_LEXIKON = [
 { inf: "stava", en: "spell", pres: "stavar", pret: "stavade", sup: "stavat", imp: "stava", klass: "1:a konjugationen", cefr: "B2:v943" },
 { inf: "steka", en: "fry, roast", pres: "steker", pret: "stekte", sup: "stekt", imp: "stek", klass: "2:a konjugationen typ B (-te)", cefr: "C1:v1239" },
 { inf: "stelna", en: "solidify, stiffen", pres: "stelnar", pret: "stelnade", sup: "stelnat", imp: "stelna", klass: "1:a konjugationen", cefr: "C2:v1457" },
-{ inf: "sticka", en: "run away, go off, run off", pres: "sticker", pret: "stack", sup: "stuckit", imp: "stick", klass: "4:e konjugationen (starkt)", cefr: "A2:v439" },
-{ inf: "sticka", en: "stick, stab", pres: "sticker", pret: "stack", sup: "stuckit", imp: "stick", klass: "4:e konjugationen (starkt)", cefr: "A2:v440" },
-{ inf: "sticka", en: "knit, stitch", pres: "stickar", pret: "stickade", sup: "stickat", imp: "sticka", klass: "1:a konjugationen", cefr: "A2:v441" },
+{ inf: "sticka (avlägsnande)", en: "run away, go off, run off", pres: "sticker", pret: "stack", sup: "stuckit", imp: "stick", klass: "4:e konjugationen (starkt)", cefr: "A2:v439" },
+{ inf: "sticka (genomträngande)", en: "stick, stab", pres: "sticker", pret: "stack", sup: "stuckit", imp: "stick", klass: "4:e konjugationen (starkt)", cefr: "A2:v440" },
+{ inf: "sticka (textil)", en: "knit, stitch", pres: "stickar", pret: "stickade", sup: "stickat", imp: "sticka", klass: "1:a konjugationen", cefr: "A2:v441" },
 { inf: "stifta", en: "enact, establish", pres: "stiftar", pret: "stiftade", sup: "stiftat", imp: "stifta", klass: "1:a konjugationen", cefr: "B2:v934" },
 { inf: "stiga", en: "rise, ascend", pres: "stiger", pret: "steg", sup: "stigit", imp: "stig", klass: "4:e konjugationen (starkt)", cefr: "A1:v299" },
 { inf: "stimulera", en: "stimulate, encourage", pres: "stimulerar", pret: "stimulerade", sup: "stimulerat", imp: "stimulera", klass: "1:a konjugationen", cefr: "A2:v602" },
@@ -1870,8 +1876,8 @@ const VERB_LEXIKON = [
 { inf: "tåla", en: "withstand, endure", pres: "tål", pret: "tålde", sup: "tålt", imp: "tål", klass: "2:a konjugationen typ A (-de)", cefr: "B1:v733" },
 { inf: "täcka", en: "cover", pres: "täcker", pret: "täckte", sup: "täckt", imp: "täck", klass: "2:a konjugationen typ B (-te)", cefr: "A1:v230" },
 { inf: "tända", en: "light, ignite", pres: "tänder", pret: "tände", sup: "tänt", imp: "tänd", klass: "2:a konjugationen typ A (-de)", cefr: "B1:v696" },
-{ inf: "tänka", en: "be going to, intend", pres: "tänker", pret: "tänkte", sup: "tänkt", imp: "tänk", klass: "2:a konjugationen typ B (-te)", cefr: "A1:v42" },
-{ inf: "tänka", en: "think, reflect", pres: "tänker", pret: "tänkte", sup: "tänkt", imp: "tänk", klass: "2:a konjugationen typ B (-te)", cefr: "A1:v43" },
+{ inf: "tänka (avsikt)", en: "be going to, intend", pres: "tänker", pret: "tänkte", sup: "tänkt", imp: "tänk", klass: "2:a konjugationen typ B (-te)", cefr: "A1:v42" },
+{ inf: "tänka (kognitivt)", en: "think, reflect", pres: "tänker", pret: "tänkte", sup: "tänkt", imp: "tänk", klass: "2:a konjugationen typ B (-te)", cefr: "A1:v43" },
 { inf: "tänka sig", en: "imagine, conceive", pres: "tänker sig", pret: "tänkte sig", sup: "tänkt sig", imp: "tänk dig", klass: "2:a konjugationen typ B (-te)", cefr: "A2:v495" },
 { inf: "tävla", en: "compete", pres: "tävlar", pret: "tävlade", sup: "tävlat", imp: "tävla", klass: "1:a konjugationen", cefr: "A2:v615" },
 { inf: "tömma", en: "empty, drain", pres: "tömmer", pret: "tömde", sup: "tömt", imp: "töm", klass: "2:a konjugationen typ A (-de)", cefr: "B2:v905" },
@@ -1987,8 +1993,8 @@ const VERB_LEXIKON = [
 { inf: "vakta", en: "guard, watch", pres: "vaktar", pret: "vaktade", sup: "vaktat", imp: "vakta", klass: "1:a konjugationen", cefr: "B2:v1015" },
 { inf: "valla", en: "herd, wax", pres: "vallar", pret: "vallade", sup: "vallat", imp: "valla", klass: "1:a konjugationen", cefr: "C2:v1444" },
 { inf: "vandra", en: "walk, hike", pres: "vandrar", pret: "vandrade", sup: "vandrat", imp: "vandra", klass: "1:a konjugationen", cefr: "A2:v505" },
-{ inf: "vara", en: "be", pres: "är", pret: "var", sup: "varit", imp: "var", klass: "4:e konjugationen (starkt)", cefr: "A1:v1" },
-{ inf: "vara", en: "last, go on, continue", pres: "varar", pret: "varade", sup: "varat", imp: "vara", klass: "1:a konjugationen", cefr: "B2:v1009" },
+{ inf: "vara (kopulativ)", en: "be", pres: "är", pret: "var", sup: "varit", imp: "var", klass: "4:e konjugationen (starkt)", cefr: "A1:v1" },
+{ inf: "vara (durativ)", en: "last, go on, continue", pres: "varar", pret: "varade", sup: "varat", imp: "vara", klass: "1:a konjugationen", cefr: "B2:v1009" },
 { inf: "variera", en: "vary", pres: "varierar", pret: "varierade", sup: "varierat", imp: "variera", klass: "1:a konjugationen", cefr: "A2:v468" },
 { inf: "varna", en: "warn", pres: "varnar", pret: "varnade", sup: "varnat", imp: "varna", klass: "1:a konjugationen", cefr: "A2:v518" },
 { inf: "varva", en: "wind, rev", pres: "varvar", pret: "varvade", sup: "varvat", imp: "varva", klass: "1:a konjugationen", cefr: "C1:v1154" },
@@ -2119,6 +2125,10 @@ const VERB_LEXIKON = [
 ];
 
 function slumpaVerb(kategori) {
+// Rensa sökfältet och dölj krysset
+    sokInput.value = "";
+    clearBtn.style.display = "none";
+
     const resDiv = document.getElementById("resultat");
     const klassUt = document.getElementById("klass");
 
@@ -2162,72 +2172,65 @@ function slumpaVerb(kategori) {
    ========================================================= */
 
 function analysera() {
-    const sökInput = document.getElementById("sok");
-    const sökTerm = sökInput.value.trim().toLowerCase();
+    const sokInput = document.getElementById("sok");
+    const sökTermRaw = sokInput.value.trim().toLowerCase();
     const valdaSprak = document.querySelector('input[name="sprakval"]:checked').value;
     const matchTyp = document.querySelector('input[name="matchning"]:checked').value;
     
     const resDiv = document.getElementById("resultat");
     const klassUt = document.getElementById("klass");
 
-    if (!sökTerm) return;
+    if (!sökTermRaw) return;
 
-    // --- UPPDATERAD HJÄLPFUNKTION FÖR MATCHNING ---
-    const matchar = (fältvärde) => {
-        if (!fältvärde) return false;
-        const helaSträngen = fältvärde.toLowerCase();
-        
-        // 1. Skapa en lista på sökbara ord/fraser
-        let sökbaraFormer = [];
+    // --- GOOGLE-LOGIK (AND/OR) ---
+    
+    // 1. Dela upp vid kommatecken (OR)
+    const orGrupper = sökTermRaw.split(',').map(g => g.trim()).filter(g => g !== "");
 
-        if (valdaSprak === "engelska") {
-            // För engelska: dela vid komma
-            sökbaraFormer = helaSträngen.split(',').map(s => s.trim());
-        } else {
-            // För svenska: Lägg till hela strängen (t.ex. "ange (angiva)")
-            sökbaraFormer.push(helaSträngen);
-
-            // Lägg till ordet utanför parentesen (t.ex. "ange")
-            const utanParentes = helaSträngen.replace(/\s*\(.*?\)\s*/g, "").trim();
-            if (utanParentes && utanParentes !== helaSträngen) sökbaraFormer.push(utanParentes);
-
-            // Lägg till ordet inuti parentesen (t.ex. "angiva")
-            const inutiMatch = helaSträngen.match(/\((.*?)\)/);
-            if (inutiMatch && inutiMatch[1]) sökbaraFormer.push(inutiMatch[1].trim());
-        }
-
-        // 2. Kontrollera om söktermen matchar någon av de identifierade formerna
-        return sökbaraFormer.some(ord => {
-            switch(matchTyp) {
-                case "hel":   return ord === sökTerm;
-                case "start": return ord.startsWith(sökTerm);
-                case "slut":  return ord.endsWith(sökTerm);
-                default:      return ord.includes(sökTerm);
-            }
-        });
-    };
-
-// Sök enbart i VERB_LEXIKON
     const träffar = VERB_LEXIKON.filter(v => {
-        if (valdaSprak === "svenska") {
-            // Vi inkluderar matchar(v.klass) för att göra kategorierna sökbara
-            return matchar(v.inf) || 
-                   matchar(v.pres) || 
-                   matchar(v.pret) || 
-                   matchar(v.sup) || 
-                   matchar(v.imp) || 
-                   matchar(v.cefr) || 
-                   matchar(v.klass); 
-        } else {
-            return matchar(v.en);
-        }
+        // Vi kollar om någon av OR-grupperna matchar
+        return orGrupper.some(grupp => {
+            
+            // 2. Dela upp gruppen vid mellanslag (AND)
+            const andOrd = grupp.split(/\s+/).filter(o => o !== "");
+
+            // 3. Kolla att VARJE ord i AND-listan finns någonstans i objektet
+            return andOrd.every(ord => {
+                
+                // Hjälpfunktion för att kolla ett specifikt fält
+                const matcharFält = (fältvärde) => {
+                    if (!fältvärde) return false;
+                    const text = fältvärde.toLowerCase();
+                    
+                    // Tillämpa vald matchningstyp (Exakt, Inleds, Avslutas eller Smart/Del)
+                    switch(matchTyp) {
+                        case "hel":   return text === ord;
+                        case "start": return text.startsWith(ord);
+                        case "slut":  return text.endsWith(ord);
+                        default:      return text.includes(ord); // "del" / Smart
+                    }
+                };
+
+                // Kolla i relevanta fält beroende på språk
+                if (valdaSprak === "svenska") {
+                    return matcharFält(v.inf) || 
+                           matcharFält(v.pres) || 
+                           matcharFält(v.pret) || 
+                           matcharFält(v.sup) || 
+                           matcharFält(v.imp) || 
+                           matcharFält(v.cefr) || 
+                           matcharFält(v.klass);
+                } else {
+                    return matcharFält(v.en);
+                }
+            });
+        });
     });
 
-    // Presentation (Oförändrad förutom eventuell sortering)
+    // Presentation av resultat
     if (träffar.length === 0) {
-        klassUt.innerHTML = `<p>Söktermen "<strong>${sökTerm}</strong>" gav <strong>INGA TRÄFFAR</strong>.</p>`;
+        klassUt.innerHTML = `<p>Sökningen gav <strong>INGA TRÄFFAR</strong>.</p>`;
     } else {
-        // Sortera träffar efter CEFR-kod så de visas i ordning
         träffar.sort((a, b) => a.cefr.localeCompare(b.cefr, undefined, {numeric: true}));
         
         klassUt.innerHTML = "";
@@ -2263,7 +2266,4 @@ document.querySelector("form").addEventListener("reset", () => {
 </script>
 
 </body>
-
 </html>
-
-
