@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<title>Plural – Definite Form (Exercise)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root {
+    --bg:#f3f5f8;
+    --panel:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --accent:#2563eb;
+    --accent-soft:#dbeafe;
+    --ok:#15803d;
+    --bad:#b91c1c;
+    --radius:10px;
+}
+
+body.dark {
+    --bg:#0f172a;
+    --panel:#111827;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --border:#1f2937;
+    --accent:#60a5fa;
+    --accent-soft:#1e3a8a;
+}
+
+body {
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    background:var(--bg);
+    color:var(--text);
+    margin:0;
+    padding:2.5rem 1rem;
+}
+
+main {
+    max-width: 750px;
+    margin:auto;
+    background:var(--panel);
+    padding:2.5rem;
+    border-radius:var(--radius);
+}
+
+header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:1.5rem;
+}
+
+header .actions {
+    display:flex;
+    gap:.6rem;
+}
+
+button {
+    font:inherit;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text);
+    padding:.45rem .8rem;
+    cursor:pointer;
+}
+
+button:hover {
+    background:var(--accent-soft);
+    border-color:var(--accent);
+}
+
+button.primary {
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+}
+
+/* ================= TABLE ================= */
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    margin-top:1rem;
+}
+
+th {
+    font-size: 1.3rem;
+    color:var(--muted);
+    border-bottom:2px solid var(--border);
+    padding:.6rem;
+    text-align:left;
+}
+
+td {
+    padding: 1.3rem .6rem;
+    border-bottom:1px solid var(--border);
+    vertical-align:middle;
+}
+
+/* column widths */
+th.col-word, td.col-word   { width:25%; }
+th.col-input, td.col-input { width:50%; }
+th.col-result,td.col-result{ width:25%; }
+
+/* ================= WORD COLUMN ================= */
+
+td.col-word {
+    font-size: 1.3rem;
+    font-weight:600;
+}
+
+/* ================= INPUT COLUMN ================= */
+
+.input-group {
+    display:flex;
+    gap:.4rem;
+    align-items:center;
+}
+
+.char-btn {
+    background:var(--accent-soft);
+    color:var(--accent);
+	font-size: 1.3rem;
+    font-weight:600;
+    padding:0 .6rem;
+    flex:0 0 auto;
+}
+
+.char-btn:hover {
+    background:var(--accent);
+    color:#fff;
+}
+
+.input-wrap {
+    position:relative;
+    flex:1 1 auto;
+    min-width:0;
+}
+
+input[type="text"] {
+    width:100%;
+    box-sizing:border-box;
+    padding:.5rem 2rem .5rem .7rem;
+    font-size: 1.3rem;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text);
+    outline:none;
+}
+
+input.active {
+    border-color:var(--accent);
+    box-shadow:0 0 0 2px var(--accent-soft);
+}
+
+/* ===== CLEAR BUTTON (NO BACKGROUND EVER) ===== */
+
+.clear-btn {
+    position:absolute;
+    right:.45rem;
+    top:50%;
+    transform:translateY(-50%);
+    border:none;
+    background:transparent !important;
+    color:var(--muted);
+    cursor:pointer;
+    display:none;
+    padding:0;
+}
+
+.clear-btn:hover,
+.clear-btn:focus,
+.clear-btn:active {
+    background:transparent !important;
+    box-shadow:none;
+    outline:none;
+    color:var(--bad);
+}
+
+/* ================= RESULT COLUMN ================= */
+
+td.col-result {
+    font-size: 1.3rem;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.correct { color:var(--ok); }
+.incorrect { color:var(--bad); }
+
+#summary {
+    margin-top: 1.5rem;
+    min-height: 1.6em;   /* reserverar plats */
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+/* ===== FIX: stable dark mode toggle icon ===== */
+header .actions button i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25em;     /* låser bredd */
+    height: 1.25em;    /* låser höjd */
+    line-height: 1;
+    font-size: 1.2rem; /* EXPLICIT – ändras ej mellan lägen */
+}
+
+header .actions button {
+    height: 2.4rem;
+    display: inline-flex;
+    align-items: center;
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<header>
+    <h1>Write the definite plural</h1>
+    <div class="actions">
+        <button onclick="newSet()">New set</button>
+        <button onclick="resetInputs()">Reset</button>
+        <button class="primary" onclick="checkAnswers()">Check answers</button>
+        <button onclick="toggleTheme()">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+</header>
+
+<table>
+<thead>
+<tr>
+    <th class="col-word">Indef sing</th>
+    <th class="col-input">Your answer: definite plural</th>
+    <th class="col-result">Result</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
+<p id="summary"></p>
+
+</main>
+
+<script>
+const WORDS = [
+{singular:"adress", pluralDef:"adresserna"},
+{singular:"affär", pluralDef:"affärerna"},
+{singular:"apelsin", pluralDef:"apelsinerna"},
+{singular:"apelsinjuice", pluralDef:"apelsinjuicerna"},
+{singular:"badrum", pluralDef:"badrummen"},
+{singular:"bank", pluralDef:"bankerna"},
+{singular:"barn", pluralDef:"barnen"},
+{singular:"ben", pluralDef:"benen"},
+{singular:"bibliotek", pluralDef:"biblioteken"},
+{singular:"bil", pluralDef:"bilarna"},
+{singular:"biljett", pluralDef:"biljetterna"},
+{singular:"bok", pluralDef:"böckerna"},
+{singular:"brev", pluralDef:"breven"},
+{singular:"bröd", pluralDef:"bröden"},
+{singular:"buss", pluralDef:"bussarna"},
+{singular:"cykel", pluralDef:"cyklarna"},
+{singular:"dag", pluralDef:"dagarna"},
+{singular:"datum", pluralDef:"datumen"},
+{singular:"del", pluralDef:"delarna"},
+{singular:"djur", pluralDef:"djuren"},
+{singular:"dotter", pluralDef:"döttrarna"},
+{singular:"dörr", pluralDef:"dörrarna"},
+{singular:"eftermiddag", pluralDef:"eftermiddagarna"},
+{singular:"efternamn", pluralDef:"efternamnen"},
+{singular:"exempel", pluralDef:"exemplen"},
+{singular:"familj", pluralDef:"familjerna"},
+{singular:"fest", pluralDef:"festerna"},
+{singular:"finger", pluralDef:"fingrarna"},
+{singular:"fisk", pluralDef:"fiskarna"},
+{singular:"flaska", pluralDef:"flaskorna"},
+{singular:"flygplats", pluralDef:"flygplatserna"},
+{singular:"fot", pluralDef:"fötterna"},
+{singular:"frukost", pluralDef:"frukostarna"},
+{singular:"frukt", pluralDef:"frukterna"},
+{singular:"fråga", pluralDef:"frågorna"},
+{singular:"fågel", pluralDef:"fåglarna"},
+{singular:"födelsedag", pluralDef:"födelsedagarna"},
+{singular:"fönster", pluralDef:"fönstren"},
+{singular:"förmiddag", pluralDef:"förmiddagarna"},
+{singular:"förnamn", pluralDef:"förnamnen"},
+{singular:"glas", pluralDef:"glasen"},
+{singular:"godis", pluralDef:"godisarna"},
+{singular:"golv", pluralDef:"golven"},
+{singular:"grupp", pluralDef:"grupperna"},
+{singular:"grönsak", pluralDef:"grönsakerna"},
+{singular:"hall", pluralDef:"hallarna"},
+{singular:"hamburgare", pluralDef:"hamburgarna"},
+{singular:"hand", pluralDef:"händerna"},
+{singular:"hem", pluralDef:"hemmen"},
+{singular:"himmel", pluralDef:"himlarna"},
+{singular:"historia", pluralDef:"historierna"},
+{singular:"hotell", pluralDef:"hotellen"},
+{singular:"hund", pluralDef:"hundarna"},
+{singular:"hus", pluralDef:"husen"},
+{singular:"huvud", pluralDef:"huvudena"},
+{singular:"häst", pluralDef:"hästarna"},
+{singular:"jobb", pluralDef:"jobben"},
+{singular:"jordgubbe", pluralDef:"jordgubbarna"},
+{singular:"kafé", pluralDef:"kaféerna"},
+{singular:"kaffe", pluralDef:"kaffena"},
+{singular:"kaka", pluralDef:"kakorna"},
+{singular:"kalas", pluralDef:"kalasen"},
+{singular:"kanelbulle", pluralDef:"kanelbullarna"},
+{singular:"karta", pluralDef:"kartorna"},
+{singular:"kille", pluralDef:"killarna"},
+{singular:"kilo", pluralDef:"kilona"},
+{singular:"kjol", pluralDef:"kjolarna"},
+{singular:"klass", pluralDef:"klasserna"},
+{singular:"klocka", pluralDef:"klockorna"},
+{singular:"klänning", pluralDef:"klänningarna"},
+{singular:"kompis", pluralDef:"kompisarna"},
+{singular:"kontor", pluralDef:"kontoren"},
+{singular:"kopp", pluralDef:"kopparna"},
+{singular:"krona", pluralDef:"kronorna"},
+{singular:"kropp", pluralDef:"kropparna"},
+{singular:"kung", pluralDef:"kungarna"},
+{singular:"kurs", pluralDef:"kurserna"},
+{singular:"kusin", pluralDef:"kusinerna"},
+{singular:"kvinna", pluralDef:"kvinnorna"},
+{singular:"kväll", pluralDef:"kvällarna"},
+{singular:"kyrka", pluralDef:"kyrkorna"},
+{singular:"kärlek", pluralDef:"kärlekarna"},
+{singular:"kök", pluralDef:"köken"},
+{singular:"köksbord", pluralDef:"köksborden"},
+{singular:"land", pluralDef:"länderna"},
+{singular:"lägenhet", pluralDef:"lägenheterna"},
+{singular:"lärare", pluralDef:"lärarna"},
+{singular:"lök", pluralDef:"lökarna"},
+{singular:"mage", pluralDef:"magarna"},
+{singular:"mamma", pluralDef:"mammorna"},
+{singular:"man", pluralDef:"männen"},
+{singular:"mark", pluralDef:"markerna"},
+{singular:"mat", pluralDef:"matarna"},
+{singular:"middag", pluralDef:"middagarna"},
+{singular:"midnatt", pluralDef:"midnätterna"},
+{singular:"mor", pluralDef:"mödrarna"},
+{singular:"morgon", pluralDef:"morgnarna"},
+{singular:"museum", pluralDef:"museerna"},
+{singular:"månad", pluralDef:"månaderna"},
+{singular:"människa", pluralDef:"människorna"},
+{singular:"namn", pluralDef:"namnen"},
+{singular:"natt", pluralDef:"nätterna"},
+{singular:"nummer", pluralDef:"numren"},
+{singular:"ord", pluralDef:"orden"},
+{singular:"ordbok", pluralDef:"ordböckerna"},
+{singular:"ost", pluralDef:"ostarna"},
+{singular:"pappa", pluralDef:"papporna"},
+{singular:"par", pluralDef:"paren"},
+{singular:"park", pluralDef:"parkerna"},
+{singular:"pengar", pluralDef:"pengarna"},
+{singular:"plan", pluralDef:"planerna"},
+{singular:"plats", pluralDef:"platserna"},
+{singular:"pojkvän", pluralDef:"pojkvännerna"},
+{singular:"portion", pluralDef:"portionerna"},
+{singular:"potatis", pluralDef:"potatisarna"},
+{singular:"present", pluralDef:"presenterna"},
+{singular:"program", pluralDef:"programmen"},
+{singular:"promenad", pluralDef:"promenaderna"},
+{singular:"päron", pluralDef:"päronen"},
+{singular:"radio", pluralDef:"radiorna"},
+{singular:"resa", pluralDef:"resorna"},
+{singular:"restaurang", pluralDef:"restaurangerna"},
+{singular:"rum", pluralDef:"rummen"},
+{singular:"sak", pluralDef:"sakerna"},
+{singular:"semester", pluralDef:"semestrarna"},
+{singular:"sida", pluralDef:"sidorna"},
+{singular:"sjukhus", pluralDef:"sjukhusen"},
+{singular:"sjö", pluralDef:"sjöarna"},
+{singular:"skinka", pluralDef:"skinkorna"},
+{singular:"sko", pluralDef:"skorna"},
+{singular:"skog", pluralDef:"skogarna"},
+{singular:"skola", pluralDef:"skolorna"},
+{singular:"skrivbord", pluralDef:"skrivborden"},
+{singular:"sky", pluralDef:"skyarna"},
+{singular:"skådespelare", pluralDef:"skådespelarna"},
+{singular:"slott", pluralDef:"slotten"},
+{singular:"smör", pluralDef:"smören"},
+{singular:"smörgås", pluralDef:"smörgåsarna"},
+{singular:"soffa", pluralDef:"sofforna"},
+{singular:"sommar", pluralDef:"somrarna"},
+{singular:"son", pluralDef:"sönerna"},
+{singular:"sovrum", pluralDef:"sovrummen"},
+{singular:"språk", pluralDef:"språken"},
+{singular:"stad", pluralDef:"städerna"},
+{singular:"stjärna", pluralDef:"stjärnorna"},
+{singular:"stol", pluralDef:"stolarna"},
+{singular:"strand", pluralDef:"stränderna"},
+{singular:"student", pluralDef:"studenterna"},
+{singular:"svensk", pluralDef:"svenskarna"},
+{singular:"syster", pluralDef:"systrarna"},
+{singular:"sång", pluralDef:"sångerna"},
+{singular:"säng", pluralDef:"sängarna"},
+{singular:"tak", pluralDef:"taken"},
+{singular:"tand", pluralDef:"tänderna"},
+{singular:"tandläkare", pluralDef:"tandläkarna"},
+{singular:"taxi", pluralDef:"taxibilarna"},
+{singular:"telefonnummer", pluralDef:"telefonnumren"},
+{singular:"text", pluralDef:"texterna"},
+{singular:"tid", pluralDef:"tiderna"},
+{singular:"tidning", pluralDef:"tidningarna"},
+{singular:"timme", pluralDef:"timmarna"},
+{singular:"tjej", pluralDef:"tjejerna"},
+{singular:"toalett", pluralDef:"toaletterna"},
+{singular:"torsdag", pluralDef:"torsdagarna"},
+{singular:"trappa", pluralDef:"trapporna"},
+{singular:"träd", pluralDef:"träden"},
+{singular:"tröja", pluralDef:"tröjorna"},
+{singular:"tunnelbana", pluralDef:"tunnelbanorna"},
+{singular:"tur", pluralDef:"turerna"},
+{singular:"turist", pluralDef:"turisterna"},
+{singular:"tåg", pluralDef:"tågen"},
+{singular:"tågstation", pluralDef:"tågstationerna"},
+{singular:"ugn", pluralDef:"ugnarna"},
+{singular:"universitet", pluralDef:"universiteten"},
+{singular:"vardagsrum", pluralDef:"vardagsrummen"},
+{singular:"vecka", pluralDef:"veckorna"},
+{singular:"vinter", pluralDef:"vintrarna"},
+{singular:"vykort", pluralDef:"vykorten"},
+{singular:"väg", pluralDef:"vägarna"},
+{singular:"vägg", pluralDef:"väggarna"},
+{singular:"vän", pluralDef:"vännerna"},
+{singular:"värld", pluralDef:"världarna"},
+{singular:"år", pluralDef:"åren"},
+{singular:"ägg", pluralDef:"äggen"},
+{singular:"äpple", pluralDef:"äpplena"},
+{singular:"ö", pluralDef:"öarna"},
+{singular:"öga", pluralDef:"ögonen"}
+
+];
+
+let remaining = [];
+
+const SET_SIZE = 5;
+let currentSet = [];
+const tbody = document.getElementById("tbody");
+
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function initPool() {
+    remaining = shuffle([...WORDS]); // kopia, blandad en gång
+}
+
+function buildTable(set) {
+    tbody.innerHTML = "";
+    set.forEach((w,i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+        <td class="col-word">${w.singular}</td>
+        <td class="col-input">
+            <div class="input-group">
+                <button class="char-btn" tabindex="-1" data-char="å">å</button>
+                <button class="char-btn" tabindex="-1" data-char="ä">ä</button>
+                <button class="char-btn" tabindex="-1" data-char="ö">ö</button>
+                <div class="input-wrap">
+                    <input type="text" data-i="${i}" spellcheck="false">
+                    <button class="clear-btn" tabindex="-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+        </td>
+        <td class="col-result result"></td>`;
+
+        const input = tr.querySelector("input");
+        const clear = tr.querySelector(".clear-btn");
+
+        input.addEventListener("focus", () => setCurrent(input));
+        input.addEventListener("input", () => {
+            clear.style.display = input.value ? "block" : "none";
+        });
+
+        clear.addEventListener("mousedown", e => {
+            e.preventDefault();
+            input.value = "";
+            clear.style.display = "none";
+            setCurrent(input);
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+
+document.addEventListener("mousedown", e => {
+    const btn = e.target.closest(".char-btn");
+    if (!btn) return;
+    e.preventDefault();
+
+    const input = btn.closest("tr").querySelector("input");
+    setCurrent(input);
+
+    input.value += btn.dataset.char;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+});
+
+function setCurrent(input) {
+    document.querySelectorAll("input").forEach(i => i.classList.remove("active"));
+    input.classList.add("active");
+}
+
+function resetInputs() {
+    document.querySelectorAll("input").forEach(i => i.value = "");
+    document.querySelectorAll(".clear-btn").forEach(b => b.style.display = "none");
+    document.querySelectorAll(".result").forEach(r => r.textContent = "");
+    document.getElementById("summary").textContent = "";
+}
+
+function newSet() {
+    if (remaining.length < SET_SIZE) {
+        alert("No more new words in this session.");
+        return;
+    }
+
+    currentSet = remaining.splice(0, SET_SIZE);
+    buildTable(currentSet);
+    document.getElementById("summary").textContent = "";
+}
+
+function normalize(s) {
+    return s.toLowerCase().trim()
+        .replace(/[åä]/g,"a")
+        .replace(/ö/g,"o");
+}
+
+function checkAnswers() {
+    let c = 0;
+    document.querySelectorAll("input").forEach(inp => {
+        const i = inp.dataset.i;
+        const cell = inp.closest("tr").querySelector(".result");
+        if (normalize(inp.value) === normalize(currentSet[i].pluralDef)) {
+            cell.textContent = "✔ " + currentSet[i].pluralDef;
+            cell.className = "col-result result correct";
+            c++;
+        } else {
+            cell.textContent = "✘ " + currentSet[i].pluralDef;
+            cell.className = "col-result result incorrect";
+        }
+    });
+    document.getElementById("summary").textContent =
+        `Score: ${c} out of ${currentSet.length} correct.`;
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+    const icon = document.querySelector("header i");
+    icon.className = document.body.classList.contains("dark")
+        ? "fa-solid fa-sun"
+        : "fa-solid fa-moon";
+}
+
+initPool();
+newSet();
+</script>
+
+</body>
+</html>
