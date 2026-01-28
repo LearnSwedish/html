@@ -528,6 +528,112 @@
                 transform: translateX(18px);
             }
         }
+		
+/* Tooltip Container */
+.sentence p {
+    position: relative;
+    /* Tog bort cursor: help; nu används standardmarkör */
+    display: block; /* Ändrat till block så att vi kan utgå från vänsterkanten */
+}
+
+/* Tooltip Text */
+.sentence .tooltip-text {
+    visibility: hidden;
+    white-space: nowrap; /* Förhindrar line-breaks */
+    background-color: #2d3748;
+    color: #fff;
+    text-align: left; /* Vänsterställd text inuti tooltip */
+    border-radius: 6px;
+    padding: 10px 15px; /* Lite mer luft */
+    position: absolute;
+    z-index: 10;
+    bottom: 110%; /* Justerat avstånd från meningen */
+    left: 0; /* Tooltip börjar i samma position som svenska meningen */
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    font-size: 1.05rem; /* Aningen större storlek */
+    font-style: normal; /* Rak stil (inte kursiv) */
+    pointer-events: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Tooltip Pil - flyttad till vänster för att matcha starten */
+.sentence .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 20px; /* Pilen flyttad närmare starten av meningen */
+    border-width: 6px;
+    border-style: solid;
+    border-color: #2d3748 transparent transparent transparent;
+}
+
+/* Visa vid hover */
+.sentence:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(-5px);
+}
+
+/* Anpassning för Dark Mode */
+body.dark-mode .sentence .tooltip-text {
+    background-color: #4a5568;
+    color: #edf2f7;
+}
+
+body.dark-mode .sentence .tooltip-text::after {
+    border-color: #4a5568 transparent transparent transparent;
+}
+
+/* Mobilanpassning - tillåt radbrytning på små skärmar om meningen är för lång */
+@media (max-width: 600px) {
+    .sentence .tooltip-text {
+        white-space: normal; 
+        width: 90%; 
+        font-size: 0.95rem;
+    }
+}
+
+/* Gemensam stil för alla genus-boxar */
+.gender-hint {
+    margin-left: 18px;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-family: Arial, sans-serif;
+    font-size: 0.7rem;
+    display: inline-block;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* N-gender: Blå färgskala */
+.gender-n {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    border: 2px solid #7dd3fc;
+}
+
+/* T-gender: Orange/Röd färgskala */
+.gender-t {
+    background-color: #ffede5;
+    color: #c05621;
+    border: 2px solid #feb2b2;
+}
+
+/* Dark Mode anpassning */
+body.dark-mode .gender-n {
+    background-color: #1e293b;
+    color: #7dd3fc;
+    border: 2px solid #38445d;
+}
+
+body.dark-mode .gender-t {
+    background-color: #2d221f;
+    color: #fbd38d;
+    border: 2px solid #744210;
+}
     </style>
 
 </head>
@@ -596,7 +702,7 @@
 
 
     <!-- Page Title -->
-    <h1 class="page-title">3rd-person possessives: easy version | gender indicated</h1>
+    <h1 class="page-title">3rd-person possessives: easy version</h1>
     <p>Read the "Info" to understand what this exercise is about.</p>
 
     <!-- Main Content Container -->
@@ -609,7 +715,7 @@
             <h2 id="infoModalTitle">Information</h2>
             <p>Here you practise how to say "his/her/their [own]" in Swedish. Each sentence refers to one and the same person (or group). You must choose between <strong>{hans; hennes; deras}</strong> and <strong>{sin; sitt; sina}</strong>. If the pronoun is part of the subject, choose {hans; hennes; deras}. In all other cases, use {sin; sitt; sina}.</p><br />
 			<h2 id="infoModalTitle">Please note!</h2>
-			<p>In this exercise, the gender of the head noun is indicated (which makes the exercise easier). If you’d like more of a challenge, try the harder version (see the menu options).
+			<p>This exercise includes tooltips with English translations and indicates the gender of each head noun to assist you. For a greater challenge – without these aids – try the harder version of the exercise (see the menu options).
 			</p>
         </div>
     </div>
@@ -627,7 +733,9 @@
 
 const sentences = [
 {
+	translation: "He said that he had lost his keys.",
     words: [
+		
         {
             sentencePart: "Han sa att han hade tappat",
         },
@@ -643,12 +751,13 @@ const sentences = [
             </select>`,
         },
         {
-            sentencePart: "nycklar.  [N gender]",
+            sentencePart: "nycklar. <span class='gender-hint gender-n'>en gender</span>",
         },
     ]
 },
 {
-    words: [
+    translation: "She thought she had problems with her heart.",
+	words: [
         { sentencePart: "Hon trodde att hon hade problem med" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -659,11 +768,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "hjärta.  [T gender]" }
+        { sentencePart: "hjärta. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The children said they missed their toys.",
+	words: [
         { sentencePart: "Barnen sa att de saknade" },
         { sentencePart: `<select data-correct="sina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -674,11 +784,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "leksaker.  [N gender]" }
+        { sentencePart: "leksaker. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The teacher noticed that he had lost his pen.",
+	words: [
         { sentencePart: "Läraren märkte att han hade tappat" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -689,11 +800,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "penna.  [N gender]" }
+        { sentencePart: "penna. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The girl knew where she had hidden her apple.",
+	words: [
         { sentencePart: "Flickan visste var hon hade gömt" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -704,11 +816,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "äpple.  [T gender]" }
+        { sentencePart: "äpple. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "She said she had left her computer at home.",
+	words: [
         { sentencePart: "Hon sa att hon hade lämnat" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -719,11 +832,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "dator hemma.  [N gender]" }
+        { sentencePart: "dator hemma. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He thought he had lost his finger.",
+	words: [
         { sentencePart: "Han trodde att han hade förlorat" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -734,11 +848,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "finger.  [T gender]" }
+        { sentencePart: "finger. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The girl said she had solved all her problems.",
+	words: [
         { sentencePart: "Flickan sa att hon hade löst alla" },
         { sentencePart: `<select data-correct="sina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -749,11 +864,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "problem.  [T gender]" }
+        { sentencePart: "problem. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The boy told us he had forgotten his name.",
+	words: [
         { sentencePart: "Pojken berättade att han hade glömt" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -764,11 +880,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "namn.  [T gender]" }
+        { sentencePart: "namn. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The man said he had sold his car.",
+	words: [
         { sentencePart: "Mannen sa att han hade sålt" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -779,11 +896,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "bil.  [N gender]" }
+        { sentencePart: "bil. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The woman told us she missed her country.",
+	words: [
         { sentencePart: "Kvinnan berättade att hon saknade" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -794,11 +912,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "land.  [T gender]" }
+        { sentencePart: "land. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The cat knew it had injured its paw.",
+	words: [
         { sentencePart: "Katten visste att den hade skadat" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -809,11 +928,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "tass.  [N gender]" }
+        { sentencePart: "tass. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He said he had broken his arm.",
+	words: [
         { sentencePart: "Han sa att han hade brutit" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -824,11 +944,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "arm.  [N gender]" }
+        { sentencePart: "arm. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "She said she had changed her mind.",
+	words: [
         { sentencePart: "Hon sa att hon hade ändrat" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -839,11 +960,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "beslut.  [T gender]" }
+        { sentencePart: "beslut. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The children said they had forgotten their shoes.",
+	words: [
         { sentencePart: "Barnen sa att de hade glömt" },
         { sentencePart: `<select data-correct="sina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -854,11 +976,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "skor.  [N gender]" }
+        { sentencePart: "skor. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He dropped his aquarium.",
+	words: [
         { sentencePart: "Han tappade" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -869,11 +992,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "akvarium.  [T gender]" }
+        { sentencePart: "akvarium. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "She forgot her keys.",
+	words: [
         { sentencePart: "Hon glömde" },
         { sentencePart: `<select data-correct="sina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -884,11 +1008,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "nycklar.  [N gender]" }
+        { sentencePart: "nycklar. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He lost his interest in history.",
+	words: [
         { sentencePart: "Han tappade" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -899,11 +1024,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "intresse för historia.  [T gender]" }
+        { sentencePart: "intresse för historia. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The curator loved his museum.",
+	words: [
         { sentencePart: "Intendenten älskade" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -914,11 +1040,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "museum.  [T gender]" }
+        { sentencePart: "museum. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The dog wagged its tail.",
+	words: [
         { sentencePart: "Hunden viftade på" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -929,11 +1056,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "svans.  [N gender]" }
+        { sentencePart: "svans. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The student started his laptop.",
+	words: [
         { sentencePart: "Studenten startade" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -944,11 +1072,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "laptop.  [N gender]" }
+        { sentencePart: "laptop. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The author finished writing his book.",
+	words: [
         { sentencePart: "Författaren skrev klart" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -959,11 +1088,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "bok.  [N gender]" }
+        { sentencePart: "bok. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The girl combed her hair.",
+	words: [
         { sentencePart: "Flickan kammade" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -974,11 +1104,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "hår.  [T gender]" }
+        { sentencePart: "hår. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The boy tied his shoelaces.",
+	words: [
         { sentencePart: "Pojken knöt" },
         { sentencePart: `<select data-correct="sina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -989,11 +1120,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "skor.  [N gender]" }
+        { sentencePart: "skor. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The man drank his water.",
+	words: [
         { sentencePart: "Mannen drack" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1004,11 +1136,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "vatten.  [T gender]" }
+        { sentencePart: "vatten. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The teacher planned his timetable.",
+	words: [
         { sentencePart: "Läraren planerade" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1019,11 +1152,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "schema.  [T gender]" }
+        { sentencePart: "schema. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The cat licked its paw.",
+	words: [
         { sentencePart: "Katten slickade" },
         { sentencePart: `<select data-correct="sin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1034,11 +1168,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "tass.  [N gender]" }
+        { sentencePart: "tass. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The player injured his knee.",
+	words: [
         { sentencePart: "Spelaren skadade" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1049,11 +1184,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "knä.  [T gender]" }
+        { sentencePart: "knä. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The boss changed his decision.",
+	words: [
         { sentencePart: "Chefen ändrade" },
         { sentencePart: `<select data-correct="sitt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1064,11 +1200,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "beslut.  [T gender]" }
+        { sentencePart: "beslut. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The children took off their jackets.",
+	words: [
         { sentencePart: "Barnen tog av sig" },
         { sentencePart: `<select data-correct="sina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1079,11 +1216,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "jackor.  [N gender]" }
+        { sentencePart: "jackor. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "She knows that her work is suffering.",
+	words: [
         { sentencePart: "Hon vet att" },
         { sentencePart: `<select data-correct="hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1094,11 +1232,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "jobb blir lidande.  [T gender]" }
+        { sentencePart: "jobb blir lidande. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "She said that her brother lives in Uppsala.",
+	words: [
         { sentencePart: "Hon sa att" },
         { sentencePart: `<select data-correct="hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1109,11 +1248,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "bror bor i Uppsala.  [N gender]" }
+        { sentencePart: "bror bor i Uppsala. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "They said that their daughter is studying in Lund.",
+	words: [
         { sentencePart: "De sa att" },
         { sentencePart: `<select data-correct="deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1124,11 +1264,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "dotter studerar i Lund.  [N gender]" }
+        { sentencePart: "dotter studerar i Lund. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "They told us that their manager has resigned.",
+	words: [
         { sentencePart: "De berättade att" },
         { sentencePart: `<select data-correct="deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1139,11 +1280,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "chef har slutat.  [N gender]" }
+        { sentencePart: "chef har slutat. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He noticed that his son was ill.",
+	words: [
         { sentencePart: "Han märkte att" },
         { sentencePart: `<select data-correct="hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1154,11 +1296,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "son var sjuk.  [N gender]" }
+        { sentencePart: "son var sjuk. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He told us that his language is difficult.",
+	words: [
         { sentencePart: "Han berättade att" },
         { sentencePart: `<select data-correct="hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1169,11 +1312,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "språk är svårt.  [T gender]" }
+        { sentencePart: "språk är svårt. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He said that his mum called yesterday.",
+	words: [
         { sentencePart: "Han sa att" },
         { sentencePart: `<select data-correct="hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1184,11 +1328,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "mamma ringde igår.  [N gender]" }
+        { sentencePart: "mamma ringde igår. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "They heard that their daughter has moved.",
+	words: [
         { sentencePart: "De hörde att" },
         { sentencePart: `<select data-correct="deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1199,11 +1344,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "dotter har flyttat.  [N gender]" }
+        { sentencePart: "dotter har flyttat. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "They said that their internet is down.",
+	words: [
         { sentencePart: "De sa att" },
         { sentencePart: `<select data-correct="deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1214,11 +1360,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "internet ligger nere.  [T gender]" }
+        { sentencePart: "internet ligger nere. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He discovered that his bicycle had been stolen.",
+	words: [
         { sentencePart: "Han upptäckte att" },
         { sentencePart: `<select data-correct="hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1229,11 +1376,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "cykel var stulen.  [N gender]" }
+        { sentencePart: "cykel var stulen. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He knows that his children are careful about what they eat.",
+	words: [
         { sentencePart: "Han vet att" },
         { sentencePart: `<select data-correct="hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1244,11 +1392,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "barn är noga med vad de äter.  [N gender]" }
+        { sentencePart: "barn är noga med vad de äter. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "She said that her house is by the lake.",
+	words: [
         { sentencePart: "Hon sa att" },
         { sentencePart: `<select data-correct="hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1259,11 +1408,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "hus ligger vid sjön.  [T gender]" }
+        { sentencePart: "hus ligger vid sjön. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "He heard that his options had been ignored.",
+	words: [
         { sentencePart: "Han hörde att" },
         { sentencePart: `<select data-correct="hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1274,11 +1424,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "alternativ hade ignorerats.  [T gender]" }
+        { sentencePart: "alternativ hade ignorerats. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "They told us that their project has started.",
+	words: [
         { sentencePart: "De berättade att" },
         { sentencePart: `<select data-correct="deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1289,11 +1440,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "projekt har startat.  [T gender]" }
+        { sentencePart: "projekt har startat. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "The mother saw that her daughter was sad.",
+	words: [
         { sentencePart: "Mamman såg att" },
         { sentencePart: `<select data-correct="hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1304,11 +1456,12 @@ const sentences = [
         <option value="sitt">sitt</option>
         <option value="sina">sina</option>
         </select>` },
-        { sentencePart: "dotter var ledsen.  [N gender]" }
+        { sentencePart: "dotter var ledsen. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Her dog is very old.",
+	words: [
         { sentencePart: "(About Sofia):" },
         { sentencePart: `<select data-correct="Hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1319,11 +1472,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "hund är väldigt gammal.  [N gender]" }
+        { sentencePart: "hund är väldigt gammal. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Their house is near the beach.",
+	words: [
         { sentencePart: "(About Hans and Sara):" },
         { sentencePart: `<select data-correct="Deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1334,11 +1488,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "hus ligger nära stranden.  [T gender]" }
+        { sentencePart: "hus ligger nära stranden. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "His daughter has started school.",
+	words: [
         { sentencePart: "(About Niklas):" },
         { sentencePart: `<select data-correct="Hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1349,11 +1504,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "dotter har börjat skolan.  [N gender]" }
+        { sentencePart: "dotter har börjat skolan. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Her company has gone bankrupt.",
+	words: [
         { sentencePart: "(About Lina):" },
         { sentencePart: `<select data-correct="Hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1364,11 +1520,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "bolag har gått i konkurs.  [T gender]" }
+        { sentencePart: "bolag har gått i konkurs. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Their friends are coming for dinner.",
+	words: [
         { sentencePart: "(About Peter and Mia):" },
         { sentencePart: `<select data-correct="Deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1379,11 +1536,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "vänner kommer på middag.  [N gender]" }
+        { sentencePart: "vänner kommer på middag. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "His mum works as a doctor.",
+	words: [
         { sentencePart: "(About Markus):" },
         { sentencePart: `<select data-correct="Hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1394,11 +1552,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "mamma arbetar som läkare.  [N gender]" }
+        { sentencePart: "mamma arbetar som läkare. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Her computer isn't working.",
+	words: [
         { sentencePart: "(About Johanna):" },
         { sentencePart: `<select data-correct="Hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1409,11 +1568,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "dator fungerar inte.  [N gender]" }
+        { sentencePart: "dator fungerar inte. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Their children go to the same nursery.",
+	words: [
         { sentencePart: "(About Nils and Elin):" },
         { sentencePart: `<select data-correct="Deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1424,11 +1584,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "barn går på samma förskola.  [T gender]" }
+        { sentencePart: "barn går på samma förskola. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "His mission is completed.",
+	words: [
         { sentencePart: "(About David):" },
         { sentencePart: `<select data-correct="Hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1439,11 +1600,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "uppdrag är slutfört.  [T gender]" }
+        { sentencePart: "uppdrag är slutfört. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Her cat is sleeping on the sofa.",
+	words: [
         { sentencePart: "(About Anna):" },
         { sentencePart: `<select data-correct="Hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1454,11 +1616,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "katt sover i soffan.  [N gender]" }
+        { sentencePart: "katt sover i soffan. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Their car is parked outside the house.",
+	words: [
         { sentencePart: "(About Stefan and Maja):" },
         { sentencePart: `<select data-correct="Deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1469,11 +1632,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "bil står utanför huset.  [N gender]" }
+        { sentencePart: "bil står utanför huset. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "His room is newly renovated.",
+	words: [
         { sentencePart: "(About Oskar):" },
         { sentencePart: `<select data-correct="Hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1484,11 +1648,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "rum är nyrenoverat.  [T gender]" }
+        { sentencePart: "rum är nyrenoverat. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Her sister is studying in Uppsala.",
+	words: [
         { sentencePart: "(About Jessica):" },
         { sentencePart: `<select data-correct="Hennes" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1499,11 +1664,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "syster studerar i Uppsala.  [N gender]" }
+        { sentencePart: "syster studerar i Uppsala. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "Their interest has faded.",
+	words: [
         { sentencePart: "(About Per and Therese):" },
         { sentencePart: `<select data-correct="Deras" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1514,11 +1680,12 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "intresse har svalnat.  [T gender]" }
+        { sentencePart: "intresse har svalnat. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    words: [
+    translation: "His brother lives in Canada.",
+	words: [
         { sentencePart: "(About Erik):" },
         { sentencePart: `<select data-correct="Hans" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
         <option value="">Välj</option>
@@ -1529,7 +1696,7 @@ const sentences = [
         <option value="Sitt">sitt</option>
         <option value="Sina">sina</option>
         </select>` },
-        { sentencePart: "bror bor i Kanada.  [N gender]" }
+        { sentencePart: "bror bor i Kanada. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 
@@ -1563,17 +1730,14 @@ function generateSentenceHTML(sentence, index) {
     const sentenceHTML = sentence.words.map(item => {
         if (!item.sentencePart.includes("<select")) return item.sentencePart;
 
-        // Skapa en temporär DOM-nod för att kunna manipulera selecten
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = item.sentencePart.trim();
         const select = tempDiv.querySelector("select");
 
         if (isAboutSentence) {
-            // Versal i data-correct
             const correct = select.getAttribute("data-correct");
             select.setAttribute("data-correct", capitalize(correct));
 
-            // Versal i alla options
             Array.from(select.options).forEach(opt => {
                 if (opt.value !== "") {
                     opt.textContent = capitalize(opt.textContent);
@@ -1585,7 +1749,15 @@ function generateSentenceHTML(sentence, index) {
         return select.outerHTML;
     }).join(' ');
 
-    return `<div class="sentence" data-state="none"><p>${sentenceHTML}</p></div>`;
+    // Uppdaterad return: Vi lägger till en span med klassen 'tooltip-text'
+    // Vi hämtar översättningen från 'sentence.translation' (som du lägger till i din array)
+    return `
+        <div class="sentence" data-state="none">
+            <p>
+                ${sentenceHTML}
+                <span class="tooltip-text">${sentence.translation || "Translation missing"}</span>
+            </p>
+        </div>`;
 }
 
     // Render sentences in a shuffled order.
@@ -1809,6 +1981,3 @@ function goToHardVersion() {
 </body>
 
 </html>
-
-
-
