@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="sv">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Adjective Agreement (regular): easy version</title>
+	<title>Adjective Agreement (indefinite regular): easy level</title>
 
     <!-- Font Awesome CDN for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -101,46 +100,6 @@
             padding: 0 10px;
             gap: 10px;
             cursor: default;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .modal-content {
-            background: white;
-            color: black;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 600px;
-            width: 80%;
-            transform: translateY(-50px);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        body.dark-mode .modal-content {
-            background-color: #1a202c;
-            color: #edf2f7;
-            border-color: #2d3748;
-        }
-
-        .modal.show {
-            display: flex;
-            opacity: 1;
         }
 
         /* Page Title */
@@ -499,10 +458,6 @@
                 /* Reduced horizontal padding */
             }
 
-            .modal-content {
-                margin-top: 50px; /* Adjust this value as needed */
-            }
-
             .start-over {
                 padding: 0 12px;
             }
@@ -529,6 +484,73 @@
                 transform: translateX(18px);
             }
         }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+    background: white;
+    color: black;
+    padding: 30px; /* Något mer luft för läsbarhet */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: left; /* Ändrat från center till left */
+    max-width: 600px;
+    width: 90%; /* Lite bredare på mobiler */
+    max-height: 80vh; /* Säkerställer att den inte täcker hela skärmen på höjden */
+    overflow-y: auto; /* Gör innehållet rullbart om det är långt */
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Specifik styling för element inuti modalen */
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.modal-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.modal-content ul {
+    margin-left: 20px; /* Ger punktlistan ett korrekt indrag */
+    margin-bottom: 15px;
+}
+
+.modal-content li {
+    margin-bottom: 10px;
+}
+
+body.dark-mode .modal-content {
+    background-color: #1a202c;
+    color: #edf2f7;
+    border: 1px solid #2d3748; /* Lade till en tunn kant för definition */
+}
+
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+}
 		
 /* Tooltip Container */
 .sentence p {
@@ -658,8 +680,11 @@ body.dark-mode .gender-t {
             <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
         </button>
         <!-- Go to harder version of the exercise (no gender indicated) -->
+        <button class="start-over" onclick="goToMediumVersion()">
+            <i class="fas fa-arrow-right" style="margin-right: 8px;"></i> Medium level
+        </button>
         <button class="start-over" onclick="goToHardVersion()">
-            <i class="fas fa-arrow-right" style="margin-right: 8px;"></i> Hard version
+            <i class="fas fa-arrow-right" style="margin-right: 8px;"></i> Hard level
         </button>
         <!-- Start Over Button for Desktop -->
         <button class="start-over" onclick="startOver()">
@@ -692,8 +717,11 @@ body.dark-mode .gender-t {
             <i class="fas fa-book"></i> The logic
         </div>
 		<!-- Go to hard version of the exercise (no gender indicated) -->
+		<div class="menu-item" onclick="goToMediumVersion()">
+			<i class="fas fa-arrow-up-right-from-square"></i> Medium level
+		</div>
 		<div class="menu-item" onclick="goToHardVersion()">
-			<i class="fas fa-arrow-up-right-from-square"></i> Hard version
+			<i class="fas fa-arrow-up-right-from-square"></i> Hard level
 		</div>
         <!-- Start Over Button -->
         <div class="menu-item" onclick="startOverAndCloseMenu()">
@@ -703,7 +731,7 @@ body.dark-mode .gender-t {
 
 
     <!-- Page Title -->
-    <h1 class="page-title">Adjective Agreement (regular): easy version</h1>
+    <h1 class="page-title">Adjective Agreement (indefinite regular): easy level</h1>
     <p>Read the "Info" to understand what this exercise is about.</p>
 
     <!-- Main Content Container -->
@@ -714,26 +742,10 @@ body.dark-mode .gender-t {
         <div class="modal-content">
             <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
             <h2 id="infoModalTitle">Information</h2>
-            <p>In this exercise, you choose the correct form of a Swedish adjective so that it agrees with the noun it describes. You must pay attention to whether the noun is an en-word (common gender) or an ett-word (neuter), and whether the noun is singular or plural, as this affects the adjective ending. The exercise is based on 10 regular adjectives that follow a clear and consistent inflection pattern.</p><br />
-<table style="border-collapse: collapse; text-align: left; line-height: 1.2;">
-<tr>
-  <th style="text-align:left; padding:3px 18px 3px 8px;">Swedish adjective</th>
-  <th style="text-align:left; padding:3px 8px 3px 18px;">English meanings</th>
-</tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>fin</strong> (fint, fina)</td><td style="padding:3px 8px 3px 18px;">lovely, smart, nice, fine</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>ful</strong> (fult, fula)</td><td style="padding:3px 8px 3px 18px;">ugly</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>trevlig</strong> (trevligt, trevliga)</td><td style="padding:3px 8px 3px 18px;">pleasant</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>otrevlig</strong> (otrevligt, otrevliga)</td><td style="padding:3px 8px 3px 18px;">nasty, rude, unpleasant</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>dyr</strong> (dyrt, dyra)</td><td style="padding:3px 8px 3px 18px;">expensive</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>billig</strong> (billigt, billiga)</td><td style="padding:3px 8px 3px 18px;">cheap</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>rolig</strong> (roligt, roliga)</td><td style="padding:3px 8px 3px 18px;">funny, fun</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>tråkig</strong> (tråkigt, tråkiga)</td><td style="padding:3px 8px 3px 18px;">dull, boring, tedious</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>härlig</strong> (härligt, härliga)</td><td style="padding:3px 8px 3px 18px;">lovely, delightful, wonderful, glorious</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>skön</strong> (skönt, sköna)</td><td style="padding:3px 8px 3px 18px;">comfortable, comfy, pleasant, nice, lovely</td></tr>
-</table>
-<br />
+            <p>Approximately 80% of Swedish adjectives are regular, meaning they all follow a very straightforward inflection pattern: <strong>basic (non-neuter) form</strong>, <strong> neuter +t</strong>, and <strong>plural +a</strong>. Select the correct adjective form to ensure it agrees with the noun it describes.</p><br />
+
 			<h2 id="infoModalTitle">Please note!</h2>
-			<p>This exercise includes tooltips with English translations and indicates the gender of each head noun to assist you. For a greater challenge – without these aids – try the harder version of the exercise (see the menu options).
+			<p>Featured in this exercise are <strong>tooltips with translations and gender indicators</strong>. For a greater challenge, <strong>try the medium or hard level versions</strong> (see the menu options).
 			</p>
         </div>
     </div>
@@ -782,9 +794,9 @@ const sentences = [
     ]
 },
 {
-    translation: "The hotel offers a pleasant room.",
+    translation: "He bought a nice umbrella.",
     words: [
-        { sentencePart: "Hotellet erbjuder ett" },
+        { sentencePart: "Han köpte ett" },
         {
             sentencePart: `<select data-correct="trevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -793,13 +805,13 @@ const sentences = [
             <option value="trevliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "rum. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "paraply. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "They created a pleasant arrangement.",
+    translation: "The melody has a lovely theme.",
     words: [
-        { sentencePart: "De skapade ett" },
+        { sentencePart: "Melodin har ett" },
         {
             sentencePart: `<select data-correct="trevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -808,7 +820,7 @@ const sentences = [
             <option value="trevliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "arrangemang. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "tema. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
@@ -842,9 +854,9 @@ const sentences = [
     ]
 },
 {
-    translation: "He gave a rude answer.",
+    translation: "We had an unpleasant meeting at work.",
     words: [
-        { sentencePart: "Han gav ett" },
+        { sentencePart: "Vi hade ett" },
         {
             sentencePart: `<select data-correct="otrevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -853,13 +865,13 @@ const sentences = [
             <option value="otrevliga">otrevliga</option>
             </select>`,
         },
-        { sentencePart: "svar. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "möte på jobbet. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "They ended up in a nasty row.",
+    translation: "He found an unpleasant photo.",
     words: [
-        { sentencePart: "De hamnade i ett" },
+        { sentencePart: "Han hittade ett" },
         {
             sentencePart: `<select data-correct="otrevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -868,7 +880,7 @@ const sentences = [
             <option value="otrevliga">otrevliga</option>
             </select>`,
         },
-        { sentencePart: "bråk. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "foto. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
@@ -932,9 +944,9 @@ const sentences = [
     ]
 },
 {
-    translation: "The house has a nice window.",
+    translation: "She is wearing a lovely piece of jewellery.",
     words: [
-        { sentencePart: "Huset har ett" },
+        { sentencePart: "Hon bär ett" },
         {
             sentencePart: `<select data-correct="fint" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -943,13 +955,13 @@ const sentences = [
             <option value="fina">fina</option>
             </select>`,
         },
-        { sentencePart: "fönster. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "smycke. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "The child drew a lovely card.",
+    translation: "You have done a lovely job.",
     words: [
-        { sentencePart: "Barnet ritade ett" },
+        { sentencePart: "Du har gjort ett" },
         {
             sentencePart: `<select data-correct="fint" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -958,13 +970,13 @@ const sentences = [
             <option value="fina">fina</option>
             </select>`,
         },
-        { sentencePart: "kort. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "arbete. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "They own many fine paintings.",
+    translation: "On the wall are some fine paintings.",
     words: [
-        { sentencePart: "De äger många" },
+        { sentencePart: "På väggen hänger" },
         {
             sentencePart: `<select data-correct="fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -977,9 +989,9 @@ const sentences = [
     ]
 },
 {
-    translation: "We visited several lovely parks.",
+    translation: "In the album, there were lovely photos.",
     words: [
-        { sentencePart: "Vi besökte flera" },
+        { sentencePart: "I albumet fanns" },
         {
             sentencePart: `<select data-correct="fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -988,13 +1000,13 @@ const sentences = [
             <option value="fina">fina</option>
             </select>`,
         },
-        { sentencePart: "parker. <span class='gender-hint gender-n'>en gender</span>" }
+        { sentencePart: "foton. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    translation: "The neighbour has an ugly jumper.",
+    translation: "My little brother has an ugly jumper.",
     words: [
-        { sentencePart: "Grannen har en" },
+        { sentencePart: "Min lillebror har en" },
         {
             sentencePart: `<select data-correct="ful" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1007,9 +1019,9 @@ const sentences = [
     ]
 },
 {
-    translation: "The dog wore an ugly harness.",
+    translation: "I found a nasty cheese in the fridge.",
     words: [
-        { sentencePart: "Hunden bar en" },
+        { sentencePart: "Jag hittade en" },
         {
             sentencePart: `<select data-correct="ful" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1018,13 +1030,13 @@ const sentences = [
             <option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "sele. <span class='gender-hint gender-n'>en gender</span>" }
+        { sentencePart: "ost i kylskåpet. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    translation: "There is an ugly table in the corner.",
+    translation: "The wall has an ugly mark.",
     words: [
-        { sentencePart: "Det står ett" },
+        { sentencePart: "Väggen har ett" },
         {
             sentencePart: `<select data-correct="fult" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1033,13 +1045,13 @@ const sentences = [
             <option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "bord i hörnet. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "märke. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "She saw an ugly pattern on the wallpaper.",
+    translation: "Unfortunately, she has an ugly smile.",
     words: [
-        { sentencePart: "Hon såg ett" },
+        { sentencePart: "Hon har tyvärr ett" },
         {
             sentencePart: `<select data-correct="fult" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1048,13 +1060,13 @@ const sentences = [
             <option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "mönster på tapeten. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "leende. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "They threw away their ugly furniture.",
+    translation: "He had ugly clothes.",
     words: [
-        { sentencePart: "De slängde sina" },
+        { sentencePart: "Han hade" },
         {
             sentencePart: `<select data-correct="fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1063,13 +1075,13 @@ const sentences = [
             <option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "möbler. <span class='gender-hint gender-n'>en gender</span>" }
+        { sentencePart: "kläder. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    translation: "There are many ugly buildings here.",
+    translation: "Here are only ugly buildings.",
     words: [
-        { sentencePart: "Här finns många" },
+        { sentencePart: "Här finns bara" },
         {
             sentencePart: `<select data-correct="fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1097,9 +1109,9 @@ const sentences = [
     ]
 },
 {
-    translation: "He is drinking an expensive whisky.",
+    translation: "It became an expensive trip.",
     words: [
-        { sentencePart: "Han dricker en" },
+        { sentencePart: "Det blev en" },
         {
             sentencePart: `<select data-correct="dyr" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1108,13 +1120,13 @@ const sentences = [
             <option value="dyra">dyra</option>
             </select>`,
         },
-        { sentencePart: "whiskey. <span class='gender-hint gender-n'>en gender</span>" }
+        { sentencePart: "resa. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    translation: "The company bought an expensive system.",
+    translation: "Horse riding is an expensive hobby.",
     words: [
-        { sentencePart: "Företaget köpte ett" },
+        { sentencePart: "Hästsport är ett" },
         {
             sentencePart: `<select data-correct="dyrt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1123,7 +1135,7 @@ const sentences = [
             <option value="dyra">dyra</option>
             </select>`,
         },
-        { sentencePart: "system. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "nöje. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
@@ -1202,7 +1214,7 @@ const sentences = [
     ]
 },
 {
-    translation: "The hostel offers cheap accommodation.",
+    translation: "The hostel offers a cheap room.",
     words: [
         { sentencePart: "Vandrarhemmet erbjuder ett" },
         {
@@ -1217,9 +1229,9 @@ const sentences = [
     ]
 },
 {
-    translation: "They chose a cheap alternative.",
+    translation: "She found a cheap belt.",
     words: [
-        { sentencePart: "De valde ett" },
+        { sentencePart: "Hon hittade" },
         {
             sentencePart: `<select data-correct="billigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1228,7 +1240,7 @@ const sentences = [
             <option value="billiga">billiga</option>
             </select>`,
         },
-        { sentencePart: "alternativ. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "bälte. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
@@ -1292,9 +1304,9 @@ const sentences = [
     ]
 },
 {
-    translation: "The children watched a funny programme.",
+    translation: "We ended up at a fun place.",
     words: [
-        { sentencePart: "Barnen såg ett" },
+        { sentencePart: "Vi hamnade på ett" },
         {
             sentencePart: `<select data-correct="roligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1303,13 +1315,13 @@ const sentences = [
             <option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "program. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "ställe. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "We played a fun game.",
+    translation: "We found a fun photo.",
     words: [
-        { sentencePart: "Vi spelade ett" },
+        { sentencePart: "Vi hittade ett" },
         {
             sentencePart: `<select data-correct="roligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1318,13 +1330,13 @@ const sentences = [
             <option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "spel. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "foto. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "The book contains funny jokes.",
+    translation: "The book is about fun jobs.",
     words: [
-        { sentencePart: "Boken innehåller" },
+        { sentencePart: "Boken handlar om" },
         {
             sentencePart: `<select data-correct="roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1333,13 +1345,13 @@ const sentences = [
             <option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "skämt. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "yrken. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "We had many pleasant conversations.",
+    translation: "There were lovely cafés everywhere.",
     words: [
-        { sentencePart: "Vi hade många" },
+        { sentencePart: "Det fanns" },
         {
             sentencePart: `<select data-correct="trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1348,7 +1360,7 @@ const sentences = [
             <option value="trevliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "samtal. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "kaféer överallt. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
@@ -1367,9 +1379,9 @@ const sentences = [
     ]
 },
 {
-    translation: "They did many fun activities.",
+    translation: "They had planned fun activities.",
     words: [
-        { sentencePart: "De gjorde många" },
+        { sentencePart: "De hade planerat" },
         {
             sentencePart: `<select data-correct="roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1412,7 +1424,7 @@ const sentences = [
     ]
 },
 {
-    translation: "It was tedious news.",
+    translation: "It was boring meeting.",
     words: [
         { sentencePart: "Det var ett" },
         {
@@ -1423,7 +1435,7 @@ const sentences = [
             <option value="tråkiga">tråkiga</option>
             </select>`,
         },
-        { sentencePart: "besked. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "möte. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
@@ -1459,7 +1471,7 @@ const sentences = [
 {
     translation: "We read some boring articles.",
     words: [
-        { sentencePart: "Vi läste några" },
+        { sentencePart: "Vi läste" },
         {
             sentencePart: `<select data-correct="tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1468,7 +1480,7 @@ const sentences = [
             <option value="tråkiga">tråkiga</option>
             </select>`,
         },
-        { sentencePart: "artiklar. <span class='gender-hint gender-n'>en gender</span>" }
+        { sentencePart: "dikter. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
@@ -1502,9 +1514,9 @@ const sentences = [
     ]
 },
 {
-    translation: "They enjoyed a wonderful bath.",
+    translation: "They found a lovely bakery.",
     words: [
-        { sentencePart: "De njöt av ett" },
+        { sentencePart: "De hittade ett" },
         {
             sentencePart: `<select data-correct="härligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1513,13 +1525,13 @@ const sentences = [
             <option value="härliga">härliga</option>
             </select>`,
         },
-        { sentencePart: "bad. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "bageri. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "The kitchen spreads a lovely calm.",
+    translation: "The flat is in a lovely area.",
     words: [
-        { sentencePart: "Köket sprider ett" },
+        { sentencePart: "Lägenheten ligger i ett" },
         {
             sentencePart: `<select data-correct="härligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1528,13 +1540,13 @@ const sentences = [
             <option value="härliga">härliga</option>
             </select>`,
         },
-        { sentencePart: "lugn. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "område. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "The view offers glorious colours.",
+    translation: "The painting has lovely colours.",
     words: [
-        { sentencePart: "Utsikten erbjuder" },
+        { sentencePart: "Tavlan har" },
         {
             sentencePart: `<select data-correct="härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1577,9 +1589,9 @@ const sentences = [
     ]
 },
 {
-    translation: "She is wearing a comfy jacket.",
+    translation: "She is sitting in a comfy armchair.",
     words: [
-        { sentencePart: "Hon bär en" },
+        { sentencePart: "Hon sitter i en" },
         {
             sentencePart: `<select data-correct="skön" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1588,13 +1600,13 @@ const sentences = [
             <option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "jacka. <span class='gender-hint gender-n'>en gender</span>" }
+        { sentencePart: "fåtölj. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 },
 {
-    translation: "The room has a pleasant light.",
+    translation: "The song has a lovely pace.",
     words: [
-        { sentencePart: "Rummet har ett" },
+        { sentencePart: "Låten har ett" },
         {
             sentencePart: `<select data-correct="skönt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1603,13 +1615,13 @@ const sentences = [
             <option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "ljus. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "tempo. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
-    translation: "We took a nice break.",
+    translation: "He has a comfy duvet.",
     words: [
-        { sentencePart: "Vi tog ett" },
+        { sentencePart: "Han har ett" },
         {
             sentencePart: `<select data-correct="skönt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1618,7 +1630,7 @@ const sentences = [
             <option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "avbrott. <span class='gender-hint gender-t'>ett gender</span>" }
+        { sentencePart: "täcke. <span class='gender-hint gender-t'>ett gender</span>" }
     ]
 },
 {
@@ -1637,9 +1649,9 @@ const sentences = [
     ]
 },
 {
-    translation: "They experienced lovely summer evenings.",
+    translation: "They had pleasant summer evenings in the countryside.",
     words: [
-        { sentencePart: "De upplevde" },
+        { sentencePart: "De hade" },
         {
             sentencePart: `<select data-correct="sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
@@ -1648,7 +1660,7 @@ const sentences = [
             <option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "sommarkvällar. <span class='gender-hint gender-n'>en gender</span>" }
+        { sentencePart: "sommarkvällar på landet. <span class='gender-hint gender-n'>en gender</span>" }
     ]
 }
 
@@ -1770,23 +1782,27 @@ function generateSentenceHTML(sentence, index) {
 
 
     // Updates the score display based on value change.
-	function updateScore(value) {
-		score += value;
-	
-		// Prevent score from exceeding boundaries
-		if (score > 25) {
-			score = 25;
-		} else if (score < -25) {
-			score = -25;
-		}
-	
-		// Update all elements with the class "score-display" to reflect the updated score
-		document.querySelectorAll('.score-display').forEach((element) => {
-			element.textContent = score;
-		});
-	
-		checkForMaxScore(score);
-	}
+function updateScore(value) {
+    score += value;
+
+    // Hämta det faktiska antalet meningar dynamiskt
+    const maxScore = sentences.length;
+
+    // Förhindra att poängen går utanför gränserna (0 till max)
+    // Notera: Om du vill tillåta minuspoäng, använd -maxScore
+    if (score > maxScore) {
+        score = maxScore;
+    } else if (score < 0) {
+        score = 0; 
+    }
+
+    // Uppdatera alla element med klassen "score-display"
+    document.querySelectorAll('.score-display').forEach((element) => {
+        element.textContent = score;
+    });
+
+    checkForMaxScore(score);
+}
 
     // Check if the score has reached max and opens the congratulations modal if so.
     function checkForMaxScore(currentScore) {
@@ -1854,6 +1870,10 @@ function generateSentenceHTML(sentence, index) {
         // Uppdatera texten i dark mode toggle baserat på läget
         document.getElementById('darkModeText').textContent = isDarkModeEnabled ? "Light mode" : "Dark mode";
     }
+
+function goToMediumVersion() {
+    window.location.href = "https://learnswedish.github.io/html/adjective-regular-medium.html";
+}
 
 function goToHardVersion() {
     window.location.href = "https://learnswedish.github.io/html/adjective-regular-hard.html";
@@ -1929,5 +1949,4 @@ function goToHardVersion() {
     </script>
 
 </body>
-
 </html>
