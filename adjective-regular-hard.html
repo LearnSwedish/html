@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adjective Agreement (regular): hard version</title>
+    <title>Adjective Agreement (regular): hard level</title>
 
     <!-- Font Awesome CDN for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
@@ -102,45 +102,72 @@
             cursor: default;
         }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
 
-        .modal-content {
-            background: white;
-            color: black;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 600px;
-            width: 80%;
-            transform: translateY(-50px);
-            transition: transform 0.3s ease-in-out;
-        }
+.modal-content {
+    background: white;
+    color: black;
+    padding: 30px; /* Något mer luft för läsbarhet */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: left; /* Ändrat från center till left */
+    max-width: 600px;
+    width: 90%; /* Lite bredare på mobiler */
+    max-height: 80vh; /* Säkerställer att den inte täcker hela skärmen på höjden */
+    overflow-y: auto; /* Gör innehållet rullbart om det är långt */
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-in-out;
+}
 
-        body.dark-mode .modal-content {
-            background-color: #1a202c;
-            color: #edf2f7;
-            border-color: #2d3748;
-        }
+/* Specifik styling för element inuti modalen */
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
 
-        .modal.show {
-            display: flex;
-            opacity: 1;
-        }
+.modal-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.modal-content ul {
+    margin-left: 20px; /* Ger punktlistan ett korrekt indrag */
+    margin-bottom: 15px;
+}
+
+.modal-content li {
+    margin-bottom: 10px;
+}
+
+body.dark-mode .modal-content {
+    background-color: #1a202c;
+    color: #edf2f7;
+    border: 1px solid #2d3748; /* Lade till en tunn kant för definition */
+}
+
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+}
 
         /* Page Title */
         .page-title {
@@ -528,6 +555,146 @@
                 transform: translateX(18px);
             }
         }
+.answer-input {
+    padding: 4px 8px;
+    padding-right: 85px; /* Ökat för att ge knapparna rejält med plats */
+    font-size: 1rem;
+    border: 2px solid #cbd5e0;
+    border-radius: 6px;
+    background-color: #fff;
+    width: 220px; /* Ökat från 140px för att rymma både text och knappar */
+    transition: all 0.2s;
+    outline: none;
+    margin: 0 5px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+body.dark-mode .answer-input {
+    background-color: #4a5568;
+    color: #fff;
+    border-color: #718096;
+}
+
+/* Standard placeholder-färg (light mode) */
+.answer-input::placeholder {
+    color: #a0aec0;
+    opacity: 1; /* Firefox behöver detta */
+}
+
+/* Placeholder-färg för dark mode */
+body.dark-mode .answer-input::placeholder {
+    color: #cbd5e0; /* En ljusare grå som syns bra mot den mörka bakgrunden */
+    opacity: 0.7;
+}
+
+/* Focus-effekt för Light Mode */
+.answer-input:focus {
+    border-color: #3182ce; /* En tydlig blå färg */
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3); /* Mjuk blå gloria */
+    background-color: #fff;
+}
+
+/* Focus-effekt för Dark Mode */
+body.dark-mode .answer-input:focus {
+    border-color: #63b3ed; /* Ljusare blå för bättre kontrast */
+    box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
+    background-color: #2d3748; /* Något mörkare bakgrund vid fokus */
+}
+
+/* Behåll rätt/fel-färg även vid fokus om du vill prioritera feedback */
+.sentence.correct .answer-input:focus {
+    border-color: #38a169;
+    box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.3);
+}
+
+.sentence.incorrect .answer-input:focus {
+    border-color: #e53e3e;
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.3);
+}
+
+/* När fältet är i en korrekt mening, gör ramen tydligare */
+.sentence.correct .answer-input {
+    border-color: #38a169;
+}
+
+.sentence.incorrect .answer-input {
+    border-color: #e53e3e;
+}
+
+.adj-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #e2e8f0; /* Ljusgrå blå */
+    color: #4a5568;
+    border: 1.5px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+/* Dark mode variant */
+body.dark-mode .adj-badge {
+    background-color: #2d3748;
+    color: #edf2f7;
+    border: 1.5px solid #718096;
+}
+
+/* Behållare för input och knappar */
+.input-wrapper {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.answer-input {
+    padding-right: 75px; /* Skapa plats för knapparna till höger */
+}
+
+/* De små knapparna */
+.char-btn {
+    background: #edf2f7;
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    width: 24px; /* Fixerad bredd för symmetri */
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #4a5568;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.char-btn:hover {
+    background: #e2e8f0;
+    border-color: #a0aec0;
+}
+
+/* Dark mode för knapparna */
+body.dark-mode .char-btn {
+    background: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
+}
+
+body.dark-mode .char-btn:hover {
+    background: #4a5568;
+}
+
+.btn-container {
+    position: absolute;
+    right: 8px; /* Lite marginal från högerkanten */
+    display: flex;
+    gap: 2px;
+    pointer-events: auto; /* Säkerställer att knapparna går att klicka på */
+}
+
     </style>
 
 </head>
@@ -551,8 +718,11 @@
             <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
         </button>
         <!-- Go to harder version of the exercise (no gender indicated) -->
-        <button class="start-over" onclick="goToHardVersion()">
-            <i class="fas fa-arrow-right" style="margin-right: 8px;"></i> Easy version
+        <button class="start-over" onclick="goToEasyVersion()">
+            <i class="fas fa-arrow-right" style="margin-right: 8px;"></i> Easy level
+        </button>
+        <button class="start-over" onclick="goToMediumVersion()">
+            <i class="fas fa-arrow-right" style="margin-right: 8px;"></i> Medium level
         </button>
         <!-- Start Over Button for Desktop -->
         <button class="start-over" onclick="startOver()">
@@ -581,12 +751,12 @@
         <div class="menu-item" onclick="showInfo()">
             <i class="fas fa-info-circle"></i> Info
         </div>
-        <div class="menu-item" onclick="openMenuURL()">
-            <i class="fas fa-book"></i> The logic
-        </div>
 		<!-- Go to hard version of the exercise (no gender indicated) -->
-		<div class="menu-item" onclick="goToHardVersion()">
-			<i class="fas fa-arrow-up-right-from-square"></i> Hard version
+		<div class="menu-item" onclick="goToEasyVersion()">
+			<i class="fas fa-arrow-up-right-from-square"></i> Easy level
+		</div>
+		<div class="menu-item" onclick="goToMediumVersion()">
+			<i class="fas fa-arrow-up-right-from-square"></i> Medium level
 		</div>
         <!-- Start Over Button -->
         <div class="menu-item" onclick="startOverAndCloseMenu()">
@@ -596,7 +766,7 @@
 
 
     <!-- Page Title -->
-    <h1 class="page-title">Adjective Agreement (regular): hard version</h1>
+    <h1 class="page-title">Adjective Agreement (indefinite regular): hard level</h1>
     <p>Read the "Info" to understand what this exercise is about.</p>
 
     <!-- Main Content Container -->
@@ -607,27 +777,11 @@
         <div class="modal-content">
             <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
             <h2 id="infoModalTitle">Information</h2>
-            <p>In this exercise, you choose the correct form of a Swedish adjective so that it agrees with the noun it describes. You must pay attention to whether the noun is an en-word (common gender) or an ett-word (neuter), and whether the noun is singular or plural, as this affects the adjective ending. The exercise is based on 10 regular adjectives that follow a clear and consistent inflection pattern.</p><br />
-<table style="border-collapse: collapse; text-align: left; line-height: 1.2;">
-<tr>
-  <th style="text-align:left; padding:3px 18px 3px 8px;">Swedish adjective</th>
-  <th style="text-align:left; padding:3px 8px 3px 18px;">English meanings</th>
-</tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>fin</strong> (fint, fina)</td><td style="padding:3px 8px 3px 18px;">lovely, smart, nice, fine</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>ful</strong> (fult, fula)</td><td style="padding:3px 8px 3px 18px;">ugly</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>trevlig</strong> (trevligt, trevliga)</td><td style="padding:3px 8px 3px 18px;">pleasant</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>otrevlig</strong> (otrevligt, otrevliga)</td><td style="padding:3px 8px 3px 18px;">nasty, rude, unpleasant</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>dyr</strong> (dyrt, dyra)</td><td style="padding:3px 8px 3px 18px;">expensive</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>billig</strong> (billigt, billiga)</td><td style="padding:3px 8px 3px 18px;">cheap</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>rolig</strong> (roligt, roliga)</td><td style="padding:3px 8px 3px 18px;">funny, fun</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>tråkig</strong> (tråkigt, tråkiga)</td><td style="padding:3px 8px 3px 18px;">dull, boring, tedious</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>härlig</strong> (härligt, härliga)</td><td style="padding:3px 8px 3px 18px;">lovely, delightful, wonderful, glorious</td></tr>
-<tr><td style="padding:3px 18px 3px 8px;"><strong>skön</strong> (skönt, sköna)</td><td style="padding:3px 8px 3px 18px;">comfortable, comfy, pleasant, nice, lovely</td></tr>
-</table>
-<br />
-			<h2 id="infoModalTitle">Please note!</h2>
-			<p>In this exercise, you are not given translations of the sentences, and you are expected to know the grammatical gender of the head noun, which is crucial in many cases. If you need to practise with easier material, there is a simpler version of the exercise available (see the menu).
+            <p>Approximately 80% of Swedish adjectives are regular, meaning they all follow a very straightforward inflection pattern: <strong>basic (non-neuter) form</strong>, <strong> neuter +t</strong>, and <strong>plural +a</strong>. Provide the correct adjective form to ensure it agrees with the noun it describes.</p>
+			<p><strong>Please note</strong>: The text field will turn red as soon as you begin typing; this is normal and indicates the answer is incomplete. It will turn green the moment the correct form is entered. If your keyboard lacks the characters å, ä, or ö, you can insert them by clicking the buttons to the right of each text box.
 			</p>
+			<h2 id="infoModalTitle">A defining feature of this level</h2>
+			<p>No translations provided, you are expected to know the gender of the head noun, and you must manually enter the correct adjective form (and article when the head noun is in the singular). <strong>There are two easier versions</strong> of this exercise available (see the menu).
         </div>
     </div>
 
@@ -646,58 +800,66 @@ const sentences = [
 
 {
     words: [
-        { sentencePart: "Vi träffade en" },
+        { sentencePart: "Vi träffade" },
         {
-            sentencePart: `<select data-correct="trevlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en trevlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="trevlig">trevlig</option>
-            <option value="trevligt">trevligt</option>
-            <option value="trevliga">trevliga</option>
+<option value="en trevlig">en trevlig</option>
+<option value="ett trevlig">ett trevlig</option>
+<option value="en trevligt">en trevligt</option>
+<option value="ett trevligt">ett trevligt</option>
+<option value="trevliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "kvinna." }
+        { sentencePart: "kvinna. (adj: trevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Butiken har en" },
+        { sentencePart: "Butiken har" },
         {
-            sentencePart: `<select data-correct="trevlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en trevlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="trevlig">trevlig</option>
-            <option value="trevligt">trevligt</option>
-            <option value="trevliga">trevliga</option>
+<option value="en trevlig">en trevlig</option>
+<option value="ett trevlig">ett trevlig</option>
+<option value="en trevligt">en trevligt</option>
+<option value="ett trevligt">ett trevligt</option>
+<option value="trevliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "atmosfär." }
+        { sentencePart: "atmosfär. (adj: trevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hotellet erbjuder ett" },
+        { sentencePart: "Han köpte" },
         {
-            sentencePart: `<select data-correct="trevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett trevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="trevlig">trevlig</option>
-            <option value="trevligt">trevligt</option>
-            <option value="trevliga">trevliga</option>
+<option value="en trevlig">en trevlig</option>
+<option value="ett trevlig">ett trevlig</option>
+<option value="en trevligt">en trevligt</option>
+<option value="ett trevligt">ett trevligt</option>
+<option value="trevliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "rum." }
+        { sentencePart: "paraply. (adj: trevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De skapade ett" },
+        { sentencePart: "Melodin har" },
         {
-            sentencePart: `<select data-correct="trevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett trevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="trevlig">trevlig</option>
-            <option value="trevligt">trevligt</option>
-            <option value="trevliga">trevliga</option>
+<option value="en trevlig">en trevlig</option>
+<option value="ett trevlig">ett trevlig</option>
+<option value="en trevligt">en trevligt</option>
+<option value="ett trevligt">ett trevligt</option>
+<option value="trevliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "arrangemang." }
+        { sentencePart: "tema. (adj: trevlig)" }
     ]
 },
 {
@@ -706,68 +868,78 @@ const sentences = [
         {
             sentencePart: `<select data-correct="trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="trevlig">trevlig</option>
-            <option value="trevligt">trevligt</option>
-            <option value="trevliga">trevliga</option>
+<option value="en trevlig">en trevlig</option>
+<option value="ett trevlig">ett trevlig</option>
+<option value="en trevligt">en trevligt</option>
+<option value="ett trevligt">ett trevligt</option>
+<option value="trevliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "kollegor." }
+        { sentencePart: "kollegor. (adj: trevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Han fick en" },
+        { sentencePart: "Han fick" },
         {
-            sentencePart: `<select data-correct="otrevlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en otrevlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="otrevlig">otrevlig</option>
-            <option value="otrevligt">otrevligt</option>
-            <option value="otrevliga">otrevliga</option>
+<option value="en otrevlig">en otrevlig</option>
+<option value="ett otrevlig">ett otrevlig</option>
+<option value="en otrevligt">en otrevligt</option>
+<option value="ett otrevligt">ett otrevligt</option>
+<option value="otrevliga">otrevliga</option>
             </select>`,
         },
-        { sentencePart: "överraskning." }
+        { sentencePart: "överraskning. (adj: otrevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Han gav ett" },
+        { sentencePart: "Vi hade" },
         {
-            sentencePart: `<select data-correct="otrevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett otrevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="otrevlig">otrevlig</option>
-            <option value="otrevligt">otrevligt</option>
-            <option value="otrevliga">otrevliga</option>
+<option value="en otrevlig">en otrevlig</option>
+<option value="ett otrevlig">ett otrevlig</option>
+<option value="en otrevligt">en otrevligt</option>
+<option value="ett otrevligt">ett otrevligt</option>
+<option value="otrevliga">otrevliga</option>
             </select>`,
         },
-        { sentencePart: "svar." }
+        { sentencePart: "möte på jobbet idag. (adj: otrevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De hamnade i ett" },
+        { sentencePart: "Han hittade" },
         {
-            sentencePart: `<select data-correct="otrevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett otrevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="otrevlig">otrevlig</option>
-            <option value="otrevligt">otrevligt</option>
-            <option value="otrevliga">otrevliga</option>
+<option value="en otrevlig">en otrevlig</option>
+<option value="ett otrevlig">ett otrevlig</option>
+<option value="en otrevligt">en otrevligt</option>
+<option value="ett otrevligt">ett otrevligt</option>
+<option value="otrevliga">otrevliga</option>
             </select>`,
         },
-        { sentencePart: "bråk." }
+        { sentencePart: "foto. (adj: otrevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Det var ett" },
+        { sentencePart: "Det var" },
         {
-            sentencePart: `<select data-correct="otrevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett otrevligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="otrevlig">otrevlig</option>
-            <option value="otrevligt">otrevligt</option>
-            <option value="otrevliga">otrevliga</option>
+<option value="en otrevlig">en otrevlig</option>
+<option value="ett otrevlig">ett otrevlig</option>
+<option value="en otrevligt">en otrevligt</option>
+<option value="ett otrevligt">ett otrevligt</option>
+<option value="otrevliga">otrevliga</option>
             </select>`,
         },
-        { sentencePart: "bemötande." }
+        { sentencePart: "bemötande. (adj: otrevlig)" }
     ]
 },
 {
@@ -776,236 +948,268 @@ const sentences = [
         {
             sentencePart: `<select data-correct="otrevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="otrevlig">otrevlig</option>
-            <option value="otrevligt">otrevligt</option>
-            <option value="otrevliga">otrevliga</option>
+<option value="en otrevlig">en otrevlig</option>
+<option value="ett otrevlig">ett otrevlig</option>
+<option value="en otrevligt">en otrevligt</option>
+<option value="ett otrevligt">ett otrevligt</option>
+<option value="otrevliga">otrevliga</option>
             </select>`,
         },
-        { sentencePart: "karaktärer." }
+        { sentencePart: "karaktärer. (adj: otrevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hon bär en" },
+        { sentencePart: "Hon bär" },
         {
-            sentencePart: `<select data-correct="fin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en fin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="fin">fin</option>
-            <option value="fint">fint</option>
-            <option value="fina">fina</option>
+<option value="en fin">en fin</option>
+<option value="ett fin">ett fin</option>
+<option value="en fint">en fint</option>
+<option value="ett fint">ett fint</option>
+<option value="fina">fina</option>
             </select>`,
         },
-        { sentencePart: "klänning." }
+        { sentencePart: "klänning. (adj: fin)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Han köpte en" },
+        { sentencePart: "Han köpte" },
         {
-            sentencePart: `<select data-correct="fin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en fin" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="fin">fin</option>
-            <option value="fint">fint</option>
-            <option value="fina">fina</option>
+<option value="en fin">en fin</option>
+<option value="ett fin">ett fin</option>
+<option value="en fint">en fint</option>
+<option value="ett fint">ett fint</option>
+<option value="fina">fina</option>
             </select>`,
         },
-        { sentencePart: "bil." }
+        { sentencePart: "bil. (adj: fin)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Huset har ett" },
+        { sentencePart: "Hon bär" },
         {
-            sentencePart: `<select data-correct="fint" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett fint" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="fin">fin</option>
-            <option value="fint">fint</option>
-            <option value="fina">fina</option>
+<option value="en fin">en fin</option>
+<option value="ett fin">ett fin</option>
+<option value="en fint">en fint</option>
+<option value="ett fint">ett fint</option>
+<option value="fina">fina</option>
             </select>`,
         },
-        { sentencePart: "fönster." }
+        { sentencePart: "smycke. (adj: fin)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Barnet ritade ett" },
+        { sentencePart: "Du har gjort" },
         {
-            sentencePart: `<select data-correct="fint" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett fint" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="fin">fin</option>
-            <option value="fint">fint</option>
-            <option value="fina">fina</option>
+<option value="en fin">en fin</option>
+<option value="ett fin">ett fin</option>
+<option value="en fint">en fint</option>
+<option value="ett fint">ett fint</option>
+<option value="fina">fina</option>
             </select>`,
         },
-        { sentencePart: "kort." }
+        { sentencePart: "arbete. (adj: fin)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De äger många" },
-        {
-            sentencePart: `<select data-correct="fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
-            <option value="">Välj</option>
-            <option value="fin">fin</option>
-            <option value="fint">fint</option>
-            <option value="fina">fina</option>
-            </select>`,
-        },
-        { sentencePart: "tavlor." }
-    ]
-},
-{
-    words: [
-        { sentencePart: "Vi besökte flera" },
+        { sentencePart: "På väggen hänger" },
         {
             sentencePart: `<select data-correct="fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="fin">fin</option>
-            <option value="fint">fint</option>
-            <option value="fina">fina</option>
+<option value="en fin">en fin</option>
+<option value="ett fin">ett fin</option>
+<option value="en fint">en fint</option>
+<option value="ett fint">ett fint</option>
+<option value="fina">fina</option>
             </select>`,
         },
-        { sentencePart: "parker." }
+        { sentencePart: "tavlor. (adj: fin)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Grannen har en" },
+        { sentencePart: "I albumet fanns" },
         {
-            sentencePart: `<select data-correct="ful" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Välj</option>
+<option value="en fin">en fin</option>
+<option value="ett fin">ett fin</option>
+<option value="en fint">en fint</option>
+<option value="ett fint">ett fint</option>
+<option value="fina">fina</option>
+            </select>`,
+        },
+        { sentencePart: "foton. (adj: fin)" }
+    ]
+},
+{
+    words: [
+        { sentencePart: "Min lillebror har" },
+        {
+            sentencePart: `<select data-correct="en ful" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
             <option value="ful">ful</option>
             <option value="fult">fult</option>
             <option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "tröja." }
+        { sentencePart: "tröja. (adj: ful)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hunden bar en" },
+        { sentencePart: "Jag hittade" },
         {
-            sentencePart: `<select data-correct="ful" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en ful" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="ful">ful</option>
-            <option value="fult">fult</option>
-            <option value="fula">fula</option>
+<option value="en ful">en ful</option>
+<option value="ett ful">ett ful</option>
+<option value="en fult">en fult</option>
+<option value="ett fult">ett fult</option>
+<option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "sele." }
+        { sentencePart: "ost i kylskåpet. (adj: ful)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Det står ett" },
+        { sentencePart: "Väggen har" },
         {
-            sentencePart: `<select data-correct="fult" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett fult" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="ful">ful</option>
-            <option value="fult">fult</option>
-            <option value="fula">fula</option>
+<option value="en ful">en ful</option>
+<option value="ett ful">ett ful</option>
+<option value="en fult">en fult</option>
+<option value="ett fult">ett fult</option>
+<option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "bord i hörnet." }
+        { sentencePart: "märke. (adj: ful)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hon såg ett" },
+        { sentencePart: "Hon har tyvärr" },
         {
-            sentencePart: `<select data-correct="fult" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett fult" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="ful">ful</option>
-            <option value="fult">fult</option>
-            <option value="fula">fula</option>
+<option value="en ful">en ful</option>
+<option value="ett ful">ett ful</option>
+<option value="en fult">en fult</option>
+<option value="ett fult">ett fult</option>
+<option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "mönster på tapeten." }
+        { sentencePart: "leende. (adj: ful)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De slängde sina" },
+        { sentencePart: "Han hade" },
         {
             sentencePart: `<select data-correct="fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="ful">ful</option>
-            <option value="fult">fult</option>
-            <option value="fula">fula</option>
+<option value="en ful">en ful</option>
+<option value="ett ful">ett ful</option>
+<option value="en fult">en fult</option>
+<option value="ett fult">ett fult</option>
+<option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "möbler." }
+        { sentencePart: "kläder. (adj: ful)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Här finns många" },
+        { sentencePart: "Här finns bara" },
         {
             sentencePart: `<select data-correct="fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="ful">ful</option>
-            <option value="fult">fult</option>
-            <option value="fula">fula</option>
+<option value="en ful">en ful</option>
+<option value="ett ful">ett ful</option>
+<option value="en fult">en fult</option>
+<option value="ett fult">ett fult</option>
+<option value="fula">fula</option>
             </select>`,
         },
-        { sentencePart: "byggnader." }
+        { sentencePart: "byggnader. (adj: ful)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hon kör en" },
+        { sentencePart: "Hon kör" },
         {
-            sentencePart: `<select data-correct="dyr" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en dyr" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="dyr">dyr</option>
-            <option value="dyrt">dyrt</option>
-            <option value="dyra">dyra</option>
+<option value="en dyr">en dyr</option>
+<option value="ett dyr">ett dyr</option>
+<option value="en dyrt">en dyrt</option>
+<option value="ett dyrt">ett dyrt</option>
+<option value="dyra">dyra</option>
             </select>`,
         },
-        { sentencePart: "sportbil." }
+        { sentencePart: "sportbil. (adj: dyr)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Han dricker en" },
+        { sentencePart: "Det blev" },
         {
-            sentencePart: `<select data-correct="dyr" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en dyr" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="dyr">dyr</option>
-            <option value="dyrt">dyrt</option>
-            <option value="dyra">dyra</option>
+<option value="en dyr">en dyr</option>
+<option value="ett dyr">ett dyr</option>
+<option value="en dyrt">en dyrt</option>
+<option value="ett dyrt">ett dyrt</option>
+<option value="dyra">dyra</option>
             </select>`,
         },
-        { sentencePart: "whiskey." }
+        { sentencePart: "resa. (adj: dyr)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Företaget köpte ett" },
+        { sentencePart: "Hästsport är" },
         {
-            sentencePart: `<select data-correct="dyrt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett dyrt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="dyr">dyr</option>
-            <option value="dyrt">dyrt</option>
-            <option value="dyra">dyra</option>
+<option value="en dyr">en dyr</option>
+<option value="ett dyr">ett dyr</option>
+<option value="en dyrt">en dyrt</option>
+<option value="ett dyrt">ett dyrt</option>
+<option value="dyra">dyra</option>
             </select>`,
         },
-        { sentencePart: "system." }
+        { sentencePart: "nöje. (adj: dyr)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De bor i ett" },
+        { sentencePart: "De bor i" },
         {
-            sentencePart: `<select data-correct="dyrt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett dyrt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="dyr">dyr</option>
-            <option value="dyrt">dyrt</option>
-            <option value="dyra">dyra</option>
+<option value="en dyr">en dyr</option>
+<option value="ett dyr">ett dyr</option>
+<option value="en dyrt">en dyrt</option>
+<option value="ett dyrt">ett dyrt</option>
+<option value="dyra">dyra</option>
             </select>`,
         },
-        { sentencePart: "område." }
+        { sentencePart: "område. (adj: dyr)" }
     ]
 },
 {
@@ -1014,12 +1218,14 @@ const sentences = [
         {
             sentencePart: `<select data-correct="dyra" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="dyr">dyr</option>
-            <option value="dyrt">dyrt</option>
-            <option value="dyra">dyra</option>
+<option value="en dyr">en dyr</option>
+<option value="ett dyr">ett dyr</option>
+<option value="en dyrt">en dyrt</option>
+<option value="ett dyrt">ett dyrt</option>
+<option value="dyra">dyra</option>
             </select>`,
         },
-        { sentencePart: "klockor." }
+        { sentencePart: "klockor. (adj: dyr)" }
     ]
 },
 {
@@ -1028,68 +1234,78 @@ const sentences = [
         {
             sentencePart: `<select data-correct="dyra" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="dyr">dyr</option>
-            <option value="dyrt">dyrt</option>
-            <option value="dyra">dyra</option>
+<option value="en dyr">en dyr</option>
+<option value="ett dyr">ett dyr</option>
+<option value="en dyrt">en dyrt</option>
+<option value="ett dyrt">ett dyrt</option>
+<option value="dyra">dyra</option>
             </select>`,
         },
-        { sentencePart: "lägenheter." }
+        { sentencePart: "lägenheter. (adj: dyr)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Jag hittade en" },
+        { sentencePart: "Jag hittade" },
         {
-            sentencePart: `<select data-correct="billig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en billig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="billig">billig</option>
-            <option value="billigt">billigt</option>
-            <option value="billiga">billiga</option>
+<option value="en billig">en billig</option>
+<option value="ett billig">ett billig</option>
+<option value="en billigt">en billigt</option>
+<option value="ett billigt">ett billigt</option>
+<option value="billiga">billiga</option>
             </select>`,
         },
-        { sentencePart: "biljett." }
+        { sentencePart: "biljett. (adj: billig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hon äter en" },
+        { sentencePart: "Hon äter" },
         {
-            sentencePart: `<select data-correct="billig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en billig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="billig">billig</option>
-            <option value="billigt">billigt</option>
-            <option value="billiga">billiga</option>
+<option value="en billig">en billig</option>
+<option value="ett billig">ett billig</option>
+<option value="en billigt">en billigt</option>
+<option value="ett billigt">ett billigt</option>
+<option value="billiga">billiga</option>
             </select>`,
         },
-        { sentencePart: "lunch." }
+        { sentencePart: "lunch. (adj: billig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Vandrarhemmet erbjuder ett" },
+        { sentencePart: "Vandrarhemmet erbjuder" },
         {
-            sentencePart: `<select data-correct="billigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett billigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="billig">billig</option>
-            <option value="billigt">billigt</option>
-            <option value="billiga">billiga</option>
+<option value="en billig">en billig</option>
+<option value="ett billig">ett billig</option>
+<option value="en billigt">en billigt</option>
+<option value="ett billigt">ett billigt</option>
+<option value="billiga">billiga</option>
             </select>`,
         },
-        { sentencePart: "boende." }
+        { sentencePart: "boende. (adj: billig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De valde ett" },
+        { sentencePart: "Hon hittade" },
         {
-            sentencePart: `<select data-correct="billigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett billigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="billig">billig</option>
-            <option value="billigt">billigt</option>
-            <option value="billiga">billiga</option>
+<option value="en billig">en billig</option>
+<option value="ett billig">ett billig</option>
+<option value="en billigt">en billigt</option>
+<option value="ett billigt">ett billigt</option>
+<option value="billiga">billiga</option>
             </select>`,
         },
-        { sentencePart: "alternativ." }
+        { sentencePart: "bälte. (adj: billig)" }
     ]
 },
 {
@@ -1098,12 +1314,14 @@ const sentences = [
         {
             sentencePart: `<select data-correct="billiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="billig">billig</option>
-            <option value="billigt">billigt</option>
-            <option value="billiga">billiga</option>
+<option value="en billig">en billig</option>
+<option value="ett billig">ett billig</option>
+<option value="en billigt">en billigt</option>
+<option value="ett billigt">ett billigt</option>
+<option value="billiga">billiga</option>
             </select>`,
         },
-        { sentencePart: "grönsaker." }
+        { sentencePart: "grönsaker. (adj: billig)" }
     ]
 },
 {
@@ -1112,96 +1330,110 @@ const sentences = [
         {
             sentencePart: `<select data-correct="billiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="billig">billig</option>
-            <option value="billigt">billigt</option>
-            <option value="billiga">billiga</option>
+<option value="en billig">en billig</option>
+<option value="ett billig">ett billig</option>
+<option value="en billigt">en billigt</option>
+<option value="ett billigt">ett billigt</option>
+<option value="billiga">billiga</option>
             </select>`,
         },
-        { sentencePart: "skor här." }
+        { sentencePart: "skor här. (adj: billig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Han berättade en" },
+        { sentencePart: "Han berättade" },
         {
-            sentencePart: `<select data-correct="rolig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en rolig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="rolig">rolig</option>
-            <option value="roligt">roligt</option>
-            <option value="roliga">roliga</option>
+<option value="en rolig">en rolig</option>
+<option value="ett rolig">ett rolig</option>
+<option value="en roligt">en roligt</option>
+<option value="ett roligt">ett roligt</option>
+<option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "historia." }
+        { sentencePart: "historia. (adj: rolig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hon har en" },
+        { sentencePart: "Hon har" },
         {
-            sentencePart: `<select data-correct="rolig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en rolig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="rolig">rolig</option>
-            <option value="roligt">roligt</option>
-            <option value="roliga">roliga</option>
+<option value="en rolig">en rolig</option>
+<option value="ett rolig">ett rolig</option>
+<option value="en roligt">en roligt</option>
+<option value="ett roligt">ett roligt</option>
+<option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "hobby." }
+        { sentencePart: "hobby. (adj: rolig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Barnen såg ett" },
+        { sentencePart: "Vi hamnade på" },
         {
-            sentencePart: `<select data-correct="roligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett roligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="rolig">rolig</option>
-            <option value="roligt">roligt</option>
-            <option value="roliga">roliga</option>
+<option value="en rolig">en rolig</option>
+<option value="ett rolig">ett rolig</option>
+<option value="en roligt">en roligt</option>
+<option value="ett roligt">ett roligt</option>
+<option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "program." }
+        { sentencePart: "ställe. (adj: rolig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Vi spelade ett" },
+        { sentencePart: "Vi hittade" },
         {
-            sentencePart: `<select data-correct="roligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett roligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="rolig">rolig</option>
-            <option value="roligt">roligt</option>
-            <option value="roliga">roliga</option>
+<option value="en rolig">en rolig</option>
+<option value="ett rolig">ett rolig</option>
+<option value="en roligt">en roligt</option>
+<option value="ett roligt">ett roligt</option>
+<option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "spel." }
+        { sentencePart: "foto. (adj: rolig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Boken innehåller" },
+        { sentencePart: "Boken handlar om" },
         {
             sentencePart: `<select data-correct="roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="rolig">rolig</option>
-            <option value="roligt">roligt</option>
-            <option value="roliga">roliga</option>
+<option value="en rolig">en rolig</option>
+<option value="ett rolig">ett rolig</option>
+<option value="en roligt">en roligt</option>
+<option value="ett roligt">ett roligt</option>
+<option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "skämt." }
+        { sentencePart: "yrken. (adj: rolig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Vi hade många" },
+        { sentencePart: "Det fanns" },
         {
             sentencePart: `<select data-correct="trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="trevlig">trevlig</option>
-            <option value="trevligt">trevligt</option>
-            <option value="trevliga">trevliga</option>
+<option value="en trevlig">en trevlig</option>
+<option value="ett trevlig">ett trevlig</option>
+<option value="en trevligt">en trevligt</option>
+<option value="ett trevligt">ett trevligt</option>
+<option value="roliga">trevliga</option>
             </select>`,
         },
-        { sentencePart: "samtal." }
+        { sentencePart: "kaféer överallt. (adj: trevlig)" }
     ]
 },
 {
@@ -1210,82 +1442,94 @@ const sentences = [
         {
             sentencePart: `<select data-correct="otrevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="otrevlig">otrevlig</option>
-            <option value="otrevligt">otrevligt</option>
-            <option value="otrevliga">otrevliga</option>
+<option value="en otrevlig">en otrevlig</option>
+<option value="ett otrevlig">ett otrevlig</option>
+<option value="en otrevligt">en otrevligt</option>
+<option value="ett otrevligt">ett otrevligt</option>
+<option value="otrevliga">otrevliga</option>
             </select>`,
         },
-        { sentencePart: "rykten." }
+        { sentencePart: "rykten. (adj: otrevlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De gjorde många" },
+        { sentencePart: "De hade planerat" },
         {
             sentencePart: `<select data-correct="roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="rolig">rolig</option>
-            <option value="roligt">roligt</option>
-            <option value="roliga">roliga</option>
+<option value="en rolig">en rolig</option>
+<option value="ett rolig">ett rolig</option>
+<option value="en roligt">en roligt</option>
+<option value="ett roligt">ett roligt</option>
+<option value="roliga">roliga</option>
             </select>`,
         },
-        { sentencePart: "aktiviteter." }
+        { sentencePart: "aktiviteter. (adj: rolig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Vi såg en" },
+        { sentencePart: "Vi såg" },
         {
-            sentencePart: `<select data-correct="tråkig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en tråkig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="tråkig">tråkig</option>
-            <option value="tråkigt">tråkigt</option>
-            <option value="tråkiga">tråkiga</option>
+<option value="en tråkig">en tråkig</option>
+<option value="ett tråkig">ett tråkig</option>
+<option value="en tråkigt">en tråkigt</option>
+<option value="ett tråkigt">ett tråkigt</option>
+<option value="tråkiga">tråkiga</option>
             </select>`,
         },
-        { sentencePart: "pjäs." }
+        { sentencePart: "pjäs. (adj: tråkig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Han har en" },
+        { sentencePart: "Han har" },
         {
-            sentencePart: `<select data-correct="tråkig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en tråkig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="tråkig">tråkig</option>
-            <option value="tråkigt">tråkigt</option>
-            <option value="tråkiga">tråkiga</option>
+<option value="en tråkig">en tråkig</option>
+<option value="ett tråkig">ett tråkig</option>
+<option value="en tråkigt">en tråkigt</option>
+<option value="ett tråkigt">ett tråkigt</option>
+<option value="tråkiga">tråkiga</option>
             </select>`,
         },
-        { sentencePart: "attityd." }
+        { sentencePart: "attityd. (adj: tråkig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Det var ett" },
+        { sentencePart: "Det var" },
         {
-            sentencePart: `<select data-correct="tråkigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett tråkigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="tråkig">tråkig</option>
-            <option value="tråkigt">tråkigt</option>
-            <option value="tråkiga">tråkiga</option>
+<option value="en tråkig">en tråkig</option>
+<option value="ett tråkig">ett tråkig</option>
+<option value="en tråkigt">en tråkigt</option>
+<option value="ett tråkigt">ett tråkigt</option>
+<option value="tråkiga">tråkiga</option>
             </select>`,
         },
-        { sentencePart: "besked." }
+        { sentencePart: "möte. (adj: tråkig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De utförde ett" },
+        { sentencePart: "De utförde" },
         {
-            sentencePart: `<select data-correct="tråkigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett tråkigt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="tråkig">tråkig</option>
-            <option value="tråkigt">tråkigt</option>
-            <option value="tråkiga">tråkiga</option>
+<option value="en tråkig">en tråkig</option>
+<option value="ett tråkig">ett tråkig</option>
+<option value="en tråkigt">en tråkigt</option>
+<option value="ett tråkigt">ett tråkigt</option>
+<option value="tråkiga">tråkiga</option>
             </select>`,
         },
-        { sentencePart: "arbete." }
+        { sentencePart: "arbete. (adj: tråkig)" }
     ]
 },
 {
@@ -1294,96 +1538,110 @@ const sentences = [
         {
             sentencePart: `<select data-correct="tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="tråkig">tråkig</option>
-            <option value="tråkigt">tråkigt</option>
-            <option value="tråkiga">tråkiga</option>
+<option value="en tråkig">en tråkig</option>
+<option value="ett tråkig">ett tråkig</option>
+<option value="en tråkigt">en tråkigt</option>
+<option value="ett tråkigt">ett tråkigt</option>
+<option value="tråkiga">tråkiga</option>
             </select>`,
         },
-        { sentencePart: "övningar." }
+        { sentencePart: "övningar. (adj: tråkig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Vi läste några" },
+        { sentencePart: "Vi läste" },
         {
             sentencePart: `<select data-correct="tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="tråkig">tråkig</option>
-            <option value="tråkigt">tråkigt</option>
-            <option value="tråkiga">tråkiga</option>
+<option value="en tråkig">en tråkig</option>
+<option value="ett tråkig">ett tråkig</option>
+<option value="en tråkigt">en tråkigt</option>
+<option value="ett tråkigt">ett tråkigt</option>
+<option value="tråkiga">tråkiga</option>
             </select>`,
         },
-        { sentencePart: "artiklar." }
+        { sentencePart: "dikter. (adj: tråkig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Vi hade en" },
+        { sentencePart: "Vi hade" },
         {
-            sentencePart: `<select data-correct="härlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en härlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="härlig">härlig</option>
-            <option value="härligt">härligt</option>
-            <option value="härliga">härliga</option>
+<option value="en härlig">en härlig</option>
+<option value="ett härlig">ett härlig</option>
+<option value="en härligt">en härligt</option>
+<option value="ett härligt">ett härligt</option>
+<option value="härliga">härliga</option>
             </select>`,
         },
-        { sentencePart: "dag." }
+        { sentencePart: "dag. (adj: härlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hon sjunger en" },
+        { sentencePart: "Hon sjunger" },
         {
-            sentencePart: `<select data-correct="härlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en härlig" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="härlig">härlig</option>
-            <option value="härligt">härligt</option>
-            <option value="härliga">härliga</option>
+<option value="en härlig">en härlig</option>
+<option value="ett härlig">ett härlig</option>
+<option value="en härligt">en härligt</option>
+<option value="ett härligt">ett härligt</option>
+<option value="härliga">härliga</option>
             </select>`,
         },
-        { sentencePart: "sång." }
+        { sentencePart: "sång. (adj: härlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De njöt av ett" },
+        { sentencePart: "De hittade" },
         {
-            sentencePart: `<select data-correct="härligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett härligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="härlig">härlig</option>
-            <option value="härligt">härligt</option>
-            <option value="härliga">härliga</option>
+<option value="en härlig">en härlig</option>
+<option value="ett härlig">ett härlig</option>
+<option value="en härligt">en härligt</option>
+<option value="ett härligt">ett härligt</option>
+<option value="härliga">härliga</option>
             </select>`,
         },
-        { sentencePart: "bad." }
+        { sentencePart: "bageri. (adj: härlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Köket sprider ett" },
+        { sentencePart: "Lägenheten ligger i" },
         {
-            sentencePart: `<select data-correct="härligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett härligt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="härlig">härlig</option>
-            <option value="härligt">härligt</option>
-            <option value="härliga">härliga</option>
+<option value="en härlig">en härlig</option>
+<option value="ett härlig">ett härlig</option>
+<option value="en härligt">en härligt</option>
+<option value="ett härligt">ett härligt</option>
+<option value="härliga">härliga</option>
             </select>`,
         },
-        { sentencePart: "lugn." }
+        { sentencePart: "område. (adj: härlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Utsikten erbjuder" },
+        { sentencePart: "Tavlan har" },
         {
             sentencePart: `<select data-correct="härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="härlig">härlig</option>
-            <option value="härligt">härligt</option>
-            <option value="härliga">härliga</option>
+<option value="en härlig">en härlig</option>
+<option value="ett härlig">ett härlig</option>
+<option value="en härligt">en härligt</option>
+<option value="ett härligt">ett härligt</option>
+<option value="härliga">härliga</option>
             </select>`,
         },
-        { sentencePart: "färger." }
+        { sentencePart: "färger. (adj: härlig)" }
     ]
 },
 {
@@ -1392,68 +1650,78 @@ const sentences = [
         {
             sentencePart: `<select data-correct="härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="härlig">härlig</option>
-            <option value="härligt">härligt</option>
-            <option value="härliga">härliga</option>
+<option value="en härlig">en härlig</option>
+<option value="ett härlig">ett härlig</option>
+<option value="en härligt">en härligt</option>
+<option value="ett härligt">ett härligt</option>
+<option value="härliga">härliga</option>
             </select>`,
         },
-        { sentencePart: "minnen från semestern." }
+        { sentencePart: "minnen från semestern. (adj: härlig)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Han ligger i en" },
+        { sentencePart: "Han ligger i" },
         {
-            sentencePart: `<select data-correct="skön" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en skön" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="skön">skön</option>
-            <option value="skönt">skönt</option>
-            <option value="sköna">sköna</option>
+<option value="en skön">en skön</option>
+<option value="ett skön">ett skön</option>
+<option value="en skönt">en skönt</option>
+<option value="ett skönt">ett skönt</option>
+<option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "säng." }
+        { sentencePart: "säng. (adj: skön)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Hon bär en" },
+        { sentencePart: "Hon sitter i" },
         {
-            sentencePart: `<select data-correct="skön" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="en skön" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="skön">skön</option>
-            <option value="skönt">skönt</option>
-            <option value="sköna">sköna</option>
+<option value="en skön">en skön</option>
+<option value="ett skön">ett skön</option>
+<option value="en skönt">en skönt</option>
+<option value="ett skönt">ett skönt</option>
+<option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "jacka." }
+        { sentencePart: "fåtölj. (adj: skön)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Rummet har ett" },
+        { sentencePart: "Låten har" },
         {
-            sentencePart: `<select data-correct="skönt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett skönt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="skön">skön</option>
-            <option value="skönt">skönt</option>
-            <option value="sköna">sköna</option>
+<option value="en skön">en skön</option>
+<option value="ett skön">ett skön</option>
+<option value="en skönt">en skönt</option>
+<option value="ett skönt">ett skönt</option>
+<option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "ljus." }
+        { sentencePart: "tempo. (adj: skön)" }
     ]
 },
 {
     words: [
-        { sentencePart: "Vi tog ett" },
+        { sentencePart: "Han har" },
         {
-            sentencePart: `<select data-correct="skönt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            sentencePart: `<select data-correct="ett skönt" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="skön">skön</option>
-            <option value="skönt">skönt</option>
-            <option value="sköna">sköna</option>
+<option value="en skön">en skön</option>
+<option value="ett skön">ett skön</option>
+<option value="en skönt">en skönt</option>
+<option value="ett skönt">ett skönt</option>
+<option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "avbrott." }
+        { sentencePart: "täcke. (adj: skön)" }
     ]
 },
 {
@@ -1462,26 +1730,30 @@ const sentences = [
         {
             sentencePart: `<select data-correct="sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="skön">skön</option>
-            <option value="skönt">skönt</option>
-            <option value="sköna">sköna</option>
+<option value="en skön">en skön</option>
+<option value="ett skön">ett skön</option>
+<option value="en skönt">en skönt</option>
+<option value="ett skönt">ett skönt</option>
+<option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "kuddar." }
+        { sentencePart: "kuddar. (adj: skön)" }
     ]
 },
 {
     words: [
-        { sentencePart: "De upplevde" },
+        { sentencePart: "De hade" },
         {
             sentencePart: `<select data-correct="sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
             <option value="">Välj</option>
-            <option value="skön">skön</option>
-            <option value="skönt">skönt</option>
-            <option value="sköna">sköna</option>
+<option value="en skön">en skön</option>
+<option value="ett skön">ett skön</option>
+<option value="en skönt">en skönt</option>
+<option value="ett skönt">ett skönt</option>
+<option value="sköna">sköna</option>
             </select>`,
         },
-        { sentencePart: "sommarkvällar." }
+        { sentencePart: "sommarkvällar på landet. (adj: skön)" }
     ]
 }
 
@@ -1511,31 +1783,66 @@ function generateSentenceHTML(sentence, index) {
     const isAboutSentence = sentence.words[0].sentencePart.trim().startsWith("(About");
 
     const sentenceHTML = sentence.words.map(item => {
-        if (!item.sentencePart.includes("<select")) return item.sentencePart;
+        let part = item.sentencePart;
 
-        // Skapa en temporär DOM-nod för att kunna manipulera selecten
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = item.sentencePart.trim();
-        const select = tempDiv.querySelector("select");
+        if (part.includes("<select")) {
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = part.trim();
+            const select = tempDiv.querySelector("select");
+            let correctAnswer = select.getAttribute("data-correct");
 
-        if (isAboutSentence) {
-            // Versal i data-correct
-            const correct = select.getAttribute("data-correct");
-            select.setAttribute("data-correct", capitalize(correct));
+            if (isAboutSentence) correctAnswer = capitalize(correctAnswer);
 
-            // Versal i alla options
-            Array.from(select.options).forEach(opt => {
-                if (opt.value !== "") {
-                    opt.textContent = capitalize(opt.textContent);
-                    opt.value = capitalize(opt.value);
-                }
-            });
+            // Returnera input insvept i en wrapper med knappar
+            return `
+            <span class="input-wrapper">
+                <input type="text" 
+                       class="answer-input" 
+                       data-correct="${correctAnswer}" 
+                       oninput="evaluateInputAnswer(this)" 
+                       placeholder="write..." 
+                       autocomplete="off">
+                <span class="btn-container">
+                    <button type="button" class="char-btn" onclick="insertChar(this, 'å')">å</button>
+                    <button type="button" class="char-btn" onclick="insertChar(this, 'ä')">ä</button>
+                    <button type="button" class="char-btn" onclick="insertChar(this, 'ö')">ö</button>
+                </span>
+            </span>`;
         }
 
-        return select.outerHTML;
+        // Adjektiv-ledtråden (som tidigare)
+        const adjMatch = part.match(/\(adj:\s*([^)]+)\)/);
+        if (adjMatch) {
+            const adjWord = adjMatch[1];
+            part = part.replace(adjMatch[0], `<span class="adj-badge">${adjWord}</span>`);
+        }
+
+        return part;
     }).join(' ');
 
     return `<div class="sentence" data-state="none"><p>${sentenceHTML}</p></div>`;
+}
+
+function insertChar(btn, char) {
+    // Hitta inputfältet som hör till den klickade knappen
+    const input = btn.closest('.input-wrapper').querySelector('.answer-input');
+    
+    // Hämta markörens position
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const text = input.value;
+
+    // Sätt in tecknet på markörens plats
+    input.value = text.slice(0, start) + char + text.slice(end);
+
+    // Sätt tillbaka markören efter det nya tecknet
+    input.selectionStart = input.selectionEnd = start + 1;
+
+    // Sätt fokus på fältet igen
+    input.focus();
+
+    // Trigga rättningslogiken manuellt
+    evaluateInputAnswer(input);
 }
 
     // Render sentences in a shuffled order.
@@ -1546,75 +1853,66 @@ function generateSentenceHTML(sentence, index) {
     }
 
     // Evaluates the user's answer and updates the score and UI accordingly.
-	function evaluateAnswer(selectElement) {
-		const correctAnswer = selectElement.getAttribute('data-correct');
-		const selectedValue = selectElement.value;
-		const parent = selectElement.closest('.sentence');
-	
-		// Get the previous state to ensure points are added or subtracted correctly
-		const priorState = parent.getAttribute('data-state') || 'none';
-		let newState;
-	
-		if (selectedValue === correctAnswer) {
-			newState = 'correct';
-			if (priorState === 'incorrect') {
-				// Switching from incorrect to correct
-				updateScore(2); // +1 for correct, +1 to cancel previous -1
-			} else if (priorState === 'none') {
-				// New correct selection
-				updateScore(1);
-			}
-		} else if (selectedValue === "") {
-			// Reset to default selection
-			if (priorState === 'correct') {
-				// Resetting from correct
-				updateScore(-1);
-			} else if (priorState === 'incorrect') {
-				// Resetting from incorrect
-				updateScore(1);
-			}
-			newState = 'none';
-		} else {
-			// Incorrect selection
-			if (priorState === 'correct') {
-				// Switching from correct to incorrect
-				updateScore(-2); // -1 for incorrect, -1 to cancel previous +1
-			} else if (priorState === 'none') {
-				// New incorrect selection
-				updateScore(-1);
-			}
-			newState = 'incorrect';
-		}
-	
-		// Update UI with the new state
-		parent.classList.remove('correct', 'incorrect');
-		if (newState !== 'none') {
-			parent.classList.add(newState);
-		}
-		parent.setAttribute('data-state', newState);
-	
-		checkAllCorrect();
-	}
+function evaluateInputAnswer(inputElement) {
+    const correctAnswer = inputElement.getAttribute('data-correct').toLowerCase().trim();
+    const userValue = inputElement.value.toLowerCase().trim();
+    const parent = inputElement.closest('.sentence');
+    const priorState = parent.getAttribute('data-state') || 'none';
+    
+    let newState;
+
+    if (userValue === "") {
+        newState = 'none';
+    } else if (userValue === correctAnswer) {
+        newState = 'correct';
+    } else {
+        newState = 'incorrect';
+    }
+
+    // Uppdatera poäng endast om staten faktiskt ändras
+    if (newState !== priorState) {
+        if (newState === 'correct') updateScore(1);
+        if (priorState === 'correct') updateScore(-1);
+        
+        // Vi räknar inte minuspoäng för varje fel bokstav, 
+        // utan bara plus när det blir helt rätt.
+    }
+
+    // Uppdatera UI
+    parent.classList.remove('correct', 'incorrect');
+    if (newState !== 'none') {
+        parent.classList.add(newState);
+    }
+    parent.setAttribute('data-state', newState);
+
+    if (newState === 'correct') {
+        checkAllCorrect();
+    }
+}
 
 
     // Updates the score display based on value change.
-	function updateScore(value) {
-		score += value;
-	
-		// Prevent score from exceeding boundaries
-		if (score > 25) {
-			score = 25;
-		} else if (score < -25) {
-			score = -25;
-		}
-	
-		// Update all elements with the class "score-display" to reflect the updated score
-		document.querySelectorAll('.score-display').forEach((element) => {
-			element.textContent = score;
-		});
-	
-		checkForMaxScore(score);
-	}
+// Updates the score display based on value change.
+function updateScore(value) {
+    score += value;
+
+    // Sätt maxgränsen dynamiskt baserat på antal meningar
+    const maxScore = sentences.length;
+
+    // Förhindra att poängen går över max eller under minus-max
+    if (score > maxScore) {
+        score = maxScore;
+    } else if (score < -maxScore) {
+        score = -maxScore;
+    }
+
+    // Uppdatera alla element med klassen "score-display"
+    document.querySelectorAll('.score-display').forEach((element) => {
+        element.textContent = score;
+    });
+
+    checkForMaxScore(score);
+}
 
     // Check if the score has reached max and opens the congratulations modal if so.
     function checkForMaxScore(currentScore) {
@@ -1683,8 +1981,11 @@ function generateSentenceHTML(sentence, index) {
         document.getElementById('darkModeText').textContent = isDarkModeEnabled ? "Light mode" : "Dark mode";
     }
 
-function goToHardVersion() {
+function goToEasyVersion() {
     window.location.href = "https://learnswedish.github.io/html/adjective-regular-easy.html";
+}
+function goToMediumVersion() {
+    window.location.href = "https://learnswedish.github.io/html/adjective-regular-medium.html";
 }
 
     // Open the Info modal and close the menu
@@ -1757,5 +2058,4 @@ function goToHardVersion() {
     </script>
 
 </body>
-
 </html>
