@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Svenska Adjektiv - Visual Classification (BE)</title>
+    <style>
+        :root {
+            --bg-color: #fcfaf7;
+            --text-main: #1a1a1a;
+            --accent-red: #c30010;
+            --secondary-text: #666;
+            --hero-bg: #f3eee8;
+            --circle-bg: #ffffff;
+            
+            /* Gruppfärger */
+            --color-reg-mod: #e3f2fd;   /* 4% */
+            --color-twins: #f1f8e9;     /* 5% */
+            --color-en: #fff3e0;        /* 3% */
+            --color-cons-d: #fce4ec;    /* 3% */
+            --color-syncope: #f3e5f5;   /* 2% */
+            --color-vowel-tt: #efebe9;  /* 1% */
+            --color-particip: #eeeeee;  /* 1% */
+            --color-long-v-d: #e0f2f1;  /* 1% */
+            --color-irregular: #fbe9e7; /* 1% */
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .canvas {
+            width: 1200px;
+            height: 950px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 79% CENTRUM */
+        .hero-circle {
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            background-color: var(--hero-bg);
+            border: 1px solid #e0d9d0;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .hero-group { text-align: center; pointer-events: none; }
+        .main-adj { font-size: 70px; font-weight: 800; margin: 0; letter-spacing: -3px; }
+        .suffix { font-size: 40px; color: var(--secondary-text); font-weight: 300; }
+        .percentage-big { font-size: 54px; font-weight: 800; color: var(--accent-red); margin-top: -5px; display: block; }
+
+        /* CIRKLAR & ETIKETTER */
+        .node-container {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+            cursor: pointer;
+        }
+
+        .adj-node {
+            border-radius: 50%;
+            background: var(--circle-bg);
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .node-container:hover .adj-node {
+            transform: scale(1.1);
+            border-color: var(--text-main);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .label { white-space: nowrap; padding: 0 15px; pointer-events: none; }
+        .label-title { font-size: 15px; font-weight: bold; text-transform: uppercase; color: var(--secondary-text); display: block; }
+        .label-example { font-size: 14px; display: block; color: var(--text-main); margin: 2px 0; }
+        .label-perc { font-size: 18px; color: var(--accent-red); font-weight: 800; }
+
+        .label-left { order: -1; text-align: right; }
+
+        /* SKALNING BASERAD PÅ PROCENT */
+        .size-5 { width: 145px; height: 145px; } /* 5% */
+        .size-4 { width: 130px; height: 130px; } /* 4% */
+        .size-3 { width: 115px; height: 115px; } /* 3% */
+        .size-2 { width: 100px; height: 100px; } /* 2% */
+        .size-1 { width: 85px;  height: 85px; }  /* 1% */
+
+        /* POSITIONERING - Klockvis (Nio noder) */
+        .pos-1  { top: 100px; left: 58%; transform: translateX(-50%); } /* Minor */
+        .pos-2  { top: 200px; right: 40px; }                           /* Kl 1:30 */
+        .pos-3  { top: 400px; right: 0px; }                            /* Kl 3 */
+        .pos-4  { bottom: 260px; right: 0px; }                         /* Kl 4:30 */
+        .pos-5  { bottom: 180px; left: 95px; }                         /* E gone i plural */
+        .pos-6  { bottom: 320px; left: 1px; }                          /* Kl 7:30 */
+        .pos-7  { bottom: 460px; left: 10px; }                          /* Kl 9 */
+        .pos-8  { top: 270px; left: 48px; }                             /* Kl 10 */
+        .pos-9  { top: 155px; left: 26px; }                            /* Irregular */
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; }
+/* Bredare modal */
+.modal-content {
+    background: white;
+    padding: 40px;
+    width: 90%;          /* Flexibel bredd för mindre skärmar */
+    max-width: 700px;    /* Ökad från 500px för att rymma 4 kolumner snyggt */
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+/* Din specifika Close Button Styling */
+.close-button {
+    position: absolute; /* Ändrat från float för bättre kontroll i en modal */
+    top: 15px;
+    right: 15px;
+    padding: 3px;
+    cursor: pointer;
+    font-size: 23px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 50%;
+    line-height: 20px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s, color 0.3s;
+    color: #333;
+}
+
+.close-button:hover {
+    background-color: #f44336;
+    transform: scale(1.2) rotate(90deg);
+    color: white;
+}
+
+/* Tabell med exakt kolumnfördelning */
+.modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    font-size: 18px;
+    table-layout: fixed; /* Detta krävs för att kolumnbredderna ska bli exakta */
+}
+
+.modal-table th, .modal-table td {
+    width: 25%;         /* Exakt 25% per kolumn (4 kolumner totalt) */
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    overflow: hidden;    /* Förhindrar att texten "spiller över" */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.modal-table th {
+    border-bottom: 2px solid var(--accent-red);
+    color: var(--secondary-text);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+/* Stil för rader som visar undantag */
+.modal-table tr.exception-row td {
+    background-color: #fff9c4;
+    font-style: italic;
+    color: #333;
+    box-shadow: inset 0 1px 0 #fbc02d, inset 0 -1px 0 #fbc02d;
+    border-bottom: none; 
+    border-top: none;
+}
+
+.modal-table tr.exception-row td:first-child {
+    border-left: 5px solid #fbc02d !important;
+}
+
+/* Valfritt: lägg till en liten symbol före texten i första kolumnen på undantagsrader */
+.modal-table tr.exception-row td:first-child::before {
+    content: "⚠️ ";
+    font-style: normal;
+    font-size: 18px;
+}
+.highlight {
+    color: var(--accent-red);
+    font-weight: 800;
+    background-color: #e0e0e0; /* Mörkare grå för bättre kontrast */
+    padding: 1px 2px;          /* Minimal padding för att hålla ihop ordet */
+    border-radius: 2px;
+    margin: 0;                 /* Nollställt margin för att eliminera glipor */
+    display: inline-block;     /* Säkerställer att padding inte stör radhöjden */
+    line-height: 1;
+}
+.page-title {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    margin: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -1px;
+    text-transform: none; /* Behåll gemener/versaler enligt din text */
+    z-index: 10;
+}
+    </style>
+</head>
+<body>
+<h1 class="page-title">Swedish adjectives</h1>
+
+    <div class="canvas">
+        <div class="hero-circle">
+            <div class="hero-group">
+                <h1 class="main-adj">härlig</h1>
+                <div style="margin: 8px 0;"><span class="suffix">neuter +t | plural +a</span></div>
+                <span class="percentage-big">79%</span>
+            </div>
+        </div>
+
+        <div class="node-container pos-1" onclick="openModal('reg-mod')">
+            <div class="adj-node size-4" style="background-color: var(--color-reg-mod); border-style: dashed;">
+                <img src="minor.png" style="width:45%" alt="Reg Mod">
+            </div>
+            <div class="label">
+                <span class="label-title">Spelling adjustment</span>
+                <span class="label-example">allmän | allmänt | allmänna</span>
+                <span class="label-perc">4%</span>
+            </div>
+        </div>
+
+        <div class="node-container pos-2" onclick="openModal('twins')">
+            <div class="adj-node size-5" style="background-color: var(--color-twins);">
+                <img src="twins.png" style="width:60%" alt="Twins">
+            </div>
+            <div class="label">
+                <span class="label-title">Singular twins</span>
+                <span class="label-example">svart | svart | svarta</span>
+                <span class="label-perc">5%</span>
+            </div>
+        </div>
+
+        <div class="node-container pos-3" onclick="openModal('en')">
+            <div class="adj-node size-3" style="background-color: var(--color-en);">
+                <img src="drop-n-drop-e.png" style="width:80%" alt="EN-drama">
+            </div>
+            <div class="label">
+                <span class="label-title">ends -en</span>
+                <span class="label-example">öppen | öppet | öppna</span>
+                <span class="label-perc">3%</span>
+            </div>
+        </div>
+
+        <div class="node-container pos-4" onclick="openModal('cons-d')">
+            <div class="adj-node size-3" style="background-color: var(--color-cons-d);">
+                <img src="dt.png" style="width:100%" alt="Consonant D">
+            </div>
+            <div class="label">
+                <span class="label-title">Forbidden since 1906</span>
+                <span class="label-example">hård | hårt | hårda</span>
+                <span class="label-perc">3%</span>
+            </div>
+        </div>
+
+        <div class="node-container pos-5" onclick="openModal('syncope')">
+            <div class="adj-node size-2" style="background-color: var(--color-syncope);">
+                <img src="drop-e-2.png" style="width:80%" alt="Syncope">
+            </div>
+            <div class="label label-left">
+                <span class="label-title">ends -el or -er</span>
+                <span class="label-example">vacker | vackert | vackra</span>
+                <span class="label-perc">2%</span>
+            </div>
+        </div>
+
+        <div class="node-container pos-6" onclick="openModal('vowel-tt')">
+            <div class="adj-node size-1" style="background-color: var(--color-vowel-tt);">
+                <img src="longd-shortt-longda.png" style="width:75%" alt="Vowel TT">
+            </div>
+            <div class="label label-left">
+                <span class="label-title">long +d | short | long</span>
+                <span class="label-example">röd | rött | röda</span>
+                <span class="label-perc">1%</span>
+            </div>
+        </div>
+
+        <div class="node-container pos-7" onclick="openModal('long-v-d')">
+            <div class="adj-node size-1" style="background-color: var(--color-particip);">
+                <img src="lo-shortt-loa.png" style="width:75%" alt="Particip">
+            </div>
+            <div class="label label-left">
+                <span class="label-title">long | short | long</span>
+                <span class="label-example">ny | nytt | nya</span>
+                <span class="label-perc">1%</span>
+            </div>
+        </div>
+
+        <div class="node-container pos-8" onclick="openModal('particip')">
+            <div class="adj-node size-1" style="background-color: var(--color-long-v-d);">
+                <img src="ends-e.png" style="width:70%" alt="Long Vowel D">
+            </div>
+            <div class="label label-left">
+                <span class="label-title">Plural end: e</span>
+                <span class="label-example">korkad | korkat | korkade</span>
+                <span class="label-perc">1%</span>
+            </div>
+        </div>	
+
+        <div class="node-container pos-9" onclick="openModal('irregular')">
+            <div class="adj-node size-1" style="background-color: var(--color-irregular);">
+                <img src="irregular.png" style="width:70%" alt="Irregular">
+            </div>
+            <div class="label label-left">
+                <span class="label-title">Irregular, inflexible, defective</span>
+                <span class="label-example">liten | litet | små</span>
+                <span class="label-perc">1%</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="infoModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle" style="color:var(--accent-red); margin-top:0;">Info</h2>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <script>
+ const info = {
+    'reg-mod': { 
+        title: 'Minor spelling adjustment', 
+        desc: `These adjectives follow the main rule, hence the visualised overlap in the illustration, but require minor spelling adjustments. These include the doubling of consonants to maintain vowel length, or the fact that Swedish orthography – with the exception of compound words – never allows for the combination 'nnt'. <strong>However</strong>, these spelling adjustments do not apply to monosyllabic adjectives with a long vowel; they fall within the scope of the regular pattern.
+        <table class="modal-table">
+            <thead>
+                <tr>
+                    <th>Basic form</th>
+                    <th>Neuter</th>
+                    <th>Plural</th>
+					<th>English</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>allmän</td><td>allmänt</td><td>allmä<span class="highlight">nn</span>a</td><td>common</td></tr>
+                <tr><td>ensam</td><td>ensamt</td><td>ensa<span class="highlight">mm</span>a</td><td>alone</td></tr>
+                <tr><td>varsam</td><td>varsamt</td><td>varsa<span class="highlight">mm</span>a</td><td>careful</td></tr>
+                <tr><td><span class="highlight">sann</span></td><td><span class="highlight">sant</span></td><td>sanna</td><td>true</td></tr>
+                <tr><td><span class="highlight">tunn</span></td><td><span class="highlight">tunt</span></td><td>tunna</td><td>thin</td></tr>
+				<tr class="exception-row"><td>stram</td><td>stramt</span></td><td>strama</td><td>tight</td></tr>
+				<tr class="exception-row"><td>lam</td><td>lamt</span></td><td>lama</td><td>paralysed</td></tr>			
+				<tr class="exception-row"><td>tam</td><td>tamt</span></td><td>tama</td><td>tame</td></tr>
+
+            </tbody>
+        </table>` 
+    },
+'twins': { 
+    title: 'Singular twins', 
+    desc: `This is the largest group of adjectives to deviate from the main pattern, consisting of all adjectives where the basic form ends in <strong>-t</strong>. Consequently, the form remains identical in the neuter (no change occurs), and in this sense, we have a pair of twins in the singular. <strong>However</strong>, this does not apply to monosyllabic adjectives with a long vowel.
+    <table class="modal-table">
+        <thead>
+            <tr>
+                <th>Basic form</th>
+                <th>Neuter</th>
+                <th>Plural</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>bran<span class="highlight">t</span></td><td>bran<span class="highlight">t</span></td><td>akuta</td><td>steep</td></tr>
+            <tr><td>svar<span class="highlight">t</span></td><td>svar<span class="highlight">t</span></td><td>svarta</td><td>black</td></tr>
+            <tr><td>tys<span class="highlight">t</span></td><td>tys<span class="highlight">t</span></td><td>tysta</td><td>silent</td></tr>
+            <tr><td>stark<span class="highlight">t</span></td><td>stark<span class="highlight">t</span></td><td>starkta</td><td>salty/sharp</td></tr>
+            <tr><td>tröt<span class="highlight">t</span></td><td>tröt<span class="highlight">t</span></td><td>trötta</td><td>tired</td></tr>
+			<tr class="exception-row"><td>het</td><td>hett</span></td><td>heta</td><td>hot</td></tr>
+			<tr class="exception-row"><td>söt</td><td>sött</span></td><td>söta</td><td>sweet, pretty</td></tr>			
+			<tr class="exception-row"><td>vit</td><td>vitt</span></td><td>vita</td><td>white</td></tr>
+        </tbody>
+    </table>` 
+},    
+'en': { 
+    title: 'Adjectives ending -en', 
+    desc: `These adjectives end in an unstressed -en. In the neuter form, the -n is replaced by a -t (<em>öppen</em> » neuter <em>öppet</em>). In the plural form, a process called syncope occurs: the unstressed -e- is dropped before adding the plural suffix -a (<em>öppen</em> » plural <em>öppna</em>, not 'öppena').<br /><br />
+	For comparison, see the final two rows in the table, where this rule does not apply, as these adjectives have the stress on '-en'.
+    <table class="modal-table">
+        <thead>
+            <tr>
+                <th>Basic form</th>
+                <th>Neuter</th>
+                <th>Plural</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+			<tr><td>öppen</td><td>öppe<span class="highlight">t</span></td><td>öpp<span class="highlight">na</span></td><td>open</td></tr>
+            <tr><td>vuxen</td><td>vuxe<span class="highlight">t</span></td><td>vux<span class="highlight">na</span></td><td>adult/mature</td></tr>
+            <tr><td>galen</td><td>gale<span class="highlight">t</span></td><td>gal<span class="highlight">na</span></td><td>crazy</td></tr>
+            <tr><td>ledsen</td><td>ledse<span class="highlight">t</span></td><td>leds<span class="highlight">na</span></td><td>sad</td></tr>
+            <tr><td>naken</td><td>nake<span class="highlight">t</span></td><td>nak<span class="highlight">na</span></td><td>naked</td></tr>
+			<tr class="exception-row"><td>sen</td><td>sent</span></td><td>sena</td><td>late</td></tr>
+			<tr class="exception-row"><td>ren</td><td>rent</span></td><td>rena</td><td>clean</td></tr>			
+        </tbody>
+    </table>` 
+}, 
+'cons-d': { 
+    title: 'Forbidden since 1906', 
+    desc: `There are many adjectives that end in a consonant followed by <strong>-d</strong>. However, Swedish orthography does not permit a word to end in combinations such as <strong>'rdt'</strong>, which would have been the case for the adjective <strong>hård</strong> (hard) in the neuter. Consequently, the <strong>-d</strong> is dropped, resulting in <strong>hårt</strong>. This same rule applies to adjectives like <strong>mild</strong> (mild), <strong>berömd</strong> (famous), and <strong>sund</strong> (healthy).
+    <table class="modal-table">
+        <thead>
+            <tr>
+                <th>Basic form</th>
+                <th>Neuter</th>
+                <th>Plural</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>absurd</td><td>absur<span class="highlight">t</span></td><td>absurda</td><td>absurd</td></tr>
+            <tr><td>bestämd</td><td>bestäm<span class="highlight">t</span></td><td>bestämda</td><td>determined</td></tr>
+            <tr><td>blond</td><td>blon<span class="highlight">t</span></td><td>blonda</td><td>blonde</td></tr>
+            <tr><td>ond</td><td>on<span class="highlight">t</span></td><td>onda</td><td>evil, wicked</td></tr>
+            <tr><td>vild</td><td>vil<span class="highlight">t</span></td><td>vilda</td><td>wild</td></tr>
+        </tbody>
+	</table><br /><br />
+	If you leaf through books printed before 1906, however, you will frequently encounter words spelt as 'ondt', 'hårdt', and so on.` 
+},
+'syncope': { 
+    title: 'Syncope (e-drop) in plural', 
+    desc: `These adjectives end in an unstressed <strong>-el</strong> or <strong>-er</strong>. In the plural form, the <strong>-e-</strong> is dropped — resulting in <strong>vackra</strong> rather than 'vackera' — but otherwise, they follow the regular inflection pattern.<br /><br />See the final two rows in the table for comparison, where this rule does not apply, as these adjectives have the stress on '-el'.
+    <table class="modal-table">
+        <thead>
+            <tr>
+                <th>Basic form</th>
+                <th>Neuter</th>
+                <th>Plural</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>säker</td><td>säkert</td><td>säk<span class="highlight">ra</span></td><td>sure, safe</td></tr>
+            <tr><td>bitter</td><td>bittert</td><td>bitt<span class="highlight">ra</span></td><td>bitter</td></tr>
+            <tr><td>mager</td><td>magert</td><td>mag<span class="highlight">ra</span></td><td>thin, lean</td></tr>
+            <tr><td>usel</td><td>uselt</td><td>us<span class="highlight">la</span></td><td>miserable</td></tr>
+            <tr><td>dunkel</td><td>dunkelt</td><td>dunk<span class="highlight">la</span></td><td>dark, dim</td></tr>
+            <tr class="exception-row">
+                <td>hel</td>
+                <td>helt</td>
+                <td>hela</td>
+                <td>whole</td>
+            </tr>
+            <tr class="exception-row">
+                <td>stel</td>
+                <td>stelt</td>
+                <td>stela</td>
+                <td>stiff</td>
+            </tr>
+        </tbody>
+    </table>` 
+},
+'vowel-tt': { 
+    title: 'Typically monosyllabic, with a final -d', 
+    desc: `This group consists of adjectives ending in a stressed long vowel followed by <strong>-d</strong>. In the neuter form, the <strong>-d</strong> is dropped and replaced by <strong>-tt</strong>, which signals that the vowel sound is now short. In the plural, the <strong>-d</strong> and the long vowel return, creating a distinct <strong>"long–short–long"</strong> rhythm pattern. <br /><br />
+	There is one exception that barely even deserves the title, and that is the adjective 'gravid' (pregnant), where the syllable '-vid' is stressed with a long vowel. Theoretically, the neuter form should be 'gravitt'; however, that word does not exist in Swedish, nor does any other neuter form. Consequently, 'gravid' belongs to the category of defective adjectives.<br /><br />
+	There is a very similar group in the illustration (called LONG–SHORT–LONG) where we see practically the same thing, except those adjectives do not have a final '-d'.
+    <table class="modal-table">
+        <thead>
+            <tr>
+                <th>Basic form</th>
+                <th>Neuter</th>
+                <th>Plural</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>död</td><td>dö<span class="highlight">tt</span></td><td>döda</td><td>dead</td></tr>
+            <tr><td>god</td><td>go<span class="highlight">tt</span></td><td>goda</td><td>good, tasty</td></tr>
+            <tr><td>röd</td><td>rö<span class="highlight">tt</span></td><td>röda</td><td>red</td></tr>
+            <tr><td>sned</td><td>sne<span class="highlight">tt</span></td><td>sneda</td><td>crooked</td></tr>
+            <tr><td>vid</td><td>vi<span class="highlight">tt</span></td><td>vida</td><td>wide</td></tr>
+        </tbody>
+    </table>` 
+},
+'long-v-d': { 
+title: 'Typically monosyllabic, ending in a stressed vowel', 
+    desc: `In the neuter form, <strong>-tt</strong> is added, which shortens the vowel sound. In the plural, the long vowel returns, creating a characteristic <strong>"LONG–SHORT–LONG"</strong> rhythm pattern. This is practically the same as the group called <strong>"LONG+D-SHORT-LONG"</strong> in this illustration, except these adjectives do not have a final '-d'. Note that <strong>blå</strong> (blue) and <strong>grå</strong> (grey) have two plural forms; the versions with '-a' are more common in speech, while the shorter versions are more frequent in printed media.
+    <table class="modal-table">
+        <thead>
+            <tr>
+                <th>Basic form</th>
+                <th>Neuter</th>
+                <th>Plural</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>blå</td><td>blå<span class="highlight">tt</span></td><td>blå(a)</td><td>blue</td></tr>
+            <tr><td>fri</td><td>fri<span class="highlight">tt</span></td><td>fria</td><td>free</td></tr>
+            <tr><td>grå</td><td>grå<span class="highlight">tt</span></td><td>grå(a)</td><td>grey</td></tr>
+            <tr><td>ny</td><td>ny<span class="highlight">tt</span></td><td>nya</td><td>new</td></tr>
+            <tr><td>rå</td><td>rå<span class="highlight">tt</span></td><td>råa</td><td>raw</td></tr>
+        </tbody>
+    </table>` 
+},
+'particip': { 
+title: '-ad adjectives and participles', 
+    desc: `This group consists of adjectives that closely resemble participles (which is of little consequence, as participles follow the same inflection pattern). Characteristics: (1) they all end in -ad, (2) in the neuter form, the <strong>-d</strong> is replaced by <strong>-t</strong>, and (3) in plural, they take an <strong>-e</strong> instead of the standard '-a'.
+    <table class="modal-table">
+        <thead>
+            <tr>
+                <th>Basic form</th>
+                <th>Neuter</th>
+                <th>Plural</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>korka<span class="highlight">d</span></td><td>korka<span class="highlight">t</span></td><td>korkad<span class="highlight">e</span></td><td>stupid</td></tr>
+            <tr><td>likarta<span class="highlight">d</span></td><td>likarta<span class="highlight">t</span></td><td>likartad<span class="highlight">e</span></td><td>similar</td></tr>
+            <tr><td>mörkhya<span class="highlight">d</span></td><td>mörkhya<span class="highlight">t</span></td><td>mörkhyad<span class="highlight">e</span></td><td>dark-skinned</td></tr>
+            <tr><td>egenarta<span class="highlight">d</span></td><td>egenarta<span class="highlight">t</span></td><td>egenartad<span class="highlight">e</span></td><td>peculiar</td></tr>
+            <tr><td>cirkelforma<span class="highlight">d</span></td><td>cirkelforma<span class="highlight">t</span></td><td>cirkelformad<span class="highlight">e</span></td><td>circular</td></tr>
+        </tbody>
+    </table>` 
+},
+'irregular': { 
+title: 'Irregular, inflexible, defective', 
+    desc: `This group includes Sweden’s most common irregular, invariable, and defective adjectives. These words do not follow standard rules; some lack specific forms entirely, while others change their stem completely. They simply have to be memorised.
+    <table class="modal-table">
+        <thead>
+            <tr>
+                <th>Basic form</th>
+                <th>Neuter</th>
+                <th>Plural</th>
+                <th>English</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>liten</td><td>litet</td><td>små</td><td>small, little</td></tr>
+            <tr><td>höger</td><td>höger</td><td>högra</td><td>right</td></tr>
+            <tr><td>vänster</td><td>vänster</td><td>väntra</td><td>left</td></tr>
+            <tr><td>nedre</td><td>nedre</td><td>nedre</td><td>lower</td></tr>
+            <tr><td>övre</td><td>övre</td><td>övre</td><td>upper</td></tr>
+            <tr><td>yngre</td><td>yngre</td><td>yngre</td><td>younger</td></tr>
+            <tr><td>äldre</td><td>äldre</td><td>äldre</td><td>older</td></tr>
+            <tr class="exception-row"><td>gravid</td><td>—</td><td>gravida</td><td>pregnant</td></tr>
+            <tr class="exception-row"><td>lat</td><td>—</td><td>lata</td><td>lazy</td></tr>
+            <tr class="exception-row"><td>rädd</td><td>—</td><td>rädda</td><td>afraid</td></tr>			
+        </tbody>
+    </table>
+    <br /><br />
+    Note: The adjectives "höger" and "vänster" are best suited for article-free expressions, such as the instruction: "Följ vänster körfält till centrum." (Follow left lane for city centre.)` 
+}
+        };
+
+function openModal(id) {
+    document.getElementById('modalTitle').innerText = info[id].title;
+    document.getElementById('modalDescription').innerHTML = info[id].desc;
+    document.getElementById('infoModal').style.display = 'flex';
+}
+
+        function closeModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
