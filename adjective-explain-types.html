@@ -118,16 +118,49 @@
         .pos-9  { top: 155px; left: 26px; }                            /* Irregular */
 
         /* Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; }
+/* Modal - Grundinställning för mjuköppning */
+.modal { 
+    display: flex; /* Använd flex istället för none */
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0); /* Startar helt genomskinlig */
+    justify-content: center; 
+    align-items: center; 
+    z-index: 100; 
+    
+    /* Animationsegenskaper */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, background-color 0.4s ease, visibility 0.4s;
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+    background: rgba(0,0,0,0.85);
+}
+
+/* Skala upp till normal storlek när modalen visas */
+.modal.show .modal-content {
+    transform: scale(1);
+}
+		
 /* Bredare modal */
 .modal-content {
     background: white;
     padding: 40px;
-    width: 90%;          /* Flexibel bredd för mindre skärmar */
-    max-width: 700px;    /* Ökad från 500px för att rymma 4 kolumner snyggt */
+    width: 90%;
+    max-width: 700px;
     border-radius: 20px;
     position: relative;
     box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    
+    /* Startar lite mindre för att "poppa" fram */
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 /* Din specifika Close Button Styling */
 .close-button {
@@ -573,16 +606,22 @@ title: 'Irregular, inflexible, defective',
         };
 
 function openModal(id) {
+    const modal = document.getElementById('infoModal');
     document.getElementById('modalTitle').innerText = info[id].title;
     document.getElementById('modalDescription').innerHTML = info[id].desc;
-    document.getElementById('infoModal').style.display = 'flex';
+    
+    // Aktivera animationen
+    modal.classList.add('show');
 }
 
-        function closeModal() {
-            document.getElementById('infoModal').style.display = 'none';
-        }
+function closeModal() {
+    const modal = document.getElementById('infoModal');
+    // Inaktivera animationen
+    modal.classList.remove('show');
+}
     </script>
 </body>
 
 </html>
+
 
