@@ -430,76 +430,6 @@ body.dark-mode .modal-content {
 	transform: translateY(0);
 }
 
-/* Translation toggle – default: OFF */
-body:not(.show-translation) .tooltip-text {
-	display: none;
-}
-
-/* Tooltip Container */
-.sentence p {
-	position: relative;
-	/* Tog bort cursor: help; nu används standardmarkör */
-	display: block;
-	/* Ändrat till block så att vi kan utgå från vänsterkanten */
-}
-
-/* Tooltip Text */
-.sentence .tooltip-text {
-	visibility: hidden;
-	white-space: nowrap;
-	/* Förhindrar line-breaks */
-	background-color: #2d3748;
-	color: #fff;
-	text-align: left;
-	/* Vänsterställd text inuti tooltip */
-	border-radius: 6px;
-	padding: 10px 15px;
-	/* Lite mer luft */
-	position: absolute;
-	z-index: 10;
-	bottom: 110%;
-	/* Justerat avstånd från meningen */
-	left: 0;
-	/* Tooltip börjar i samma position som svenska meningen */
-	opacity: 0;
-	transition: opacity 0.3s, transform 0.3s;
-	font-size: 1.05rem;
-	/* Aningen större storlek */
-	font-style: normal;
-	/* Rak stil (inte kursiv) */
-	pointer-events: none;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Tooltip Pil - flyttad till vänster för att matcha starten */
-.sentence .tooltip-text::after {
-	content: "";
-	position: absolute;
-	top: 100%;
-	left: 20px;
-	/* Pilen flyttad närmare starten av meningen */
-	border-width: 6px;
-	border-style: solid;
-	border-color: #2d3748 transparent transparent transparent;
-}
-
-/* Visa vid hover */
-.sentence:hover .tooltip-text {
-	visibility: visible;
-	opacity: 1;
-	transform: translateY(-5px);
-}
-
-/* Anpassning för Dark Mode */
-body.dark-mode .sentence .tooltip-text {
-	background-color: #4a5568;
-	color: #edf2f7;
-}
-
-body.dark-mode .sentence .tooltip-text::after {
-	border-color: #4a5568 transparent transparent transparent;
-}
-
 /* 🚫 Block entire site on small screens */
 @media (max-width: 700px) {
 
@@ -1571,13 +1501,6 @@ function shuffleArray(array) {
 	return array;
 }
 
-function toggleTranslation() {
-	document.body.classList.toggle('show-translation');
-
-	const enabled=document.body.classList.contains('show-translation');
-	localStorage.setItem('translationMode', enabled ? 'enabled' : 'disabled');
-}
-
 function toggleGender(button) {
 	const sentenceDiv=button.closest('.sentence');
 	sentenceDiv.classList.toggle('show-gender');
@@ -1597,7 +1520,6 @@ function capitalize(word) {
 }
 
 
-// Function to generate HTML for a single sentence
 function generateSentenceHTML(sentence, index) {
     const isAboutSentence = sentence.words[0].sentencePart.trim().startsWith("(About");
 
@@ -1619,16 +1541,14 @@ function generateSentenceHTML(sentence, index) {
                 }
             });
         }
+
         return select.outerHTML;
     }).join(' ');
 
-    return `
-        <div class="sentence" data-state="none">
-            <p>
-                ${sentenceHTML}
-                <span class="tooltip-text">${sentence.translation || "Translation missing"}</span>
-            </p>
-        </div>`;
+    // ⛔ INGEN tooltip på medium
+    return `<div class="sentence" data-state="none">
+        <p>${sentenceHTML}</p>
+    </div>`;
 }
 
 // Render sentences in a shuffled order.
@@ -1796,20 +1716,13 @@ function startOverAndCloseMenu() {
 
 // Initialize the dark mode toggle with stored preference
 function initializeModalsAndDarkMode() {
-	const darkModeToggle=document.getElementById('darkModeSwitch');
-	const translationToggle=document.getElementById('translationSwitch');
+	const darkModeToggle = document.getElementById('darkModeSwitch');
 
 	/* ---- Dark mode ---- */
-	const isDarkModeEnabled=localStorage.getItem('darkMode')==='enabled';
+	const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
 	document.body.classList.toggle('dark-mode', isDarkModeEnabled);
-	darkModeToggle.checked=isDarkModeEnabled;
+	darkModeToggle.checked = isDarkModeEnabled;
 	darkModeToggle.addEventListener('change', toggleDarkMode);
-
-	/* ---- Translation mode ---- */
-	const isTranslationEnabled=localStorage.getItem('translationMode')==='enabled';
-	document.body.classList.toggle('show-translation', isTranslationEnabled);
-	translationToggle.checked=isTranslationEnabled;
-	translationToggle.addEventListener('change', toggleTranslation);
 }
 
 // Function to update the maximum score in the HTML
@@ -1858,3 +1771,4 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
 </body>
 </html>
+
