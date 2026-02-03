@@ -1669,7 +1669,17 @@ function generateSentenceHTML(sentence, index) {
 
 	// Uppdaterad return: Vi lägger till en span med klassen 'tooltip-text'
 	// Vi hämtar översättningen från 'sentence.translation' (som du lägger till i din array)
-	return ` <div class="sentence" data-state="none"><p>${sentenceHTML} <button class="gender-toggle" onclick="toggleGender(this)">Show gender</button><span class="tooltip-text">${sentence.translation || "Translation missing"}</span></p></div>`;
+const tooltipSpan = sentence.translation
+    ? `<span class="tooltip-text">${sentence.translation}</span>`
+    : "";
+
+return `<div class="sentence" data-state="none">
+    <p>
+        ${sentenceHTML}
+        <button class="gender-toggle" onclick="toggleGender(this)">Show gender</button>
+        ${tooltipSpan}
+    </p>
+</div>`;
 }
 
 // Render sentences in a shuffled order.
@@ -1899,3 +1909,4 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
 </body>
 </html>
+
