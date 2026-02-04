@@ -1501,6 +1501,20 @@ function shuffleArray(array) {
 	return array;
 }
 
+function shuffleOptions(select) {
+    const firstOption = select.options[0]; // "Select"
+    const options = Array.from(select.options).slice(1);
+
+    for (let i = options.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [options[i], options[j]] = [options[j], options[i]];
+    }
+
+    select.innerHTML = "";
+    select.appendChild(firstOption);
+    options.forEach(opt => select.appendChild(opt));
+}
+	
 function toggleGender(button) {
 	const sentenceDiv=button.closest('.sentence');
 	sentenceDiv.classList.toggle('show-gender');
@@ -1529,6 +1543,8 @@ function generateSentenceHTML(sentence, index) {
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = item.sentencePart.trim();
         const select = tempDiv.querySelector("select");
+
+		shuffleOptions(select);
 
         if (isAboutSentence) {
             const correct = select.getAttribute("data-correct");
@@ -1771,4 +1787,5 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
 </body>
 </html>
+
 
