@@ -525,6 +525,43 @@ body.dark-mode .adj-badge {
 	border: 1.5px solid #718096;
 }
 
+/* Ny layout för att tvinga badges till höger */
+.sentence-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.sentence-text {
+    flex: 1;
+    margin: 0;
+}
+
+.badge-row {
+    display: flex;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+/* Uppdaterad styling för adj-badge för att matcha föregående sida */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    border: 1.5px solid #cbd5e0;
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+body.dark-mode .badge {
+    background-color: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
+}
+
 /* Behållare för input och knappar */
 .input-wrapper {
     display: inline-flex;
@@ -1156,21 +1193,21 @@ function capitalize(word) {
 
     // Function to generate HTML for a single sentence
 function generateSentenceHTML(sentence) {
-    let badgeHTML = "";
-    const htmlParts = [];
+    let html = "";
+    let adjValue = "";
 
     sentence.parts.forEach(part => {
         if (typeof part === "object") {
             const correctAnswer = part.answer.toLowerCase();
-            badgeHTML = `<span class="adj-badge">${part.adj}</span>`;
+            adjValue = part.adj; // Spara adjektivet till badgen
 
-            htmlParts.push(`
+            html += `
                 <span class="input-wrapper">
-                    <input type="text"
-                           class="answer-input"
-                           data-correct="${correctAnswer}"
-                           oninput="evaluateInputAnswer(this)"
-                           placeholder="write..."
+                    <input type="text" 
+                           class="answer-input" 
+                           data-correct="${correctAnswer}" 
+                           oninput="evaluateInputAnswer(this)" 
+                           placeholder="write..." 
                            autocomplete="off">
                     <span class="btn-container">
                         <button type="button" class="char-btn" tabindex="-1" onclick="insertChar(this, 'å')">å</button>
@@ -1178,27 +1215,23 @@ function generateSentenceHTML(sentence) {
                         <button type="button" class="char-btn" tabindex="-1" onclick="insertChar(this, 'ö')">ö</button>
                     </span>
                 </span>
-            `);
+            `;
         } else {
-            htmlParts.push(part);
+            html += part;
         }
     });
 
-    // Lägg badgen efter sista textdelen (där punkt/frågetecken normalt finns)
-    for (let i = htmlParts.length - 1; i >= 0; i--) {
-        if (typeof htmlParts[i] === "string" && !htmlParts[i].includes("input-wrapper")) {
-            htmlParts[i] = `${htmlParts[i]} ${badgeHTML}`;
-            break;
-        }
-    }
-
-    // Bygg meningen
-    const sentenceHTML = htmlParts.join(" ");
-
-    return `<div class="sentence" data-state="none"><p>${sentenceHTML}</p></div>`;
+    return `
+        <div class="sentence" data-state="none">
+            <div class="sentence-row">
+                <p class="sentence-text">${html}</p>
+                <div class="badge-row">
+                    <span class="badge adj-badge">${adjValue}</span>
+                </div>
+            </div>
+        </div>
+    `;
 }
-
-
 
 function insertChar(btn, char) {
     // Hitta inputfältet som hör till den klickade knappen
@@ -1443,8 +1476,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
-
-
-
-
-
