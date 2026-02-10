@@ -1,0 +1,1816 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Adjective Agreement (definite regular): easy level</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+/* Reset and Base Styles */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9fafb;
+	color: #2d3748;
+	line-height: 1.6;
+	font-size: 16px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	min-height: 100vh;
+	padding: 20px;
+	overflow-y: auto;
+	position: relative;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+	background-color: #121212;
+	color: #e2e8f0;
+}
+
+/* Close Button Styling */
+.close-button {
+	float: right;
+	padding: 5px;
+	cursor: pointer;
+	font-size: 18px;
+	background-color: #ccc;
+	border: none;
+	border-radius: 50%;
+	line-height: 20px;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, transform 0.3s;
+}
+
+body.dark-mode .close-button {
+	background-color: #555;
+	color: #ffcccc;
+}
+
+body.dark-mode .close-button:hover {
+	background-color: #ff6666;
+	color: white;
+	transform: scale(1.2) rotate(90deg);
+}
+
+/* Container */
+.container {
+	background-color: #ffffff;
+	padding: 40px 30px;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	max-width: 850px;
+	width: 100%;
+	text-align: center;
+	position: relative;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	margin-top: 20px;
+}
+
+body.dark-mode .container {
+	background-color: #1a202c;
+	box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+    justify-content: flex-start;
+    padding: 0 10px;
+    gap: 10px;
+    cursor: pointer; /* Ändra från default till pointer */
+    user-select: none;
+}
+
+/* Page Title */
+.page-title {
+	text-align: center;
+	color: #333333;
+	font-size: 28px;
+	margin-bottom: 20px;
+	line-height: 1.4;
+	padding-top: 10px;
+	position: relative;
+	z-index: 1;
+	transition: color 0.3s ease;
+}
+
+body.dark-mode .page-title {
+	color: #ffffff;
+}
+
+/* Score, Start Over, and Dark Mode Toggle Container */
+.score-container {
+	position: fixed;
+	top: 20px;
+	right: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 150px;
+	z-index: 1001;
+	gap: 10px;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Sentence Styling */
+.sentence {
+	background-color: #f7fafc;
+	padding: 20px;
+	padding-bottom: 5px;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	position: relative;
+	transition: background-color 0.3s, border 0.3s;
+	border-left: 6px solid transparent;
+	text-align: left;
+	/* Removed invalid data-state property */
+}
+
+body.dark-mode .sentence {
+	background-color: #2d3748;
+	box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+}
+
+.sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #cdffcd;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+body.dark-mode .sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #22543d;
+}
+
+.sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #FFADB0;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+body.dark-mode .sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #742a2a;
+}
+
+.sentence p {
+	font-size: 1.1rem;
+	margin-bottom: 10px;
+	transition: color 0.3s;
+	position: relative;
+    display: block;
+    width: 100%;
+}
+
+body.dark-mode .sentence p {
+	color: #edf2f7;
+}
+
+.sentence select.first-dropdown {
+    margin-left: 0 !important;
+}
+
+.sentence select:not(:first-child) {
+    margin-left: 10px;
+}
+
+/* Select Element Styling */
+.sentence select {
+    padding: 4px 4px;
+    font-size: inherit;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    background-color: #edf2f7;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+    width: auto;
+    margin-left: 10px;   /* Avstånd till texten framför */
+    margin-right: 10px;  /* Avstånd till texten efter */
+}
+
+body.dark-mode .sentence select {
+	background-color: #4a5568;
+	color: #edf2f7;
+	border: 1px solid #718096;
+}
+
+.sentence select:focus {
+	border-color: #3182ce;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+}
+
+body.dark-mode .sentence select:focus {
+	border-color: #63b3ed;
+	box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+}
+
+/* Sentences */
+.sentences {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+}
+
+/* Slider Container */
+.switch {
+	position: relative;
+	width: 40px;
+	height: 20px;
+	display: inline-block;
+}
+
+/* Hide Default Checkbox */
+.switch input {
+	display: none;
+}
+
+/* Slider Appearance */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	transition: 0.4s;
+	border-radius: 20px;
+}
+
+.slider::before {
+	position: absolute;
+	content: "";
+	height: 14px;
+	width: 14px;
+	left: 3px;
+	bottom: 3px;
+	background-color: white;
+	transition: 0.4s;
+	border-radius: 50%;
+}
+
+/* Slider Active State */
+.switch input:checked+.slider {
+	background-color: #007BFF;
+}
+
+.switch input:checked+.slider::before {
+	transform: translateX(20px);
+}
+
+/* Start Over Button */
+.start-over {
+	background-color: #007BFF;
+	color: white;
+	cursor: pointer;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s ease;
+}
+
+.start-over:hover {
+	background-color: #0056b3;
+	color: white;
+}
+
+/* Unified Button Styling */
+.score,
+.dark-mode-toggle,
+.start-over {
+	width: 100%;
+	height: 40px;
+	padding: 0 10px;
+	box-sizing: border-box;
+	font-size: 16px;
+	text-align: center;
+	background-color: #fff;
+	color: #333;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, color 0.3s;
+	cursor: pointer;
+	border: none;
+}
+
+/* Modal */
+.modal {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+	background: white;
+	color: black;
+	padding: 30px;
+	/* Något mer luft för läsbarhet */
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	text-align: left;
+	/* Ändrat från center till left */
+	max-width: 600px;
+	width: 90%;
+	/* Lite bredare på mobiler */
+	max-height: 80vh;
+	/* Säkerställer att den inte täcker hela skärmen på höjden */
+	overflow-y: auto;
+	/* Gör innehållet rullbart om det är långt */
+	transform: translateY(-20px);
+	transition: transform 0.3s ease-in-out;
+}
+
+/* Specifik styling för element inuti modalen */
+.modal-content h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 1.5rem;
+}
+
+.modal-content p {
+	margin-bottom: 15px;
+	line-height: 1.6;
+}
+
+.modal-content ul {
+	margin-left: 20px;
+	/* Ger punktlistan ett korrekt indrag */
+	margin-bottom: 15px;
+}
+
+.modal-content li {
+	margin-bottom: 10px;
+}
+
+body.dark-mode .modal-content {
+	background-color: #1a202c;
+	color: #edf2f7;
+	border: 1px solid #2d3748;
+	/* Lade till en tunn kant för definition */
+}
+
+.modal.show {
+	display: flex;
+	opacity: 1;
+}
+
+.modal.show .modal-content {
+	transform: translateY(0);
+}
+
+/* Translation toggle – default: OFF */
+body:not(.show-translation) .tooltip-text {
+	display: none;
+}
+
+/* Tooltip Container */
+.sentence p {
+	position: relative;
+	/* Tog bort cursor: help; nu används standardmarkör */
+	display: block;
+	/* Ändrat till block så att vi kan utgå från vänsterkanten */
+}
+
+/* Tooltip Text */
+.sentence .tooltip-text {
+	visibility: hidden;
+	white-space: nowrap;
+	background-color: #2d3748;
+	color: #fff;
+	text-align: left;
+	border-radius: 6px;
+	padding: 10px 15px;
+	position: absolute;
+	z-index: 10;
+	bottom: 110%;
+	left: 0;
+	opacity: 0;
+	transition: opacity 0.3s, transform 0.3s;
+	font-size: 1.05rem;
+	font-style: normal;
+	pointer-events: none;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	left: 0;
+	bottom: 125%;
+	width: max-content;
+	max-width: 90%;
+}
+
+/* Tooltip Pil - flyttad till vänster för att matcha starten */
+.sentence .tooltip-text::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 20px;
+	/* Pilen flyttad närmare starten av meningen */
+	border-width: 6px;
+	border-style: solid;
+	border-color: #2d3748 transparent transparent transparent;
+}
+
+/* Visa vid hover */
+.sentence:hover .tooltip-text {
+	visibility: visible;
+	opacity: 1;
+	transform: translateY(-5px);
+}
+
+/* Anpassning för Dark Mode */
+body.dark-mode .sentence .tooltip-text {
+	background-color: #4a5568;
+	color: #edf2f7;
+}
+
+body.dark-mode .sentence .tooltip-text::after {
+	border-color: #4a5568 transparent transparent transparent;
+}
+
+
+/* Container som håller ihop badge och knapp längst till höger */
+.gender-control-wrapper {
+    float: right;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 👈 EXAKT 10px mellan badge och knapp */
+    margin-left: 15px;
+}
+
+/* Uppdaterad gender-hint (badgen) */
+.gender-hint {
+    display: inline-block; 
+    visibility: hidden;    
+    opacity: 0;
+    transform: translateX(10px); /* Startar lite till höger */
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    border: 1.5px solid #cbd5e0;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-family: Arial, sans-serif;
+    white-space: nowrap;
+    line-height: normal; 
+}
+
+
+/* Visningslogik när Show gender klickas */
+.sentence.show-gender .gender-hint {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Knappen - ingen float här eftersom wrappern sköter det */
+.gender-toggle {
+    width: 110px;
+    height: 28px;
+    position: relative; /* Nödvändigt för absolut positionering inuti */
+    overflow: hidden;   /* Döljer texten som glider ut */
+    border-radius: 6px;
+    border: 1.5px solid #94a3b8;
+    background-color: #e2e8f0;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.gender-toggle span {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: block;
+    text-align: center;
+}
+
+/* "Hide gender" är osynlig och lite nedsänkt initialt */
+.gender-toggle .text-hide {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+/* När klassen .show-gender finns på föräldern (.sentence) */
+.sentence.show-gender .gender-toggle .text-show {
+    opacity: 0;
+    transform: translateY(-25px); /* Glider uppåt och försvinner */
+}
+
+.sentence.show-gender .gender-toggle .text-hide {
+    opacity: 1;
+    transform: translateY(-50%); /* Glider upp till mitten */
+}
+
+.sentence.show-gender .gender-toggle {
+    background-color: #0ea5e9;
+    border-color: #0284c7;
+    color: white;
+}
+
+.gender-toggle:hover {
+	background-color: #cbd5e1;
+	border-color: #64748b;
+}
+
+/* Dark Mode anpassning */
+body.dark-mode .gender-hint, 
+body.dark-mode .gender-toggle {
+    background-color: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
+}
+
+body.dark-mode .gender-toggle:hover {
+    background-color: #475569;
+}
+
+/* 🚫 Block entire site on small screens */
+@media (max-width: 700px) {
+
+    body > *:not(#mobileBlockModal) {
+        display: none !important;
+    }
+
+    #mobileBlockModal {
+        display: flex !important;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        opacity: 1;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span class="score-display">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+<!-- Translation Toggle -->
+<div class="dark-mode-toggle">
+    <label class="switch">
+        <input type="checkbox" id="translationSwitch">
+        <span class="slider"></span>
+    </label>
+    <span>Translation</span>
+</div>		
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Go to harder version of the exercise (no gender indicated) -->
+        <button class="start-over" onclick="goToMediumVersion()">
+            <i class="fas fa-arrow-up-right-from-square" style="margin-right: 8px;"></i> Medium level
+        </button>
+        <button class="start-over" onclick="goToHardVersion()">
+            <i class="fas fa-arrow-up-right-from-square" style="margin-right: 8px;"></i> Hard level
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">Adjective Agreement | DEFINITE regular: easy level</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Information</h2>
+            <p>This exercise practises regular Swedish adjectives in the definite form. You choose the correct definite article together with the adjective, so that they agree with the noun in gender and number. All adjectives are regular, and the focus is on forming correct definite noun phrases.</p><br />
+
+			<h2 id="infoModalTitle">Please note!</h2>
+			<p>Featured in this exercise are <strong>tooltips with translations and gender indicators</strong>. For a greater challenge, <strong>try the medium or hard level versions</strong> (see the menu options).
+			</p>
+        </div>
+    </div>
+
+    <!-- Congratulations Modal -->
+<div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+    <div class="modal-content">
+        <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+        <h2 id="congratulationsModalTitle">Congratulations!</h2> 
+        <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+    </div>
+</div>
+
+<div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true" aria-labelledby="mobileBlockTitle">
+    <div class="modal-content" style="text-align:center;">
+        <h2 id="mobileBlockTitle">Not available on mobile</h2>
+        <p>
+            This page — an exercise on Swedish adjectives — is not designed for mobile phones,
+            mainly because many of the interactive features do not work well on small touchscreens.
+        </p>
+    </div>
+</div>	
+
+<script>
+
+const sentences = [
+
+{
+    translation: "We were met by the pleasant woman at the reception.",
+    words: [
+        { sentencePart: "Vi möttes av" },
+        {
+            sentencePart: `<select data-correct="den trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den trevliga">den trevliga</option>
+            <option value="det trevliga">det trevliga</option>
+            <option value="de trevliga">de trevliga</option>
+            </select>`,
+        },
+        { sentencePart: "kvinnan på mottagningen. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The pleasant atmosphere really characterised the shop.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Den trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den trevliga">Den trevliga</option>
+            <option value="Det trevliga">Det trevliga</option>
+            <option value="De trevliga">De trevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "atmosfären präglade verkligen butiken. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "He bought the pleasant umbrella during his trip.",
+    "words": [
+        { "sentencePart": "Han köpte" },
+        {
+            "sentencePart": `<select data-correct="det trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den trevliga">den trevliga</option>
+            <option value="det trevliga">det trevliga</option>
+            <option value="de trevliga">de trevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "paraplyet under sin resa. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The pleasant theme is often heard in the symphony’s second movement.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den trevliga">Den trevliga</option>
+            <option value="Det trevliga">Det trevliga</option>
+            <option value="De trevliga">De trevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "temat hörs ofta i symfonins andra sats. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The pleasant colleagues are the best thing about the job.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="De trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den trevliga">Den trevliga</option>
+            <option value="Det trevliga">Det trevliga</option>
+            <option value="De trevliga">De trevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "kollegorna är det bästa med jobbet. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The unpleasant event hit him hard.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Den otrevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den otrevliga">Den otrevliga</option>
+            <option value="Det otrevliga">Det otrevliga</option>
+            <option value="De otrevliga">De otrevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "händelsen tog honom hårt. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The unpleasant meeting unfortunately became very drawn-out.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det otrevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den otrevliga">Den otrevliga</option>
+            <option value="Det otrevliga">Det otrevliga</option>
+            <option value="De otrevliga">De otrevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "mötet blev tyvärr väldigt utdraget. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "In the archive he eventually found the unpleasant photograph.",
+    "words": [
+        { "sentencePart": "I arkivet hittade han till slut" },
+        {
+            "sentencePart": `<select data-correct="det otrevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den otrevliga">den otrevliga</option>
+            <option value="det otrevliga">det otrevliga</option>
+            <option value="de otrevliga">de otrevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "fotot. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The unpleasant treatment made a deep impression.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det otrevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den otrevliga">Den otrevliga</option>
+            <option value="Det otrevliga">Det otrevliga</option>
+            <option value="De otrevliga">De otrevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "bemötandet gjorde ett djupt intryck. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "He believes that the unpleasant characters bring the film down.",
+    "words": [
+        { "sentencePart": "Han anser att" },
+        {
+            "sentencePart": `<select data-correct="de otrevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den otrevliga">den otrevliga</option>
+            <option value="det otrevliga">det otrevliga</option>
+            <option value="de otrevliga">de otrevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "karaktärerna sänker filmen. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "She wore the fine dress at the party yesterday.",
+    "words": [
+        { "sentencePart": "Hon bar" },
+        {
+            "sentencePart": `<select data-correct="den fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fina">den fina</option>
+            <option value="det fina">det fina</option>
+            <option value="de fina">de fina</option>
+            </select>`,
+        },
+        { "sentencePart": "klänningen på festen i går. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The fine car stood in the street and gleamed.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Den fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den fina">Den fina</option>
+            <option value="Det fina">Det fina</option>
+            <option value="De fina">De fina</option>
+            </select>`,
+        },
+        { "sentencePart": "bilen stod på gatan och glänste. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "On special occasions she often wears the fine piece of jewellery.",
+    "words": [
+        { "sentencePart": "Vid högtider bär hon ofta" },
+        {
+            "sentencePart": `<select data-correct="det fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fina">den fina</option>
+            <option value="det fina">det fina</option>
+            <option value="de fina">de fina</option>
+            </select>`,
+        },
+        { "sentencePart": "smycket. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The project succeeded and the fine work received recognition.",
+    "words": [
+        { "sentencePart": "Projektet lyckades och" },
+        {
+            "sentencePart": `<select data-correct="det fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fina">den fina</option>
+            <option value="det fina">det fina</option>
+            <option value="de fina">de fina</option>
+            </select>`,
+        },
+        { "sentencePart": "arbetet fick erkännande. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "In the main hall the fine paintings hang in a row.",
+    "words": [
+        { "sentencePart": "I stora salen hänger" },
+        {
+            "sentencePart": `<select data-correct="de fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fina">den fina</option>
+            <option value="det fina">det fina</option>
+            <option value="de fina">de fina</option>
+            </select>`,
+        },
+        { "sentencePart": "tavlorna på rad. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "In the album are the fine photographs from their wedding.",
+    "words": [
+        { "sentencePart": "I albumet finns" },
+        {
+            "sentencePart": `<select data-correct="de fina" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fina">den fina</option>
+            <option value="det fina">det fina</option>
+            <option value="de fina">de fina</option>
+            </select>`,
+        },
+        { "sentencePart": "fotona från deras bröllop. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "Despite the clear-out, the ugly jumper was left in the wardrobe.",
+    "words": [
+        { "sentencePart": "Trots rensningen låg" },
+        {
+            "sentencePart": `<select data-correct="den fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fula">den fula</option>
+            <option value="det fula">det fula</option>
+            <option value="de fula">de fula</option>
+            </select>`,
+        },
+        { "sentencePart": "tröjan kvar i garderoben. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The ugly cheese was still in the fridge.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Den fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den fula">Den fula</option>
+            <option value="Det fula">Det fula</option>
+            <option value="De fula">De fula</option>
+            </select>`,
+        },
+        { "sentencePart": "osten stod kvar i kylskåpet. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The fabric is ruined, as the ugly mark is clearly visible.",
+    "words": [
+        { "sentencePart": "Tyget är förstört eftersom" },
+        {
+            "sentencePart": `<select data-correct="det fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fula">den fula</option>
+            <option value="det fula">det fula</option>
+            <option value="de fula">de fula</option>
+            </select>`,
+        },
+        { "sentencePart": "märket syns tydligt. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "She immediately noticed the ugly smile.",
+    "words": [
+        { "sentencePart": "Hon lade direkt märke till" },
+        {
+            "sentencePart": `<select data-correct="det fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fula">den fula</option>
+            <option value="det fula">det fula</option>
+            <option value="de fula">de fula</option>
+            </select>`,
+        },
+        { "sentencePart": "leendet. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The ugly gloves made him feel ashamed.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="De fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den fula">Den fula</option>
+            <option value="Det fula">Det fula</option>
+            <option value="De fula">De fula</option>
+            </select>`,
+        },
+        { "sentencePart": "handskarna fick honom att skämmas. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The cityscape changed when the ugly buildings were demolished.",
+    "words": [
+        { "sentencePart": "Stadsbilden ändrades när" },
+        {
+            "sentencePart": `<select data-correct="de fula" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den fula">den fula</option>
+            <option value="det fula">det fula</option>
+            <option value="de fula">de fula</option>
+            </select>`,
+        },
+        { "sentencePart": "byggnaderna revs. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The expensive sports car attracted attention.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Den dyra" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den dyra">Den dyra</option>
+            <option value="Det dyra">Det dyra</option>
+            <option value="De dyra">De dyra</option>
+            </select>`,
+        },
+        { "sentencePart": "sportbilen väckte uppmärksamhet. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The budget collapsed and the expensive trip was cancelled.",
+    "words": [
+        { "sentencePart": "Budgeten sprack och" },
+        {
+            "sentencePart": `<select data-correct="den dyra" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den dyra">den dyra</option>
+            <option value="det dyra">det dyra</option>
+            <option value="de dyra">de dyra</option>
+            </select>`,
+        },
+        { "sentencePart": "resan ställdes in. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The expensive pleasure of buying a new car every spring has ruined everything.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det dyra" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den dyra">Den dyra</option>
+            <option value="Det dyra">Det dyra</option>
+            <option value="De dyra">De dyra</option>
+            </select>`,
+        },
+        { "sentencePart": "nöjet att köpa ny bil varje vår har förstört allt. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "They live in the expensive area by the coast.",
+    "words": [
+        { "sentencePart": "De bor i" },
+        {
+            "sentencePart": `<select data-correct="det dyra" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den dyra">den dyra</option>
+            <option value="det dyra">det dyra</option>
+            <option value="de dyra">de dyra</option>
+            </select>`,
+        },
+        { "sentencePart": "området vid kusten. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The expensive watches are kept securely in the display case.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="De dyra" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den dyra">Den dyra</option>
+            <option value="Det dyra">Det dyra</option>
+            <option value="De dyra">De dyra</option>
+            </select>`,
+        },
+        { "sentencePart": "klockorna förvaras säkert i montern. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "In the expensive apartments, there were huge balconies.",
+    "words": [
+        { "sentencePart": "I" },
+        {
+            "sentencePart": `<select data-correct="de dyra" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den dyra">den dyra</option>
+            <option value="det dyra">det dyra</option>
+            <option value="de dyra">de dyra</option>
+            </select>`,
+        },
+        { "sentencePart": "lägenheterna fanns det jättestora balkonger. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "I found the cheap ticket online.",
+    "words": [
+        { "sentencePart": "Jag hittade" },
+        {
+            "sentencePart": `<select data-correct="den billiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den billiga">den billiga</option>
+            <option value="det billigt">det billiga</option>
+            <option value="de billiga">de billiga</option>
+            </select>`,
+        },
+        { "sentencePart": "biljetten på nätet. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The cheap lunch was her choice today.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Den billiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den billiga">Den billiga</option>
+            <option value="Det billiga">Det billiga</option>
+            <option value="De billiga">De billiga</option>
+            </select>`,
+        },
+        { "sentencePart": "lunchen blev hennes val i dag. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "We had everything we needed in the cheap accommodation.",
+    "words": [
+        { "sentencePart": "Vi hade allt vi behövde i" },
+        {
+            "sentencePart": `<select data-correct="det billiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den billiga">den billiga</option>
+            <option value="det billiga">det billiga</option>
+            <option value="de billiga">de billiga</option>
+            </select>`,
+        },
+        { "sentencePart": "boendet. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "She bought the cheap belt at a market.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det billiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den billiga">Den billiga</option>
+            <option value="Det billiga">Det billiga</option>
+            <option value="De billiga">De billiga</option>
+            </select>`,
+        },
+        { "sentencePart": "bältet köpte hon på en marknad. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The cheap vegetables at the market sell out quickly.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="De billiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den billiga">Den billiga</option>
+            <option value="Det billiga">Det billiga</option>
+            <option value="De billiga">De billiga</option>
+            </select>`,
+        },
+        { "sentencePart": "grönsakerna på marknaden tar snabbt slut. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The cheap shoes ran out of stock in half an hour.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="De billiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den billiga">Den billiga</option>
+            <option value="Det billiga">Det billiga</option>
+            <option value="De billiga">De billiga</option>
+            </select>`,
+        },
+        { "sentencePart": "skorna tog slut i lager på en halvtimme. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "He told the funny story during dinner.",
+    "words": [
+        { "sentencePart": "Han berättade" },
+        {
+            "sentencePart": `<select data-correct="den roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den roliga">den roliga</option>
+            <option value="det roliga">det roliga</option>
+            <option value="de roliga">de roliga</option>
+            </select>`,
+        },
+        { "sentencePart": "historien under middagen. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The fun hobby makes her feel good.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Den roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den roliga">Den roliga</option>
+            <option value="Det roliga">Det roliga</option>
+            <option value="De roliga">De roliga</option>
+            </select>`,
+        },
+        { "sentencePart": "hobbyn får henne att må bra. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The fun place we found when we were in Berlin – what was it called?",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den roliga">Den roliga</option>
+            <option value="Det roliga">Det roliga</option>
+            <option value="De roliga">De roliga</option>
+            </select>`,
+        },
+        { "sentencePart": "stället vi hittade i Berlin, vad hette det? <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "She showed us the funny photo on her phone.",
+    "words": [
+        { "sentencePart": "Hon visade oss" },
+        {
+            "sentencePart": `<select data-correct="det roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den roliga">den roliga</option>
+            <option value="det roliga">det roliga</option>
+            <option value="de roliga">de roliga</option>
+            </select>`,
+        },
+        { "sentencePart": "fotot i mobilen. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "In the book, the fun professions are described in more detail.",
+    "words": [
+        { "sentencePart": "I boken skildras" },
+        {
+            "sentencePart": `<select data-correct="de roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den roliga">den roliga</option>
+            <option value="det roliga">det roliga</option>
+            <option value="de roliga">de roliga</option>
+            </select>`,
+        },
+        { "sentencePart": "yrkena mer ingående. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The city came alive when the pleasant cafés opened.",
+    "words": [
+        { "sentencePart": "Det blev liv i staden när" },
+        {
+            "sentencePart": `<select data-correct="de trevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den trevliga">den trevliga</option>
+            <option value="det trevliga">det trevliga</option>
+            <option value="de trevliga">de trevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "kaféerna öppnade. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The unpleasant rumours spread quickly throughout the village.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="De otrevliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den otrevliga">Den otrevliga</option>
+            <option value="Det otrevliga">Det otrevliga</option>
+            <option value="De otrevliga">De otrevliga</option>
+            </select>`,
+        },
+        { "sentencePart": "ryktena spreds snabbt i hela byn. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "Who is it that has planned the fun activities?",
+    "words": [
+        { "sentencePart": "Vem är det som har planerat" },
+        {
+            "sentencePart": `<select data-correct="de roliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den roliga">den roliga</option>
+            <option value="det roliga">det roliga</option>
+            <option value="de roliga">de roliga</option>
+            </select>`,
+        },
+        { "sentencePart": "aktiviteterna? <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "It was the boring play that ruined the entire evening.",
+    "words": [
+        { "sentencePart": "Det var" },
+        {
+            "sentencePart": `<select data-correct="den tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den tråkiga">den tråkiga</option>
+            <option value="det tråkiga">det tråkiga</option>
+            <option value="de tråkiga">de tråkiga</option>
+            </select>`,
+        },
+        { "sentencePart": "pjäsen som förstörde hela kvällen. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The boring attitude characterised the whole meeting.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Den tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den tråkiga">Den tråkiga</option>
+            <option value="Det tråkiga">Det tråkiga</option>
+            <option value="De tråkiga">De tråkiga</option>
+            </select>`,
+        },
+        { "sentencePart": "attityden präglade hela mötet. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The boring meeting dragged on.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den tråkiga">Den tråkiga</option>
+            <option value="Det tråkiga">Det tråkiga</option>
+            <option value="De tråkiga">De tråkiga</option>
+            </select>`,
+        },
+        { "sentencePart": "mötet drog ut på tiden. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "Now we can let AI do the boring work.",
+    "words": [
+        { "sentencePart": "Nu kan vi låta AI göra" },
+        {
+            "sentencePart": `<select data-correct="det tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den tråkiga">den tråkiga</option>
+            <option value="det tråkiga">det tråkiga</option>
+            <option value="de tråkiga">de tråkiga</option>
+            </select>`,
+        },
+        { "sentencePart": "arbetet. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The boring lessons were important in order to get a job.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="De tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den tråkiga">Den tråkiga</option>
+            <option value="Det tråkiga">Det tråkiga</option>
+            <option value="De tråkiga">De tråkiga</option>
+            </select>`,
+        },
+        { "sentencePart": "lektionerna var viktiga för att få ett jobb. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "We read the boring poems at school.",
+    "words": [
+        { "sentencePart": "Vi läste" },
+        {
+            "sentencePart": `<select data-correct="de tråkiga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den tråkiga">den tråkiga</option>
+            <option value="det tråkiga">det tråkiga</option>
+            <option value="de tråkiga">de tråkiga</option>
+            </select>`,
+        },
+        { "sentencePart": "dikterna i skolan. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "Do you remember the wonderful day when we met?",
+    "words": [
+        { "sentencePart": "Minns du" },
+        {
+            "sentencePart": `<select data-correct="den härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den härliga">den härliga</option>
+            <option value="det härliga">det härliga</option>
+            <option value="de härliga">de härliga</option>
+            </select>`,
+        },
+        { "sentencePart": "dagen då vi träffades? <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "Thank you, Sofia, for the wonderful song!",
+    "words": [
+        { "sentencePart": "Tack, Sofia, för" },
+        {
+            "sentencePart": `<select data-correct="den härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den härliga">den härliga</option>
+            <option value="det härliga">det härliga</option>
+            <option value="de härliga">de härliga</option>
+            </select>`,
+        },
+        { "sentencePart": "sången! <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "Where is the wonderful bakery you told me about?",
+    "words": [
+        { "sentencePart": "Var ligger" },
+        {
+            "sentencePart": `<select data-correct="det härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den härliga">den härliga</option>
+            <option value="det härliga">det härliga</option>
+            <option value="de härliga">de härliga</option>
+            </select>`,
+        },
+        { "sentencePart": "bageriet du berättade om? <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The wonderful area lies right by the water.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den härliga">Den härliga</option>
+            <option value="Det härliga">Det härliga</option>
+            <option value="De härliga">De härliga</option>
+            </select>`,
+        },
+        { "sentencePart": "området ligger alldeles intill vattnet. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "The wonderful colours dominate the entire artwork.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="De härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den härliga">Den härliga</option>
+            <option value="Det härliga">Det härliga</option>
+            <option value="De härliga">De härliga</option>
+            </select>`,
+        },
+        { "sentencePart": "färgerna dominerar hela konstverket. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "They carry the wonderful memories with them through life.",
+    "words": [
+        { "sentencePart": "De bär med sig" },
+        {
+            "sentencePart": `<select data-correct="de härliga" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den härliga">den härliga</option>
+            <option value="det härliga">det härliga</option>
+            <option value="de härliga">de härliga</option>
+            </select>`,
+        },
+        { "sentencePart": "minnena genom livet. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "At last he lay in the comfortable bed at the hotel.",
+    "words": [
+        { "sentencePart": "Han låg äntligen i" },
+        {
+            "sentencePart": `<select data-correct="den sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den sköna">den sköna</option>
+            <option value="det sköna">det sköna</option>
+            <option value="de sköna">de sköna</option>
+            </select>`,
+        },
+        { "sentencePart": "sängen på hotellet. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "She sank gratefully into the comfortable armchair.",
+    "words": [
+        { "sentencePart": "Hon sjönk tacksamt ner i" },
+        {
+            "sentencePart": `<select data-correct="den sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den sköna">den sköna</option>
+            <option value="det sköna">det sköna</option>
+            <option value="de sköna">de sköna</option>
+            </select>`,
+        },
+        { "sentencePart": "fåtöljen. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "The pleasant tempo characterises the whole of this song.",
+    "words": [
+        {
+            "sentencePart": `<select data-correct="Det sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="Den sköna">Den sköna</option>
+            <option value="Det sköna">Det sköna</option>
+            <option value="De sköna">De sköna</option>
+            </select>`,
+        },
+        { "sentencePart": "tempot präglar hela den här låten. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "He pulled the comfortable duvet more tightly around himself.",
+    "words": [
+        { "sentencePart": "Han drog tätare omkring sig" },
+        {
+            "sentencePart": `<select data-correct="det sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den sköna">den sköna</option>
+            <option value="det sköna">det sköna</option>
+            <option value="de sköna">de sköna</option>
+            </select>`,
+        },
+        { "sentencePart": "täcket. <span class='gender-hint gender-t'>ett</span>" }
+    ]
+},
+{
+    "translation": "On the sofa lay the comfortable cushions, scattered about.",
+    "words": [
+        { "sentencePart": "I soffan låg" },
+        {
+            "sentencePart": `<select data-correct="de sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den sköna">den sköna</option>
+            <option value="det sköna">det sköna</option>
+            <option value="de sköna">de sköna</option>
+            </select>`,
+        },
+        { "sentencePart": "kuddarna utspridda. <span class='gender-hint gender-n'>en</span>" }
+    ]
+},
+{
+    "translation": "They remember the lovely summer evenings in the countryside.",
+    "words": [
+        { "sentencePart": "De minns" },
+        {
+            "sentencePart": `<select data-correct="de sköna" onchange="evaluateAnswer(this)" aria-label="Välj rätt alternativ">
+            <option value="">Select</option>
+            <option value="den sköna">den sköna</option>
+            <option value="det sköna">det sköna</option>
+            <option value="de sköna">de sköna</option>
+            </select>`,
+        },
+        { "sentencePart": "sommarkvällarna på landet. <span class='gender-hint gender-n'>en</span>" }
+    ]
+}
+
+];
+
+let score=0;
+
+// Fisher-Yates shuffle algorithm to shuffle an array.
+function shuffleArray(array) {
+	for (let i=array.length - 1; i > 0; i--) {
+		const j=Math.floor(Math.random() * (i + 1));
+		[array[i],
+		array[j]]=[array[j],
+		array[i]];
+	}
+
+	return array;
+}
+
+function toggleTranslation() {
+	document.body.classList.toggle('show-translation');
+
+	const enabled=document.body.classList.contains('show-translation');
+	localStorage.setItem('translationMode', enabled ? 'enabled' : 'disabled');
+}
+
+function toggleGender(button) {
+	const sentenceDiv = button.closest('.sentence');
+    sentenceDiv.classList.toggle('show-gender');
+}
+
+function capitalize(word) {
+	return word.charAt(0).toUpperCase()+word.slice(1);
+}
+
+
+// Function to generate HTML for a single sentence
+function generateSentenceHTML(sentence, index) {
+    let extractedGenderBadge = "";
+
+    const sentenceHTML = sentence.words.map((item, i) => { // Lade till 'i' för index
+        let part = item.sentencePart;
+
+        // Om detta är första delen av meningen och det är en select
+        if (i === 0 && part.includes("<select")) {
+            part = part.replace("<select", '<select class="first-dropdown"');
+        }
+
+        // 1. Hitta och extrahera gender-hint
+        if (part.includes("gender-hint")) {
+            const badgeRegex = /<span class=['"]gender-hint[^>]*>.*?<\/span>/;
+            const match = part.match(badgeRegex);
+            if (match) {
+                extractedGenderBadge = match[0];
+                part = part.replace(badgeRegex, "");
+            }
+        }
+
+        return part; // Returnera texten/select-elementet direkt
+    }).join('');
+
+    const tooltipSpan = sentence.translation
+        ? `<span class="tooltip-text">${sentence.translation}</span>`
+        : "";
+
+    // Returnera den färdiga strängen
+    return `<div class="sentence">
+        <p>
+            ${sentenceHTML}
+            <span class="gender-control-wrapper">
+                ${extractedGenderBadge}
+                <button class="gender-toggle" onclick="toggleGender(this)">
+                    <span class="text-show">Show gender</span>
+                    <span class="text-hide">Hide gender</span>
+                </button>
+            </span>
+            ${tooltipSpan}
+        </p>
+    </div>`;
+}
+
+// Render sentences in a shuffled order.
+function renderSentences() {
+	const shuffledSentences=shuffleArray([...sentences]);
+	const sentencesHTML=shuffledSentences.map((sentence, index)=> generateSentenceHTML(sentence, index)).join('');
+	document.getElementById('sentences').innerHTML=sentencesHTML;
+}
+
+// Evaluates the user's answer and updates the score and UI accordingly.
+function evaluateAnswer(selectElement) {
+	const correctAnswer=selectElement.getAttribute('data-correct');
+	const selectedValue=selectElement.value;
+	const parent=selectElement.closest('.sentence');
+
+	// Spara den gamla statusen innan vi uppdaterar
+	const wasCorrect=parent.classList.contains('correct');
+
+	// Uppdatera UI: ta bort gamla färger
+	parent.classList.remove('correct', 'incorrect');
+
+	let newState='none';
+
+	if (selectedValue===correctAnswer) {
+		newState='correct';
+		parent.classList.add('correct');
+
+		// Om den INTE var rätt innan, men är rätt nu: +1
+		if ( !wasCorrect) {
+			updateScore(1);
+		}
+	}
+
+	else if (selectedValue !=="") {
+		newState='incorrect';
+		parent.classList.add('incorrect');
+
+		// Om den var rätt innan, men nu är fel: -1
+		if (wasCorrect) {
+			updateScore(-1);
+		}
+	}
+
+	else {
+
+		// Om användaren väljer "Select" (tomt)
+		if (wasCorrect) {
+			updateScore(-1);
+		}
+	}
+
+	checkAllCorrect();
+}
+
+
+// Updates the score display based on value change.
+function updateScore(value) {
+	score+=value;
+
+	// Hämta det faktiska antalet meningar dynamiskt
+	const maxScore=sentences.length;
+
+	// Förhindra att poängen går utanför gränserna (0 till max)
+	// Notera: Om du vill tillåta minuspoäng, använd -maxScore
+	if (score > maxScore) {
+		score=maxScore;
+	}
+
+	else if (score < 0) {
+		score=0;
+	}
+
+	// Uppdatera alla element med klassen "score-display"
+	document.querySelectorAll('.score-display').forEach((element)=> {
+			element.textContent=score;
+		});
+
+}
+
+// Checks if all sentences are correctly answered.
+function checkAllCorrect() {
+	const allCorrect=Array.from(document.querySelectorAll('.sentence')).every(sentence=> sentence.classList.contains('correct'));
+
+	if (allCorrect) {
+		openModal('congratulationsModal');
+	}
+}
+
+// Opens a modal by its ID.
+function openModal(modalId) {
+	const modal=document.getElementById(modalId);
+
+	if (modal) {
+		modal.style.display='flex';
+		modal.classList.add('show');
+	}
+}
+
+// Closes a modal by its ID.
+function closeModal(modalId) {
+	const modal=document.getElementById(modalId);
+
+	if (modal) {
+		modal.style.display='none';
+		modal.classList.remove('show');
+	}
+}
+
+// Close modal when clicking outside of the modal content
+window.addEventListener('click', (event)=> {
+		const infoModal=document.getElementById('infoModal');
+		const congratulationsModal=document.getElementById('congratulationsModal');
+
+		if (event.target===infoModal) {
+			closeModal('infoModal');
+		}
+
+		else if (event.target===congratulationsModal) {
+			closeModal('congratulationsModal');
+		}
+	});
+
+// Function to toggle dark mode
+function toggleDarkMode() {
+	document.body.classList.toggle('dark-mode');
+
+	const isDarkModeEnabled=document.body.classList.contains('dark-mode');
+	localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
+}
+
+function goToMediumVersion() {
+	window.location.href="https://learnswedish.github.io/html/adj-def-regular-medium.html";
+}
+
+function goToHardVersion() {
+	window.location.href="https://learnswedish.github.io/html/adj-def-regular-hard.html";
+}
+
+// Initialize the dark mode toggle with stored preference
+function initializeModalsAndDarkMode() {
+	const darkModeToggle=document.getElementById('darkModeSwitch');
+	const translationToggle=document.getElementById('translationSwitch');
+
+	/* ---- Dark mode ---- */
+	const isDarkModeEnabled=localStorage.getItem('darkMode')==='enabled';
+	document.body.classList.toggle('dark-mode', isDarkModeEnabled);
+	darkModeToggle.checked=isDarkModeEnabled;
+	darkModeToggle.addEventListener('change', toggleDarkMode);
+
+	/* ---- Translation mode ---- */
+	const isTranslationEnabled=localStorage.getItem('translationMode')==='enabled';
+	document.body.classList.toggle('show-translation', isTranslationEnabled);
+	translationToggle.checked=isTranslationEnabled;
+	translationToggle.addEventListener('change', toggleTranslation);
+}
+
+// Function to update the maximum score in the HTML
+function updateMaxScore() {
+	const maxScore=sentences.length;
+
+	document.querySelectorAll('.score-max').forEach((element)=> {
+			element.textContent=maxScore;
+		});
+}
+
+// Resets the quiz and score, then re-renders sentences.
+function startOver() {
+	renderSentences();
+	resetScore();
+	closeModal('congratulationsModal');
+}
+
+// Resets the score to zero.
+function resetScore() {
+	score=0;
+
+	document.querySelectorAll('.score-display').forEach((element)=> {
+			element.textContent=score;
+		});
+
+	// Återställ alla meningars tillstånd
+	document.querySelectorAll('.sentence').forEach(sentence=> {
+			sentence.classList.remove('correct', 'incorrect');
+		});
+}
+
+// Initialize the application once the DOM is fully loaded.
+document.addEventListener('DOMContentLoaded', ()=> {
+		const isMobile=window.matchMedia("(max-width: 700px)").matches;
+
+		if (isMobile) return;
+
+		renderSentences();
+		updateMaxScore(); // Sätt maxpoäng direkt
+		resetScore(); // Sätt startpoäng
+		initializeModalsAndDarkMode(); // Init toggles sist
+	});
+</script>
+
+</body>
+</html>

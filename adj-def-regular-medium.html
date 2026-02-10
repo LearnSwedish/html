@@ -1,0 +1,1360 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjective Agreement (definite regular): medium level</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+/* Reset and Base Styles */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9fafb;
+	color: #2d3748;
+	line-height: 1.6;
+	font-size: 16px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	min-height: 100vh;
+	padding: 20px;
+	overflow-y: auto;
+	position: relative;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+	background-color: #121212;
+	color: #e2e8f0;
+}
+
+/* Close Button Styling */
+.close-button {
+	float: right;
+	padding: 5px;
+	cursor: pointer;
+	font-size: 18px;
+	background-color: #ccc;
+	border: none;
+	border-radius: 50%;
+	line-height: 20px;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, transform 0.3s;
+}
+
+body.dark-mode .close-button {
+	background-color: #555;
+	color: #ffcccc;
+}
+
+.close-button:hover {
+	background-color: #f44336;
+	transform: scale(1.2) rotate(90deg);
+	color: white;
+}
+
+body.dark-mode .close-button:hover {
+	background-color: #ff6666;
+	color: white;
+	transform: scale(1.2) rotate(90deg);
+}
+
+/* Container */
+.container {
+	background-color: #ffffff;
+	padding: 40px 30px;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	max-width: 850px;
+	width: 100%;
+	text-align: center;
+	position: relative;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	margin-top: 20px;
+}
+
+body.dark-mode .container {
+	background-color: #1a202c;
+	box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+	justify-content: flex-start;
+	padding: 0 10px;
+	gap: 10px;
+	cursor: default;
+}
+
+/* Page Title */
+.page-title {
+	text-align: center;
+	color: #333333;
+	font-size: 28px;
+	margin-bottom: 20px;
+	line-height: 1.4;
+	padding-top: 10px;
+	position: relative;
+	z-index: 1;
+	transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+body.dark-mode .page-title {
+	color: #ffffff;
+}
+
+/* Score, Start Over, and Dark Mode Toggle Container */
+.score-container {
+	position: fixed;
+	top: 20px;
+	right: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 150px;
+	z-index: 1001;
+	gap: 10px;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Sentence Styling */
+.sentence {
+	background-color: #f7fafc;
+	padding: 20px;
+	padding-bottom: 5px;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	position: relative;
+	transition: background-color 0.3s, border 0.3s;
+	border-left: 6px solid transparent;
+	text-align: left;
+}
+
+body.dark-mode .sentence {
+	background-color: #2d3748;
+	box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+}
+
+.sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #cdffcd;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+body.dark-mode .sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #22543d;
+}
+
+.sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #FFADB0;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+body.dark-mode .sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #742a2a;
+}
+
+.sentence p {
+	font-size: 1.1rem;
+	margin-bottom: 10px;
+	transition: color 0.3s;
+}
+
+body.dark-mode .sentence p {
+	color: #edf2f7;
+}
+
+/* Select Element Styling */
+.sentence select {
+	padding: 4px 4px;
+	font-size: inherit;
+	border: 1px solid #cbd5e0;
+	border-radius: 6px;
+	background-color: #edf2f7;
+	cursor: pointer;
+	transition: border-color 0.3s, background-color 0.3s;
+	width: auto;
+	appearance: auto;
+	-webkit-appearance: auto;
+	-moz-appearance: auto;
+	background-image: initial;
+}
+
+body.dark-mode .sentence select {
+	background-color: #4a5568;
+	color: #edf2f7;
+	border: 1px solid #718096;
+}
+
+.sentence select:focus {
+	border-color: #3182ce;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+}
+
+body.dark-mode .sentence select:focus {
+	border-color: #63b3ed;
+	box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+}
+
+/* Sentences */
+.sentences {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+}
+
+/* Slider Container */
+.switch {
+	position: relative;
+	width: 40px;
+	height: 20px;
+	display: inline-block;
+}
+
+/* Hide Default Checkbox */
+.switch input {
+	display: none;
+}
+
+/* Slider Appearance */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	transition: 0.4s;
+	border-radius: 20px;
+}
+
+.slider::before {
+	position: absolute;
+	content: "";
+	height: 14px;
+	width: 14px;
+	left: 3px;
+	bottom: 3px;
+	background-color: white;
+	transition: 0.4s;
+	border-radius: 50%;
+}
+
+/* Slider Active State */
+.switch input:checked+.slider {
+	background-color: #007BFF;
+}
+
+.switch input:checked+.slider::before {
+	transform: translateX(20px);
+}
+
+/* Start Over Button */
+.start-over {
+	background-color: #007BFF;
+	color: white;
+	cursor: pointer;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s ease;
+}
+
+.start-over:hover {
+	background-color: #0056b3;
+	color: white;
+}
+
+/* Unified Button Styling */
+.score,
+.dark-mode-toggle,
+.start-over {
+	width: 100%;
+	height: 40px;
+	padding: 0 10px;
+	box-sizing: border-box;
+	font-size: 16px;
+	text-align: center;
+	background-color: #fff;
+	color: #333;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, color 0.3s;
+	cursor: pointer;
+	border: none;
+}
+
+/* Modal */
+.modal {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+	background: white;
+	color: black;
+	padding: 30px;
+	/* Något mer luft för läsbarhet */
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	text-align: left;
+	/* Ändrat från center till left */
+	max-width: 600px;
+	width: 90%;
+	/* Lite bredare på mobiler */
+	max-height: 80vh;
+	/* Säkerställer att den inte täcker hela skärmen på höjden */
+	overflow-y: auto;
+	/* Gör innehållet rullbart om det är långt */
+	transform: translateY(-20px);
+	transition: transform 0.3s ease-in-out;
+}
+
+/* Specifik styling för element inuti modalen */
+.modal-content h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 1.5rem;
+}
+
+.modal-content p {
+	margin-bottom: 15px;
+	line-height: 1.6;
+}
+
+body.dark-mode .modal-content {
+	background-color: #1a202c;
+	color: #edf2f7;
+	border: 1px solid #2d3748;
+	/* Lade till en tunn kant för definition */
+}
+
+.modal.show {
+	display: flex;
+	opacity: 1;
+}
+
+.sentence-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* Textdelen ska ta så mycket plats som behövs */
+.sentence-text {
+    flex: 1;
+    margin: 0;
+}
+
+/* Badges hålls ihop till höger */
+.badge-row {
+    display: flex;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    border: 1.5px solid #cbd5e0;
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+body.dark-mode .badge {
+    background-color: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
+}
+
+/* Ge alla dropdowns lite andrum på båda sidor */
+.sentence select {
+    padding: 4px 8px; /* Lite extra padding inuti för tydlighet */
+    font-size: inherit;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    background-color: #edf2f7;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+    width: auto;
+    margin: 0 6px; 
+}
+
+.first-in-sentence {
+    margin-left: 0 !important;
+}
+
+/* Specifik regel för att ta bort luft i början av en mening */
+.sentence-text select:first-child {
+    margin-left: 8px;
+}
+
+/* Extra luft efter noun-select för att separera den från efterföljande text */
+.noun-select {
+    margin-right: 8px !important;
+}
+
+/* Undantag: Ingen extra luft om nästa tecken är punkt, kommatecken eller liknande */
+.noun-select:has(+ .punct) {
+    margin-right: 2px !important;
+}
+
+/* Avstånd mellan två dropdowns som ligger precis efter varandra */
+.adj-select {
+    margin-right: 1px !important;
+}
+
+.modal.show .modal-content {
+	transform: translateY(0);
+}
+
+/* 🚫 Block entire site on small screens */
+@media (max-width: 700px) {
+
+    body > *:not(#mobileBlockModal) {
+        display: none !important;
+    }
+
+    #mobileBlockModal {
+        display: flex !important;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        opacity: 1;
+    }
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span class="score-display">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Go to harder version of the exercise (no gender indicated) -->
+        <button class="start-over" onclick="goToEasyVersion()">
+            <i class="fas fa-arrow-up-right-from-square" style="margin-right: 8px;"></i> Easy level
+        </button>
+        <button class="start-over" onclick="goToHardVersion()">
+            <i class="fas fa-arrow-up-right-from-square" style="margin-right: 8px;"></i> Hard level
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">Adjective Agreement | DEFINITE regular: medium level</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Information</h2>
+            <p>This exercise practises regular Swedish adjectives in the definite form. You choose the correct definite article and adjective, as well as the correct definite form of the noun, so that they agree in gender and number. All adjectives are regular, and the focus is on forming correct definite noun phrases.</p><br />
+			<h2 id="infoModalTitle">A defining feature of this level</h2>
+			<p>No translations are provided and you must know the gender of the noun. Select the correct definite article–adjective combination (dropdown 1) and the correct definite form of the noun (dropdown 2). There is <strong>an easier and a harder version</strong> of this exercise available (see the menu).<strong>
+			</p>
+        </div>
+    </div>
+
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+<div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="text-align:center;">
+        <h2>Not available on mobile</h2>
+        <p>
+            This page — an exercise on Swedish adjectives — is not designed for mobile phones,
+            mainly because many of the interactive features do not work well on small touchscreens.
+        </p>
+    </div>
+</div>	
+
+<script>
+
+const sentences = [
+
+  {
+    "meta": { "adj": "trevlig", "noun": "kvinna", "number": "sg." },
+    "words": [
+        { "sentencePart": "Vi möttes av" },
+        { "sentencePart": "<select class=\"adj-select\" data-correct=\"den trevliga\" onchange=\"evaluateAnswer(this)\"><option value=\"\">Select</option><option value=\"den trevliga\">den trevliga</option><option value=\"det trevliga\">det trevliga</option><option value=\"de trevliga\">de trevliga</option></select>" },
+        { "sentencePart": "<select class=\"noun-select\" data-correct=\"kvinnan\" onchange=\"evaluateAnswer(this)\"><option value=\"\">Select</option><option value=\"kvinna\">kvinna</option><option value=\"kvinnan\">kvinnan</option><option value=\"kvinnor\">kvinnor</option><option value=\"kvinnorna\">kvinnorna</option></select>" },
+        { "sentencePart": "på mottagningen." }
+    ]
+  },
+  {
+    "meta": { "adj": "trevlig", "noun": "atmosfär", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Den trevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den trevliga">Den trevliga</option><option value="Det trevliga">Det trevliga</option><option value="De trevliga">De trevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="atmosfären" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="atmosfär">atmosfär</option><option value="atmosfären">atmosfären</option><option value="atmosfärer">atmosfärer</option><option value="atmosfärerna">atmosfärerna</option></select>` },
+      { "sentencePart": "präglade verkligen butiken." }
+    ]
+  },
+  {
+    "meta": { "adj": "trevlig", "noun": "paraply", "number": "sg." },
+    "words": [
+      { "sentencePart": "Han köpte" },
+      { "sentencePart": `<select class="adj-select" data-correct="det trevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den trevliga">den trevliga</option><option value="det trevliga">det trevliga</option><option value="de trevliga">de trevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="paraplyet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="paraply">paraply</option><option value="paraplyet">paraplyet</option><option value="paraplyer">paraplyer</option><option value="paraplyerna">paraplyerna</option></select>` },
+      { "sentencePart": "under sin resa." }
+    ]
+  },
+  {
+    "meta": { "adj": "trevlig", "noun": "tema", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det trevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den trevliga">Den trevliga</option><option value="Det trevliga">Det trevliga</option><option value="De trevliga">De trevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="temat" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="tema">tema</option><option value="temat">temat</option><option value="teman">teman</option><option value="temana">temana</option></select>` },
+      { "sentencePart": "hörs ofta i symfonins andra sats." }
+    ]
+  },
+  {
+    "meta": { "adj": "trevlig", "noun": "kollega", "number": "pl." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="De trevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den trevliga">Den trevliga</option><option value="Det trevliga">Det trevliga</option><option value="De trevliga">De trevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="kollegorna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="kollega">kollega</option><option value="kollegan">kollegan</option><option value="kollegor">kollegor</option><option value="kollegorna">kollegorna</option></select>` },
+      { "sentencePart": "är det bästa med jobbet." }
+    ]
+  },
+  {
+    "meta": { "adj": "otrevlig", "noun": "händelse", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Den otrevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den otrevliga">Den otrevliga</option><option value="Det otrevliga">Det otrevliga</option><option value="De otrevliga">De otrevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="händelsen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="händelse">händelse</option><option value="händelsen">händelsen</option><option value="händelser">händelser</option><option value="händelserna">händelserna</option></select>` },
+      { "sentencePart": "tog honom hårt." }
+    ]
+  },
+  {
+    "meta": { "adj": "otrevlig", "noun": "möte", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det otrevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den otrevliga">Den otrevliga</option><option value="Det otrevliga">Det otrevliga</option><option value="De otrevliga">De otrevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="mötet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="möte">möte</option><option value="mötet">mötet</option><option value="möten">möten</option><option value="mötena">mötena</option></select>` },
+      { "sentencePart": "blev tyvärr väldigt utdraget." }
+    ]
+  },
+  {
+    "meta": { "adj": "otrevlig", "noun": "foto", "number": "sg." },
+    "words": [
+      { "sentencePart": "I arkivet hittade han till slut" },
+      { "sentencePart": `<select class="adj-select" data-correct="det otrevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den otrevliga">den otrevliga</option><option value="det otrevliga">det otrevliga</option><option value="de otrevliga">de otrevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="fotot" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="foto">foto</option><option value="fotot">fotot</option><option value="foton">foton</option><option value="fotona">fotona</option></select>` },
+      { "sentencePart": "<span class='punct'>.</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "otrevlig", "noun": "bemötande", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det otrevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den otrevliga">Den otrevliga</option><option value="Det otrevliga">Det otrevliga</option><option value="De otrevliga">De otrevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="bemötandet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="bemötande">bemötande</option><option value="bemötandet">bemötandet</option><option value="bemötanden">bemötanden</option><option value="bemötandena">bemötandena</option></select>` },
+      { "sentencePart": "gjorde ett djupt intryck." }
+    ]
+  },
+  {
+    "meta": { "adj": "otrevlig", "noun": "karaktär", "number": "pl." },
+    "words": [
+      { "sentencePart": "Han anser att" },
+      { "sentencePart": `<select class="adj-select" data-correct="de otrevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den otrevliga">den otrevliga</option><option value="det otrevliga">det otrevliga</option><option value="de otrevliga">de otrevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="karaktärerna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="karaktär">karaktär</option><option value="karaktären">karaktären</option><option value="karaktärer">karaktärer</option><option value="karaktärerna">karaktärerna</option></select>` },
+      { "sentencePart": "sänker filmen." }
+    ]
+  },
+{
+    "meta": { "adj": "fin", "noun": "klänning", "number": "sg." },
+    "words": [
+      { "sentencePart": "Hon bar" },
+      { "sentencePart": `<select class="adj-select" data-correct="den fina" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fina">den fina</option><option value="det fina">det fina</option><option value="de fina">de fina</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="klänningen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="klänning">klänning</option><option value="klänningen">klänningen</option><option value="klänningar">klänningar</option><option value="klänningarna">klänningarna</option></select>` },
+      { "sentencePart": "på festen i går." }
+    ]
+  },
+  {
+    "meta": { "adj": "fin", "noun": "bil", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Den fina" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den fina">Den fina</option><option value="Det fina">Det fina</option><option value="De fina">De fina</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="bilen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="bil">bil</option><option value="bilen">bilen</option><option value="bilar">bilar</option><option value="bilarna">bilarna</option></select>` },
+      { "sentencePart": "stod på gatan och glänste." }
+    ]
+  },
+  {
+    "meta": { "adj": "fin", "noun": "smycke", "number": "sg." },
+    "words": [
+      { "sentencePart": "Vid högtider bär hon ofta" },
+      { "sentencePart": `<select class="adj-select" data-correct="det fina" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fina">den fina</option><option value="det fina">det fina</option><option value="de fina">de fina</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="smycket" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="smycke">smycke</option><option value="smycket">smycket</option><option value="smycken">smycken</option><option value="smyckena">smyckena</option></select>` },
+      { "sentencePart": "<span class='punct'>.</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "fin", "noun": "arbete", "number": "sg." },
+    "words": [
+      { "sentencePart": "Projektet lyckades och" },
+      { "sentencePart": `<select class="adj-select" data-correct="det fina" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fina">den fina</option><option value="det fina">det fina</option><option value="de fina">de fina</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="arbetet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="arbete">arbete</option><option value="arbetet">arbetet</option><option value="arbeten">arbeten</option><option value="arbetena">arbetena</option></select>` },
+      { "sentencePart": "fick erkännande." }
+    ]
+  },
+  {
+    "meta": { "adj": "fin", "noun": "tavla", "number": "pl." },
+    "words": [
+      { "sentencePart": "I stora salen hänger" },
+      { "sentencePart": `<select class="adj-select" data-correct="de fina" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fina">den fina</option><option value="det fina">det fina</option><option value="de fina">de fina</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="tavlorna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="tavla">tavla</option><option value="tavlan">tavlan</option><option value="tavlor">tavlor</option><option value="tavlorna">tavlorna</option></select>` },
+      { "sentencePart": "på rad." }
+    ]
+  },
+  {
+    "meta": { "adj": "fin", "noun": "foto", "number": "pl." },
+    "words": [
+      { "sentencePart": "I albumet finns" },
+      { "sentencePart": `<select class="adj-select" data-correct="de fina" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fina">den fina</option><option value="det fina">det fina</option><option value="de fina">de fina</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="fotona" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="foto">foto</option><option value="fotot">fotot</option><option value="foton">foton</option><option value="fotona">fotona</option></select>` },
+      { "sentencePart": "från deras bröllop." }
+    ]
+  },
+  {
+    "meta": { "adj": "ful", "noun": "tröja", "number": "sg." },
+    "words": [
+      { "sentencePart": "Trots rensningen låg" },
+      { "sentencePart": `<select class="adj-select" data-correct="den fula" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fula">den fula</option><option value="det fula">det fula</option><option value="de fula">de fula</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="tröjan" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="tröja">tröja</option><option value="tröjan">tröjan</option><option value="tröjor">tröjor</option><option value="tröjorna">tröjorna</option></select>` },
+      { "sentencePart": "kvar i garderoben." }
+    ]
+  },
+  {
+    "meta": { "adj": "ful", "noun": "ost", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Den fula" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den fula">Den fula</option><option value="Det fula">Det fula</option><option value="De fula">De fula</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="osten" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="ost">ost</option><option value="osten">osten</option><option value="ostar">ostar</option><option value="ostarna">ostarna</option></select>` },
+      { "sentencePart": "stod kvar i kylskåpet." }
+    ]
+  },
+  {
+    "meta": { "adj": "ful", "noun": "märke", "number": "sg." },
+    "words": [
+      { "sentencePart": "Tyget är förstört eftersom" },
+      { "sentencePart": `<select class="adj-select" data-correct="det fula" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fula">den fula</option><option value="det fula">det fula</option><option value="de fula">de fula</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="märket" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="märke">märke</option><option value="märket">märket</option><option value="märken">märken</option><option value="märkena">märkena</option></select>` },
+      { "sentencePart": "syns tydligt." }
+    ]
+  },
+  {
+    "meta": { "adj": "ful", "noun": "leende", "number": "sg." },
+    "words": [
+      { "sentencePart": "Hon lade direkt märke till" },
+      { "sentencePart": `<select class="adj-select" data-correct="det fula" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fula">den fula</option><option value="det fula">det fula</option><option value="de fula">de fula</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="leendet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="leende">leende</option><option value="leendet">leendet</option><option value="leenden">leenden</option><option value="leendena">leendena</option></select>` },
+      { "sentencePart": "<span class='punct'>.</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "ful", "noun": "handske", "number": "pl." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="De fula" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den fula">Den fula</option><option value="Det fula">Det fula</option><option value="De fula">De fula</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="handskarna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="handske">handske</option><option value="handsken">handsken</option><option value="handskar">handskar</option><option value="handskarna">handskarna</option></select>` },
+      { "sentencePart": "fick honom att skämmas." }
+    ]
+  },
+  {
+    "meta": { "adj": "ful", "noun": "byggnad", "number": "pl." },
+    "words": [
+      { "sentencePart": "Stadsbilden ändrades när" },
+      { "sentencePart": `<select class="adj-select" data-correct="de fula" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den fula">den fula</option><option value="det fula">det fula</option><option value="de fula">de fula</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="byggnaderna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="byggnad">byggnad</option><option value="byggnaden">byggnaden</option><option value="byggnader">byggnader</option><option value="byggnaderna">byggnaderna</option></select>` },
+      { "sentencePart": "revs." }
+    ]
+  },
+  {
+    "meta": { "adj": "dyr", "noun": "sportbil", "number": "sg." },
+    "words": [
+      { "sentencePart": `<select class="adj-select" data-correct="Den dyra" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den dyra">Den dyra</option><option value="Det dyra">Det dyra</option><option value="De dyra">De dyra</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="sportbilen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="sportbil">sportbil</option><option value="sportbilen">sportbilen</option><option value="sportbilar">sportbilar</option><option value="sportbilarna">sportbilarna</option></select>` },
+      { "sentencePart": "väckte uppmärksamhet." }
+    ]
+  },
+  {
+    "meta": { "adj": "dyr", "noun": "resa", "number": "sg." },
+    "words": [
+      { "sentencePart": "Budgeten sprack och" },
+      { "sentencePart": `<select class="adj-select" data-correct="den dyra" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den dyra">den dyra</option><option value="det dyra">det dyra</option><option value="de dyra">de dyra</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="resan" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="resa">resa</option><option value="resan">resan</option><option value="resor">resor</option><option value="resorna">resorna</option></select>` },
+      { "sentencePart": "ställdes in." }
+    ]
+  },
+  {
+    "meta": { "adj": "dyr", "noun": "nöje", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det dyra" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den dyra">Den dyra</option><option value="Det dyra">Det dyra</option><option value="De dyra">De dyra</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="nöjet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="nöje">nöje</option><option value="nöjet">nöjet</option><option value="nöjen">nöjen</option><option value="nöjena">nöjena</option></select>` },
+      { "sentencePart": "att köpa ny bil varje vår har förstört allt." }
+    ]
+  },
+  {
+    "meta": { "adj": "dyr", "noun": "område", "number": "sg." },
+    "words": [
+      { "sentencePart": "De bor i" },
+      { "sentencePart": `<select class="adj-select" data-correct="det dyra" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den dyra">den dyra</option><option value="det dyra">det dyra</option><option value="de dyra">de dyra</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="området" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="område">område</option><option value="området">området</option><option value="områden">områden</option><option value="områdena">områdena</option></select>` },
+      { "sentencePart": "vid kusten." }
+    ]
+  },
+  {
+    "meta": { "adj": "dyr", "noun": "klocka", "number": "pl." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="De dyra" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den dyra">Den dyra</option><option value="Det dyra">Det dyra</option><option value="De dyra">De dyra</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="klockorna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="klocka">klocka</option><option value="klockan">klockan</option><option value="klockor">klockor</option><option value="klockorna">klockorna</option></select>` },
+      { "sentencePart": "förvaras säkert i montern." }
+    ]
+  },
+  {
+    "meta": { "adj": "dyr", "noun": "lägenhet", "number": "pl." },
+    "words": [
+        { "sentencePart": "I" },
+        { "sentencePart": "<select class=\"adj-select\" data-correct=\"de dyra\" onchange=\"evaluateAnswer(this)\"><option value=\"\">Select</option><option value=\"den dyra\">den dyra</option><option value=\"det dyra\">det dyra</option><option value=\"de dyra\">de dyra</option></select>" },
+        { "sentencePart": "<select class=\"noun-select\" data-correct=\"lägenheterna\" onchange=\"evaluateAnswer(this)\"><option value=\"\">Select</option><option value=\"lägenhet\">lägenhet</option><option value=\"lägenheten\">lägenheten</option><option value=\"lägenheter\">lägenheter</option><option value=\"lägenheterna\">lägenheterna</option></select>" },
+        { "sentencePart": "fanns det jättestora balkonger." }
+    ]
+  },
+  {
+    "meta": { "adj": "billig", "noun": "biljett", "number": "sg." },
+    "words": [
+      { "sentencePart": "Jag hittade" },
+      { "sentencePart": `<select class="adj-select" data-correct="den billiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den billiga">den billiga</option><option value="det billiga">det billiga</option><option value="de billiga">de billiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="biljetten" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="biljett">biljett</option><option value="biljetten">biljetten</option><option value="biljetter">biljetter</option><option value="biljetterna">biljetterna</option></select>` },
+      { "sentencePart": "på nätet." }
+    ]
+  },
+  {
+    "meta": { "adj": "billig", "noun": "lunch", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Den billiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den billiga">Den billiga</option><option value="Det billiga">Det billiga</option><option value="De billiga">De billiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="lunchen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="lunch">lunch</option><option value="lunchen">lunchen</option><option value="luncher">luncher</option><option value="luncherna">luncherna</option></select>` },
+      { "sentencePart": "blev hennes val i dag." }
+    ]
+  },
+{
+    "meta": { "adj": "billig", "noun": "boende", "number": "sg." },
+    "words": [
+      { "sentencePart": "Vi hade allt vi behövde i" },
+      { "sentencePart": `<select class="adj-select" data-correct="det billiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den billiga">den billiga</option><option value="det billiga">det billiga</option><option value="de billiga">de billiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="boendet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="boende">boende</option><option value="boendet">boendet</option><option value="boenden">boenden</option><option value="boendena">boendena</option></select>` },
+      { "sentencePart": "<span class='punct'>.</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "billig", "noun": "bälte", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det billiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den billiga">Den billiga</option><option value="Det billiga">Det billiga</option><option value="De billiga">De billiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="bältet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="bälte">bälte</option><option value="bältet">bältet</option><option value="bälten">bälten</option><option value="bältena">bältena</option></select>` },
+      { "sentencePart": "köpte hon på en marknad." }
+    ]
+  },
+  {
+    "meta": { "adj": "billig", "noun": "grönsak", "number": "pl." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="De billiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den billiga">Den billiga</option><option value="Det billiga">Det billiga</option><option value="De billiga">De billiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="grönsakerna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="grönsak">grönsak</option><option value="grönsaken">grönsaken</option><option value="grönsaker">grönsaker</option><option value="grönsakerna">grönsakerna</option></select>` },
+      { "sentencePart": "på marknaden tar snabbt slut." }
+    ]
+  },
+  {
+    "meta": { "adj": "billig", "noun": "sko", "number": "pl." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="De billiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den billiga">Den billiga</option><option value="Det billiga">Det billiga</option><option value="De billiga">De billiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="skorna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="sko">sko</option><option value="skon">skon</option><option value="skor">skor</option><option value="skorna">skorna</option></select>` },
+      { "sentencePart": "tog slut i lager på en halvtimme." }
+    ]
+  },
+  {
+    "meta": { "adj": "rolig", "noun": "historia", "number": "sg." },
+    "words": [
+      { "sentencePart": "Han berättade" },
+      { "sentencePart": `<select class="adj-select" data-correct="den roliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den roliga">den roliga</option><option value="det roliga">det roliga</option><option value="de roliga">de roliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="historien" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="historia">historia</option><option value="historien">historien</option><option value="historier">historier</option><option value="historierna">historierna</option></select>` },
+      { "sentencePart": "under middagen." }
+    ]
+  },
+  {
+    "meta": { "adj": "rolig", "noun": "hobby", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Den roliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den roliga">Den roliga</option><option value="Det roliga">Det roliga</option><option value="De roliga">De roliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="hobbyn" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="hobby">hobby</option><option value="hobbyn">hobbyn</option><option value="hobbier">hobbier</option><option value="hobbierna">hobbierna</option></select>` },
+      { "sentencePart": "får henne att må bra." }
+    ]
+  },
+  {
+    "meta": { "adj": "rolig", "noun": "ställe", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det roliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den roliga">Den roliga</option><option value="Det roliga">Det roliga</option><option value="De roliga">De roliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="stället" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="ställe">ställe</option><option value="stället">stället</option><option value="ställen">ställen</option><option value="ställena">ställena</option></select>` },
+      { "sentencePart": "vi hittade i Berlin, vad hette det?" }
+    ]
+  },
+  {
+    "meta": { "adj": "rolig", "noun": "foto", "number": "sg." },
+    "words": [
+      { "sentencePart": "Hon visade oss" },
+      { "sentencePart": `<select class="adj-select" data-correct="det roliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den roliga">den roliga</option><option value="det roliga">det roliga</option><option value="de roliga">de roliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="fotot" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="foto">foto</option><option value="fotot">fotot</option><option value="foton">foton</option><option value="fotona">fotona</option></select>` },
+      { "sentencePart": "i mobilen." }
+    ]
+  },
+  {
+    "meta": { "adj": "rolig", "noun": "yrke", "number": "pl." },
+    "words": [
+      { "sentencePart": "I boken skildras" },
+      { "sentencePart": `<select class="adj-select" data-correct="de roliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den roliga">den roliga</option><option value="det roliga">det roliga</option><option value="de roliga">de roliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="yrkena" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="yrke">yrke</option><option value="yrket">yrket</option><option value="yrken">yrken</option><option value="yrkena">yrkena</option></select>` },
+      { "sentencePart": "mer ingående." }
+    ]
+  },
+  {
+    "meta": { "adj": "trevlig", "noun": "kafé", "number": "pl." },
+    "words": [
+      { "sentencePart": "Det blev liv i staden när" },
+      { "sentencePart": `<select class="adj-select" data-correct="de trevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den trevliga">den trevliga</option><option value="det trevliga">det trevliga</option><option value="de trevliga">de trevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="kaféerna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="kafé">kafé</option><option value="kaféet">kaféet</option><option value="kaféer">kaféer</option><option value="kaféerna">kaféerna</option></select>` },
+      { "sentencePart": "öppnade." }
+    ]
+  },
+  {
+    "meta": { "adj": "otrevlig", "noun": "rykte", "number": "pl." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="De otrevliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den otrevliga">Den otrevliga</option><option value="Det otrevliga">Det otrevliga</option><option value="De otrevliga">De otrevliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="ryktena" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="rykte">rykte</option><option value="ryktet">ryktet</option><option value="rykten">rykten</option><option value="ryktena">ryktena</option></select>` },
+      { "sentencePart": "spreds snabbt i hela byn." }
+    ]
+  },
+  {
+    "meta": { "adj": "rolig", "noun": "aktivitet", "number": "pl." },
+    "words": [
+      { "sentencePart": "Vem är det som har planerat" },
+      { "sentencePart": `<select class="adj-select" data-correct="de roliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den roliga">den roliga</option><option value="det roliga">det roliga</option><option value="de roliga">de roliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="aktiviteterna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="aktivitet">aktivitet</option><option value="aktiviteten">aktiviteten</option><option value="aktiviteter">aktiviteter</option><option value="aktiviteterna">aktiviteterna</option></select>` },
+      { "sentencePart": "<span class='punct'>?</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "tråkig", "noun": "pjäs", "number": "sg." },
+    "words": [
+      { "sentencePart": "Det var" },
+      { "sentencePart": `<select class="adj-select" data-correct="den tråkiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den tråkiga">den tråkiga</option><option value="det tråkiga">det tråkiga</option><option value="de tråkiga">de tråkiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="pjäsen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="pjäs">pjäs</option><option value="pjäsen">pjäsen</option><option value="pjäser">pjäser</option><option value="pjäserna">pjäserna</option></select>` },
+      { "sentencePart": "som förstörde hela kvällen." }
+    ]
+  },
+  {
+    "meta": { "adj": "tråkig", "noun": "attityd", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Den tråkiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den tråkiga">Den tråkiga</option><option value="Det tråkiga">Det tråkiga</option><option value="De tråkiga">De tråkiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="attityden" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="attityd">attityd</option><option value="attityden">attityden</option><option value="attityder">attityder</option><option value="attityderna">attityderna</option></select>` },
+      { "sentencePart": "präglade hela mötet." }
+    ]
+  },
+  {
+    "meta": { "adj": "tråkig", "noun": "möte", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det tråkiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den tråkiga">Den tråkiga</option><option value="Det tråkiga">Det tråkiga</option><option value="De tråkiga">De tråkiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="mötet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="möte">möte</option><option value="mötet">mötet</option><option value="möten">möten</option><option value="mötena">mötena</option></select>` },
+      { "sentencePart": "drog ut på tiden." }
+    ]
+  },
+  {
+    "meta": { "adj": "tråkig", "noun": "arbete", "number": "sg." },
+    "words": [
+      { "sentencePart": "Nu kan vi låta AI göra" },
+      { "sentencePart": `<select class="adj-select" data-correct="det tråkiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den tråkiga">den tråkiga</option><option value="det tråkiga">det tråkiga</option><option value="de tråkiga">de tråkiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="arbetet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="arbete">arbete</option><option value="arbetet">arbetet</option><option value="arbeten">arbeten</option><option value="arbetena">arbetena</option></select>` },
+      { "sentencePart": "<span class='punct'>.</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "tråkig", "noun": "lektion", "number": "pl." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="De tråkiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den tråkiga">Den tråkiga</option><option value="Det tråkiga">Det tråkiga</option><option value="De tråkiga">De tråkiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="lektionerna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="lektion">lektion</option><option value="lektionen">lektionen</option><option value="lektioner">lektioner</option><option value="lektionerna">lektionerna</option></select>` },
+      { "sentencePart": "var viktiga för att få ett jobb." }
+    ]
+  },
+  {
+    "meta": { "adj": "tråkig", "noun": "dikt", "number": "pl." },
+    "words": [
+      { "sentencePart": "Vi läste" },
+      { "sentencePart": `<select class="adj-select" data-correct="de tråkiga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den tråkiga">den tråkiga</option><option value="det tråkiga">det tråkiga</option><option value="de tråkiga">de tråkiga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="dikterna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="dikt">dikt</option><option value="dikten">dikten</option><option value="dikter">dikter</option><option value="dikterna">dikterna</option></select>` },
+      { "sentencePart": "i skolan." }
+    ]
+  },
+  {
+    "meta": { "adj": "härlig", "noun": "dag", "number": "sg." },
+    "words": [
+      { "sentencePart": "Minns du" },
+      { "sentencePart": `<select class="adj-select" data-correct="den härliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den härliga">den härliga</option><option value="det härliga">det härliga</option><option value="de härliga">de härliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="dagen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="dag">dag</option><option value="dagen">dagen</option><option value="dagar">dagar</option><option value="dagarna">dagarna</option></select>` },
+      { "sentencePart": "då vi träffades?" }
+    ]
+  },
+  {
+    "meta": { "adj": "härlig", "noun": "sång", "number": "sg." },
+    "words": [
+      { "sentencePart": "Tack, Sofia, för" },
+      { "sentencePart": `<select class="adj-select" data-correct="den härliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den härliga">den härliga</option><option value="det härliga">det härliga</option><option value="de härliga">de härliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="sången" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="sång">sång</option><option value="sången">sången</option><option value="sånger">sånger</option><option value="sångerna">sångerna</option></select>` },
+      { "sentencePart": "<span class='punct'>!</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "härlig", "noun": "bageri", "number": "sg." },
+    "words": [
+      { "sentencePart": "Var ligger" },
+      { "sentencePart": `<select class="adj-select" data-correct="det härliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den härliga">den härliga</option><option value="det härliga">det härliga</option><option value="de härliga">de härliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="bageriet" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="bageri">bageri</option><option value="bageriet">bageriet</option><option value="bagerier">bagerier</option><option value="bagerierna">bagerierna</option></select>` },
+      { "sentencePart": "du berättade om?" }
+    ]
+  },
+  {
+    "meta": { "adj": "härlig", "noun": "område", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det härliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den härliga">Den härliga</option><option value="Det härliga">Det härliga</option><option value="De härliga">De härliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="området" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="område">område</option><option value="området">området</option><option value="områden">områden</option><option value="områdena">områdena</option></select>` },
+      { "sentencePart": "ligger alldeles intill vattnet." }
+    ]
+  },
+  {
+    "meta": { "adj": "härlig", "noun": "färg", "number": "pl." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="De härliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den härliga">Den härliga</option><option value="Det härliga">Det härliga</option><option value="De härliga">De härliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="färgerna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="färg">färg</option><option value="färgen">färgen</option><option value="färger">färger</option><option value="färgerna">färgerna</option></select>` },
+      { "sentencePart": "dominerar hela konstverket." }
+    ]
+  },
+{
+    "meta": { "adj": "härlig", "noun": "minne", "number": "pl." },
+    "words": [
+      { "sentencePart": "De bär med sig" },
+      { "sentencePart": `<select class="adj-select" data-correct="de härliga" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den härliga">den härliga</option><option value="det härliga">det härliga</option><option value="de härliga">de härliga</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="minnena" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="minne">minne</option><option value="minnet">minnet</option><option value="minnen">minnen</option><option value="minnena">minnena</option></select>` },
+      { "sentencePart": "genom livet." }
+    ]
+  },
+  {
+    "meta": { "adj": "skön", "noun": "säng", "number": "sg." },
+    "words": [
+      { "sentencePart": "Han låg äntligen i" },
+      { "sentencePart": `<select class="adj-select" data-correct="den sköna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den sköna">den sköna</option><option value="det sköna">det sköna</option><option value="de sköna">de sköna</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="sängen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="säng">säng</option><option value="sängen">sängen</option><option value="sängar">sängar</option><option value="sängarna">sängarna</option></select>` },
+      { "sentencePart": "på hotellet." }
+    ]
+  },
+  {
+    "meta": { "adj": "skön", "noun": "fåtölj", "number": "sg." },
+    "words": [
+      { "sentencePart": "Hon sjönk tacksamt ner i" },
+      { "sentencePart": `<select class="adj-select" data-correct="den sköna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den sköna">den sköna</option><option value="det sköna">det sköna</option><option value="de sköna">de sköna</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="fåtöljen" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="fåtölj">fåtölj</option><option value="fåtöljen">fåtöljen</option><option value="fåtöljer">fåtöljer</option><option value="fåtöljerna">fåtöljerna</option></select>` },
+      { "sentencePart": "<span class='punct'>.</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "skön", "noun": "tempo", "number": "sg." },
+    "words": [
+
+      { "sentencePart": `<select class="adj-select" data-correct="Det sköna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="Den sköna">Den sköna</option><option value="Det sköna">Det sköna</option><option value="De sköna">De sköna</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="tempot" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="tempo">tempo</option><option value="tempot">tempot</option><option value="tempon">tempon</option><option value="tempona">tempona</option></select>` },
+      { "sentencePart": "präglar hela den här låten." }
+    ]
+  },
+  {
+    "meta": { "adj": "skön", "noun": "täcke", "number": "sg." },
+    "words": [
+      { "sentencePart": "Han drog tätare omkring sig" },
+      { "sentencePart": `<select class="adj-select" data-correct="det sköna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den sköna">den sköna</option><option value="det sköna">det sköna</option><option value="de sköna">de sköna</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="täcket" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="täcke">täcke</option><option value="täcket">täcket</option><option value="täcken">täcken</option><option value="täckena">täckena</option></select>` },
+      { "sentencePart": "<span class='punct'>.</span>" }
+    ]
+  },
+  {
+    "meta": { "adj": "skön", "noun": "kudde", "number": "pl." },
+    "words": [
+      { "sentencePart": "I soffan låg" },
+      { "sentencePart": `<select class="adj-select" data-correct="de sköna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den sköna">den sköna</option><option value="det sköna">det sköna</option><option value="de sköna">de sköna</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="kuddarna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="kudde">kudde</option><option value="kudden">kudden</option><option value="kuddar">kuddar</option><option value="kuddarna">kuddarna</option></select>` },
+      { "sentencePart": "utspridda." }
+    ]
+  },
+  {
+    "meta": { "adj": "skön", "noun": "sommarkväll", "number": "pl." },
+    "words": [
+      { "sentencePart": "De minns" },
+      { "sentencePart": `<select class="adj-select" data-correct="de sköna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="den sköna">den sköna</option><option value="det sköna">det sköna</option><option value="de sköna">de sköna</option></select>` },
+      { "sentencePart": `<select class="noun-select" data-correct="sommarkvällarna" onchange="evaluateAnswer(this)"><option value="">Select</option><option value="sommarkväll">sommarkväll</option><option value="sommarkvällen">sommarkvällen</option><option value="sommarkvällar">sommarkvällar</option><option value="sommarkvällarna">sommarkvällarna</option></select>` },
+      { "sentencePart": "på landet." }
+    ]
+  }
+
+];
+
+let score=0;
+
+// Fisher-Yates shuffle algorithm to shuffle an array.
+function shuffleArray(array) {
+	for (let i=array.length - 1; i > 0; i--) {
+		const j=Math.floor(Math.random() * (i + 1));
+		[array[i],
+		array[j]]=[array[j],
+		array[i]];
+	}
+
+	return array;
+}
+
+function shuffleOptions(select) {
+    const firstOption = select.options[0]; // "Select"
+    const options = Array.from(select.options).slice(1);
+
+    for (let i = options.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [options[i], options[j]] = [options[j], options[i]];
+    }
+
+    select.innerHTML = "";
+    select.appendChild(firstOption);
+    options.forEach(opt => select.appendChild(opt));
+}
+	
+function capitalize(word) {
+	return word.charAt(0).toUpperCase()+word.slice(1);
+}
+
+
+function generateSentenceHTML(sentence) {
+    let html = "";
+
+    sentence.words.forEach((item, index) => {
+        if (!item.sentencePart.includes("<select")) {
+            html += item.sentencePart;
+            return;
+        }
+
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = item.sentencePart.trim();
+        const select = tempDiv.querySelector("select");
+
+        // KOLL: Om detta är det första objektet i meningen, lägg till klassen
+        if (index === 0) {
+            select.classList.add("first-in-sentence");
+        }
+
+        shuffleOptions(select);
+        html += select.outerHTML;
+    });
+
+    return `
+        <div class="sentence" data-state="none">
+            <div class="sentence-row">
+                <p class="sentence-text">${html}</p>
+                <div class="badge-row">
+                    <span class="badge adj-badge">${sentence.meta.adj}</span>
+                    <span class="badge noun-badge">${sentence.meta.noun}</span>
+                    <span class="badge num-badge">${sentence.meta.number}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Render sentences in a shuffled order.
+function renderSentences() {
+	const shuffledSentences=shuffleArray([...sentences]);
+	const sentencesHTML=shuffledSentences.map((sentence, index)=> generateSentenceHTML(sentence, index)).join('');
+	document.getElementById('sentences').innerHTML=sentencesHTML;
+}
+
+// Evaluates the user's answer and updates the score and UI accordingly.
+function evaluateAnswer(changedSelect) {
+    const sentence = changedSelect.closest('.sentence');
+
+    const adjSelect = sentence.querySelector('.adj-select');
+    const nounSelect = sentence.querySelector('.noun-select');
+
+    // Vänta tills båda är valda
+    if (!adjSelect.value || !nounSelect.value) {
+        sentence.classList.remove('correct', 'incorrect');
+        sentence.setAttribute('data-state', 'none');
+        return;
+    }
+
+    const isCorrect =
+        adjSelect.value === adjSelect.dataset.correct &&
+        nounSelect.value === nounSelect.dataset.correct;
+
+    const wasCorrect = sentence.classList.contains('correct');
+
+    sentence.classList.remove('correct', 'incorrect');
+
+    if (isCorrect) {
+        sentence.classList.add('correct');
+        sentence.setAttribute('data-state', 'correct');
+
+        if (!wasCorrect) updateScore(1);
+    } else {
+        sentence.classList.add('incorrect');
+        sentence.setAttribute('data-state', 'incorrect');
+
+        if (wasCorrect) updateScore(-1);
+    }
+
+    checkAllCorrect();
+}
+
+
+// Updates the score display based on value change.
+function updateScore(value) {
+	score+=value;
+
+	// Hämta det faktiska antalet meningar dynamiskt
+	const maxScore=sentences.length;
+
+	// Förhindra att poängen går utanför gränserna (0 till max)
+	// Notera: Om du vill tillåta minuspoäng, använd -maxScore
+	if (score > maxScore) {
+		score=maxScore;
+	}
+
+	else if (score < 0) {
+		score=0;
+	}
+
+	// Uppdatera alla element med klassen "score-display"
+	document.querySelectorAll('.score-display').forEach((element)=> {
+			element.textContent=score;
+		});
+
+	checkForMaxScore(score);
+}
+
+// Check if the score has reached max and opens the congratulations modal if so.
+function checkForMaxScore(currentScore) {
+	if (currentScore >=sentences.length) {
+		openModal('congratulationsModal');
+	}
+}
+
+// Checks if all sentences are correctly answered.
+function checkAllCorrect() {
+	const allCorrect=Array.from(document.querySelectorAll('.sentence')).every(sentence=> sentence.classList.contains('correct'));
+
+	if (allCorrect) {
+		openModal('congratulationsModal');
+	}
+}
+
+// Opens a modal by its ID.
+function openModal(modalId) {
+	const modal=document.getElementById(modalId);
+
+	if (modal) {
+		modal.style.display='flex';
+		modal.classList.add('show');
+	}
+}
+
+// Closes a modal by its ID.
+function closeModal(modalId) {
+	const modal=document.getElementById(modalId);
+
+	if (modal) {
+		modal.style.display='none';
+		modal.classList.remove('show');
+	}
+}
+
+// Close modal when clicking outside of the modal content
+window.addEventListener('click', (event)=> {
+		const infoModal=document.getElementById('infoModal');
+		const congratulationsModal=document.getElementById('congratulationsModal');
+
+		if (event.target===infoModal) {
+			closeModal('infoModal');
+		}
+
+		else if (event.target===congratulationsModal) {
+			closeModal('congratulationsModal');
+		}
+	});
+
+// Function to toggle dark mode
+function toggleDarkMode() {
+	document.body.classList.toggle('dark-mode');
+
+	const isDarkModeEnabled=document.body.classList.contains('dark-mode');
+	localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
+}
+
+function goToEasyVersion() {
+	window.location.href="https://learnswedish.github.io/html/adj-def-regular-easy.html";
+}
+
+function goToHardVersion() {
+	window.location.href="https://learnswedish.github.io/html/adj-def-regular-hard.html";
+}
+
+// Open the Info modal and close the menu
+function showInfo() {
+	openModal('infoModal');
+	toggleMenu(); // Stäng menyn efter att ha visat info
+}
+
+// Start over and close the menu
+function startOverAndCloseMenu() {
+	startOver();
+	toggleMenu(); // Stäng menyn efter att ha startat om
+}
+
+// Initialize the dark mode toggle with stored preference
+function initializeModalsAndDarkMode() {
+	const darkModeToggle = document.getElementById('darkModeSwitch');
+
+	/* ---- Dark mode ---- */
+	const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+	document.body.classList.toggle('dark-mode', isDarkModeEnabled);
+	darkModeToggle.checked = isDarkModeEnabled;
+	darkModeToggle.addEventListener('change', toggleDarkMode);
+}
+
+// Function to update the maximum score in the HTML
+function updateMaxScore() {
+	const maxScore=sentences.length;
+
+	document.querySelectorAll('.score-max').forEach((element)=> {
+			element.textContent=maxScore;
+		});
+}
+
+// Resets the quiz and score, then re-renders sentences.
+function startOver() {
+	renderSentences();
+	resetScore();
+	closeModal('congratulationsModal');
+}
+
+// Resets the score to zero.
+function resetScore() {
+	score=0;
+
+	document.querySelectorAll('.score-display').forEach((element)=> {
+			element.textContent=score;
+		});
+
+	// Återställ alla meningars tillstånd
+	document.querySelectorAll('.sentence').forEach(sentence=> {
+			sentence.classList.remove('correct', 'incorrect');
+			sentence.setAttribute('data-state', 'none');
+		});
+}
+
+// Initialize the application once the DOM is fully loaded.
+document.addEventListener('DOMContentLoaded', ()=> {
+		const isMobile=window.matchMedia("(max-width: 700px)").matches;
+
+		if (isMobile) return;
+
+		renderSentences();
+		updateMaxScore(); // Sätt maxpoäng direkt
+		resetScore(); // Sätt startpoäng
+		initializeModalsAndDarkMode(); // Init toggles sist
+	});
+</script>
+
+</body>
+</html>

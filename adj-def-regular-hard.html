@@ -1,0 +1,1279 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjective Agreement (definite regular): hard level</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+/* Reset and Base Styles */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9fafb;
+	color: #2d3748;
+	line-height: 1.6;
+	font-size: 16px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	min-height: 100vh;
+	padding: 20px;
+	overflow-y: auto;
+	position: relative;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+	background-color: #121212;
+	color: #e2e8f0;
+}
+
+/* Close Button Styling */
+.close-button {
+	float: right;
+	padding: 5px;
+	cursor: pointer;
+	font-size: 18px;
+	background-color: #ccc;
+	border: none;
+	border-radius: 50%;
+	line-height: 20px;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, transform 0.3s;
+}
+
+body.dark-mode .close-button {
+	background-color: #555;
+	color: #ffcccc;
+}
+
+.close-button:hover {
+	background-color: #f44336;
+	transform: scale(1.2) rotate(90deg);
+	color: white;
+}
+
+body.dark-mode .close-button:hover {
+	background-color: #ff6666;
+	color: white;
+	transform: scale(1.2) rotate(90deg);
+}
+
+/* Container */
+.container {
+	background-color: #ffffff;
+	padding: 40px 30px;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	max-width: 850px;
+	width: 100%;
+	text-align: center;
+	position: relative;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	margin-top: 20px;
+}
+
+body.dark-mode .container {
+	background-color: #1a202c;
+	box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+	justify-content: flex-start;
+	padding: 0 10px;
+	gap: 10px;
+	cursor: default;
+}
+
+/* Modal */
+.modal {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+	background: white;
+	color: black;
+	padding: 30px;
+	/* Något mer luft för läsbarhet */
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	text-align: left;
+	/* Ändrat från center till left */
+	max-width: 600px;
+	width: 90%;
+	/* Lite bredare på mobiler */
+	max-height: 80vh;
+	/* Säkerställer att den inte täcker hela skärmen på höjden */
+	overflow-y: auto;
+	/* Gör innehållet rullbart om det är långt */
+	transform: translateY(-20px);
+	transition: transform 0.3s ease-in-out;
+}
+
+/* Specifik styling för element inuti modalen */
+.modal-content h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 1.5rem;
+}
+
+.modal-content p {
+	margin-bottom: 15px;
+	line-height: 1.6;
+}
+
+.modal-content ul {
+	margin-left: 20px;
+	/* Ger punktlistan ett korrekt indrag */
+	margin-bottom: 15px;
+}
+
+.modal-content li {
+	margin-bottom: 10px;
+}
+
+body.dark-mode .modal-content {
+	background-color: #1a202c;
+	color: #edf2f7;
+	border: 1px solid #2d3748;
+	/* Lade till en tunn kant för definition */
+}
+
+.modal.show {
+	display: flex;
+	opacity: 1;
+}
+
+.modal.show .modal-content {
+	transform: translateY(0);
+}
+
+/* Page Title */
+.page-title {
+	text-align: center;
+	color: #333333;
+	font-size: 28px;
+	margin-bottom: 20px;
+	line-height: 1.4;
+	padding-top: 10px;
+	position: relative;
+	z-index: 1;
+	transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+body.dark-mode .page-title {
+	color: #ffffff;
+}
+
+/* Score, Start Over, and Dark Mode Toggle Container */
+.score-container {
+	position: fixed;
+	top: 20px;
+	right: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 150px;
+	z-index: 1001;
+	gap: 10px;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Sentence Styling */
+.sentence {
+	background-color: #f7fafc;
+	padding: 20px;
+	padding-bottom: 5px;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	position: relative;
+	transition: background-color 0.3s, border 0.3s;
+	border-left: 6px solid transparent;
+	text-align: left;
+	/* Removed invalid data-state property */
+}
+
+body.dark-mode .sentence {
+	background-color: #2d3748;
+	box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+}
+
+.sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #cdffcd;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+body.dark-mode .sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #22543d;
+}
+
+.sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #FFADB0;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+body.dark-mode .sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #742a2a;
+}
+
+.sentence p {
+	font-size: 1.1rem;
+	margin-bottom: 10px;
+	transition: color 0.3s;
+}
+
+body.dark-mode .sentence p {
+	color: #edf2f7;
+}
+
+/* Select Element Styling */
+.sentence select {
+	padding: 4px 4px;
+	font-size: inherit;
+	border: 1px solid #cbd5e0;
+	border-radius: 6px;
+	background-color: #edf2f7;
+	cursor: pointer;
+	transition: border-color 0.3s, background-color 0.3s;
+	width: auto;
+	appearance: auto;
+	-webkit-appearance: auto;
+	-moz-appearance: auto;
+	background-image: initial;
+	margin-left: 10px;
+	/* Adjust this value as needed */
+	margin-right: 10px;
+	/* Adjust this value as needed */
+}
+
+body.dark-mode .sentence select {
+	background-color: #4a5568;
+	color: #edf2f7;
+	border: 1px solid #718096;
+}
+
+.sentence select:focus {
+	border-color: #3182ce;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+}
+
+body.dark-mode .sentence select:focus {
+	border-color: #63b3ed;
+	box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+}
+
+/* Sentences */
+.sentences {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+}
+
+/* Slider Container */
+.switch {
+	position: relative;
+	width: 40px;
+	height: 20px;
+	display: inline-block;
+}
+
+/* Hide Default Checkbox */
+.switch input {
+	display: none;
+}
+
+/* Slider Appearance */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	transition: 0.4s;
+	border-radius: 20px;
+}
+
+.slider::before {
+	position: absolute;
+	content: "";
+	height: 14px;
+	width: 14px;
+	left: 3px;
+	bottom: 3px;
+	background-color: white;
+	transition: 0.4s;
+	border-radius: 50%;
+}
+
+/* Slider Active State */
+.switch input:checked+.slider {
+	background-color: #007BFF;
+}
+
+.switch input:checked+.slider::before {
+	transform: translateX(20px);
+}
+
+/* Start Over Button */
+.start-over {
+	background-color: #007BFF;
+	color: white;
+	cursor: pointer;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s ease;
+}
+
+.start-over:hover {
+	background-color: #0056b3;
+	color: white;
+}
+
+/* Unified Button Styling */
+.score,
+.dark-mode-toggle,
+.start-over {
+	width: 100%;
+	height: 40px;
+	padding: 0 10px;
+	box-sizing: border-box;
+	font-size: 16px;
+	text-align: center;
+	background-color: #fff;
+	color: #333;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, color 0.3s;
+	cursor: pointer;
+	border: none;
+}
+
+/* Själva inputfältet - nu med mer utrymme till höger */
+.answer-input {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 5px 95px 5px 10px; 
+    font-size: 1rem;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    outline: none;
+    color: inherit;
+    display: block;
+    text-align: left;
+}
+
+body.dark-mode .answer-input {
+    color: #fff;
+}
+
+/* Standard placeholder-färg (light mode) */
+.answer-input::placeholder {
+	color: #a0aec0;
+	opacity: 1;
+	/* Firefox behöver detta */
+}
+
+/* Placeholder-färg för dark mode */
+body.dark-mode .answer-input::placeholder {
+	color: #cbd5e0;
+	/* En ljusare grå som syns bra mot den mörka bakgrunden */
+	opacity: 0.7;
+}
+
+/* Focus-effekt för Light Mode */
+.answer-input:focus {
+	border-color: #3182ce;
+	/* En tydlig blå färg */
+	box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+	/* Mjuk blå gloria */
+	background-color: #fff;
+}
+
+/* Focus-effekt för Dark Mode */
+body.dark-mode .answer-input:focus {
+	border-color: #63b3ed;
+	/* Ljusare blå för bättre kontrast */
+	box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
+	background-color: #2d3748;
+	/* Något mörkare bakgrund vid fokus */
+}
+
+/* Behåll rätt/fel-färg även vid fokus om du vill prioritera feedback */
+.sentence.correct .answer-input:focus {
+	border-color: #38a169;
+	box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.3);
+}
+
+.sentence.incorrect .answer-input:focus {
+	border-color: #e53e3e;
+	box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.3);
+}
+
+/* När fältet är i en korrekt mening, gör ramen tydligare */
+.sentence.correct .answer-input {
+	border-color: #38a169;
+}
+
+.sentence.incorrect .answer-input {
+	border-color: #e53e3e;
+}
+
+/* Badges hålls ihop till höger */
+.badge-row {
+    display: flex;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    border: 1.5px solid #cbd5e0;
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+body.dark-mode .badge {
+    background-color: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
+}
+
+/* Dark mode variant */
+body.dark-mode .adj-badge {
+	background-color: #2d3748;
+	color: #edf2f7;
+	border: 1.5px solid #718096;
+}
+
+/* Ny layout för att tvinga badges till höger */
+.sentence-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.sentence-text {
+    flex: 1;
+    margin: 0;
+}
+
+.badge-row {
+    display: flex;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+/* Uppdaterad styling för adj-badge för att matcha föregående sida */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    border: 1.5px solid #cbd5e0;
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+body.dark-mode .badge {
+    background-color: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
+}
+
+.input-wrapper {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    vertical-align: middle;
+    background-color: #fff;
+    border: 2px solid #cbd5e0;
+    border-radius: 6px;
+    transition: all 0.2s;
+    /* Vi ökar det fasta tillägget till 105px för mer luft till knapparna */
+    width: calc(var(--ch) * 1ch + 105px); 
+    margin: 0 5px;
+}
+
+body.dark-mode .input-wrapper {
+    background-color: #4a5568;
+    border-color: #718096;
+}
+
+.input-wrapper.first-in-sentence {
+    margin-left: 0px;
+}
+
+.input-wrapper.narrow-right {
+    margin-right: 0px;
+}
+
+/* Fokus-effekt på hela behållaren när man skriver */
+.input-wrapper:focus-within {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+}
+
+body.dark-mode .input-wrapper:focus-within {
+    border-color: #63b3ed;
+    box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
+}
+
+/* Hantera rätt/fel färger på behållaren */
+.sentence.correct .input-wrapper {
+    border-color: #38a169;
+}
+.sentence.incorrect .input-wrapper {
+    border-color: #e53e3e;
+}
+
+/* De små knapparna */
+.char-btn {
+    background: #edf2f7;
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #4a5568;
+}
+
+body.dark-mode .char-btn {
+    background: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
+}
+
+.char-btn:hover {
+	background: #e2e8f0;
+	border-color: #a0aec0;
+}
+
+/* Dark mode för knapparna */
+body.dark-mode .char-btn {
+	background: #2d3748;
+	color: #edf2f7;
+	border-color: #718096;
+}
+
+body.dark-mode .char-btn:hover {
+	background: #4a5568;
+}
+
+.btn-container {
+    position: absolute;
+    right: 5px;
+    display: flex;
+    gap: 3px;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+/* 🚫 Block entire site on small screens */
+@media (max-width: 700px) {
+
+	body>*:not(#mobileBlockModal) {
+		display: none !important;
+	}
+
+	#mobileBlockModal {
+		display: flex !important;
+		position: fixed;
+		inset: 0;
+		z-index: 9999;
+		opacity: 1;
+	}
+}
+</style>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span class="score-display">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Go to harder version of the exercise (no gender indicated) -->
+        <button class="start-over" onclick="goToEasyVersion()">
+            <i class="fas fa-arrow-up-right-from-square" style="margin-right: 8px;"></i> Easy level
+        </button>
+        <button class="start-over" onclick="goToMediumVersion()">
+            <i class="fas fa-arrow-up-right-from-square" style="margin-right: 8px;"></i> Medium level
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">Adjective Agreement | DEFINITE regular: hard level</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Information</h2>
+            <p>Provide the correct form of the definite adjective and the correct form of the noun.</p>
+			<p><strong>Please note</strong>: The text field will turn red as soon as you begin typing; this is normal and indicates the answer is incomplete. It will turn green the moment the correct form is entered. If your keyboard lacks the characters å, ä, or ö, you can insert them by clicking the buttons to the right of each text box.
+			</p>
+			<h2 id="infoModalTitle">A defining feature of this level</h2>
+			<p>No translations provided, you are expected to know the gender of the head noun, and you must manually enter the correct forms. <strong>There are two easier versions</strong> of this exercise available (see the menu).
+        </div>
+    </div>
+
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+	
+<div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="text-align:center;">
+        <h2>Not available on mobile</h2>
+        <p>
+            This page — an exercise on Swedish adjectives — is not designed for mobile phones,
+            mainly because many of the interactive features do not work well on small touchscreens.
+        </p>
+    </div>
+</div>		
+
+    <script>
+
+const sentences = [
+  {
+    "meta": {"adj":"trevlig","noun":"kvinna","number":"sg."},
+    parts: ["Vi möttes av", { answer: "den trevliga kvinnan", width: 15.99 }, "på mottagningen."]
+  },
+  {
+    "meta": {"adj":"trevlig","noun":"atmosfär","number":"sg."},
+    parts: ["", { answer: "Den trevliga atmosfären", width: 19.09 }, "präglade verkligen butiken."]
+  },
+  {
+    "meta": {"adj":"trevlig","noun":"paraply","number":"sg."},
+    parts: ["Han köpte", { answer: "det trevliga paraplyet", width: 16.69 }, "under sin resa."]
+  },
+  {
+    "meta": {"adj":"trevlig","noun":"tema","number":"sg."},
+    parts: ["", { answer: "Det trevliga temat", width: 14.09 }, "hörs ofta i symfonins andra sats."]
+  },
+  {
+    "meta": {"adj":"trevlig","noun":"kollega","number":"pl."},
+    parts: ["", { answer: "De trevliga kollegorna", width: 17.39 }, "är det bästa med jobbet."]
+  },
+  {
+    "meta": {"adj":"otrevlig","noun":"händelse","number":"sg."},
+    parts: ["", { answer: "Den otrevliga händelsen", width: 19.39 }, "tog honom hårt."]
+  },
+  {
+    "meta": {"adj":"otrevlig","noun":"möte","number":"sg."},
+    parts: ["", { answer: "Det otrevliga mötet", width: 15.09 }, "blev tyvärr väldigt utdraget."]
+  },
+  {
+    "meta": {"adj":"otrevlig","noun":"foto","number":"sg."},
+    parts: ["I arkivet hittade han till slut", { answer: "det otrevliga fotot", width: 13.79 }, "."]
+  },
+  {
+    "meta": {"adj":"otrevlig","noun":"bemötande","number":"sg."},
+    parts: ["", { answer: "Det otrevliga bemötandet", width: 20.09 }, "gjorde ett djupt intryck."]
+  },
+  {
+    "meta": {"adj":"otrevlig","noun":"karaktär","number":"pl."},
+    parts: ["Han anser att", { answer: "de otrevliga karaktärerna", width: 19.89 }, "sänker filmen."]
+  },
+  {
+    "meta": {"adj":"fin","noun":"klänning","number":"sg."},
+    parts: ["Hon bar", { answer: "den fina klänningen", width: 15.60 }, "på festen i går."]
+  },
+  {
+    "meta": {"adj":"fin","noun":"bil","number":"sg."},
+    parts: ["", { answer: "Den fina bilen", width: 11.00 }, "stod på gatan och glänste."]
+  },
+  {
+    "meta": {"adj":"fin","noun":"smycke","number":"sg."},
+    parts: ["Vid högtider bär hon ofta", { answer: "det fina smycket", width: 12.99 }, "."]
+  },
+  {
+    "meta": {"adj":"fin","noun":"arbete","number":"sg."},
+    parts: ["Projektet lyckades och", { answer: "det fina arbetet", width: 12.00 }, "fick erkännande."]
+  },
+  {
+    "meta": {"adj":"fin","noun":"tavla","number":"pl."},
+    parts: ["I stora salen hänger", { answer: "de fina tavlorna", width: 12.29 }, "på rad."]
+  },
+  {
+    "meta": {"adj":"fin","noun":"foto","number":"pl."},
+    parts: ["I albumet finns", { answer: "de fina fotona", width: 10.90 }, "från deras bröllop."]
+  },
+  {
+    "meta": {"adj":"ful","noun":"tröja","number":"sg."},
+    parts: ["Trots rensningen låg", { answer: "den fula tröjan", width: 11.40 }, "kvar i garderoben."]
+  },
+  {
+    "meta": {"adj":"ful","noun":"ost","number":"sg."},
+    parts: ["", { answer: "Den fula osten", width: 11.60 }, "stod kvar i kylskåpet."]
+  },
+  {
+    "meta": {"adj":"ful","noun":"märke","number":"sg."},
+    parts: ["Tyget är förstört eftersom", { answer: "det fula märket", width: 11.89 }, "syns tydligt."]
+  },
+  {
+    "meta": {"adj":"ful","noun":"leende","number":"sg."},
+    parts: ["Hon lade direkt märke till", { answer: "det fula leendet", width: 12.30 }, "."]
+  },
+  {
+    "meta": {"adj":"ful","noun":"handske","number":"pl."},
+    parts: ["", { answer: "De fula handskarna", width: 15.59 }, "fick honom att skämmas."]
+  },
+  {
+    "meta": {"adj":"ful","noun":"byggnad","number":"pl."},
+    parts: ["Stadsbilden ändrades när", { answer: "de fula byggnaderna", width: 16.40 }, "revs."]
+  },
+  {
+    "meta": {"adj":"dyr","noun":"sportbil","number":"sg."},
+    parts: ["", { answer: "Den dyra sportbilen", width: 15.59 }, "väckte uppmärksamhet."]
+  },
+  {
+    "meta": {"adj":"dyr","noun":"resa","number":"sg."},
+    parts: ["Budgeten sprack och", { answer: "den dyra resan", width: 11.99 }, "ställdes in."]
+  },
+  {
+    "meta": {"adj":"dyr","noun":"nöje","number":"sg."},
+    parts: ["", { answer: "Det dyra nöjet", width: 11.19 }, "att köpa ny bil varje vår har förstört allt."]
+  },
+  {
+    "meta": {"adj":"dyr","noun":"område","number":"sg."},
+    parts: ["De bor i", { answer: "det dyra området", width: 13.59 }, "vid kusten."]
+  },
+  {
+    "meta": {"adj":"dyr","noun":"klocka","number":"pl."},
+    parts: ["", { answer: "De dyra klockorna", width: 14.49 }, "förvaras säkert i montern."]
+  },
+  {
+    "meta": {"adj":"dyr","noun":"lägenhet","number":"pl."},
+    parts: ["I", { answer: "de dyra lägenheterna", width: 16.99 }, "fanns det jättestora balkonger."]
+  },
+  {
+    "meta": {"adj":"billig","noun":"biljett","number":"sg."},
+    parts: ["Jag hittade", { answer: "den billiga biljetten", width: 14.79 }, "på nätet."]
+  },
+  {
+    "meta": {"adj":"billig","noun":"lunch","number":"sg."},
+    parts: ["", { answer: "Den billiga lunchen", width: 15.19 }, "blev hennes val i dag."]
+  },
+  {
+    "meta": {"adj":"billig","noun":"boende","number":"sg."},
+    parts: ["Vi hade allt vi behövde i", { answer: "det billiga boendet", width: 14.60 }, "."]
+  },
+  {
+    "meta": {"adj":"billig","noun":"bälte","number":"sg."},
+    parts: ["", { answer: "Det billiga bältet", width: 12.79 }, "köpte hon på en marknad."]
+  },
+  {
+    "meta": {"adj":"billig","noun":"grönsak","number":"pl."},
+    parts: ["", { answer: "De billiga grönsakerna", width: 17.89 }, "på marknaden tar snabbt slut."]
+  },
+  {
+    "meta": {"adj":"billig","noun":"sko","number":"pl."},
+    parts: ["", { answer: "De billiga skorna", width: 13.29 }, "tog slut i lager på en halvtimme."]
+  },
+  {
+    "meta": {"adj":"rolig","noun":"historia","number":"sg."},
+    parts: ["Han berättade", { answer: "den roliga historien", alt: "den roliga historian", width: 15.19 }, "under middagen."]
+  },
+  {
+    "meta": {"adj":"rolig","noun":"hobby","number":"sg."},
+    parts: ["", { answer: "Den roliga hobbyn", width: 14.59 }, "får henne att må bra."]
+  },
+  {
+    "meta": {"adj":"rolig","noun":"ställe","number":"sg."},
+    parts: ["", { answer: "Det roliga stället", width: 12.89 }, "vi hittade i Berlin, vad hette det?"]
+  },
+  {
+    "meta": {"adj":"rolig","noun":"foto","number":"sg."},
+    parts: ["Hon visade oss", { answer: "det roliga fotot", width: 11.40 }, "i mobilen."]
+  },
+  {
+    "meta": {"adj":"rolig","noun":"yrke","number":"pl."},
+    parts: ["I boken skildras", { answer: "de roliga yrkena", width: 12.79 }, "mer ingående."]
+  },
+  {
+    "meta": {"adj":"trevlig","noun":"kafé","number":"pl."},
+    parts: ["Det blev liv i staden när", { answer: "de trevliga kaféerna", width: 15.79 }, "öppnade."]
+  },
+  {
+    "meta": {"adj":"otrevlig","noun":"rykte","number":"pl."},
+    parts: ["", { answer: "De otrevliga ryktena", width: 15.99 }, "spreds snabbt i hela byn."]
+  },
+  {
+    "meta": {"adj":"rolig","noun":"aktivitet","number":"pl."},
+    parts: ["Vem är det som har planerat", { answer: "de roliga aktiviteterna", width: 17.09 }, "?"]
+  },
+  {
+    "meta": {"adj":"tråkig","noun":"pjäs","number":"sg."},
+    parts: ["Det var", { answer: "den tråkiga pjäsen", width: 14.69 }, "som förstörde hela kvällen."]
+  },
+  {
+    "meta": {"adj":"tråkig","noun":"attityd","number":"sg."},
+    parts: ["", { answer: "Den tråkiga attityden", width: 16.49 }, "präglade hela mötet."]
+  },
+  {
+    "meta": {"adj":"tråkig","noun":"möte","number":"sg."},
+    parts: ["", { answer: "Det tråkiga mötet", width: 13.69 }, "drog ut på tiden."]
+  },
+  {
+    "meta": {"adj":"tråkig","noun":"arbete","number":"sg."},
+    parts: ["Nu kan vi låta AI göra", { answer: "det tråkiga arbetet", width: 14.49 }, "."]
+  },
+  {
+    "meta": {"adj":"tråkig","noun":"lektion","number":"pl."},
+    parts: ["", { answer: "De tråkiga lektionerna", width: 17.49 }, "var viktiga för att få ett jobb."]
+  },
+  {
+    "meta": {"adj":"tråkig","noun":"dikt","number":"pl."},
+    parts: ["Vi läste", { answer: "de tråkiga dikterna", width: 14.79 }, "i skolan."]
+  },
+  {
+    "meta": {"adj":"härlig","noun":"dag","number":"sg."},
+    parts: ["Minns du", { answer: "den härliga dagen", width: 14.40 }, "då vi träffades?"]
+  },
+  {
+    "meta": {"adj":"härlig","noun":"sång","number":"sg."},
+    parts: ["Tack, Sofia, för", { answer: "den härliga sången", width: 15.30 }, "!"]
+  },
+  {
+    "meta": {"adj":"härlig","noun":"bageri","number":"sg."},
+    parts: ["Var ligger", { answer: "det härliga bageriet", width: 15.39 }, "du berättade om?"]
+  },
+  {
+    "meta": {"adj":"härlig","noun":"område","number":"sg."},
+    parts: ["", { answer: "Det härliga området", width: 15.79 }, "ligger alldeles intill vattnet."]
+  },
+  {
+    "meta": {"adj":"härlig","noun":"färg","number":"pl."},
+    parts: ["", { answer: "De härliga färgerna", width: 15.39 }, "dominerar hela konstverket."]
+  },
+  {
+    "meta": {"adj":"härlig","noun":"minne","number":"pl."},
+    parts: ["De bär med sig", { answer: "de härliga minnena", width: 15.29 }, "genom livet."]
+  },
+  {
+    "meta": {"adj":"skön","noun":"säng","number":"sg."},
+    parts: ["Han låg äntligen i", { answer: "den sköna sängen", width: 14.70 }, "på hotellet."]
+  },
+  {
+    "meta": {"adj":"skön","noun":"fåtölj","number":"sg."},
+    parts: ["Hon sjönk tacksamt ner i", { answer: "den sköna fåtöljen", width: 14.60 }, "."]
+  },
+  {
+    "meta": {"adj":"skön","noun":"tempo","number":"sg."},
+    parts: ["", { answer: "Det sköna tempot", width: 14.09 }, "präglar hela den här låten."]
+  },
+  {
+    "meta": {"adj":"skön","noun":"täcke","number":"sg."},
+    parts: ["Han drog tätare omkring sig", { answer: "det sköna täcket", width: 13.09 }, "."]
+  },
+  {
+    "meta": {"adj":"skön","noun":"kudde","number":"pl."},
+    parts: ["Inom kort låg", { answer: "de sköna kuddarna", width: 15.29 }, "utspridda."]
+  },
+  {
+    "meta": {"adj":"skön","noun":"sommarkväll","number":"pl."},
+    parts: ["De minns", { answer: "de sköna sommarkvällarna", width: 21.49 }, "på landet."]
+  }
+];
+
+    let score = 0;
+
+    // Fisher-Yates shuffle algorithm to shuffle an array.
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+
+    // Function to generate HTML for a single sentence
+function generateSentenceHTML(sentence) {
+    let html = "";
+
+    sentence.parts.forEach((part, index) => {
+        if (typeof part === "object") {
+            const correctAnswer = part.answer.toLowerCase();
+            const altAnswer = part.alt ? part.alt.toLowerCase() : "";
+
+            // Logik för smalt mellanslag till interpunktion
+            const nextPart = sentence.parts[index + 1];
+            let extraClass = "";
+            
+            if (typeof nextPart === "string" && /^[.,!?]/.test(nextPart.trim())) {
+                extraClass = "narrow-right";
+            }
+
+            // NYTT: Kontrollera om fältet är först i meningen
+            // Vi kollar om index är 0, eller om index är 1 och första delen bara är en tom sträng
+            if (index === 0 || (index === 1 && sentence.parts[0] === "")) {
+                extraClass += " first-in-sentence";
+            }
+
+            const charWidth = part.width || correctAnswer.length; 
+
+            html += `
+                <span class="input-wrapper ${extraClass}" style="--ch: ${charWidth}">
+                    <input type="text" 
+                           class="answer-input" 
+                           data-correct="${correctAnswer}" 
+                           data-alt="${altAnswer}" 
+                           oninput="evaluateInputAnswer(this)" 
+                           placeholder="write..." 
+                           autocomplete="off">
+                    <span class="btn-container">
+                        <button type="button" class="char-btn" tabindex="-1" onclick="insertChar(this, 'å')">å</button>
+                        <button type="button" class="char-btn" tabindex="-1" onclick="insertChar(this, 'ä')">ä</button>
+                        <button type="button" class="char-btn" tabindex="-1" onclick="insertChar(this, 'ö')">ö</button>
+                    </span>
+                </span>
+            `;
+        } else {
+            html += part;
+        }
+    });
+
+    return `
+        <div class="sentence" data-state="none">
+            <div class="sentence-row">
+                <p class="sentence-text">${html}</p>
+                <div class="badge-row">
+                    <span class="badge adj-badge">${sentence.meta.adj}</span>
+                    <span class="badge noun-badge">${sentence.meta.noun}</span>
+                    <span class="badge num-badge">${sentence.meta.number}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function insertChar(btn, char) {
+    // Hitta inputfältet som hör till den klickade knappen
+    const input = btn.closest('.input-wrapper').querySelector('.answer-input');
+    
+    // Hämta markörens position
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const text = input.value;
+
+    // Sätt in tecknet på markörens plats
+    input.value = text.slice(0, start) + char + text.slice(end);
+
+    // Sätt tillbaka markören efter det nya tecknet
+    input.selectionStart = input.selectionEnd = start + 1;
+
+    // Sätt fokus på fältet igen
+    input.focus();
+
+    // Trigga rättningslogiken manuellt
+    evaluateInputAnswer(input);
+}
+
+    // Render sentences in a shuffled order.
+    function renderSentences() {
+        const shuffledSentences = shuffleArray([...sentences]);
+        const sentencesHTML = shuffledSentences.map((sentence, index) => generateSentenceHTML(sentence, index)).join('');
+        document.getElementById('sentences').innerHTML = sentencesHTML;
+    }
+
+    // Evaluates the user's answer and updates the score and UI accordingly.
+function evaluateInputAnswer(inputElement) {
+    const correctAnswer = inputElement.getAttribute('data-correct').toLowerCase().trim();
+    const altAnswer = inputElement.getAttribute('data-alt').toLowerCase().trim();
+    const userValue = inputElement.value.toLowerCase().trim();
+    const parent = inputElement.closest('.sentence');
+    
+    // Kontrollera om raden var korrekt INNAN ändringen
+    const wasCorrect = parent.classList.contains('correct');
+    
+    // Ta bort gamla klasser
+    parent.classList.remove('correct', 'incorrect');
+    
+    let newState = 'none';
+
+    if (userValue === "") {
+        newState = 'none';
+    } 
+    // NYTT: Godkänn om userValue matchar antingen correctAnswer ELLER altAnswer
+    else if (userValue === correctAnswer || (altAnswer !== "" && userValue === altAnswer)) {
+        newState = 'correct';
+        parent.classList.add('correct');
+    } else {
+        newState = 'incorrect';
+        parent.classList.add('incorrect');
+    }
+
+    // POÄNGLOGIK:
+    // Gick den från "inte rätt" till "rätt"? -> +1
+    if (newState === 'correct' && !wasCorrect) {
+        updateScore(1);
+    } 
+    // Gick den från "rätt" till "inte rätt" (fel eller tomt)? -> -1
+    else if (newState !== 'correct' && wasCorrect) {
+        updateScore(-1);
+    }
+
+    parent.setAttribute('data-state', newState);
+
+    if (newState === 'correct') {
+        checkAllCorrect();
+    }
+}
+
+    // Updates the score display based on value change.
+// Updates the score display based on value change.
+function updateScore(value) {
+    score += value;
+
+    const maxScore = sentences.length;
+
+    // Förhindra att poängen går utanför logiska gränser (0 till max)
+    if (score > maxScore) score = maxScore;
+    if (score < 0) score = 0;
+
+    document.querySelectorAll('.score-display').forEach((element) => {
+        element.textContent = score;
+    });
+
+    checkForMaxScore(score);
+}
+
+    // Check if the score has reached max and opens the congratulations modal if so.
+    function checkForMaxScore(currentScore) {
+        if (currentScore >= sentences.length) {
+            openModal('congratulationsModal');
+        }
+    }
+
+    // Checks if all sentences are correctly answered.
+    function checkAllCorrect() {
+        const allCorrect = Array.from(document.querySelectorAll('.sentence')).every(sentence => sentence.classList.contains('correct'));
+        if (allCorrect) {
+            openModal('congratulationsModal');
+        }
+    }
+
+    // Opens a modal by its ID.
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'flex';
+            modal.classList.add('show');
+        }
+    }
+
+    // Closes a modal by its ID.
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        }
+    }
+
+    // Close modal when clicking outside of the modal content
+    window.addEventListener('click', (event) => {
+        const infoModal = document.getElementById('infoModal');
+        const congratulationsModal = document.getElementById('congratulationsModal');
+
+        if (event.target === infoModal) {
+            closeModal('infoModal');
+        } else if (event.target === congratulationsModal) {
+            closeModal('congratulationsModal');
+        }
+    });
+
+    // Function to toggle mobile menu
+    function toggleMenu() {
+        const menuOverlay = document.getElementById('menuOverlay');
+        menuOverlay.classList.toggle('active');
+    }
+
+    // Function to toggle dark mode
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+
+    // Spara inställningen i localStorage
+    const isDarkModeEnabled = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
+    
+    // Uppdatera checkboxen om den finns
+    const darkModeToggle = document.getElementById('darkModeSwitch');
+    if (darkModeToggle) {
+        darkModeToggle.checked = isDarkModeEnabled;
+    }
+}
+
+function goToEasyVersion() {
+    window.location.href = "https://learnswedish.github.io/html/adj-def-regular-easy.html";
+}
+function goToMediumVersion() {
+    window.location.href = "https://learnswedish.github.io/html/adj-def-regular-medium.html";
+}
+
+    // Open the Info modal and close the menu
+    function showInfo() {
+        openModal('infoModal');
+        toggleMenu(); // Stäng menyn efter att ha visat info
+    }
+
+    // Start over and close the menu
+    function startOverAndCloseMenu() {
+        startOver();
+        toggleMenu(); // Stäng menyn efter att ha startat om
+    }
+
+    // Initialize the dark mode toggle with stored preference
+function initializeModalsAndDarkMode() {
+    const darkModeToggle = document.getElementById('darkModeSwitch');
+    const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+    
+    // Applicera läget direkt vid start
+    if (isDarkModeEnabled) {
+        document.body.classList.add('dark-mode');
+        if (darkModeToggle) darkModeToggle.checked = true;
+    }
+
+    // Lägg till eventlyssnare
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('change', function () {
+            toggleDarkMode();
+        });
+    }
+}
+
+    // Function to update the maximum score in the HTML
+    function updateMaxScore() {
+        const maxScore = sentences.length;
+        document.querySelectorAll('.score-max').forEach((element) => {
+            element.textContent = maxScore;
+        });
+    }
+
+    // Resets the quiz and score, then re-renders sentences.
+    function startOver() {
+        renderSentences();
+        resetScore();
+        closeModal('congratulationsModal');
+    }
+
+    // Resets the score to zero.
+    function resetScore() {
+        score = 0;
+        document.querySelectorAll('.score-display').forEach((element) => {
+            element.textContent = score;
+        });
+
+        // Återställ alla meningars tillstånd
+        document.querySelectorAll('.sentence').forEach(sentence => {
+            sentence.classList.remove('correct', 'incorrect');
+            sentence.setAttribute('data-state', 'none');
+        });
+    }
+
+    // Initialize the application once the DOM is fully loaded.
+document.addEventListener('DOMContentLoaded', () => {
+    const isMobile = window.matchMedia("(max-width: 700px)").matches;
+
+    if (isMobile) {
+        const mobileModal = document.getElementById('mobileBlockModal');
+        if (mobileModal) {
+            mobileModal.style.display = 'flex';
+        }
+        return; // Kör inte resten av scriptet om det är mobil
+    }
+
+    renderSentences();
+    initializeModalsAndDarkMode();
+    resetScore();
+    updateMaxScore();
+});
+    </script>
+
+</body>
+
+</html>
