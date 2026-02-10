@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swedish Adjective Exercises</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #2d3748;
+            line-height: 1.6;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #e2e8f0;
+        }
+
+        /* Container */
+        .container {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 850px;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+
+        body.dark-mode .container {
+            background-color: #1a202c;
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Page Title */
+        .page-title {
+            color: #333333;
+            font-size: 32px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        body.dark-mode .page-title {
+            color: #ffffff;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 40px;
+        }
+
+        body.dark-mode .subtitle {
+            color: #a0aec0;
+        }
+
+        /* Grid Layout */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        /* Menu Card Styling (Matches .sentence styling) */
+        .menu-card {
+            background-color: #f7fafc;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            border-left: 6px solid #007BFF;
+            transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        body.dark-mode .menu-card {
+            background-color: #2d3748;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            background-color: #edf2f7;
+        }
+
+        body.dark-mode .menu-card:hover {
+            background-color: #3a4454;
+        }
+
+        .menu-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        body.dark-mode .menu-card h2 {
+            color: #ffffff;
+        }
+
+        .example-box {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 1rem;
+            border: 1px dashed #cbd5e0;
+        }
+
+        body.dark-mode .example-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-color: #4a5568;
+        }
+
+        .example-box p {
+            margin: 5px 0;
+        }
+
+        /* Score-container style for the toggle */
+        .score-container {
+            position: fixed;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            width: 150px;
+            z-index: 1001;
+            gap: 10px;
+        }
+
+        .dark-mode-toggle {
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            background-color: #fff;
+            color: #333;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        body.dark-mode .dark-mode-toggle {
+            background-color: #2d3748;
+            color: #fff;
+        }
+
+        .switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            display: inline-block;
+        }
+
+        .switch input { display: none; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 14px; width: 14px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: #007BFF; }
+        input:checked + .slider::before { transform: translateX(20px); }
+
+        @media (max-width: 700px) {
+            .score-container { position: static; width: 100%; margin-bottom: 20px; }
+            .container { padding: 25px 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="score-container">
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+    </div>
+
+    <h1 class="page-title">Swedish Adjectives</h1>
+    <p class="subtitle">Choose the type of phrase you want to practice</p>
+
+    <div class="container">
+        <div class="menu-grid">
+            
+            <a href="https://learnswedish.github.io/html/adjective-indefinite-menu.html" class="menu-card">
+                <h2><i class="fas fa-pen-nib"></i> Adjectives in indefinite noun phrases</h2>
+                <div class="example-box">
+                    <p>Example: Jag vill köpa <u><strong>en grön bil</strong></u>.</p>
+                    <p><em>Eng. I want to buy <u>a green car</u>.</em></p>
+                </div>
+            </a>
+
+            <a href="https://learnswedish.github.io/html/adjective-definite-menu.html" class="menu-card">
+                <h2><i class="fas fa-check-double"></i> Adjectives in definite noun phrases</h2>
+                <div class="example-box">
+                    <p>Example: Jag vill köpa <u><strong>den gröna bilen</strong></u>.</p>
+                    <p><em>Eng. I want to buy <u>the green car</u>.</em></p>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'enabled' : 'disabled');
+        }
+
+        // Initialize Dark Mode
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            darkModeSwitch.checked = true;
+        }
+
+        darkModeSwitch.addEventListener('change', toggleDarkMode);
+    </script>
+
+</body>
+</html>
