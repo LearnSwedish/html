@@ -63,12 +63,6 @@ body.dark-mode .close-button {
 	color: #ffcccc;
 }
 
-.close-button:hover {
-	background-color: #f44336;
-	transform: scale(1.2) rotate(90deg);
-	color: white;
-}
-
 body.dark-mode .close-button:hover {
 	background-color: #ff6666;
 	color: white;
@@ -96,10 +90,11 @@ body.dark-mode .container {
 
 /* Dark Mode Toggle */
 .dark-mode-toggle {
-	justify-content: flex-start;
-	padding: 0 10px;
-	gap: 10px;
-	cursor: default;
+    justify-content: flex-start;
+    padding: 0 10px;
+    gap: 10px;
+    cursor: pointer; /* Ändra från default till pointer */
+    user-select: none;
 }
 
 /* Page Title */
@@ -112,7 +107,7 @@ body.dark-mode .container {
 	padding-top: 10px;
 	position: relative;
 	z-index: 1;
-	transition: color 0.3s ease, background-color 0.3s ease;
+	transition: color 0.3s ease;
 }
 
 body.dark-mode .page-title {
@@ -178,6 +173,10 @@ body.dark-mode .sentence.incorrect {
 	font-size: 1.1rem;
 	margin-bottom: 10px;
 	transition: color 0.3s;
+	position: relative;
+    display: block;
+    width: 100%;
+    min-height: 40px;
 }
 
 body.dark-mode .sentence p {
@@ -290,48 +289,6 @@ body.dark-mode .sentence select:focus {
 .start-over:hover {
 	background-color: #0056b3;
 	color: white;
-}
-
-/* Word Styling */
-.word {
-	position: relative;
-	cursor: pointer;
-	color: #2d3748;
-	transition: color 0.3s, background-color 0.3s;
-	display: inline-block;
-	border-radius: 4px;
-}
-
-body.dark-mode .word {
-	color: #edf2f7;
-}
-
-.word::after {
-	content: '';
-	position: absolute;
-	left: 50%;
-	bottom: -2px;
-	width: 100%;
-	height: 3px;
-	background-color: currentColor;
-	transform: translateX(-50%) scaleX(0);
-	transform-origin: center;
-	transition: transform 0.3s ease;
-}
-
-.word:hover::after,
-.word:focus::after {
-	transform: translateX(-50%) scaleX(1);
-}
-
-.word:hover,
-.word:focus {
-	background-color: rgba(45, 55, 72, 0.1);
-}
-
-body.dark-mode .word:hover,
-body.dark-mode .word:focus {
-	background-color: rgba(226, 232, 240, 0.1);
 }
 
 /* Unified Button Styling */
@@ -447,28 +404,25 @@ body:not(.show-translation) .tooltip-text {
 .sentence .tooltip-text {
 	visibility: hidden;
 	white-space: nowrap;
-	/* Förhindrar line-breaks */
 	background-color: #2d3748;
 	color: #fff;
 	text-align: left;
-	/* Vänsterställd text inuti tooltip */
 	border-radius: 6px;
 	padding: 10px 15px;
-	/* Lite mer luft */
 	position: absolute;
 	z-index: 10;
 	bottom: 110%;
-	/* Justerat avstånd från meningen */
 	left: 0;
-	/* Tooltip börjar i samma position som svenska meningen */
 	opacity: 0;
 	transition: opacity 0.3s, transform 0.3s;
 	font-size: 1.05rem;
-	/* Aningen större storlek */
 	font-style: normal;
-	/* Rak stil (inte kursiv) */
 	pointer-events: none;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	left: 0;
+	bottom: 125%;
+	width: max-content;
+	max-width: 90%;
 }
 
 /* Tooltip Pil - flyttad till vänster för att matcha starten */
@@ -500,83 +454,91 @@ body.dark-mode .sentence .tooltip-text::after {
 	border-color: #4a5568 transparent transparent transparent;
 }
 
-/* Gemensam stil för alla genus-boxar */
+
+/* Container som håller ihop badge och knapp längst till höger */
+.gender-control-wrapper {
+    float: right;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 👈 EXAKT 10px mellan badge och knapp */
+    margin-left: 15px;
+}
+
+/* Uppdaterad gender-hint (badgen) */
 .gender-hint {
-	margin-left: 18px;
-	padding: 3px 10px;
-	border-radius: 8px;
-	font-weight: 800;
-	font-family: Arial, sans-serif;
-	font-size: 0.7rem;
-	display: inline-block;
-	letter-spacing: 0.5px;
-	text-transform: uppercase;
-	vertical-align: middle;
-	/* basjustering mot textlinjen */
-	position: relative;
-	top: -3px;
-	/* 👈 flyttar upp etiketten */
+    display: inline-block; 
+    visibility: hidden;    
+    opacity: 0;
+    transform: translateX(10px); /* Startar lite till höger */
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    border: 1.5px solid #cbd5e0;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-family: Arial, sans-serif;
+    white-space: nowrap;
+    line-height: normal; 
 }
 
-/* N-gender: Blå färgskala */
-.gender-n {
-	background-color: #e0f2fe;
-	color: #0369a1;
-	border: 2px solid #7dd3fc;
-}
 
-/* T-gender: Orange/Röd färgskala */
-.gender-t {
-	background-color: #ffede5;
-	color: #c05621;
-	border: 2px solid #feb2b2;
-}
-
-/* Dark Mode anpassning */
-body.dark-mode .gender-n {
-	background-color: #1e293b;
-	color: #7dd3fc;
-	border: 2px solid #38445d;
-}
-
-body.dark-mode .gender-t {
-	background-color: #2d221f;
-	color: #fbd38d;
-	border: 2px solid #744210;
-}
-
-.gender-hint {
-	display: none;
-	/* 👈 gömd som default */
-}
-
+/* Visningslogik när Show gender klickas */
 .sentence.show-gender .gender-hint {
-	display: inline-block;
-	/* visas när raden har klassen */
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Knappen - ingen float här eftersom wrappern sköter det */
+.gender-toggle {
+    width: 110px;
+    height: 28px;
+    position: relative; /* Nödvändigt för absolut positionering inuti */
+    overflow: hidden;   /* Döljer texten som glider ut */
+    border-radius: 6px;
+    border: 1.5px solid #94a3b8;
+    background-color: #e2e8f0;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.gender-toggle span {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: block;
+    text-align: center;
+}
+
+/* "Hide gender" är osynlig och lite nedsänkt initialt */
+.gender-toggle .text-hide {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+/* När klassen .show-gender finns på föräldern (.sentence) */
+.sentence.show-gender .gender-toggle .text-show {
+    opacity: 0;
+    transform: translateY(-25px); /* Glider uppåt och försvinner */
+}
+
+.sentence.show-gender .gender-toggle .text-hide {
+    opacity: 1;
+    transform: translateY(-50%); /* Glider upp till mitten */
 }
 
 .sentence.show-gender .gender-toggle {
-	background-color: #0ea5e9;
-	border-color: #0284c7;
-	color: white;
-}
-
-.gender-toggle {
-	float: right;
-	margin-left: 12px;
-	width: 110px;
-	/* exakt lika breda */
-	padding: 5px 8px;
-	font-size: 0.75rem;
-	font-weight: 700;
-	text-align: center;
-	/* centrerar texten */
-	border-radius: 8px;
-	border: 2px solid #94a3b8;
-	background-color: #e2e8f0;
-	color: #1e293b;
-	cursor: pointer;
-	transition: all 0.2s ease;
+    background-color: #0ea5e9;
+    border-color: #0284c7;
+    color: white;
 }
 
 .gender-toggle:hover {
@@ -584,15 +546,16 @@ body.dark-mode .gender-t {
 	border-color: #64748b;
 }
 
+/* Dark Mode anpassning */
+body.dark-mode .gender-hint, 
 body.dark-mode .gender-toggle {
-	background-color: #334155;
-	color: #f1f5f9;
-	border: 2px solid #64748b;
+    background-color: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
 }
 
 body.dark-mode .gender-toggle:hover {
-	background-color: #475569;
-	border-color: #94a3b8;
+    background-color: #475569;
 }
 
 /* 🚫 Block entire site on small screens */
@@ -635,14 +598,11 @@ body.dark-mode .gender-toggle:hover {
         <span class="slider"></span>
     </label>
     <span>Translation</span>
-</div>
+</div>		
         <!-- Info Button for Desktop -->
         <button class="start-over" id="info-button" onclick="openModal('infoModal')">
             <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
         </button>
-		<button class="start-over" onclick="goToStudyPage()">
-    		<i class="fa-solid fa-book" style="margin-right: 8px;"></i> Study
-		</button>
         <!-- Go to harder version of the exercise (no gender indicated) -->
         <button class="start-over" onclick="goToMediumVersion()">
             <i class="fas fa-arrow-up-right-from-square" style="margin-right: 8px;"></i> Medium level
@@ -657,7 +617,7 @@ body.dark-mode .gender-toggle:hover {
     </div>
 
     <!-- Page Title -->
-    <h1 class="page-title">Adjective Agreement (indefinite non-regular): easy level</h1>
+    <h1 class="page-title">Adjective Agreement | INDEFINITE non-regular: easy level</h1>
     <p>Read the "Info" to understand what this exercise is about.</p>
 
     <!-- Main Content Container -->
@@ -674,28 +634,27 @@ body.dark-mode .gender-toggle:hover {
 			<p>This exercise includes <strong>tooltips with translations and gender indicators</strong>. If a dropdown only has two answer options, you’ve encountered a “singular twin”, which means that this adjective has the same form for both en gender and ett gender, while the remaining form is the plural form.</p>
 			<p>For a greater challenge, <strong>try the medium or hard level versions</strong> (see the menu options).
 			</p>
-
         </div>
     </div>
 
     <!-- Congratulations Modal -->
-    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
-        <div class="modal-content">
-            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
-            <h2 id="congratulationsModalTitle">Congratulations!</h2>
-            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
-        </div>
+<div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+    <div class="modal-content">
+        <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+        <h2 id="congratulationsModalTitle">Congratulations!</h2> 
+        <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
     </div>
+</div>
 
-<div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true">
+<div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true" aria-labelledby="mobileBlockTitle">
     <div class="modal-content" style="text-align:center;">
-        <h2>Not available on mobile</h2>
+        <h2 id="mobileBlockTitle">Not available on mobile</h2>
         <p>
             This page — an exercise on Swedish adjectives — is not designed for mobile phones,
             mainly because many of the interactive features do not work well on small touchscreens.
         </p>
     </div>
-</div>		
+</div>	
 
 <script>
 
@@ -1851,17 +1810,8 @@ function toggleTranslation() {
 }
 
 function toggleGender(button) {
-	const sentenceDiv=button.closest('.sentence');
-	sentenceDiv.classList.toggle('show-gender');
-
-	// Ändra knapptext
-	if (sentenceDiv.classList.contains('show-gender')) {
-		button.textContent="Hide gender";
-	}
-
-	else {
-		button.textContent="Show gender";
-	}
+	const sentenceDiv = button.closest('.sentence');
+    sentenceDiv.classList.toggle('show-gender');
 }
 
 function capitalize(word) {
@@ -1871,43 +1821,42 @@ function capitalize(word) {
 
 // Function to generate HTML for a single sentence
 function generateSentenceHTML(sentence, index) {
-	const isAboutSentence=sentence.words[0].sentencePart.trim().startsWith("(About");
+    let extractedGenderBadge = "";
 
-	const sentenceHTML=sentence.words.map(item=> {
-			if ( !item.sentencePart.includes("<select")) return item.sentencePart;
+    const sentenceHTML = sentence.words.map(item => {
+        let part = item.sentencePart;
 
-			const tempDiv=document.createElement("div");
-			tempDiv.innerHTML=item.sentencePart.trim();
-			const select=tempDiv.querySelector("select");
+        // 1. Hitta och extrahera gender-hint
+        if (part.includes("gender-hint")) {
+            const badgeRegex = /<span class=['"]gender-hint[^>]*>.*?<\/span>/;
+            const match = part.match(badgeRegex);
+            if (match) {
+                extractedGenderBadge = match[0];
+                part = part.replace(badgeRegex, "");
+            }
+        }
 
-			if (isAboutSentence) {
-				const correct=select.getAttribute("data-correct");
-				select.setAttribute("data-correct", capitalize(correct));
+        return part; // Returnera texten/select-elementet direkt
+    }).join(' ');
 
-				Array.from(select.options).forEach(opt=> {
-						if (opt.value !=="") {
-							opt.textContent=capitalize(opt.textContent);
-							opt.value=capitalize(opt.value);
-						}
-					});
-			}
+    const tooltipSpan = sentence.translation
+        ? `<span class="tooltip-text">${sentence.translation}</span>`
+        : "";
 
-			return select.outerHTML;
-		}).join(' ');
-
-	// Uppdaterad return: Vi lägger till en span med klassen 'tooltip-text'
-	// Vi hämtar översättningen från 'sentence.translation' (som du lägger till i din array)
-const tooltipSpan = sentence.translation
-    ? `<span class="tooltip-text">${sentence.translation}</span>`
-    : "";
-
-return `<div class="sentence" data-state="none">
-    <p>
-        ${sentenceHTML}
-        <button class="gender-toggle" onclick="toggleGender(this)">Show gender</button>
-        ${tooltipSpan}
-    </p>
-</div>`;
+    // Returnera den färdiga strängen
+    return `<div class="sentence">
+        <p>
+            ${sentenceHTML}
+            <span class="gender-control-wrapper">
+                ${extractedGenderBadge}
+                <button class="gender-toggle" onclick="toggleGender(this)">
+                    <span class="text-show">Show gender</span>
+                    <span class="text-hide">Hide gender</span>
+                </button>
+            </span>
+            ${tooltipSpan}
+        </p>
+    </div>`;
 }
 
 // Render sentences in a shuffled order.
@@ -1959,7 +1908,6 @@ function evaluateAnswer(selectElement) {
 		}
 	}
 
-	parent.setAttribute('data-state', newState);
 	checkAllCorrect();
 }
 
@@ -1986,14 +1934,6 @@ function updateScore(value) {
 			element.textContent=score;
 		});
 
-	checkForMaxScore(score);
-}
-
-// Check if the score has reached max and opens the congratulations modal if so.
-function checkForMaxScore(currentScore) {
-	if (currentScore >=sentences.length) {
-		openModal('congratulationsModal');
-	}
 }
 
 // Checks if all sentences are correctly answered.
@@ -2039,12 +1979,6 @@ window.addEventListener('click', (event)=> {
 		}
 	});
 
-// Function to toggle mobile menu
-function toggleMenu() {
-	const menuOverlay=document.getElementById('menuOverlay');
-	menuOverlay.classList.toggle('active');
-}
-
 // Function to toggle dark mode
 function toggleDarkMode() {
 	document.body.classList.toggle('dark-mode');
@@ -2053,28 +1987,12 @@ function toggleDarkMode() {
 	localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
 }
 
-function goToStudyPage() {
-    window.open("https://learnswedish.github.io/html/adjective-explain-types.html", "_blank");
-}
-	
 function goToMediumVersion() {
 	window.location.href="https://learnswedish.github.io/html/adjective-non-regular-medium.html";
 }
 
 function goToHardVersion() {
 	window.location.href="https://learnswedish.github.io/html/adjective-non-regular-hard.html";
-}
-
-// Open the Info modal and close the menu
-function showInfo() {
-	openModal('infoModal');
-	toggleMenu(); // Stäng menyn efter att ha visat info
-}
-
-// Start over and close the menu
-function startOverAndCloseMenu() {
-	startOver();
-	toggleMenu(); // Stäng menyn efter att ha startat om
 }
 
 // Initialize the dark mode toggle with stored preference
@@ -2122,7 +2040,6 @@ function resetScore() {
 	// Återställ alla meningars tillstånd
 	document.querySelectorAll('.sentence').forEach(sentence=> {
 			sentence.classList.remove('correct', 'incorrect');
-			sentence.setAttribute('data-state', 'none');
 		});
 }
 
@@ -2140,7 +2057,4 @@ document.addEventListener('DOMContentLoaded', ()=> {
 </script>
 
 </body>
-
 </html>
-
-
