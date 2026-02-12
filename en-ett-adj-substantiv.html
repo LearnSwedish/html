@@ -145,30 +145,30 @@
 
     <div class="main-container">
         <div class="picker-container">
-            <button id="art-up" class="arrow-btn" onclick="move('art', -1)">▲</button>
+            <button id="art-up" class="arrow-btn" onclick="move('art', 1)">▲</button>
             <div class="viewport">
                 <div class="focus-frame"></div>
                 <div id="art-list" class="scroll-list"></div>
             </div>
-            <button id="art-down" class="arrow-btn" onclick="move('art', 1)">▼</button>
+            <button id="art-down" class="arrow-btn" onclick="move('art', -1)">▼</button>
         </div>
 
         <div class="picker-container">
-            <button id="adj-up" class="arrow-btn" onclick="move('adj', -1)">▲</button>
+            <button id="adj-up" class="arrow-btn" onclick="move('adj', 1)">▲</button>
             <div class="viewport">
                 <div class="focus-frame"></div>
                 <div id="adj-list" class="scroll-list"></div>
             </div>
-            <button id="adj-down" class="arrow-btn" onclick="move('adj', 1)">▼</button>
+            <button id="adj-down" class="arrow-btn" onclick="move('adj', -1)">▼</button>
         </div>
 
         <div class="picker-container">
-            <button id="noun-up" class="arrow-btn" onclick="move('noun', -1)">▲</button>
+            <button id="noun-up" class="arrow-btn" onclick="move('noun', 1)">▲</button>
             <div class="viewport">
                 <div class="focus-frame"></div>
                 <div id="noun-list" class="scroll-list"></div>
             </div>
-            <button id="noun-down" class="arrow-btn" onclick="move('noun', 1)">▼</button>
+            <button id="noun-down" class="arrow-btn" onclick="move('noun', -1)">▼</button>
         </div>
 
         <div class="translation-box" id="result-display">a lovely flower</div>
@@ -223,17 +223,20 @@
         updateUI();
     }
 
-    function updateUI() {
+function updateUI() {
         document.getElementById('art-list').style.transform = `translateY(${100 - (artPos * 50)}px)`;
         document.getElementById('adj-list').style.transform = `translateY(${100 - (adjPos * 50)}px)`;
         document.getElementById('noun-list').style.transform = `translateY(${100 - (nounPos * 50)}px)`;
 
-        document.getElementById('art-up').disabled = (artPos === 0);
-        document.getElementById('art-down').disabled = (artPos === articles.length - 1);
-        document.getElementById('adj-up').disabled = (adjPos === 0);
-        document.getElementById('adj-down').disabled = (adjPos === adjectives.length - 1);
-        document.getElementById('noun-up').disabled = (nounPos === 0);
-        document.getElementById('noun-down').disabled = (nounPos === nouns.length - 1);
+        // UP-knapparna inaktiveras nu vid slutet av listan (max index)
+        document.getElementById('art-up').disabled = (artPos === articles.length - 1);
+        document.getElementById('adj-up').disabled = (adjPos === adjectives.length - 1);
+        document.getElementById('noun-up').disabled = (nounPos === nouns.length - 1);
+
+        // DOWN-knapparna inaktiveras nu vid början av listan (index 0)
+        document.getElementById('art-down').disabled = (artPos === 0);
+        document.getElementById('adj-down').disabled = (adjPos === 0);
+        document.getElementById('noun-down').disabled = (nounPos === 0);
 
         updateActiveClass('art-list', artPos);
         updateActiveClass('adj-list', adjPos);
