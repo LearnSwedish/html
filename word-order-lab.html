@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Order Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+      :root {
+        --bg-color: #f4f4f4;
+        --text-color: #333;
+        --bank-bg: #fff;
+        --bank-border: #999;
+        --zone-bg: #e8e8e8;
+        --zone-border: #bbb;
+        --brick-bg: #fff;
+        --brick-border: #333;
+        --konj-bg: #fffbe6;
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+
+      body.dark-mode {
+        --bg-color: #1a1a1a;
+        --text-color: #e0e0e0;
+        --bank-bg: #2d2d2d;
+        --bank-border: #555;
+        --zone-bg: #333333;
+        --zone-border: #444;
+        --brick-bg: #404040;
+        --brick-border: #888;
+        --konj-bg: #3e3b2a;
+        --activated-brick: #4a4a4a;
+        --shadow: rgba(0, 0, 0, 0.4);
+      }
+
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 30px;
+        margin: 0;
+        user-select: none;
+        -webkit-user-select: none;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .theme-switch {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        cursor: pointer;
+        font-size: 24px;
+        z-index: 1000;
+        color: var(--text-color);
+        padding: 10px;
+      }
+
+      .reset-btn {
+        position: absolute;
+        top: 70px;
+        right: 25px;
+        cursor: pointer;
+        font-size: 20px;
+        z-index: 1000;
+        color: var(--text-color);
+        padding: 10px;
+        transition: transform 0.2s;
+      }
+
+      .reset-btn:hover {
+        transform: rotate(-45deg);
+      }
+
+      .info-btn {
+        position: absolute;
+        top: 115px;
+        right: 25px;
+        cursor: pointer;
+        font-size: 20px;
+        z-index: 1000;
+        color: var(--text-color);
+        padding: 10px;
+      }
+
+      .info-btn:hover {
+        transform: scale(1.1);
+        color: #3498db;
+      }
+
+      .translate-btn {
+        position: absolute;
+        top: 160px;
+        right: 25px;
+        cursor: pointer;
+        font-size: 20px;
+        z-index: 1000;
+        color: var(--text-color);
+        padding: 10px;
+        transition: all 0.3s;
+      }
+
+      .translate-btn.active {
+        color: #3498db;
+        transform: scale(1.1);
+      }
+
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      }
+
+      .modal-content {
+        background: var(--bank-bg);
+        padding: 40px;
+        border-radius: 15px;
+        position: relative;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 425px;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        cursor: pointer;
+        font-size: 24px;
+        transition: transform 0.3s ease;
+      }
+
+      .modal-close:hover {
+        transform: rotate(90deg) scale(1.2);
+        color: #e74c3c;
+      }
+
+      .element-bank {
+        display: flex;
+        margin-bottom: 40px;
+        padding: 20px;
+        border: 2px dashed var(--bank-border);
+        min-height: 100px;
+        height: 100px;
+        min-width: 95px;
+        max-width: 95%;
+        justify-content: flex-start;
+        align-items: center;
+        background: var(--bank-bg);
+        border-radius: 12px;
+        position: relative;
+        box-sizing: border-box;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .element-bank.positioned>.word-brick {
+        position: absolute;
+        transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1), top 0.5s;
+      }
+
+      .drop-zones {
+        display: flex;
+        gap: 15px;
+        width: 95%;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .zone {
+        width: 120px;
+        min-width: 120px;
+        flex: 0 0 auto;
+        min-height: 94px;
+        background-color: var(--zone-bg);
+        border: 2px dashed var(--zone-border);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        box-sizing: border-box;
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      .zone::before {
+        content: "+";
+        font-size: 20px;
+        color: var(--zone-border);
+        font-weight: 700;
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .zone.filled::before {
+        opacity: 0;
+      }
+
+      .zone.locked {
+        transition: none !important;
+      }
+
+      .zone.filled {
+        width: auto;
+        min-width: 120px;
+        background-color: var(--bank-bg);
+        border-style: solid;
+      }
+
+      .zone.drag-over {
+        background-color: rgba(74, 144, 217, 0.2) !important;
+        border-color: #4a90d9 !important;
+        box-shadow: 0 10px 20px var(--shadow);
+        z-index: 100;
+      }
+
+      .word-brick {
+        height: 60px;
+        box-sizing: border-box;
+        padding: 0 15px 0 10px;
+        background-color: var(--brick-bg);
+        border: 2px solid var(--brick-border);
+        color: var(--text-color);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 0px;
+        align-items: center;
+        box-shadow: 3px 3px 10px var(--shadow);
+        white-space: nowrap;
+        transition: gap 0.4s ease, border-color 0.2s ease, background-color 0.3s;
+      }
+
+      .word-brick.is-starter {
+        background-color: var(--konj-bg);
+        font-weight: bold;
+        border-width: 3px;
+      }
+
+      .drag-handle {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-right: 12px;
+        cursor: grab;
+        color: #999;
+        width: 20px;
+      }
+
+      .drag-handle::before {
+        content: "⋮⋮";
+        font-size: 20px;
+        line-height: 10px;
+      }
+
+      /* --- NYA ANIMATIONER FRÅN BISATSLABBET --- */
+      @keyframes ghostFade {
+        0% {
+          opacity: 0.5;
+          transform: scale(1);
+        }
+
+        100% {
+          opacity: 0.2;
+          transform: scale(0.95);
+        }
+      }
+
+      /* Gör att de klossar som är kvar i banken glider mjukt åt sidan */
+      .element-bank.positioned>.word-brick {
+        position: absolute;
+        transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1), top 0.5s, opacity 0.3s ease;
+      }
+
+      /* Skapar "hålet" i banken (spöket) - precis som i bisatslabbet */
+      .sortable-ghost {
+        opacity: 0 !important;
+      }
+
+      /* Stilen på klossen som svävar under musen */
+      .sortable-fallback {
+        pointer-events: none !important;
+        opacity: 0.9 !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+        transform: scale(1.05);
+        /* Ger lite extra liv vid drag */
+      }
+
+      /* Hindra interaktion när meningen är klar */
+      .is-locked {
+        pointer-events: auto !important;
+        cursor: default !important;
+        user-select: none;
+      }
+
+      /* Förvandla handtaget till en röd pin istället för att dölja det */
+      .is-locked .drag-handle {
+        cursor: default;
+        opacity: 1;
+        /* Rotation och en liten sänkning för att den ska se nedstucken ut */
+        transform: rotate(18deg) translateY(0px);
+        transition: all 0.7s ease;
+      }
+
+      /* Byt ut de två prickarna mot en Font Awesome pin-ikon */
+      .is-locked .drag-handle::before {
+        content: "\f08d";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        font-size: 18px;
+        /* En djup, naturlig röd färg */
+        color: #9b111e;
+        /* "Ruby Red" - mörkare och mer realistisk */
+        /* Dubbla skuggor: en för djup i själva pinnen, en för skuggan på klossen */
+        text-shadow:
+          0.5px 0.5px 0px rgba(255, 255, 255, 0.2),
+          /* Litet ljusblänk på kanten */
+          2px 3px 3px rgba(0, 0, 0, 0.5);
+        /* Den mjuka skuggan bakom */
+        display: inline-block;
+      }
+
+      body.dark-mode .is-locked .drag-handle::before {
+        color: #c0392b;
+        text-shadow: 2px 4px 5px rgba(0, 0, 0, 0.8);
+      }
+
+      .info-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        /* Något större för bättre balans */
+        height: 22px;
+        background-color: #3498db;
+        color: #fff;
+        border-radius: 50%;
+        font-size: 11px;
+        /* Mindre ikon i stor cirkel ser proffsigare ut */
+        margin-left: 8px;
+        cursor: help;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* Snärtig animation */
+        vertical-align: middle;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      }
+
+      .info-icon i {
+        pointer-events: none;
+        /* Hindrar ikonen från att störa hovringen */
+      }
+
+      .info-icon:hover {
+        background-color: #f39c12;
+        /* En något snyggare orange (Vivid Orange) */
+        color: #fff;
+        transform: scale(1.1) rotate(360deg);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+      }
+
+      /* Dark Mode förfining */
+      body.dark-mode .info-icon {
+        background-color: #2980b9;
+        color: #eee;
+      }
+
+      body.dark-mode .info-icon:hover {
+        background-color: #e67e22;
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(230, 126, 34, 0.5);
+      }
+
+      .feedback-container {
+        margin-top: 30px;
+        text-align: center;
+        min-height: 80px;
+      }
+
+      #feedbackText {
+        font-weight: bold;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+        transition: color 0.3s;
+        line-height: 1.4;
+      }
+
+      #feedbackText .correct {
+        color: #27ae60;
+        font-weight: bold;
+        font-size: 1.1rem;
+      }
+
+      body.dark-mode #feedbackText .correct {
+        color: #2ecc71;
+      }
+
+      #feedbackText.incorrect {
+        color: #e74c3c;
+      }
+
+      #global-tooltip {
+        position: fixed;
+        display: none;
+        background: rgba(40, 40, 40, 0.95);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        z-index: 999999;
+        pointer-events: none;
+        transform: translate(-50%, -250%);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      body.dark-mode #global-tooltip {
+        background: rgba(240, 240, 240, 0.98);
+        color: #111;
+      }
+
+      .sub-header {
+        margin-top: -15px;
+        margin-bottom: 60px;
+        font-size: 0.9rem;
+        color: var(--text-color);
+        opacity: 0.8;
+      }
+
+      .menu-btn {
+        margin-top: 20px;
+        padding: 8px 16px;
+        background-color: var(--brick-bg);
+        color: var(--text-color);
+        border: 2px solid var(--text-color);
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      @keyframes softSlideToBank {
+        0% {
+          opacity: 0.4;
+          transform: scale(0.9) translateY(-10px);
+        }
+
+        100% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .returning-to-bank {
+        pointer-events: none;
+        animation: softSlideToBank 0.4s ease-out forwards;
+      }
+
+      /* Animation för mjuk ingång */
+      @keyframes fadeInFeedback {
+        0% {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Applicera animationen på feedback-texten och knappen när de visas */
+      .animate-feedback {
+        animation: fadeInFeedback 0.5s ease-out forwards;
+      }
+    </style>
+</head>
+<body>
+
+  <div id="global-tooltip"></div>
+  <div class="theme-switch" id="themeToggle"><i class="fas fa-moon"></i></div>
+  <div class="reset-btn" id="resetBtn" title="Reset exercise"><i class="fas fa-undo"></i></div>
+  <div class="info-btn" id="infoBtn" title="Exercise information"><i class="fas fa-info-circle"></i></div>
+  <div class="translate-btn" id="translateBtn" title="Show English translation"><i class="fas fa-language"></i></div>
+
+  <div class="modal-overlay" id="infoModal">
+    <div class="modal-content">
+      <div class="modal-close" id="infoModalClose">&times;</div>
+      <h2>About this exercise</h2>
+      <p>Master the logic of Swedish word order in this interactive laboratory. Your task is to construct sentences by dragging word tiles into the correct zones, always starting with the CAPITALISED word.</p>
+      <p>The lab validates your structure instantly. If several arrangements are possible, you will see alternative solutions. If you get stuck, you can enable translations to view the vocabulary in English by hovering over the tiles.</p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="finishModal">
+    <div class="modal-content">
+      <div class="modal-close" id="finishModalClose">&times;</div>
+      <h2>Congratulations!</h2>
+      <p>You have solved all sentences!</p>
+    </div>
+  </div>
+
+  <h2>The CAPITALISED word in the 1st slot – the rest in correct order.</h2>
+  <div class="sub-header">Read the info to understand what this exercise is about</div>
+
+  <div id="bank" class="element-bank"></div>
+
+  <div class="drop-zones" id="dropZonesContainer"></div>
+
+  <div class="feedback-container">
+    <div id="feedbackText">Place all words in the zones</div>
+    <button id="nextBtn" class="menu-btn" style="display: none;">Next example →</button>
+  </div>
+
+<script>
+  const properNouns = ["Stockholm", "Malmö", "Lisa", "Sofia", "Erik", "Maria", "Anna", "Göteborg"];
+  /* ═══════════════════════════════════════════
+     DOM ELEMENTS & STATE
+  ═══════════════════════════════════════════ */
+  const bank = document.getElementById('bank');
+  const dropZonesContainer = document.getElementById('dropZonesContainer');
+  const feedbackText = document.getElementById('feedbackText');
+  const nextBtn = document.getElementById('nextBtn');
+  const globalTooltip = document.getElementById('global-tooltip');
+  const themeToggle = document.getElementById('themeToggle');
+  const translateBtn = document.getElementById('translateBtn');
+  const infoModal = document.getElementById('infoModal');
+  const finishModal = document.getElementById('finishModal');
+  let allZones = [];
+  let sortableInstances = [];
+  const sentences = [{
+      id: 0,
+      wd01: "HON",
+      en_wd01: "she",
+      wd02: "arbetar",
+      en_wd02: "works",
+      wd03: "nu",
+      en_wd03: "now",
+      wd04: "i",
+      en_wd04: "in",
+      wd05: "Malmö",
+      en_wd05: "Malmö",
+      solutions: [
+        ["hon", "arbetar", "nu", "i", "malmö"],
+        ["hon", "arbetar", "i", "malmö", "nu"]
+      ]
+    },
+    {
+      id: 1,
+      wd01: "NU",
+      en_wd01: "now",
+      wd02: "arbetar",
+      en_wd02: "works",
+      wd03: "hon",
+      en_wd03: "she",
+      wd04: "i",
+      en_wd04: "in",
+      wd05: "Malmö",
+      en_wd05: "Malmö",
+      solutions: [
+        ["nu", "arbetar", "hon", "i", "malmö"]
+      ]
+    },
+    {
+      id: 2,
+      wd01: "HAN",
+      en_wd01: "he",
+      wd02: "studerar",
+      en_wd02: "studies",
+      wd03: "på",
+      en_wd03: "at",
+      wd04: "universitetet",
+      en_wd04: "the university",
+      solutions: [
+        ["han", "studerar", "på", "universitetet"]
+      ]
+    },
+    {
+      id: 3,
+      wd01: "LISA",
+      en_wd01: "Lisa",
+      wd02: "läser",
+      en_wd02: "reads",
+      wd03: "en",
+      en_wd03: "a",
+      wd04: "bok",
+      en_wd04: "book",
+      wd05: "på",
+      en_wd05: "on",
+      wd06: "tåget",
+      en_wd06: "the train",
+      solutions: [
+        ["lisa", "läser", "en", "bok", "på", "tåget"]
+      ]
+    },
+    {
+      id: 4,
+      wd01: "PÅ",
+      en_wd01: "on",
+      wd02: "tåget",
+      en_wd02: "the train",
+      wd03: "läser",
+      en_wd03: "reads",
+      wd04: "Lisa",
+      en_wd04: "Lisa",
+      wd05: "en",
+      en_wd05: "a",
+      wd06: "bok",
+      en_wd06: "book",
+      solutions: [
+        ["på", "tåget", "läser", "lisa", "en", "bok"]
+      ]
+    },
+    {
+      id: 5,
+      wd01: "DE",
+      en_wd01: "they",
+      wd02: "äter",
+      en_wd02: "eat",
+      wd03: "middag",
+      en_wd03: "dinner",
+      wd04: "klockan",
+      en_wd04: "at [hh:mm] o'clock",
+      wd05: "sex",
+      en_wd05: "six",
+      solutions: [
+        ["de", "äter", "middag", "klockan", "sex"]
+      ]
+    },
+    {
+      id: 6,
+      wd01: "KLOCKAN",
+      en_wd01: "at [hh:tt] o'clock",
+      wd02: "sex",
+      en_wd02: "six",
+      wd03: "äter",
+      en_wd03: "eat",
+      wd04: "de",
+      en_wd04: "they",
+      wd05: "middag",
+      en_wd05: "dinner",
+      solutions: [
+        ["klockan", "sex", "äter", "de", "middag"]
+      ]
+    },
+    {
+      id: 7,
+      wd01: "SOFIA",
+      en_wd01: "Sofia",
+      wd02: "dricker",
+      en_wd02: "drinks",
+      wd03: "ibland",
+      en_wd03: "sometimes",
+      wd04: "en",
+      en_wd04: "a",
+      wd05: "dubbel",
+      en_wd05: "double",
+      wd06: "chailatte",
+      en_wd06: "chai latte",
+      solutions: [
+        ["sofia", "dricker", "ibland", "en", "dubbel", "chailatte"],
+        ["sofia", "dricker", "en", "dubbel", "chailatte", "ibland"]
+      ]
+    },
+    {
+      id: 8,
+      wd01: "IBLAND",
+      en_wd01: "sometimes",
+      wd02: "dricker",
+      en_wd02: "drinks",
+      wd03: "Sofia",
+      en_wd03: "Sofia",
+      wd04: "en",
+      en_wd04: "a",
+      wd05: "dubbel",
+      en_wd05: "double",
+      wd06: "chailatte",
+      en_wd06: "chai latte",
+      solutions: [
+        ["ibland", "dricker", "sofia", "en", "dubbel", "chailatte"]
+      ]
+    },
+    {
+      id: 9,
+      wd01: "HON",
+      en_wd01: "she",
+      wd02: "skriver",
+      en_wd02: "writes",
+      wd03: "ett",
+      en_wd03: "an",
+      wd04: "mejl",
+      en_wd04: "email",
+      wd05: "på",
+      en_wd05: "at",
+      wd06: "kontoret",
+      en_wd06: "the office",
+      solutions: [
+        ["hon", "skriver", "ett", "mejl", "på", "kontoret"]
+      ]
+    },
+    {
+      id: 10,
+      wd01: "PÅ",
+      en_wd01: "at",
+      wd02: "kontoret",
+      en_wd02: "the office",
+      wd03: "skriver",
+      en_wd03: "writes",
+      wd04: "hon",
+      en_wd04: "she",
+      wd05: "ett",
+      en_wd05: "an",
+      wd06: "mejl",
+      en_wd06: "email",
+      solutions: [
+        ["på", "kontoret", "skriver", "hon", "ett", "mejl"]
+      ]
+    },
+    {
+      id: 11,
+      wd01: "IBLAND",
+      en_wd01: "sometimes",
+      wd02: "tar",
+      en_wd02: "takes",
+      wd03: "han",
+      en_wd03: "he",
+      wd04: "bussen",
+      en_wd04: "the bus",
+      wd05: "till",
+      en_wd05: "to",
+      wd06: "jobbet",
+      en_wd06: "work [in Swedish in the definite]",
+      solutions: [
+        ["ibland", "tar", "han", "bussen", "till", "jobbet"]
+      ]
+    },
+    {
+      id: 12,
+      wd01: "HAN",
+      en_wd01: "he",
+      wd02: "tar",
+      en_wd02: "takes",
+      wd03: "bussen",
+      en_wd03: "the bus",
+      wd04: "till",
+      en_wd04: "to",
+      wd05: "jobbet",
+      en_wd05: "work [in Swedish in the definite]",
+      wd06: "ibland",
+      en_wd06: "sometimes",
+      solutions: [
+        ["han", "tar", "bussen", "till", "jobbet", "ibland"],
+        ["han", "tar", "ibland", "bussen", "till", "jobbet"]
+      ]
+    },
+    {
+      id: 13,
+      wd01: "BARNEN",
+      en_wd01: "the children",
+      wd02: "leker",
+      en_wd02: "play",
+      wd03: "i",
+      en_wd03: "in",
+      wd04: "trädgården",
+      en_wd04: "the garden",
+      solutions: [
+        ["barnen", "leker", "i", "trädgården"]
+      ]
+    },
+    {
+      id: 14,
+      wd01: "I",
+      en_wd01: "in",
+      wd02: "trädgården",
+      en_wd02: "the garden",
+      wd03: "leker",
+      en_wd03: "play",
+      wd04: "barnen",
+      en_wd04: "the children",
+      solutions: [
+        ["i", "trädgården", "leker", "barnen"]
+      ]
+    },
+    {
+      id: 15,
+      wd01: "VI",
+      en_wd01: "we",
+      wd02: "dricker",
+      en_wd02: "drink",
+      wd03: "kaffe",
+      en_wd03: "coffee",
+      wd04: "efter",
+      en_wd04: "after",
+      wd05: "lunch",
+      en_wd05: "lunch",
+      solutions: [
+        ["vi", "dricker", "kaffe", "efter", "lunch"]
+      ]
+    },
+    {
+      id: 16,
+      wd01: "EFTER",
+      en_wd01: "after",
+      wd02: "lunch",
+      en_wd02: "lunch",
+      wd03: "dricker",
+      en_wd03: "drink",
+      wd04: "vi",
+      en_wd04: "we",
+      wd05: "kaffe",
+      en_wd05: "coffee",
+      solutions: [
+        ["efter", "lunch", "dricker", "vi", "kaffe"]
+      ]
+    },
+    {
+      id: 17,
+      wd01: "HON",
+      en_wd01: "she",
+      wd02: "öppnar",
+      en_wd02: "opens",
+      wd03: "fönstret",
+      en_wd03: "the window",
+      wd04: "på",
+      en_wd04: "in",
+      wd05: "kvällen",
+      en_wd04: "the evening",
+      solutions: [
+        ["hon", "öppnar", "fönstret", "på", "kvällen"]
+      ]
+    },
+    {
+      id: 18,
+      wd01: "PÅ",
+      en_wd01: "in",
+      wd02: "kvällen",
+      en_wd02: "the evening",
+      wd03: "öppnar",
+      en_wd03: "opens",
+      wd04: "hon",
+      en_wd04: "she",
+      wd05: "fönstret",
+      en_wd05: "the window",
+      solutions: [
+        ["på", "kvällen", "öppnar", "hon", "fönstret"]
+      ]
+    },
+    {
+      id: 19,
+      wd01: "ERIK",
+      en_wd01: "Erik",
+      wd02: "spelar",
+      en_wd02: "plays",
+      wd03: "trummor",
+      en_wd03: "drums",
+      wd04: "i",
+      en_wd04: "in",
+      wd05: "bandet",
+      en_wd05: "the band",
+      solutions: [
+        ["erik", "spelar", "trummor", "i", "bandet"]
+      ]
+    },
+    {
+      id: 20,
+      wd01: "HAN",
+      en_wd01: "he",
+      wd02: "köper",
+      en_wd02: "buys",
+      wd03: "bröd",
+      en_wd03: "bread",
+      wd04: "på",
+      en_wd04: "at",
+      wd05: "bageriet",
+      en_wd05: "the bakery",
+      solutions: [
+        ["han", "köper", "bröd", "på", "bageriet"]
+      ]
+    },
+    {
+      id: 21,
+      wd01: "PÅ",
+      en_wd01: "at",
+      wd02: "bageriet",
+      en_wd02: "the bakery",
+      wd03: "köper",
+      en_wd03: "buys",
+      wd04: "han",
+      en_wd04: "he",
+      wd05: "bröd",
+      en_wd05: "bread",
+      solutions: [
+        ["på", "bageriet", "köper", "han", "bröd"]
+      ]
+    },
+    {
+      id: 22,
+      wd01: "DE",
+      en_wd01: "they",
+      wd02: "ser",
+      en_wd02: "watch",
+      wd03: "en",
+      en_wd03: "a",
+      wd04: "film",
+      en_wd04: "movie",
+      wd05: "tillsammans",
+      en_wd05: "together",
+      solutions: [
+        ["de", "ser", "en", "film", "tillsammans"]
+      ]
+    },
+    {
+      id: 23,
+      wd01: "MARIA",
+      en_wd01: "Maria",
+      wd02: "ringde",
+      en_wd02: "called",
+      wd03: "till",
+      en_wd03: "to [required in Swedish]",
+      wd04: "sin",
+      en_wd04: "her",
+      wd05: "vän",
+      en_wd05: "friend",
+      wd06: "igår",
+      en_wd06: "yesterday",
+      solutions: [
+        ["maria", "ringde", "till", "sin", "vän", "igår"],
+        ["maria", "ringde", "igår", "till", "sin", "vän"]
+      ]
+    },
+    {
+      id: 24,
+      wd01: "IGÅR",
+      en_wd01: "yesterday",
+      wd02: "ringde",
+      en_wd02: "called",
+      wd03: "Maria",
+      en_wd03: "Maria",
+      wd04: "till",
+      en_wd04: "to [required in Swedish]",
+      wd05: "sin",
+      en_wd05: "her",
+      wd06: "vän",
+      en_wd06: "friend",
+      solutions: [
+        ["igår", "ringde", "maria", "till", "sin", "vän"]
+      ]
+    },
+    {
+      id: 25,
+      wd01: "IDAG",
+      en_wd01: "today",
+      wd02: "stannar",
+      en_wd02: "stays",
+      wd03: "hon",
+      en_wd03: "she",
+      wd04: "hemma",
+      en_wd04: "at home",
+      solutions: [
+        ["idag", "stannar", "hon", "hemma"]
+      ]
+    },
+    {
+      id: 26,
+      wd01: "HON",
+      en_wd01: "she",
+      wd02: "stannar",
+      en_wd02: "stays",
+      wd03: "hemma",
+      en_wd03: "at home",
+      wd04: "idag",
+      en_wd04: "today",
+      solutions: [
+        ["hon", "stannar", "hemma", "idag"]
+      ]
+    },
+    {
+      id: 27,
+      wd01: "HAN",
+      en_wd01: "he",
+      wd02: "lagar",
+      en_wd02: "cooks",
+      wd03: "mat",
+      en_wd03: "food",
+      wd04: "i",
+      en_wd04: "in",
+      wd05: "köket",
+      en_wd05: "the kitchen",
+      solutions: [
+        ["han", "lagar", "mat", "i", "köket"]
+      ]
+    },
+    {
+      id: 28,
+      wd01: "KATTEN",
+      en_wd01: "the cat",
+      wd02: "sover",
+      en_wd02: "sleeps",
+      wd03: "på",
+      en_wd03: "on",
+      wd04: "stolen",
+      en_wd04: "the chair",
+      solutions: [
+        ["katten", "sover", "på", "stolen"]
+      ]
+    },
+    {
+      id: 29,
+      wd01: "VI",
+      en_wd01: "we",
+      wd02: "promenerar",
+      en_wd02: "walk",
+      wd03: "längs",
+      en_wd03: "along",
+      wd04: "stranden",
+      en_wd04: "the beach",
+      solutions: [
+        ["vi", "promenerar", "längs", "stranden"]
+      ]
+    },
+    {
+      id: 30,
+      wd01: "HON",
+      en_wd01: "she",
+      wd02: "börjar",
+      en_wd02: "starts",
+      wd03: "arbetet",
+      en_wd03: "work",
+      wd04: "tidigt",
+      en_wd04: "early",
+      solutions: [
+        ["hon", "börjar", "arbetet", "tidigt"]
+      ]
+    },
+    {
+      id: 31,
+      wd01: "HAN",
+      en_wd01: "he",
+      wd02: "avslutar",
+      en_wd02: "finishes",
+      wd03: "mötet",
+      en_wd03: "the meeting",
+      wd04: "klockan",
+      en_wd04: "at [hh:mm] o'clock",
+      wd05: "tre",
+      en_wd05: "three",
+      solutions: [
+        ["han", "avslutar", "mötet", "klockan", "tre"]
+      ]
+    },
+    {
+      id: 32,
+      wd01: "KLOCKAN",
+      en_wd01: "at [hh:mm] o'clock",
+      wd02: "tre",
+      en_wd02: "three",
+      wd03: "avslutar",
+      en_wd03: "finishes",
+      wd04: "han",
+      en_wd04: "he",
+      wd05: "mötet",
+      en_wd05: "the meeting",
+      solutions: [
+        ["klockan", "tre", "avslutar", "han", "mötet"]
+      ]
+    },
+    {
+      id: 33,
+      wd01: "IBLAND",
+      en_wd01: "sometimes",
+      wd02: "läser",
+      en_wd02: "read",
+      wd03: "de",
+      en_wd03: "they",
+      wd04: "tidningen",
+      en_wd04: "the newspaper",
+      wd05: "på",
+      en_wd05: "in",
+      wd06: "morgonen",
+      en_wd06: "the morning",
+      solutions: [
+        ["ibland", "läser", "de", "tidningen", "på", "morgonen"]
+      ]
+    },
+    {
+      id: 34,
+      wd01: "PÅ",
+      en_wd01: "in",
+      wd02: "morgonen",
+      en_wd02: "the morning",
+      wd03: "läser",
+      en_wd03: "read",
+      wd04: "de",
+      en_wd04: "they",
+      wd05: "ibland",
+      en_wd05: "sometimes",
+      wd06: "tidningen",
+      en_wd06: "the newspaper",
+      solutions: [
+        ["på", "morgonen", "läser", "de", "ibland", "tidningen"],
+        ["på", "morgonen", "läser", "de", "tidningen", "ibland"]
+      ]
+    },
+    {
+      id: 35,
+      wd01: "HON",
+      en_wd01: "she",
+      wd02: "studerar",
+      en_wd02: "studies",
+      wd03: "svenska",
+      en_wd03: "Swedish",
+      wd04: "nu",
+      en_wd04: "now",
+      solutions: [
+        ["hon", "studerar", "svenska", "nu"],
+        ["hon", "studerar", "nu", "svenska"]
+      ]
+    },
+    {
+      id: 36,
+      wd01: "NU",
+      en_wd01: "now",
+      wd02: "studerar",
+      en_wd02: "studies",
+      wd03: "hon",
+      en_wd03: "she",
+      wd04: "svenska",
+      en_wd04: "Swedish",
+      solutions: [
+        ["nu", "studerar", "hon", "svenska"]
+      ]
+    },
+    {
+      id: 37,
+      wd01: "HAN",
+      en_wd01: "he",
+      wd02: "väntar",
+      en_wd02: "is waiting",
+      wd03: "på",
+      en_wd03: "for",
+      wd04: "tåget",
+      en_wd04: "the train",
+      solutions: [
+        ["han", "väntar", "på", "tåget"]
+      ]
+    },
+    {
+      id: 38,
+      wd01: "DE",
+      en_wd01: "they",
+      wd02: "reser",
+      en_wd02: "travel",
+      wd03: "till",
+      en_wd03: "to",
+      wd04: "Göteborg",
+      en_wd04: "Gothenburg",
+      wd05: "imorgon",
+      en_wd05: "tomorrow",
+      solutions: [
+        ["de", "reser", "till", "göteborg", "imorgon"],
+        ["de", "reser", "imorgon", "till", "göteborg"]
+      ]
+    },
+    {
+      id: 39,
+      wd01: "IMORGON",
+      en_wd01: "tomorrow",
+      wd02: "reser",
+      en_wd02: "travel",
+      wd03: "de",
+      en_wd03: "they",
+      wd04: "till",
+      en_wd04: "to",
+      wd05: "Göteborg",
+      en_wd05: "Gothenburg",
+      solutions: [
+        ["imorgon", "reser", "de", "till", "göteborg"]
+      ]
+    },
+    {
+      id: 40,
+      wd01: "ANNA",
+      en_wd01: "Anna",
+      wd02: "dricker",
+      en_wd02: "drinks",
+      wd03: "te",
+      en_wd03: "tea",
+      wd04: "på",
+      en_wd04: "in",
+      wd05: "kvällen",
+      en_wd05: "the evening",
+      solutions: [
+        ["anna", "dricker", "te", "på", "kvällen"]
+      ]
+    },
+    {
+      id: 41,
+      wd01: "PÅ",
+      en_wd01: "in",
+      wd02: "kvällen",
+      en_wd02: "the evening",
+      wd03: "dricker",
+      en_wd03: "drinks",
+      wd04: "Anna",
+      en_wd04: "Anna",
+      wd05: "te",
+      en_wd05: "tea",
+      solutions: [
+        ["på", "kvällen", "dricker", "anna", "te"]
+      ]
+    },
+    {
+      id: 42,
+      wd01: "HAN",
+      en_wd01: "he",
+      wd02: "öppnar",
+      en_wd02: "opens",
+      wd03: "dörren",
+      en_wd03: "the door",
+      wd04: "försiktigt",
+      en_wd04: "carefully",
+      solutions: [
+        ["han", "öppnar", "dörren", "försiktigt"],
+        ["han", "öppnar", "försiktigt", "dörren"]
+      ]
+    },
+    {
+      id: 43,
+      wd01: "VI",
+      en_wd01: "we",
+      wd02: "var",
+      en_wd02: "were",
+      wd03: "på",
+      en_wd03: "at",
+      wd04: "museet",
+      en_wd04: "the museum",
+      wd05: "förra",
+      en_wd05: "last",
+      wd06: "veckan",
+      en_wd06: "week [in Swedish in the definite]",
+      solutions: [
+        ["vi", "var", "på", "museet", "förra", "veckan"],
+        ["vi", "var", "förra", "veckan", "på", "museet"]
+      ]
+    },
+    {
+      id: 44,
+      wd01: "FÖRRA",
+      en_wd01: "last",
+      wd02: "veckan",
+      en_wd02: "week [in Swedish in the definite]",
+      wd03: "var",
+      en_wd03: "were",
+      wd04: "vi",
+      en_wd04: "we",
+      wd05: "på",
+      en_wd05: "at",
+      wd06: "museet",
+      en_wd06: "the museum",
+      solutions: [
+        ["förra", "veckan", "var", "vi", "på", "museet"]
+      ]
+    },
+    {
+      id: 45,
+      wd01: "HON",
+      en_wd01: "she",
+      wd02: "tvättade",
+      en_wd02: "washed",
+      wd03: "bilen",
+      en_wd03: "the car",
+      wd04: "imorse",
+      en_wd04: "this morning",
+      solutions: [
+        ["hon", "tvättade", "bilen", "imorse"]
+      ]
+    },
+    {
+      id: 46,
+      wd01: "IBLAND",
+      en_wd01: "sometimes",
+      wd02: "arbetar",
+      en_wd02: "works",
+      wd03: "han",
+      en_wd03: "he",
+      wd04: "väldigt",
+      en_wd04: "very",
+      wd05: "länge",
+      en_wd05: "long",
+      solutions: [
+        ["ibland", "arbetar", "han", "väldigt", "länge"]
+      ]
+    },
+    {
+      id: 47,
+      wd01: "HAN",
+      en_wd01: "he",
+      wd02: "arbetar",
+      en_wd02: "works",
+      wd03: "väldigt",
+      en_wd03: "very",
+      wd04: "länge",
+      en_wd04: "long",
+      wd05: "ibland",
+      en_wd05: "sometimes",
+      solutions: [
+        ["han", "arbetar", "väldigt", "länge", "ibland"],
+        ["han", "arbetar", "ibland", "väldigt", "länge"]
+      ]
+    },
+    {
+      id: 48,
+      wd01: "DE",
+      en_wd01: "they",
+      wd02: "vilar",
+      en_wd02: "rest",
+      wd03: "efter",
+      en_wd03: "after",
+      wd04: "promenaden",
+      en_wd04: "the walk",
+      solutions: [
+        ["de", "vilar", "efter", "promenaden"]
+      ]
+    },
+    {
+      id: 49,
+      wd01: "EFTER",
+      en_wd01: "after",
+      wd02: "promenaden",
+      en_wd02: "the walk",
+      wd03: "vilar",
+      en_wd03: "rest",
+      wd04: "de",
+      en_wd04: "they",
+      solutions: [
+        ["efter", "promenaden", "vilar", "de"]
+      ]
+    }
+  ];
+  const excellentMessages = [
+    "Excellent! You have found a correct solution.",
+    "Marvellous! You have successfully identified the structure.",
+    "Splendid! You have mastered this sentence.",
+    "Brilliant! A valid solution has been discovered.",
+    "Top-notch! You have found a possible arrangement.",
+    "First-class! Correct word order identified.",
+    "Outstanding! You have a grasp of this structure.",
+    "Grand! You have successfully navigated the grammar.",
+    "Superb! You have phrased this correctly.",
+    "Spot on! Perfectly executed.",
+    "Jolly good! You've sorted that out perfectly.",
+    "First-rate! That is a textbook example of correct word order.",
+    "Absolutely smashing! You have a real knack for this.",
+    "Top-hole! You've navigated that structure like a pro.",
+    "Tremendous! A flawlessly constructed sentence.",
+    "Magnificent! You've grasped the nuances here beautifully.",
+    "Quite right! Every word is exactly where it ought to be.",
+    "Stellar work! You've mastered the logic of this phrasing.",
+    "Exquisite! That is a perfectly valid arrangement.",
+    "Ace! You've found a spot-on solution.",
+    "Bravo! You've handled that word order with great finesse.",
+    "Wicked! That's a clever bit of grammatical footwork.",
+    "Impeccable! Not a single word out of place.",
+    "Whizz-bang! You've cleared that example with ease.",
+    "Superior work! Your understanding of the syntax is evident.",
+    "Grand! You've puzzled that out most impressively.",
+    "Remarkable! You've hit the nail on the head.",
+    "Top marks! That is an exceptionally well-placed sequence.",
+    "Wonderful! You've successfully untangled that sentence.",
+    "Brilliant stuff! You've mastered the flow of the language.",
+    "Superb! You've demonstrated a fine grasp of the rules.",
+    "Hats off to you! A perfectly sound construction.",
+    "Splendidly done! You've found a legitimate path through.",
+    "Simply marvellous! You're making light work of these.",
+    "Top-tier! That word order is absolutely spot on.",
+    "Classy! You've arranged that with total precision.",
+    "Well played! You've cracked the code of this structure.",
+    "Spot on! You've captured the correct emphasis perfectly.",
+    "Sterling effort! A very fine solution indeed.",
+    "Full marks! You've navigated the grammar with aplomb.",
+    "Grammar levels: Expert.",
+    "Mic drop. That word order is flawless.",
+    "You're speaking their language now. Literally.",
+    "Clean, sharp, and 100% correct.",
+    "Syntactic perfection achieved.",
+    "You just schooled that sentence.",
+    "Standard-issue brilliance. Well done.",
+    "Logic: 1. Grammar: 0. You win.",
+    "That's how you build a Swedish sentence.",
+    "Precision is your middle name, apparently.",
+    "Smooth. Very smooth.",
+    "You're in the zone. Don't stop now.",
+    "That sentence just got an upgrade.",
+    "Textbook execution. No notes.",
+    "You make this look far too easy.",
+    "Grammatically aesthetic. Love to see it.",
+    "Point proven. You've got this.",
+    "Fluent vibes only.",
+    "Absolute masterclass in word placement.",
+    "Zero errors. Total control.",
+    "You've officially hacked the V2-rule.",
+    "That's a wrap. Perfect structure.",
+    "Consider that sentence conquered.",
+    "Built different. Built correctly.",
+    "Your Swedish is leveling up in real-time.",
+    "High-definition grammar. Crystal clear.",
+    "You're not just guessing; you're knowing.",
+    "The structure is strong with this one.",
+    "Flawless victory. Next?",
+    "That's the gold standard of word order."
+  ];
+  let remainingSentenceIds = sentences.map(s => s.id);
+  let currentSentence = null;
+  let showTranslation = false;
+  let draggingItem = null;
+  let pendingSwapZone = null;
+  /* ═══════════════════════════════════════════
+     THEME LOGIC
+  ═══════════════════════════════════════════ */
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    const icon = themeToggle.querySelector('i');
+    if (icon) icon.classList.replace('fa-moon', 'fa-sun');
+  }
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.body.classList.toggle('dark-mode');
+    const icon = themeToggle.querySelector('i');
+    if (isDark) {
+      if (icon) icon.classList.replace('fa-moon', 'fa-sun');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      if (icon) icon.classList.replace('fa-sun', 'fa-moon');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+  /* ═══════════════════════════════════════════
+     SORTABLE LOGIC (Uppdaterad med Fallback/Ghost)
+  ═══════════════════════════════════════════ */
+  const outerOptions = {
+    group: 'words',
+    handle: '.drag-handle',
+    animation: 150, // Matchar bisatslabbets snabbhet
+    forceFallback: true,
+    fallbackOnBody: true,
+    fallbackClass: "sortable-fallback",
+    ghostClass: "sortable-ghost",
+    invertSwap: true,
+    swapThreshold: 0.6,
+    onStart: (evt) => {
+      if (evt.item.classList.contains('is-locked')) return false; // Extra säkerhet
+      draggingItem = evt.item;
+      allZones.forEach(z => z.classList.add('locked'));
+      if (globalTooltip) globalTooltip.style.display = 'none';
+    },
+    onMove: (evt) => {
+      allZones.forEach(z => z.classList.remove('drag-over'));
+      const target = evt.to;
+      if (target && target.classList.contains('zone')) {
+        target.classList.add('drag-over');
+        if (target.children.length > 0 && target.children[0] !== draggingItem) {
+          pendingSwapZone = target;
+          return false;
+        }
+      }
+      pendingSwapZone = null;
+      return true;
+    },
+    onEnd: (evt) => {
+      allZones.forEach(z => z.classList.remove('drag-over', 'locked'));
+      if (pendingSwapZone) {
+        const occupant = pendingSwapZone.children[0];
+        if (occupant && occupant !== evt.item) {
+          occupant.classList.add('returning-to-bank');
+          bank.appendChild(occupant);
+          setTimeout(() => occupant.classList.remove('returning-to-bank'), 400);
+        }
+        pendingSwapZone.appendChild(evt.item);
+      }
+      updateZoneStates();
+      setTimeout(() => updateBankPositions(), 10);
+      evaluateSolution();
+      draggingItem = null;
+      pendingSwapZone = null;
+    }
+  };
+  new Sortable(bank, outerOptions);
+  /* ═══════════════════════════════════════════
+     FUNCTIONS
+  ═══════════════════════════════════════════ */
+  function updateBankPositions() {
+    bank.classList.remove('positioned');
+    const bricks = Array.from(bank.children).filter(el => el.classList.contains('word-brick'));
+    if (bricks.length === 0) {
+      bank.style.width = '95px';
+      return;
+    }
+    const gap = 20,
+      pad = 20;
+    const totalWidth = bricks.reduce((s, b) => s + b.offsetWidth, 0) + gap * (bricks.length - 1);
+    bank.style.width = (totalWidth + 2 * pad) + 'px';
+    bank.classList.add('positioned');
+    let x = pad;
+    bricks.forEach(b => {
+      b.style.left = x + 'px';
+      b.style.top = '20px';
+      x += b.offsetWidth + gap;
+    });
+  }
+
+  function loadRandomSentence() {
+    // Om listan är tom, börja om eller visa finishModal
+    if (remainingSentenceIds.length === 0) {
+      document.getElementById('finishModal').style.display = 'flex';
+      // Valfritt: nollställ listan här om du vill att det ska gå att köra om direkt
+      // remainingSentenceIds = sentences.map(s => s.id);
+      return;
+    }
+    // Slumpa ett index från de ID:n som finns kvar
+    const randomIndex = Math.floor(Math.random() * remainingSentenceIds.length);
+    // Plocka ut ID:t och TA BORT det från listan samtidigt (splice returnerar en array)
+    const selectedId = remainingSentenceIds.splice(randomIndex, 1)[0];
+    // Hitta rätt mening i original-arrayen
+    currentSentence = sentences.find(s => s.id === selectedId);
+    buildExercise();
+  }
+
+  function buildExercise() {
+    bank.innerHTML = '';
+    dropZonesContainer.innerHTML = '';
+    allZones = [];
+    // Lås upp banken och rensa gamla Sortable-instanser
+    const bankInst = Sortable.get(bank);
+    if (bankInst) bankInst.option("disabled", false);
+    sortableInstances = [];
+    // Nollställ feedback och knapp
+    feedbackText.classList.remove('animate-feedback');
+    nextBtn.classList.remove('animate-feedback');
+    feedbackText.innerText = "Place all words in the zones";
+    feedbackText.className = "";
+    nextBtn.style.display = "none";
+    const keys = Object.keys(currentSentence).filter(k => /^wd\d+$/.test(k));
+    // Skapa zoner och spara instanserna för att kunna låsa dem senare
+    keys.forEach((_, i) => {
+      const zone = document.createElement('div');
+      zone.className = 'zone';
+      zone.id = `pos${i + 1}`;
+      dropZonesContainer.appendChild(zone);
+      allZones.push(zone);
+      sortableInstances.push(new Sortable(zone, outerOptions));
+    });
+    // Skapa och slumpa klossar
+    keys.sort(() => Math.random() - 0.5).forEach(k => {
+      const word = currentSentence[k];
+      const b = document.createElement('div');
+      b.className = 'word-brick'; // Se till att .is-locked tas bort här automatiskt då vi skapar nya element
+      if (word === word.toUpperCase()) {
+        b.classList.add('is-starter');
+      }
+      b.dataset.word = word;
+      b.dataset.translation = currentSentence['en_' + k];
+      b.innerHTML = `<span class="drag-handle"></span><span class="label">${word}</span>`;
+      bank.appendChild(b);
+    });
+    setTimeout(updateBankPositions, 50);
+  }
+
+  function evaluateSolution() {
+    const activeZones = allZones;
+    if (activeZones.some(z => z.children.length === 0) || bank.children.length > 0) return;
+    const userWords = activeZones.map(z => z.children[0].dataset.word.toLowerCase());
+    const matchingSolutionIndex = currentSentence.solutions.findIndex(s =>
+      JSON.stringify(s) === JSON.stringify(userWords)
+    );
+    if (matchingSolutionIndex !== -1) {
+      // LÅS ALLA ELEMENT DIREKT
+      allZones.forEach(zone => {
+        const brick = zone.children[0];
+        if (brick) brick.classList.add('is-locked');
+      });
+      // Avaktivera Sortable på alla zoner och banken
+      sortableInstances.forEach(inst => inst.option("disabled", true));
+      const bankInst = Sortable.get(bank);
+      if (bankInst) bankInst.option("disabled", true);
+      // Generera Feedback
+      const randomEx = excellentMessages[Math.floor(Math.random() * excellentMessages.length)];
+      let feedbackHTML = `<div class="correct">${randomEx}</div>`;
+      const alternativeSolutions = currentSentence.solutions.filter((_, index) => index !== matchingSolutionIndex);
+      if (alternativeSolutions.length > 0) {
+        feedbackHTML += `<div style="margin-top: 15px; font-weight: normal; font-size: 0.95rem; border-top: 1px dashed var(--bank-border); padding-top: 10px;">`;
+        feedbackHTML += `The sentence could also have the word order:`;
+        alternativeSolutions.forEach(sol => {
+          const formattedSol = sol.map((word, i) => {
+            const specialWord = properNouns.find(n => n.toLowerCase() === word.toLowerCase());
+            if (specialWord) return specialWord;
+            if (i === 0) return word.charAt(0).toUpperCase() + word.slice(1);
+            return word;
+          }).join(' ');
+          const explanation = "The difference is a matter of emphasis – the earlier the placement, the greater the focus.";
+          feedbackHTML += `<br><strong>${formattedSol}.</strong> <span class="info-icon" data-explanation="${explanation}"><i class="fas fa-info"></i></span>`;
+        });
+        feedbackHTML += `</div>`;
+      }
+      // Visa feedback med mjuk animation
+      feedbackText.innerHTML = feedbackHTML;
+      feedbackText.className = "";
+      feedbackText.classList.remove('animate-feedback');
+      nextBtn.classList.remove('animate-feedback');
+      void feedbackText.offsetWidth; // Trigger reflow
+      feedbackText.classList.add('animate-feedback');
+      nextBtn.style.display = "inline-block";
+      nextBtn.classList.add('animate-feedback');
+    } else {
+      feedbackText.innerHTML = "Not quite – try a different order!";
+      feedbackText.className = "incorrect";
+      nextBtn.style.display = "none";
+    }
+  }
+
+  function updateZoneStates() {
+    allZones.forEach(z => z.classList.toggle('filled', z.children.length > 0));
+  }
+  /* ═══════════════════════════════════════════
+      INTERACTION EVENTS
+  ═══════════════════════════════════════════ */
+  document.addEventListener('mouseover', e => {
+    if (draggingItem) return;
+    // Dölj tooltip som standard om vi lämnar relevanta ytor
+    if (!e.target.closest('.word-brick') && !e.target.closest('.info-icon')) {
+      globalTooltip.style.display = 'none';
+    }
+    // För ord-klossar (översättning)
+    const b = e.target.closest('.word-brick');
+    if (b && showTranslation) {
+      globalTooltip.innerText = b.dataset.translation;
+      globalTooltip.style.display = 'block';
+      return;
+    }
+    // För info-ikoner (grammatikförklaring)
+    const info = e.target.closest('.info-icon');
+    if (info) {
+      globalTooltip.innerText = info.dataset.explanation;
+      globalTooltip.style.display = 'block';
+    }
+  });
+  document.addEventListener('mousemove', e => {
+    if (globalTooltip.style.display === 'block') {
+      globalTooltip.style.left = e.clientX + 'px';
+      globalTooltip.style.top = e.clientY + 'px';
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    // Stäng tooltipen om vi lämnar en kloss eller ikonen
+    if (e.target.closest('.word-brick') || e.target.closest('.info-icon')) {
+      globalTooltip.style.display = 'none';
+    }
+  });
+  translateBtn.onclick = () => {
+    showTranslation = !showTranslation;
+    translateBtn.classList.toggle('active');
+  };
+  document.getElementById('infoBtn').onclick = () => infoModal.style.display = 'flex';
+  document.getElementById('infoModalClose').onclick = () => infoModal.style.display = 'none';
+  document.getElementById('resetBtn').onclick = () => buildExercise();
+  nextBtn.onclick = () => loadRandomSentence();
+  document.getElementById('finishModalClose').onclick = () => finishModal.style.display = 'none';
+  // Stäng modaler vid klick utanför (på overlayen)
+  window.onclick = (event) => {
+    if (event.target === infoModal) {
+      infoModal.style.display = 'none';
+    }
+    if (event.target === finishModal) {
+      finishModal.style.display = 'none';
+    }
+  };
+  loadRandomSentence();
+</script>
+</body>
+</html>
