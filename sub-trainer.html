@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>The Subordinate Clause Laboratory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+            --bank-bg: #fff;
+            --bank-border: #999;
+            --zone-bg: #e8e8e8;
+            --zone-border: #bbb;
+            --brick-bg: #fff;
+            --brick-border: #333;
+            --konj-bg: #fffbe6;
+            --activated-brick: #f0f0f0;
+            --shadow: rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --bank-bg: #2d2d2d;
+            --bank-border: #555;
+            --zone-bg: #333333;
+            --zone-border: #444;
+            --brick-bg: #404040;
+            --brick-border: #888;
+            --konj-bg: #3e3b2a;
+            --activated-brick: #4a4a4a;
+            --shadow: rgba(0,0,0,0.4);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            margin: 0;
+            user-select: none; 
+            -webkit-user-select: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .theme-switch {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1000;
+            color: var(--text-color);
+            padding: 10px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: var(--bank-bg);
+            padding: 40px;
+            border-radius: 15px;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 425px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: transform 0.3s ease;
+        }
+        .modal-close:hover { transform: rotate(90deg) scale(1.2); color: #e74c3c; }
+
+        /* Resten av din original-CSS */
+        .element-bank {
+            display: flex; 
+            margin-bottom: 40px; 
+            padding: 20px;
+            border: 2px dashed var(--bank-border); 
+            min-height: 100px;
+            height: 100px;
+            min-width: 95px;
+            max-width: 95%;
+            justify-content: flex-start; 
+            align-items: center; 
+            background: var(--bank-bg); 
+            border-radius: 12px;
+            position: relative;
+            box-sizing: border-box;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s;
+        }
+
+        .element-bank > .sentence-frame,
+        .element-bank > .konjunktion {
+            transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+
+        .element-bank.positioned > .sentence-frame,
+        .element-bank.positioned > .konjunktion {
+            position: absolute;
+        }
+
+        .element-bank > .sortable-ghost { opacity: 0 !important; }
+
+        .drop-zones { display: flex; gap: 15px; width: 95%; justify-content: center; align-items: center; }
+
+		.zone {
+			width: 120px; /* Ändrat från 100px */
+			min-width: 120px; /* Ändrat från 94px */
+			flex: 0 0 auto;
+			min-height: 94px;
+			background-color: var(--zone-bg);
+			border: 2px dashed var(--zone-border);
+			border-radius: 10px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 10px;
+			box-sizing: border-box;
+			position: relative;
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+		}
+
+        .zone::before { 
+            content: "+"; 
+            font-size: 20px; 
+            color: var(--zone-border); 
+            font-weight: 700; 
+            position: absolute; 
+            pointer-events: none;
+        }
+
+        .zone.filled::before { opacity: 0; }
+        .zone.locked { transition: none !important; }
+
+        .zone.filled {
+            width: auto;
+            min-width: fit-content;
+            background-color: var(--bank-bg);
+            border-color: var(--zone-border);
+            border-style: solid;
+        }
+
+        .zone.drag-over {
+            background-color: rgba(74, 144, 217, 0.2) !important;
+            border-color: #4a90d9 !important;
+            box-shadow: 0 10px 20px var(--shadow);
+            z-index: 100;
+        }
+
+        .drag-handle {
+            display: inline-flex; flex-direction: column; justify-content: center;
+            margin-right: 12px; cursor: grab; color: #999; width: 20px;
+        }
+        .drag-handle::before { content: "⋮⋮"; font-size: 20px; line-height: 10px; }
+
+        .sentence-frame, .konjunktion {
+            height: 60px;
+            box-sizing: border-box;
+            padding: 0 15px 0 10px;
+            background-color: var(--brick-bg); 
+            border: 2px solid var(--brick-border);
+            color: var(--text-color);
+            border-radius: 8px; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 0px;
+            align-items: center; box-shadow: 3px 3px 10px var(--shadow); white-space: nowrap;
+            transition: gap 0.4s ease, border-color 0.2s ease, background-color 0.3s;
+        }
+
+        .konjunktion { background-color: var(--konj-bg); font-weight: bold; }
+        .word-brick { padding: 8px 2px; font-size: 16px; pointer-events: none; color: var(--text-color); }
+
+        .sentence-frame.activated { gap: 12px; padding: 0 20px 0 12px; }
+
+        .sentence-frame.activated .word-brick { 
+            padding: 6px 12px; 
+            background-color: var(--activated-brick); 
+            border-radius: 4px; 
+            border: 1px solid var(--zone-border); 
+            pointer-events: auto; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            height: 34px;
+            box-sizing: border-box;
+        }
+
+        .sortable-ghost { opacity: 0 !important; }
+        .sortable-placeholder { display: none !important; }
+        
+        .sortable-fallback {
+            pointer-events: none !important;
+            opacity: 0.9 !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+        }
+		
+        .reset-btn {
+            position: absolute;
+            top: 70px; 
+            right: 25px;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 1000;
+            color: var(--text-color);
+            padding: 10px;
+            transition: transform 0.2s;
+        }
+
+        .reset-btn:hover { transform: rotate(-45deg); }
+        .reset-btn:active { transform: rotate(-180deg); }
+
+        .feedback-container {
+            margin-top: 30px;
+            text-align: center;
+            min-height: 80px;
+        }
+
+        .menu-btn {
+            padding: 8px 16px; 
+            background-color: var(--brick-bg); 
+            color: var(--text-color);
+            border: 2px solid var(--text-color);
+            border-radius: 20px; cursor: pointer; font-family: 'Montserrat', sans-serif;
+            font-weight: bold; transition: all 0.2s;
+        }
+
+		#feedbackText {
+			font-weight: bold;
+			margin-bottom: 15px;
+			font-size: 1.1rem;
+			transition: color 0.3s;
+			line-height: 1.4; /* Ger lite luft mellan raderna vid <br> */
+		}
+
+        #feedbackText.correct { color: #27ae60; }
+        #feedbackText.incorrect { color: #e74c3c; }
+
+        body.dark-mode #feedbackText.correct { color: #2ecc71; }
+        body.dark-mode #feedbackText.incorrect { color: #ff6b6b; }
+		
+		.sub-header {
+			margin-top: -15px;
+			margin-bottom: 60px;
+			font-size: 0.9rem;
+			color: var(--text-color);
+			opacity: 0.8;
+		}
+		
+		.info-btn {
+			position: absolute;
+			top: 115px; /* Placerad under Reset-knappen */
+			right: 25px;
+			cursor: pointer;
+			font-size: 20px;
+			z-index: 1000;
+			color: var(--text-color);
+			padding: 10px;
+			transition: transform 0.2s, color 0.2s;
+		}
+		
+		.info-btn:hover { transform: scale(1.1); color: #3498db; }
+		
+		.translate-btn {
+			position: absolute;
+			top: 160px; /* Under info-knappen */
+			right: 25px;
+			cursor: pointer;
+			font-size: 20px;
+			z-index: 1000;
+			color: var(--text-color);
+			padding: 10px;
+			transition: all 0.3s;
+		}
+		
+		.translate-btn.active { color: #3498db; transform: scale(1.1); }
+		
+		/* Tooltip container */
+		[data-tooltip] { position: relative; }
+		
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -5px) scale(1);
+}
+
+#global-tooltip {
+    position: fixed;
+    display: none;
+    background: rgba(40, 40, 40, 0.95);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    z-index: 999999;
+    pointer-events: none; /* Musen ignorerar denna helt */
+    transform: translate(-50%, -250%); /* Hamnar ovanför muspekaren */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+body.dark-mode #global-tooltip {
+    background: rgba(240, 240, 240, 0.98);
+    color: #111;
+}
+
+/* Förhindra att drag-and-drop väljer text inuti blocken */
+.sentence-frame, .konjunktion {
+    cursor: grab;
+}
+
+.sortable-drag::after, 
+.sortable-ghost::after {
+    display: none !important;
+    opacity: 0 !important;
+}
+			
+		/* Styling för texten i modalen */
+		.modal-content p {
+			text-align: left;
+			line-height: 1.6;
+			margin-top: 20px;
+		}
+		
+		.modal-content h2 {
+			margin-bottom: 10px;
+			border-bottom: 2px solid var(--zone-bg);
+			padding-bottom: 10px;
+		}		
+
+        @keyframes softSlideToBank {
+            0% { opacity: 0.4; transform: scale(0.9) translateY(-10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .returning-to-bank { pointer-events: none; animation: softSlideToBank 0.4s ease-out forwards; }
+    </style>
+</head>
+<body>
+
+<div id="global-tooltip"></div>
+
+<div class="theme-switch" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <div class="reset-btn" id="resetBtn" title="Reset exercise">
+        <i class="fas fa-undo"></i>
+    </div>
+
+    <div class="info-btn" id="infoBtn" title="Exercise information">
+        <i class="fas fa-info-circle"></i>
+    </div>
+	
+	<div class="translate-btn" id="translateBtn" title="Show English translation">
+		<i class="fas fa-language"></i>
+	</div>
+
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-content">
+            <div class="modal-close" id="infoModalClose">&times;</div>
+            <h2>About this exercise</h2>
+            <p>
+                In this laboratory – which features 30 unique examples – you will be presented with two clauses and a conjunction (linking word). 
+                Your task is to combine them so that one clause functions as a sub-clause to the other. 
+                <br><br>
+                <strong>Remember:</strong> the linking word always introduces and initiates the sub-clause. 
+                Each sentence has two possible solutions. Fairly straightforward, isn’t it? 
+                <br><br>
+				If you do not understand a sentence, enable the translation and hover over the sentence.
+				<br><br>
+                Good luck!
+            </p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="finishModal">
+        <div class="modal-content">
+            <div class="modal-close" id="modalClose">&times;</div>
+            <h2>Congratulations!</h2>
+            <p>You have solved all sentences!</p>
+        </div>
+    </div>
+
+    <h2>What is what – and how should it be arranged?</h2>
+	<div class="sub-header">Read the info to understand what this exercise is about</div>
+    <div id="bank" class="element-bank"></div>
+    <div class="drop-zones">
+        <div id="pos1" class="zone"></div>
+        <div id="pos2" class="zone"></div>
+        <div id="pos3" class="zone"></div>
+    </div>
+	
+    <div class="feedback-container">
+        <div id="feedbackText">Place all elements in the zones</div>
+        <button id="nextBtn" class="menu-btn" style="display: none;">Next example</button>
+    </div>
+
+    <script>
+        const properNouns = ["Tolkien", "Fantasy", "Rebecca"];
+        let currentHoverZone = null;
+        
+const sentences = [
+    { id: 0, link: "om", bs: "Du behöver hjälp.", hs: "Jag stannar hemma.", en_link: "if", en_bs: "You need help.", en_hs: "I am staying at home." },
+    { id: 1, link: "om", bs: "Priset känns rimligt.", hs: "Vi köper bilen.", en_link: "if", en_bs: "The price feels reasonable.", en_hs: "We are buying the car." },
+    { id: 2, link: "om", bs: "Jag blir hungrig.", hs: "Jag äter soppan.", en_link: "if", en_bs: "I get hungry.", en_hs: "I am eating the soup." },
+    { id: 3, link: "när", bs: "Maten är klar.", hs: "Vi äter middag.", en_link: "when", en_bs: "The food is ready.", en_hs: "We are having dinner." },
+    { id: 4, link: "när", bs: "Festen är över.", hs: "De går hem.", en_link: "when", en_bs: "The party is over.", en_hs: "They are going home." },
+    { id: 5, link: "när", bs: "Jag är trött.", hs: "Jag vilar mig.", en_link: "when", en_bs: "I am tired.", en_hs: "I am having a rest." },
+    { id: 6, link: "ifall", bs: "Vädret blir kallt.", hs: "Jag tar jacka.", en_link: "in case", en_bs: "The weather gets cold.", en_hs: "I am taking a jacket." },
+    { id: 7, link: "ifall", bs: "Du behöver hjälp.", hs: "Ring mig direkt.", en_link: "in case", en_bs: "You need help.", en_hs: "Call me immediately." },
+    { id: 8, link: "ifall", bs: "Det börjar regna.", hs: "Vi stannar inne.", en_link: "in case", en_bs: "It starts to rain.", en_hs: "We are staying indoors." },
+    { id: 9, link: "eftersom", bs: "Jag har huvudvärk.", hs: "Jag går hem.", en_link: "because", en_bs: "I have a headache.", en_hs: "I am going home." },
+    { id: 10, link: "eftersom", bs: "De är trötta.", hs: "Barnen sover gott.", en_link: "because", en_bs: "They are tired.", en_hs: "The children are sleeping soundly." },
+    { id: 11, link: "eftersom", bs: "Han ska flytta.", hs: "Han säljer lägenheten.", en_link: "because", en_bs: "He is going to move.", en_hs: "He is selling the flat." },
+    { id: 12, link: "fastän", bs: "Regnet faller tungt.", hs: "Vi går ut.", en_link: "although", en_bs: "The rain is falling heavily.", en_hs: "We are going out." },
+    { id: 13, link: "fastän", bs: "Jag är sjuk.", hs: "Jag jobbar idag.", en_link: "although", en_bs: "I am ill.", en_hs: "I am working today." },
+    { id: 14, link: "fastän", bs: "Hon är deprimerad.", hs: "Hon skrattar mycket.", en_link: "although", en_bs: "She is depressed.", en_hs: "She laughs a lot." },
+    { id: 15, link: "innan", bs: "Vi åker iväg.", hs: "Vi låser dörren.", en_link: "before", en_bs: "We go away.", en_hs: "We are locking the door." },
+    { id: 16, link: "innan", bs: "Hon börjar dansa.", hs: "Hon knyter skorna.", en_link: "before", en_bs: "She starts dancing.", en_hs: "She is tying her shoes." },
+    { id: 17, link: "innan", bs: "Vi kör hem.", hs: "Vi byter däcken.", en_link: "before", en_bs: "We drive home.", en_hs: "We are changing the tyres." },
+    { id: 18, link: "trots att", bs: "Hon behöver vila.", hs: "Hon fortsätter gå.", en_link: "despite the fact that", en_bs: "She needs to rest.", en_hs: "She continues walking." },
+    { id: 19, link: "trots att", bs: "Historien är gammal.", hs: "Jag skrattar mycket.", en_link: "despite the fact that", en_bs: "The story is old.", en_hs: "I laugh a lot." },
+    { id: 20, link: "trots att", bs: "Det blåser mycket.", hs: "Jag fryser inte.", en_link: "despite the fact that", en_bs: "It is very windy.", en_hs: "I am not freezing." },
+    { id: 21, link: "så länge", bs: "Jag har feber.", hs: "Jag stannar hemka.", en_link: "as long as", en_bs: "I have a fever.", en_hs: "I am staying at home." },
+    { id: 22, link: "så länge", bs: "Boken är bra.", hs: "Hon läser vidare.", en_link: "as long as", en_bs: "The book is good.", en_hs: "She continues reading." },
+    { id: 23, link: "så länge", bs: "Livet är roligt.", hs: "Jag vill leva.", en_link: "as long as", en_bs: "Life is fun.", en_hs: "I want to live." },
+    { id: 24, link: "även om", bs: "Jag borde banta.", hs: "Jag äter godis.", en_link: "even if", en_bs: "I should go on a diet.", en_hs: "I am eating sweets." },
+    { id: 25, link: "även om", bs: "Barnen skriker högt.", hs: "Han sover gott.", en_link: "even if", en_bs: "The children are screaming loudly.", en_hs: "He is sleeping soundly." },
+    { id: 26, link: "även om", bs: "Vägen är dålig.", hs: "Vi fortsätter köra.", en_link: "even if", en_bs: "The road is bad.", en_hs: "We continue driving." },
+    { id: 27, link: "förutsatt att", bs: "Bilen fungerar idag.", hs: "Jag kör hem.", en_link: "provided that", en_bs: "The car works today.", en_hs: "I am driving home." },
+    { id: 28, link: "förutsatt att", bs: "Hon har pengar.", hs: "Hon köper huset.", en_link: "provided that", en_bs: "She has money.", en_hs: "She is buying the house." },
+    { id: 29, link: "förutsatt att", bs: "Vi får hjälp.", hs: "Det blir bättre.", en_link: "provided that", en_bs: "We get help.", en_hs: "It will be better." }
+];
+
+const alternativeMessages = [
+    "Brilliant! But there is another way<br>to write this – can you find it?",
+    "Spot on! However, another solution<br>exists – do you know it?",
+    "Marvellous! But wait, there is a<br>second correct way – can you see it?",
+    "Splendid! Could you try to solve it<br>using the alternative structure?",
+    "Excellent! But did you know there is<br>another valid word order?",
+    "Top-notch! Now, can you figure out<br>the other possible arrangement?",
+    "Grand! But there is one more way<br>to phrase this – give it a go!",
+    "Superb! But there is a different way<br>to align these – can you find it?",
+    "Lovely! But there is another correct version<br>– do you know which one?",
+    "Perfect! But can you find the second way<br>to construct this sentence?"
+];
+
+const excellentMessages = [
+    "Excellent! You have found<br>both possible solutions.",
+    "Marvellous! You have successfully<br>identified both structures.",
+    "Splendid! You have mastered<br>both ways to construct this sentence.",
+    "Brilliant! Both valid solutions<br>have been discovered.",
+    "Top-notch! You have found every possible<br>arrangement for these clauses.",
+    "First-class! You have correctly identified<br>both the straight and inverted structures.",
+    "Outstanding! You have a complete grasp<br>of both solutions here.",
+    "Grand! You have successfully navigated<br>both grammatical options.",
+    "Superb! You have found both ways<br>to phrase this correctly.",
+    "Spot on! Both solutions have<br>been perfectly executed."
+];
+
+const nonsenseMessages = [
+    "This is bordering on nonsense!<br>Read the sentences and try again.",
+    "This structure makes very little sense!<br>Read it aloud and have another go.",
+    "This is almost gibberish!<br>Check the flow of the sentences and try again.",
+    "This doesn't make any sense at all!<br>Read the sequence carefully and retry.",
+    "This is practically nonsense!<br>Look at the sentence order and try once more.",
+    "This is nonsense, I'm afraid!<br>Re-read the parts and rearrange them.",
+    "This construction is quite nonsensical!<br>Have another look at the sentences.",
+    "This is verging on nonsense!<br>Read it through and try a different order.",
+    "This simply doesn't make sense!<br>Give the sentences a read and try again.",
+    "This is absolute nonsense!<br>Read the components and try once more."
+];
+
+        // Slump-logik för unika meningar
+        let remainingSentenceIds = sentences.map(s => s.id);
+        let currentSentence = null;
+		let showTranslation = false;
+		const translateBtn = document.getElementById('translateBtn');
+
+        const bank = document.getElementById('bank');
+        const zones = document.querySelectorAll('.zone');
+        const themeToggle = document.getElementById('themeToggle');
+        const modal = document.getElementById('finishModal');
+        let draggingItem = null;
+        let pendingSwapZone = null;
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggle.querySelector('i').classList.replace('fa-moon', 'fa-sun');
+        }
+
+		// Modal-logik
+		const infoModal = document.getElementById('infoModal');
+		const infoBtn = document.getElementById('infoBtn');
+		const infoModalClose = document.getElementById('infoModalClose');
+		
+		infoBtn.onclick = () => infoModal.style.display = 'flex';
+		infoModalClose.onclick = () => infoModal.style.display = 'none';
+		
+window.onclick = (event) => {
+    if (event.target === infoModal) {
+        infoModal.style.display = 'none';
+    } else if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+};		
+		
+		translateBtn.onclick = () => {
+			showTranslation = !showTranslation;
+			translateBtn.classList.toggle('active');
+			updateTooltips();
+		};
+
+const globalTooltip = document.getElementById('global-tooltip');
+		
+function updateTooltips() {
+    // Vi behöver inte sätta attribut längre, men vi rensar om översättning stängs av
+    if (!showTranslation) {
+        globalTooltip.style.display = 'none';
+    }
+}
+
+// Hantera visning av tooltip globalt
+document.addEventListener('mouseover', (e) => {
+    if (!showTranslation || draggingItem) return;
+
+    const target = e.target.closest('.sentence-frame, .konjunktion');
+    if (target) {
+        const role = target.getAttribute('data-role');
+        let translation = "";
+        if (role === 'hs') translation = currentSentence.en_hs;
+        else if (role === 'bs') translation = currentSentence.en_bs;
+        else if (role === 'link') translation = currentSentence.en_link;
+
+        if (translation) {
+            globalTooltip.innerText = translation;
+            globalTooltip.style.display = 'block';
+        }
+    }
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (globalTooltip.style.display === 'block') {
+        globalTooltip.style.left = e.clientX + 'px';
+        globalTooltip.style.top = e.clientY + 'px';
+    }
+});
+
+document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('.sentence-frame, .konjunktion')) {
+        globalTooltip.style.display = 'none';
+    }
+});
+		
+		function loadRandomSentence() {
+			hasFoundStraight = false;
+			hasFoundInverted = false;
+			document.getElementById('nextBtn').style.display = "none";
+			document.getElementById('feedbackText').innerHTML = "Place all elements in the zones";
+			document.getElementById('feedbackText').className = "";
+		
+			if (remainingSentenceIds.length === 0) {
+				modal.style.display = 'flex';
+				return;
+			}
+		
+			const randomIndex = Math.floor(Math.random() * remainingSentenceIds.length);
+			const selectedId = remainingSentenceIds.splice(randomIndex, 1)[0];
+			currentSentence = sentences.find(s => s.id === selectedId);
+		
+			bank.innerHTML = '';
+			zones.forEach(z => {
+				z.innerHTML = '';
+				z.classList.remove('filled', 'drag-over');
+			});
+		
+			// 1. Skapa och lägg till Link
+			const l = document.createElement('div');
+			l.className = 'konjunktion';
+			l.setAttribute('data-role', 'link'); 
+			l.setAttribute('data-original', currentSentence.link);
+			l.innerHTML = `<span class="drag-handle"></span><span class="text-node"> ${currentSentence.link}</span>`;
+			bank.appendChild(l);
+		
+			// 2. Slumpa HS och BS
+			let clauseRoles = ['bs', 'hs'];
+			clauseRoles.sort(() => Math.random() - 0.5); 
+		
+			// 3. Lägg till dem i banken
+			clauseRoles.forEach(role => {
+				const f = document.createElement('div');
+				f.className = 'sentence-frame';
+				f.setAttribute('data-role', role);
+				f.setAttribute('data-content', currentSentence[role]);
+				f.innerHTML = `<span class="drag-handle"></span>`;
+				bank.appendChild(f);
+				activateInternalSortable(f);
+			});
+		
+			formatGrammar();
+			updateZoneStates();
+		
+			// Uppdatera tooltips och positioner efter en kort delay
+			setTimeout(() => {
+				updateBankPositions();
+				if (typeof updateTooltips === "function") updateTooltips();
+			}, 50);
+		}
+
+        // Modal stängning
+        document.getElementById('modalClose').onclick = () => modal.style.display = 'none';
+
+        function updateZoneStates() {
+            zones.forEach(zone => {
+                zone.classList.toggle('filled', zone.children.length > 0);
+            });
+        }
+
+        function updateBankPositions() {
+            bank.classList.remove('positioned');
+            const elements = Array.from(bank.children).filter(el => 
+                el.classList.contains('sentence-frame') || el.classList.contains('konjunktion')
+            );
+            if (elements.length === 0) {
+                bank.style.width = '95px';
+                return;
+            }
+            const gap = 20;
+            const bankPadding = 20;
+            const widths = elements.map(el => el.offsetWidth);
+            const totalWidth = widths.reduce((sum, w) => sum + w, 0) + gap * (elements.length - 1);
+            bank.style.width = (totalWidth + (2 * bankPadding)) + 'px';
+            bank.classList.add('positioned');
+            let startX = bankPadding;
+            elements.forEach((el, i) => {
+                el.style.left = startX + 'px';
+                el.style.top = '20px';
+                startX += widths[i] + gap;
+            });
+        }
+		
+		let hasFoundStraight = false;
+		let hasFoundInverted = false;
+		
+		function evaluateSolution() {
+			const feedbackText = document.getElementById('feedbackText');
+			const nextBtn = document.getElementById('nextBtn');
+			
+			const isAllFilled = Array.from(zones).every(z => z.children.length > 0);
+			if (!isAllFilled) {
+				feedbackText.innerText = "Please place all elements in the zones";
+				feedbackText.className = "";
+				return;
+			}
+		
+			const zoneRoles = Array.from(zones).map(z => z.children[0].getAttribute('data-role'));
+			const hsBrick = Array.from(zones).find(z => z.children[0].getAttribute('data-role') === 'hs').children[0];
+			const bsBrick = Array.from(zones).find(z => z.children[0].getAttribute('data-role') === 'bs').children[0];
+		
+			const hsIndices = Array.from(hsBrick.querySelectorAll('.word-brick')).map(el => parseInt(el.getAttribute('data-original-index')));
+			const bsIndices = Array.from(bsBrick.querySelectorAll('.word-brick')).map(el => parseInt(el.getAttribute('data-original-index')));
+		
+			let currentIsCorrect = false;
+			let currentType = ""; 
+		
+			// 1. Bisatsen: Alltid S + V + O (0, 1, 2)
+			const isBsValid = bsIndices[0] === 0 && bsIndices[1] === 1 && bsIndices[2] === 2;
+		
+			if (!isBsValid) {
+				feedbackText.innerHTML = "Check the word order in the subordinate clause. It must be straight.";
+				feedbackText.className = "incorrect";
+				return;
+			} 
+		
+			// 2. Kolla korrekta block-kombinationer
+			if (zoneRoles[0] === 'hs' && zoneRoles[1] === 'link' && zoneRoles[2] === 'bs') {
+				// Rak ordföljd
+				if (hsIndices[0] === 0 && hsIndices[1] === 1) {
+					currentIsCorrect = true;
+					currentType = "straight";
+				} else {
+					feedbackText.innerHTML = "The block order is correct,<br>but the main clause requires straight word order.";
+					feedbackText.className = "incorrect";
+					return;
+				}
+			}
+			else if (zoneRoles[0] === 'link' && zoneRoles[1] === 'bs' && zoneRoles[2] === 'hs') {
+				// Omvänd ordföljd
+				if (hsIndices[0] === 1 && hsIndices[1] === 0) {
+					currentIsCorrect = true;
+					currentType = "inverted";
+				} else {
+					feedbackText.innerHTML = "The block order is correct,<br>but the main clause requires inverted word order.";
+					feedbackText.className = "incorrect";
+					return;
+				}
+			} 
+			
+			// 3. Specifika felmeddelanden för felaktig blockordning
+			else if ((zoneRoles[0] === 'link' && zoneRoles[1] === 'hs' && zoneRoles[2] === 'bs') || 
+					(zoneRoles[0] === 'bs' && zoneRoles[1] === 'link' && zoneRoles[2] === 'hs')) {
+				// "Nonsens"-kombinationer
+				const randomNonsense = nonsenseMessages[Math.floor(Math.random() * nonsenseMessages.length)];
+				feedbackText.innerHTML = randomNonsense;
+				feedbackText.className = "incorrect";
+				return;
+			}
+			else if (zoneRoles[2] === 'link' || (zoneRoles[0] === 'bs' && zoneRoles[1] === 'hs' && zoneRoles[2] === 'link')) {
+				// Konjunktionen sist
+				feedbackText.innerHTML = "The conjunction cannot be in the final position.<br>Please try again.";
+				feedbackText.className = "incorrect";
+				return;
+			}
+			else {
+				// Fallback
+				feedbackText.innerHTML = "Something is not quite right with the sentence structure.";
+				feedbackText.className = "incorrect";
+				return;
+			}
+		
+			// 4. Hantera godkänd lösning
+			if (currentIsCorrect) {
+				if (currentType === "straight") hasFoundStraight = true;
+				if (currentType === "inverted") hasFoundInverted = true;
+		
+				feedbackText.className = "correct";
+		
+			if (hasFoundStraight && hasFoundInverted) {
+					const randomEx = excellentMessages[Math.floor(Math.random() * excellentMessages.length)];
+					feedbackText.innerHTML = randomEx;
+					nextBtn.style.display = "inline-block";
+				} else {
+					const randomAlt = alternativeMessages[Math.floor(Math.random() * alternativeMessages.length)];
+					feedbackText.innerHTML = randomAlt;
+					nextBtn.style.display = "none"; 
+				}
+			}
+		}
+		
+        document.getElementById('nextBtn').onclick = () => loadRandomSentence();
+
+		const outerOptions = {
+            group: 'outer-elements',
+            handle: '.drag-handle',
+            animation: 150,
+            forceFallback: true,
+            fallbackOnBody: true,
+            fallbackClass: "sortable-fallback",
+            ghostClass: "sortable-ghost",
+            // Förbättrar träffytan genom att tillåta byte tidigare
+            invertSwap: true, 
+            swapThreshold: 0.6, 
+
+			onStart: (evt) => {
+				draggingItem = evt.item;
+				zones.forEach(zone => {
+					zone.classList.add('locked');
+                });
+            },
+            onMove: (evt) => {
+                // Rensa alla zoner först
+                zones.forEach(z => z.classList.remove('drag-over'));
+                
+                // Hitta målet (evt.to är den container man är över)
+                const targetContainer = evt.to;
+                
+                if (targetContainer && targetContainer.classList.contains('zone')) {
+                    targetContainer.classList.add('drag-over');
+                    currentHoverZone = targetContainer;
+                    
+                    // Om zonen är upptagen, förbered swap
+                    if (targetContainer.children.length > 0 && targetContainer.children[0] !== draggingItem) {
+                        pendingSwapZone = targetContainer;
+                        return false; 
+                    }
+                }
+                
+                pendingSwapZone = null;
+                return true;
+            },
+            onEnd: (evt) => {
+                // Återställ allt
+                zones.forEach(z => {
+                    z.classList.remove('drag-over', 'locked');
+                    z.style.width = '';
+                    z.style.minWidth = '120px';
+                });
+
+                const item = evt.item;
+
+                // Logik för byte (swap)
+                if (pendingSwapZone) {
+                    const targetZone = pendingSwapZone;
+                    const occupant = targetZone.children[0];
+
+                    if (occupant && occupant !== item) {
+                        occupant.classList.remove('activated');
+                        occupant.classList.add('returning-to-bank');
+                        bank.appendChild(occupant);
+                        setTimeout(() => occupant.classList.remove('returning-to-bank'), 400);
+                    }
+                    targetZone.appendChild(item);
+                }
+
+                // Uppdatera status
+                item.classList.toggle('activated', item.parentNode.classList.contains('zone'));
+                formatGrammar();
+                updateZoneStates();
+                
+                // Säkerställ att bankens position beräknas efter att DOM har uppdaterats
+                setTimeout(() => {
+                    updateBankPositions();
+                }, 0);
+
+                evaluateSolution();
+                draggingItem = null;
+                pendingSwapZone = null;
+                currentHoverZone = null;
+            }
+        };
+
+        new Sortable(bank, outerOptions);
+        zones.forEach(z => new Sortable(z, outerOptions));
+
+        function activateInternalSortable(frame) {
+            const words = frame.getAttribute('data-content').replace('.', '').split(' ');
+            words.forEach((word, index) => {
+                const brick = document.createElement('div');
+                brick.className = 'word-brick';
+                brick.setAttribute('data-original-index', index);
+                brick.innerText = word;
+                frame.appendChild(brick);
+            });
+            new Sortable(frame, {
+                group: { name: 'words-' + Math.random(), pull: false, put: false },
+                animation: 200,
+                filter: '.drag-handle',
+                onUpdate: () => { formatGrammar(); evaluateSolution(); },
+                onEnd: () => { formatGrammar(); evaluateSolution(); }
+            });
+        }
+
+		resetBtn.onclick = () => {
+			// Återställer bara nuvarande mening (bank och zoner)
+			bank.innerHTML = '';
+			zones.forEach(z => { z.innerHTML = ''; z.classList.remove('filled', 'drag-over'); });
+			
+			const l = document.createElement('div');
+			l.className = 'konjunktion';
+			l.setAttribute('data-role', 'link'); 
+			l.setAttribute('data-original', currentSentence.link);
+			l.innerHTML = `<span class="drag-handle"></span><span class="text-node"> ${currentSentence.link}</span>`;
+			bank.appendChild(l);
+		
+			['bs', 'hs'].forEach(role => {
+				const f = document.createElement('div');
+				f.className = 'sentence-frame';
+				f.setAttribute('data-role', role);
+				f.setAttribute('data-content', currentSentence[role]);
+				f.innerHTML = `<span class="drag-handle"></span>`;
+				bank.appendChild(f);
+				activateInternalSortable(f);
+			});
+		
+			formatGrammar();
+			updateZoneStates();
+			evaluateSolution();
+		
+			// Uppdatera tooltips och positioner efter en kort delay
+			setTimeout(() => {
+				updateBankPositions();
+				if (typeof updateTooltips === "function") updateTooltips();
+			}, 50);
+		};
+
+        function formatGrammar() {
+            [bank, ...zones].forEach((container) => {
+                const zoneId = container.id;
+                const isP1 = zoneId === 'pos1', isP3 = zoneId === 'pos3', isBank = container.id === 'bank';
+                container.querySelectorAll('.sentence-frame, .konjunktion').forEach((frame) => {
+                    if (frame.classList.contains('sentence-frame')) {
+                        const bricks = frame.querySelectorAll('.word-brick');
+                        bricks.forEach((el, i) => {
+                            let t = el.innerText.replace('.', '').trim();
+                            const specialWord = properNouns.find(n => n.toLowerCase() === t.toLowerCase());
+                            if (specialWord) t = specialWord; else t = t.toLowerCase();
+                            if (!isBank) {
+                                if (isP1 && i === 0) t = t.charAt(0).toUpperCase() + t.slice(1);
+                                if (isP3 && i === bricks.length - 1) t += '.';
+                            } else {
+                                const origWords = frame.getAttribute('data-content').split(' ');
+                                if (i === 0) t = origWords[0];
+                                if (i === bricks.length - 1) t += '.';
+                            }
+                            el.innerText = t;
+                        });
+} else {
+    // För konjunktioner/länkar
+    const textEl = frame.querySelector('.text-node');
+    let t = frame.getAttribute('data-original').toLowerCase();
+    if (!isBank && isP1) t = t.charAt(0).toUpperCase() + t.slice(1);
+    textEl.innerText = " " + t;
+    
+    // Anropa updateTooltips här för att synka översättningen om den ändras (t.ex. vid flytt)
+    if (showTranslation) updateTooltips();
+}
+                });
+            });
+        }
+
+        // Starta labbet
+        loadRandomSentence();
+    </script>
+</body>
+</html>
