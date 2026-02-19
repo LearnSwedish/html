@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Swedish Basics</title>
+
+<style>
+:root{
+  --bg:#0f111a;
+  --panel:#171a26;
+  --text:#eef1ff;
+  --muted:#aab0c8;
+  --border:rgba(255,255,255,.15);
+  --hl-wo: rgba(255, 230, 120, 0.35);
+  --hl-subj: rgba(0, 255, 170, 0.45);      /* neon green / cyan-green */
+  --hl-verb: rgba(0, 170, 255, 0.50);      /* bright blue */
+  --hl-generic: rgba(255, 70, 70, 0.30); /* neutral complement wash */
+  --hl-pred: rgba(255, 210, 0, 0.55);      /* warm yellow (stands out strongly) */
+  --hl-prepcomp: rgba(200, 120, 255, 0.55);/* vivid violet */
+  --hl-adv: rgba(255, 140, 0, 0.60);       /* orange = excellent on dark bg */
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+body[data-mode="verb-link"] .verb-link{
+  background: var(--hl-verb);
+}
+
+body[data-mode="verb-event"] .verb-event{
+  background: var(--hl-verb);
+}
+
+body[data-mode="comp"] .comp{
+  background: var(--hl-generic);
+}
+
+.panel-btn {
+  display: inline-block;
+  padding: 3px 6px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+
+  background: #2b2b2b;   /* diskret mörk bas */
+  color: #FFA07A;        /* accentfärg */
+  transition: background-color 0.15s ease,
+              color 0.15s ease;
+}
+
+.panel-btn:hover {
+  background: #ffffff;   /* tydlig men elegant kontrast */
+  color: #222222;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns: 130px 430px 400px;
+  gap:24px;
+  align-items:center;
+}
+
+.buttons{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+button{
+  background: var(--panel);
+  color: var(--text);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  cursor:pointer;
+  font-size:14px;
+  text-align:left;
+}
+
+.text{
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px 20px;
+  font-size:18px;
+  line-height:1.8;
+}
+
+.sentence{
+  display:inline;
+  padding:2px 4px;
+  border-radius:6px;
+  transition: background .15s ease;
+}
+
+body[data-mode="wo"] .sentence{
+  background: var(--hl-wo);
+}
+
+.subj, .verb, .obj, .adv, .arg{
+  border-radius:4px;
+  transition: background .15s ease;
+}
+
+body[data-mode="subj"] .subj{ background: var(--hl-subj); }
+body[data-mode="verb"] .verb{ background: var(--hl-verb); }
+
+/* Objects = only true objects + argument-like complements */
+body[data-mode="obj"] .comp-obj{
+  background: var(--hl-generic);
+}
+
+body[data-mode="pred"] .comp-pred{
+  background: var(--hl-generic);
+}
+
+body[data-mode="prep"] .comp-prep{
+  background: var(--hl-generic);
+}
+
+body[data-mode="adv"] .adv{
+  background: var(--hl-adv);
+}
+
+.title{
+  font-size:15px;
+  color: var(--text);
+  margin-bottom:6px;
+}
+
+.explain{
+  background: var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px 18px;
+  font-size:14px;
+  line-height:1.6;
+  color: white;
+  min-height:232px;
+}
+
+.page-title{
+  position: fixed;
+  top: 200px;
+  align: center;
+  margin: 0;
+  font-size: 54px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.3px;
+}
+</style>
+</head>
+
+<body data-mode="none">
+
+<h1 class="page-title">Some Initial Observations</h1>
+
+<div class="layout">
+
+<div class="buttons">
+  <button id="wo">Word order</button>
+  <button id="subj">Subjects</button>
+  <button id="verb">Verbs</button>
+  <button id="comp">Complements</button>
+  <button id="adv">Adverbials</button>
+</div>
+
+<div class="text">
+
+  <div>Hej.</div>
+
+  <div>
+    <span class="sentence">
+      <span class="subj">Jag</span>
+      <span class="verb verb-link">heter</span>
+      <span class="comp comp-pred">Rebecca</span>.
+    </span>
+  </div>
+
+  <div>
+    <span class="sentence">
+      <span class="subj">Jag</span>
+      <span class="verb verb-link">är</span>
+      <span class="comp comp-pred">nitton år</span>.
+    </span>
+  </div>
+
+  <div>
+    <span class="sentence">
+      <span class="subj">Jag</span>
+      <span class="verb verb-event">kommer</span>
+      <span class="comp comp-prep">från USA</span>.
+    </span>
+  </div>
+
+  <div>
+    <span class="sentence">
+      <span class="subj">Jag</span>
+      <span class="verb verb-event">studerar</span>
+      <span class="comp comp-obj">svenska</span>
+      <span class="adv">i Stockholm</span>.
+    </span>
+  </div>
+
+  <div>
+    <span class="sentence">
+      <span class="subj">Min pojkvän</span>
+      <span class="verb verb-link">heter</span>
+      <span class="comp comp-pred">Kalle</span>.
+    </span>
+  </div>
+
+</div>
+
+<div class="explain" id="panel">
+  <div class="title">Explanation</div>
+  Click a button to focus on one concept.
+</div>
+
+</div>
+
+<script>
+const body = document.body;
+const panel = document.getElementById("panel");
+
+wo.onclick = () => {
+  body.dataset.mode = "wo";
+  panel.innerHTML = `<div class="title">Word order</div>
+  Swedish typically follows straight word order:<br><br>
+
+  • <span class="sentence">Jag läser boken.</span> — <em>I read the book</em>.<br>
+  • <span class="sentence">Hon köpte bilen.</span> — <em>She bought the car</em>.<br><br>
+
+  However, this order is less stable than in English — change the opening, and the structure falls. More on this later.`;
+};
+
+subj.onclick = () => {
+  body.dataset.mode = "subj";
+  body.dataset.mode = "subj";
+  panel.innerHTML = `<div class="title">Subjects</div>
+  The subject denotes who or what the sentence is about. As “Min pojkvän” shows, a subject need not be a single word and may, in principle, be of unlimited length: <br><br><span class="subj" style="color: white">You know the elderly lady 300 metres down the road, our local intelligence chief since her husband sadly left this world last spring, she</span> has now joined the archives.`;
+};
+
+verb.onclick = () => {
+  body.dataset.mode = "verb";
+  panel.innerHTML = `<div class="title">Verbs</div>
+  Some verbs <button class="panel-btn" onclick="document.body.dataset.mode='verb-link'">mainly link information</button>, functioning rather like an equals sign between the subject and what the subject is, becomes, or is called (there's no observable action involved), while other verbs <button class="panel-btn" onclick="document.body.dataset.mode='verb-event'">describe events or activities</button>, that is: something the subject actually does.`;
+};
+
+
+comp.onclick = () => {
+  body.dataset.mode = "comp";
+  panel.innerHTML = `<div class="title">Complements</div>
+  While you can say “I sleep” and stop there - yes, you may add “on the sofa” if you wish, but the verb sleep does not require it - many verbs call for some form of continuation (complement), such as a <button class="panel-btn" onclick="document.body.dataset.mode='pred'">predicative complement</button>, one or more <button class="panel-btn" onclick="document.body.dataset.mode='obj'">objects</button>, or a <button class="panel-btn" onclick="document.body.dataset.mode='prep'">prepositional complement</button>.<br><br>
+  Complements always immediately follow the verb.`;
+};
+
+adv.onclick = () => {
+  body.dataset.mode = "adv";
+  panel.innerHTML = `<div class="title">Adverbials</div>
+  Adverbials add optional information.<br><br>
+  They often answer questions like:<br>
+	<strong>How</strong> did something take place (manner)?<br>
+  • <strong>Where</strong> did something happen (place)?<br>
+  • <strong>When</strong> did something happen (time)?</strong>`;
+};
+</script>
+
+</body>
+</html>
