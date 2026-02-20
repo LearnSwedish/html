@@ -1,0 +1,1474 @@
+
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<title>Grammar Run</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; overflow:hidden; background:#a2d2ff; font-family: 'Work Sans', sans-serif; }
+  #ui {
+    position:fixed; top:20px; left:20px; color: #222;
+    background: rgba(255,255,255,0.95); padding: 18px 22px; border-radius: 14px; pointer-events: none;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15); border-left: 7px solid #007bff; min-width: 180px;
+  }
+  .stat-label { font-size: 14px; color: #555; text-transform: uppercase; letter-spacing: 1.5px; }
+  .stat-value { font-size: 32px; font-weight: bold; color: #007bff; margin-bottom: 8px; }
+  
+  #jump-budget {
+    background: #fff3cd; padding: 5px 10px; border-radius: 5px; border: 1px solid #ffeeba;
+    display: flex; align-items: center; gap: 5px; margin-top: 5px;
+  }
+  .star-icon { color: #f1c40f; font-size: 20px; }
+
+  /* Coin jump indicator at top */
+  #coin-indicator {
+    position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.97); padding: 10px 30px 10px 20px;
+    border-radius: 0 0 20px 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+    display: flex; align-items: center; gap: 14px; pointer-events: none; z-index: 5;
+    font-family: 'Work Sans', sans-serif;
+  }
+  #coin-indicator .ci-label { font-size: 16px; font-weight: bold; color: #555; }
+  #coin-bar-wrap { background: #ffe082; border-radius: 10px; width: 240px; height: 26px; overflow: hidden; border: 3px solid #f1c40f; }
+  #coin-bar { height: 100%; background: linear-gradient(90deg, #f1c40f, #ff9800); border-radius: 10px; transition: width 0.2s; }
+  #coin-count-label { font-size: 18px; font-weight: bold; color: #b8860b; min-width: 80px; text-align: left; }
+
+  #overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #dadde2; display: flex; align-items: center; justify-content: center;
+    color: #333; cursor: pointer; z-index: 10; flex-direction: column; text-align: center;
+  }
+  #victory-modal {
+    display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: white; padding: 40px; border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.3);
+    z-index: 100; text-align: center; border: 5px solid #2ed573;
+  }
+  .btn { background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 18px; margin-top: 15px; font-family: 'Work Sans', sans-serif; font-weight: bold; }
+</style>
+</head>
+<body>
+<audio id="bg-music" loop src="tune.mp3"></audio>
+<audio id="rabbit-hurt" src="rabbit-hurt.mp3"></audio>
+<audio id="jump-sound" src="jump.mp3"></audio>
+<audio id="error-sound" src="error.mp3"></audio>
+<audio id="jump-available" src="https://learnswedish.github.io/html/jump-available2.mp3"></audio>
+
+<div id="victory-modal">
+  <h1 id="modal-title">SESSION ENDED</h1>
+  <p id="final-stats" style="font-size: 20px;"></p>
+  <button class="btn" onclick="location.reload()">PLAY AGAIN</button>
+</div>
+
+<div id="overlay">
+  <img src="grammar-run.png" class="how-to-img" alt="How to play" height="20%">
+  
+  <p style="font-size: 18px; max-width: 700px; margin: 10px 0;">
+    ⭐ Earn health by choosing the correct Swedish article (EN/ETT) ⭐<br>
+    Fancy a jump? Press [SPACEBAR], but you'll need to collect <strong>10 coins 🪙</strong> first!<br>
+    Whatever you do, mind the bunnies! 🐇🐇🐇
+  </p>
+  
+  <h2 id="high-score-display" style="color: #8b0000; margin: 10px 0;">RECORD: 0</h2>
+  
+  <h2 style="color: #007bff; margin: 10px 0;">Press ENTER to begin</h2>
+
+  <img id="start-img" src="start-1.png" class="center-img" alt="Start bild" height="35%">
+
+  <img src="how-to.png" class="how-to-img" alt="How to play" height="20%">
+</div>
+
+<!-- Coin jump indicator top center -->
+<div id="coin-indicator">
+  <span class="ci-label">🪙 Jump coins:</span>
+  <div id="coin-bar-wrap"><div id="coin-bar" style="width:0%"></div></div>
+  <span id="coin-count-label">0 / 10</span>
+</div>
+
+<div id="health-indicator" style="position: fixed; top: 58px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; z-index: 5; background: rgba(255,255,255,0.97); padding: 8px 20px; border-radius: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.13);">
+  <span style="font-size: 16px; font-weight: bold; color: #555;">❤️ Health:</span>
+  <div style="background: #ffcdd2; border-radius: 10px; width: 240px; height: 22px; overflow: hidden; border: 3px solid #f44336;">
+    <div id="health-bar" style="height: 100%; background: #f44336; width: 10%; transition: width 0.3s;"></div>
+  </div>
+  <span id="health-val" style="font-size: 17px; font-weight: bold; color: #d32f2f; min-width: 70px;">10 / 100</span>
+</div>
+
+<div id="ui">
+  <div class="stat-label">Distance</div>
+  <div id="score-val" class="stat-value">0 m</div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
+// --- DATA ---
+const words = [
+{ text: "ÅR", type: "ett" },
+{ text: "DEL", type: "en" },
+{ text: "TID", type: "en" },
+{ text: "DAG", type: "en" },
+{ text: "MÄNNISKA", type: "en" },
+{ text: "LAND", type: "ett" },
+{ text: "FRÅGA", type: "en" },
+{ text: "KOMMENTAR", type: "en" },
+{ text: "SÄTT", type: "ett" },
+{ text: "GÅNG", type: "en" },
+{ text: "BARN", type: "ett" },
+{ text: "RING", type: "en" },
+{ text: "LIV", type: "ett" },
+{ text: "VÄRLD", type: "en" },
+{ text: "FOLK", type: "ett" },
+{ text: "REGERING", type: "en" },
+{ text: "SAK", type: "en" },
+{ text: "PERSON", type: "en" },
+{ text: "SON", type: "en" },
+{ text: "ANTAL", type: "ett" },
+{ text: "KVINNA", type: "en" },
+{ text: "PROBLEM", type: "ett" },
+{ text: "FALL", type: "ett" },
+{ text: "MAN", type: "en" },
+{ text: "ARTIKEL", type: "en" },
+{ text: "LAG", type: "ett" },
+{ text: "SLAG", type: "ett" },
+{ text: "TAL", type: "ett" },
+{ text: "BOK", type: "en" },
+{ text: "BILD", type: "en" },
+{ text: "SIDA", type: "en" },
+{ text: "ARBETE", type: "ett" },
+{ text: "BLOGG", type: "en" },
+{ text: "VÄG", type: "en" },
+{ text: "SAMHÄLLE", type: "ett" },
+{ text: "STAT", type: "en" },
+{ text: "STAD", type: "en" },
+{ text: "FÖRETAG", type: "ett" },
+{ text: "MÖJLIGHET", type: "en" },
+{ text: "ORD", type: "ett" },
+{ text: "INLÄGG", type: "ett" },
+{ text: "ÄGG", type: "ett" },
+{ text: "TE", type: "ett" },
+{ text: "TAG", type: "ett" },
+{ text: "FÖRSLAG", type: "ett" },
+{ text: "OMRÅDE", type: "ett" },
+{ text: "LAG", type: "en" },
+{ text: "PLATS", type: "en" },
+{ text: "POLITIK", type: "en" },
+{ text: "PENG", type: "en" },
+{ text: "VECKA", type: "en" },
+{ text: "PARTI", type: "ett" },
+{ text: "UTVECKLING", type: "en" },
+{ text: "SKOLA", type: "en" },
+{ text: "MÅL", type: "ett" },
+{ text: "PAR", type: "ett" },
+{ text: "KLOCKA", type: "en" },
+{ text: "NAMN", type: "ett" },
+{ text: "GRUPP", type: "en" },
+{ text: "BESLUT", type: "ett" },
+{ text: "MILJON", type: "en" },
+{ text: "SVAR", type: "ett" },
+{ text: "HAND", type: "en" },
+{ text: "UPPGIFT", type: "en" },
+{ text: "DECEMBER", type: "en" },
+{ text: "KRIG", type: "ett" },
+{ text: "VAL", type: "ett" },
+{ text: "KYRKA", type: "en" },
+{ text: "HISTORIA", type: "en" },
+{ text: "JOBB", type: "ett" },
+{ text: "JANUARI", type: "en" },
+{ text: "INFORMATION", type: "en" },
+{ text: "FILM", type: "en" },
+{ text: "SLUT", type: "ett" },
+{ text: "MASSA", type: "en" },
+{ text: "TANKE", type: "en" },
+{ text: "AKT", type: "en" },
+{ text: "PROCENT", type: "en" },
+{ text: "MÅNAD", type: "en" },
+{ text: "ÄTT", type: "en" },
+{ text: "VERKSAMHET", type: "en" },
+{ text: "RÄTT", type: "en" },
+{ text: "STÖD", type: "ett" },
+{ text: "FAMILJ", type: "en" },
+{ text: "KOMMUN", type: "en" },
+{ text: "RESULTAT", type: "ett" },
+{ text: "TEXT", type: "en" },
+{ text: "EXEMPEL", type: "ett" },
+{ text: "DEBATT", type: "en" },
+{ text: "SITUATION", type: "en" },
+{ text: "FORM", type: "en" },
+{ text: "ORM", type: "en" },
+{ text: "RÅD", type: "ett" },
+{ text: "NOVEMBER", type: "en" },
+{ text: "MAKT", type: "en" },
+{ text: "SYSTEM", type: "ett" },
+{ text: "ÅTGÄRD", type: "en" },
+{ text: "KRAV", type: "ett" },
+{ text: "SKILLNAD", type: "en" },
+{ text: "RIKSDAG", type: "en" },
+{ text: "TYP", type: "en" },
+{ text: "TUR", type: "en" },
+{ text: "POLIS", type: "en" },
+{ text: "MEDIUM", type: "ett" },
+{ text: "MUN", type: "en" },
+{ text: "ANSVAR", type: "ett" },
+{ text: "ROLL", type: "en" },
+{ text: "REGEL", type: "en" },
+{ text: "OKTOBER", type: "en" },
+{ text: "ORGANISATION", type: "en" },
+{ text: "MEDLEM", type: "en" },
+{ text: "KRONA", type: "en" },
+{ text: "RÄTTIGHET", type: "en" },
+{ text: "HUS", type: "ett" },
+{ text: "VÄN", type: "en" },
+{ text: "FEBRUARI", type: "en" },
+{ text: "GRUND", type: "en" },
+{ text: "FRAMTID", type: "en" },
+{ text: "ETIKETT", type: "en" },
+{ text: "BEHOV", type: "ett" },
+{ text: "TIMME", type: "en" },
+{ text: "SEPTEMBER", type: "en" },
+{ text: "LEDNING", type: "en" },
+{ text: "INTRESSE", type: "ett" },
+{ text: "ANLEDNING", type: "en" },
+{ text: "EKONOMI", type: "en" },
+{ text: "ÅSIKT", type: "en" },
+{ text: "DISKUSSION", type: "en" },
+{ text: "RAD", type: "en" },
+{ text: "FAKTUM", type: "ett" },
+{ text: "TIDNING", type: "en" },
+{ text: "MENING", type: "en" },
+{ text: "JUNI", type: "en" },
+{ text: "IS", type: "en" },
+{ text: "BIL", type: "en" },
+{ text: "MYNDIGHET", type: "en" },
+{ text: "NUMMER", type: "ett" },
+{ text: "MUSIK", type: "en" },
+{ text: "PROGRAM", type: "ett" },
+{ text: "KUNSKAP", type: "en" },
+{ text: "MAJ", type: "en" },
+{ text: "BÖRJAN", type: "en" },
+{ text: "SKÄL", type: "ett" },
+{ text: "DOM", type: "en" },
+{ text: "RISK", type: "en" },
+{ text: "PRIS", type: "ett" },
+{ text: "IDÉ", type: "en" },
+{ text: "GRAM", type: "ett" },
+{ text: "TJÄNST", type: "en" },
+{ text: "KULTUR", type: "en" },
+{ text: "SYFTE", type: "ett" },
+{ text: "PRINCIP", type: "en" },
+{ text: "POLITIKER", type: "en" },
+{ text: "FÖRÄLDER", type: "en" },
+{ text: "MARKNAD", type: "en" },
+{ text: "UTBILDNING", type: "en" },
+{ text: "NIVÅ", type: "en" },
+{ text: "APRIL", type: "en" },
+{ text: "MÄNGD", type: "en" },
+{ text: "BETYDELSE", type: "en" },
+{ text: "MARS", type: "en" },
+{ text: "KVÄLL", type: "en" },
+{ text: "BILDNING", type: "en" },
+{ text: "LÄNK", type: "en" },
+{ text: "VATTEN", type: "ett" },
+{ text: "HÅLL", type: "ett" },
+{ text: "DEMOKRATI", type: "en" },
+{ text: "JORD", type: "en" },
+{ text: "KÄNSLA", type: "en" },
+{ text: "FÖRÄNDRING", type: "en" },
+{ text: "RÄTT", type: "ett" },
+{ text: "PUNKT", type: "en" },
+{ text: "ÄNDRING", type: "en" },
+{ text: "MISSION", type: "en" },
+{ text: "KOMMISSION", type: "en" },
+{ text: "ORT", type: "en" },
+{ text: "SPEL", type: "ett" },
+{ text: "SPRÅK", type: "ett" },
+{ text: "MÖTE", type: "ett" },
+{ text: "MAT", type: "en" },
+{ text: "GRÄNS", type: "en" },
+{ text: "SAMARBETE", type: "ett" },
+{ text: "RUM", type: "ett" },
+{ text: "INTERNET", type: "ett" },
+{ text: "HOV", type: "ett" },
+{ text: "DÖD", type: "en" },
+{ text: "ÖGA", type: "ett" },
+{ text: "ÄMNE", type: "ett" },
+{ text: "AUGUSTI", type: "en" },
+{ text: "SOCIALDEMOKRAT", type: "en" },
+{ text: "PROJEKT", type: "ett" },
+{ text: "PORT", type: "en" },
+{ text: "KROPP", type: "en" },
+{ text: "HANDLING", type: "en" },
+{ text: "RAPPORT", type: "en" },
+{ text: "LÖSNING", type: "en" },
+{ text: "HJÄLP", type: "en" },
+{ text: "JULI", type: "en" },
+{ text: "TILLFÄLLE", type: "ett" },
+{ text: "FORSKNING", type: "en" },
+{ text: "KRAFT", type: "en" },
+{ text: "BROTT", type: "ett" },
+{ text: "RÖST", type: "en" },
+{ text: "EFFEKT", type: "en" },
+{ text: "ENHET", type: "en" },
+{ text: "KONTAKT", type: "en" },
+{ text: "TAKT", type: "en" },
+{ text: "VÄRDE", type: "ett" },
+{ text: "FÖRUTSÄTTNING", type: "en" },
+{ text: "SATS", type: "en" },
+{ text: "MEDLEMSSTAT", type: "en" },
+{ text: "SANNING", type: "en" },
+{ text: "RELIGION", type: "en" },
+{ text: "KÄLLA", type: "en" },
+{ text: "KOSTNAD", type: "en" },
+{ text: "MEDBORGARE", type: "en" },
+{ text: "FÖRHÅLLANDE", type: "ett" },
+{ text: "FAR", type: "en" },
+{ text: "MILJARD", type: "en" },
+{ text: "UNGDOM", type: "en" },
+{ text: "DRAG", type: "ett" },
+{ text: "VERKLIGHET", type: "en" },
+{ text: "FÖRFATTARE", type: "en" },
+{ text: "TILLGÅNG", type: "en" },
+{ text: "FRIHET", type: "en" },
+{ text: "LEDARE", type: "en" },
+{ text: "MAMMA", type: "en" },
+{ text: "SAMMANHANG", type: "ett" },
+{ text: "SVENSK", type: "en" },
+{ text: "PRODUKT", type: "en" },
+{ text: "MATCH", type: "en" },
+{ text: "TRO", type: "en" },
+{ text: "UPPFATTNING", type: "en" },
+{ text: "DEMOKRAT", type: "en" },
+{ text: "BOLAG", type: "ett" },
+{ text: "ERFARENHET", type: "en" },
+{ text: "KRITIK", type: "en" },
+{ text: "GRAD", type: "en" },
+{ text: "JUDE", type: "en" },
+{ text: "KAMP", type: "en" },
+{ text: "PERIOD", type: "en" },
+{ text: "SPELARE", type: "en" },
+{ text: "ELEV", type: "en" },
+{ text: "UTREDNING", type: "en" },
+{ text: "KUNG", type: "en" },
+{ text: "KATT", type: "en" },
+{ text: "KLOCKA", type: "en" },
+{ text: "SKATT", type: "en" },
+{ text: "BEFOLKNING", type: "en" },
+{ text: "RO", type: "en" },
+{ text: "STEG", type: "ett" },
+{ text: "ART", type: "en" },
+{ text: "PLAN", type: "en" },
+{ text: "RESA", type: "en" },
+{ text: "HUND", type: "en" },
+{ text: "SYN", type: "en" },
+{ text: "AVTAL", type: "ett" },
+{ text: "LEK", type: "en" },
+{ text: "NATT", type: "en" },
+{ text: "INDIVID", type: "en" },
+{ text: "MOTION", type: "en" },
+{ text: "DATOR", type: "en" },
+{ text: "MILJÖ", type: "en" },
+{ text: "EK", type: "en" },
+{ text: "ALTERNATIV", type: "ett" },
+{ text: "MINUT", type: "en" },
+{ text: "BAKGRUND", type: "en" },
+{ text: "SKOTT", type: "ett" },
+{ text: "Ö", type: "en" },
+{ text: "KÄRLEK", type: "en" },
+{ text: "METOD", type: "en" },
+{ text: "BORGARE", type: "en" },
+{ text: "GUD", type: "en" },
+{ text: "INSATS", type: "en" },
+{ text: "KONTROLL", type: "en" },
+{ text: "BESTÄMMELSE", type: "en" },
+{ text: "RIS", type: "ett" },
+{ text: "NÄT", type: "ett" },
+{ text: "TEKNIK", type: "en" },
+{ text: "RESURS", type: "en" },
+{ text: "FÖRSÖK", type: "ett" },
+{ text: "ARGUMENT", type: "ett" },
+{ text: "FRU", type: "en" },
+{ text: "VÅLD", type: "ett" },
+{ text: "STÄLLNING", type: "en" },
+{ text: "SOMMAR", type: "en" },
+{ text: "RÖRELSE", type: "en" },
+{ text: "KUND", type: "en" },
+{ text: "VILLKOR", type: "ett" },
+{ text: "PRESIDENT", type: "en" },
+{ text: "HÄNDELSE", type: "en" },
+{ text: "HUVUD", type: "ett" },
+{ text: "SÖK", type: "ett" },
+{ text: "ANDE", type: "en" },
+{ text: "ORSAK", type: "en" },
+{ text: "FEL", type: "ett" },
+{ text: "INNEHÅLL", type: "ett" },
+{ text: "NATUR", type: "en" },
+{ text: "BEGREPP", type: "ett" },
+{ text: "KONFLIKT", type: "en" },
+{ text: "DJUR", type: "ett" },
+{ text: "CHANS", type: "en" },
+{ text: "LÄGE", type: "ett" },
+{ text: "VÄXT", type: "en" },
+{ text: "STYCK", type: "ett" },
+{ text: "UTSKOTT", type: "ett" },
+{ text: "MUSLIM", type: "en" },
+{ text: "ORDNING", type: "en" },
+{ text: "UPPDRAG", type: "ett" },
+{ text: "MARK", type: "en" },
+{ text: "SÄKERHET", type: "en" },
+{ text: "LINJE", type: "en" },
+{ text: "BANK", type: "en" },
+{ text: "STUDIE", type: "en" },
+{ text: "FREDAG", type: "en" },
+{ text: "LÄRARE", type: "en" },
+{ text: "SÖNDAG", type: "en" },
+{ text: "TEVE", type: "en" },
+{ text: "HOT", type: "ett" },
+{ text: "VERK", type: "ett" },
+{ text: "STUND", type: "en" },
+{ text: "MATERIAL", type: "ett" },
+{ text: "PELARE", type: "en" },
+{ text: "HJÄRTA", type: "ett" },
+{ text: "PART", type: "en" },
+{ text: "HÖST", type: "en" },
+{ text: "FÖRMÅGA", type: "en" },
+{ text: "STÅND", type: "ett" },
+{ text: "BEDÖMNING", type: "en" },
+{ text: "BY", type: "en" },
+{ text: "BRIST", type: "en" },
+{ text: "MÅNDAG", type: "en" },
+{ text: "UNIVERSITET", type: "ett" },
+{ text: "KONSEKVENS", type: "en" },
+{ text: "STÄLLE", type: "ett" },
+{ text: "MAJORITET", type: "en" },
+{ text: "DOMSTOL", type: "en" },
+{ text: "ORDFÖRANDE", type: "en" },
+{ text: "LÖRDAG", type: "en" },
+{ text: "LÅT", type: "en" },
+{ text: "HERR", type: "en" },
+{ text: "SEKVENS", type: "en" },
+{ text: "NYHET", type: "en" },
+{ text: "JOURNALIST", type: "en" },
+{ text: "KRIS", type: "en" },
+{ text: "BAND", type: "ett" },
+{ text: "TILLSTÅND", type: "ett" },
+{ text: "KLASS", type: "en" },
+{ text: "SLUTSATS", type: "en" },
+{ text: "STOL", type: "en" },
+{ text: "LIST", type: "en" },
+{ text: "RELATION", type: "en" },
+{ text: "UNDERSÖKNING", type: "en" },
+{ text: "KRONA", type: "en" },
+{ text: "PERSPEKTIV", type: "ett" },
+{ text: "ÅLDER", type: "en" },
+{ text: "PROCESS", type: "en" },
+{ text: "UTTRYCK", type: "ett" },
+{ text: "LISTA", type: "en" },
+{ text: "SÖKNING", type: "en" },
+{ text: "ÖKNING", type: "en" },
+{ text: "MEDEL", type: "ett" },
+{ text: "HEM", type: "ett" },
+{ text: "HELG", type: "en" },
+{ text: "RYCK", type: "ett" },
+{ text: "TRYCK", type: "ett" },
+{ text: "PAPPA", type: "en" },
+{ text: "LÖN", type: "en" },
+{ text: "REST", type: "en" },
+{ text: "ANDEL", type: "en" },
+{ text: "BESÖK", type: "ett" },
+{ text: "HEMSIDA", type: "en" },
+{ text: "TORSDAG", type: "en" },
+{ text: "TILLVÄXT", type: "en" },
+{ text: "LÄSARE", type: "en" },
+{ text: "FORSKARE", type: "en" },
+{ text: "BIDRAG", type: "ett" },
+{ text: "ONSDAG", type: "en" },
+{ text: "VILJA", type: "en" },
+{ text: "SOL", type: "en" },
+{ text: "ANALYS", type: "en" },
+{ text: "LAGSTIFTNING", type: "en" },
+{ text: "SORT", type: "en" },
+{ text: "FÖRDEL", type: "en" },
+{ text: "TEORI", type: "en" },
+{ text: "SAMLING", type: "en" },
+{ text: "FLERTAL", type: "ett" },
+{ text: "MODELL", type: "en" },
+{ text: "VAPEN", type: "ett" },
+{ text: "FÖRENING", type: "en" },
+{ text: "EFTERMIDDAG", type: "en" },
+{ text: "SOLDAT", type: "en" },
+{ text: "GEMENSKAP", type: "en" },
+{ text: "STYRKA", type: "en" },
+{ text: "KILLE", type: "en" },
+{ text: "VÅRD", type: "en" },
+{ text: "POÄNG", type: "en" },
+{ text: "MODERAT", type: "en" },
+{ text: "TISDAG", type: "en" },
+{ text: "FLICKA", type: "en" },
+{ text: "LJUS", type: "ett" },
+{ text: "SJUKDOM", type: "en" },
+{ text: "UNGE", type: "en" },
+{ text: "VIKT", type: "en" },
+{ text: "REGION", type: "en" },
+{ text: "SAMTAL", type: "ett" },
+{ text: "VÄNDNING", type: "en" },
+{ text: "ARBETARE", type: "en" },
+{ text: "TRADITION", type: "en" },
+{ text: "FÖRSAMLING", type: "en" },
+{ text: "HAV", type: "ett" },
+{ text: "ENERGI", type: "en" },
+{ text: "LÄKARE", type: "en" },
+{ text: "GREPP", type: "ett" },
+{ text: "SIKT", type: "en" },
+{ text: "REVOLUTION", type: "en" },
+{ text: "BREV", type: "ett" },
+{ text: "PERSONAL", type: "en" },
+{ text: "SKADA", type: "en" },
+{ text: "TECKEN", type: "ett" },
+{ text: "SIFFRA", type: "en" },
+{ text: "PRAKTIK", type: "en" },
+{ text: "MORGON", type: "en" },
+{ text: "TJEJ", type: "en" },
+{ text: "UNION", type: "en" },
+{ text: "CHEF", type: "en" },
+{ text: "VIS", type: "ett" },
+{ text: "STRID", type: "en" },
+{ text: "BERÄTTELSE", type: "en" },
+{ text: "PRODUKTION", type: "en" },
+{ text: "KAPITEL", type: "ett" },
+{ text: "KONST", type: "en" },
+{ text: "ALLVAR", type: "ett" },
+{ text: "VÅR", type: "en" },
+{ text: "SKYDD", type: "ett" },
+{ text: "POSITION", type: "en" },
+{ text: "BEHANDLING", type: "en" },
+{ text: "SKOG", type: "en" },
+{ text: "FÖRKLARING", type: "en" },
+{ text: "FOTO", type: "ett" },
+{ text: "ISLAM", type: "en" },
+{ text: "ANING", type: "en" },
+{ text: "FÖRSVAR", type: "ett" },
+{ text: "METER", type: "en" },
+{ text: "EVOLUTION", type: "en" },
+{ text: "FUNKTION", type: "en" },
+{ text: "DOTTER", type: "en" },
+{ text: "VÄRDERING", type: "en" },
+{ text: "ERSÄTTNING", type: "en" },
+{ text: "TING", type: "ett" },
+{ text: "MINNE", type: "ett" },
+{ text: "STRATEGI", type: "en" },
+{ text: "FÄRG", type: "en" },
+{ text: "SPÅR", type: "ett" },
+{ text: "ALLIANS", type: "en" },
+{ text: "FAKTOR", type: "en" },
+{ text: "KVALITET", type: "en" },
+{ text: "RIKE", type: "ett" },
+{ text: "FRAMGÅNG", type: "en" },
+{ text: "STUDENT", type: "en" },
+{ text: "VARA", type: "en" },
+{ text: "UNDANTAG", type: "ett" },
+{ text: "AKTION", type: "en" },
+{ text: "ARBETSGIVARE", type: "en" },
+{ text: "NATION", type: "en" },
+{ text: "ÄRENDE", type: "ett" },
+{ text: "GIVARE", type: "en" },
+{ text: "KULL", type: "en" },
+{ text: "RÄTTELSE", type: "en" },
+{ text: "LÄN", type: "ett" },
+{ text: "GATA", type: "en" },
+{ text: "SERIE", type: "en" },
+{ text: "INVANDRARE", type: "en" },
+{ text: "DÖRR", type: "en" },
+{ text: "DIREKTIV", type: "ett" },
+{ text: "FOT", type: "en" },
+{ text: "HÄST", type: "en" },
+{ text: "KATEGORI", type: "en" },
+{ text: "FÖLJD", type: "en" },
+{ text: "ED", type: "en" },
+{ text: "FRED", type: "en" },
+{ text: "ANVÄNDNING", type: "en" },
+{ text: "INKOMST", type: "en" },
+{ text: "STYRELSE", type: "en" },
+{ text: "INTERVJU", type: "en" },
+{ text: "BIT", type: "en" },
+{ text: "BEVIS", type: "ett" },
+{ text: "ARBETSMARKNAD", type: "en" },
+{ text: "POST", type: "en" },
+{ text: "OFFER", type: "ett" },
+{ text: "SEKTOR", type: "en" },
+{ text: "VINST", type: "en" },
+{ text: "INFLYTANDE", type: "ett" },
+{ text: "BUDSKAP", type: "ett" },
+{ text: "TIPS", type: "ett" },
+{ text: "VÄRLDSKRIG", type: "ett" },
+{ text: "BÅT", type: "en" },
+{ text: "KARAKTÄR", type: "en" },
+{ text: "SKIVA", type: "en" },
+{ text: "ANSIKTE", type: "ett" },
+{ text: "AKTIVITET", type: "en" },
+{ text: "OST", type: "en" },
+{ text: "FÄNGELSE", type: "ett" },
+{ text: "MOR", type: "en" },
+{ text: "LEDAMOT", type: "en" },
+{ text: "ARBETSLÖSHET", type: "en" },
+{ text: "GENERATION", type: "en" },
+{ text: "INITIATIV", type: "ett" },
+{ text: "PARLAMENT", type: "ett" },
+{ text: "SÄSONG", type: "en" },
+{ text: "POJKE", type: "en" },
+{ text: "VERSION", type: "en" },
+{ text: "HIMMEL", type: "en" },
+{ text: "REAKTION", type: "en" },
+{ text: "BRUNCH", type: "en" },
+{ text: "DECIMETER", type: "en" },
+{ text: "HEKTO", type: "ett" },
+{ text: "HÖRSEL", type: "en" },
+{ text: "INRIKESMINISTER", type: "en" },
+{ text: "INRIKESPOLITIK", type: "en" },
+{ text: "KVÄLLSMÅL", type: "ett" },
+{ text: "KÄNSEL", type: "en" },
+{ text: "MELLANMÅL", type: "ett" },
+{ text: "MILLIGRAM", type: "ett" },
+{ text: "MILLIMETER", type: "en" },
+{ text: "MORBROR", type: "en" },
+{ text: "MÅNADSSKIFTE", type: "ett" },
+{ text: "NIA", type: "en" },
+{ text: "NORDOST", type: "en" },
+{ text: "PINGST", type: "en" },
+{ text: "SEXA", type: "en" },
+{ text: "SJUA", type: "en" },
+{ text: "STORASYSTER", type: "en" },
+{ text: "SYSSLING", type: "en" },
+{ text: "TIA", type: "en" },
+{ text: "UTBILDNINGSMINISTER", type: "en" },
+{ text: "VECKODAG", type: "en" },
+{ text: "ÅTTA", type: "en" },
+{ text: "ÄNKEMAN", type: "en" },
+{ text: "ÄNKLING", type: "en" },
+{ text: "ÖGONLOCK", type: "ett" },
+{ text: "PÅSTÅENDE", type: "ett" },
+{ text: "AVSNITT", type: "ett" },
+{ text: "UTTALANDE", type: "ett" },
+{ text: "TÅG", type: "ett" },
+{ text: "PIRATPARTI", type: "ett" },
+{ text: "CENTRUM", type: "ett" },
+{ text: "BORD", type: "ett" },
+{ text: "MOTSTÅND", type: "ett" },
+{ text: "VÄNSTERPARTI", type: "ett" },
+{ text: "LOPP", type: "ett" },
+{ text: "HOPP", type: "ett" },
+{ text: "CITAT", type: "ett" },
+{ text: "UTRYMME", type: "ett" },
+{ text: "FOKUS", type: "ett" },
+{ text: "KAPITAL", type: "ett" },
+{ text: "NÄTVERK", type: "ett" },
+{ text: "SIKTE", type: "ett" },
+{ text: "AVSTÅND", type: "ett" },
+{ text: "BEN", type: "ett" },
+{ text: "KLIMAT", type: "ett" },
+{ text: "LANDSTING", type: "ett" },
+{ text: "CENTERPARTI", type: "ett" },
+{ text: "ÖDE", type: "ett" },
+{ text: "MORD", type: "ett" },
+{ text: "DOKUMENT", type: "ett" },
+{ text: "FOLKPARTI", type: "ett" },
+{ text: "FÖRTROENDE", type: "ett" },
+{ text: "YRKANDE", type: "ett" },
+{ text: "PLAN", type: "ett" },
+{ text: "FÖRBUND", type: "ett" },
+{ text: "BERG", type: "ett" },
+{ text: "BETEENDE", type: "ett" },
+{ text: "BUD", type: "ett" },
+{ text: "ÄKTENSKAP", type: "ett" },
+{ text: "INSLAG", type: "ett" },
+{ text: "SJUKHUS", type: "ett" },
+{ text: "TEMA", type: "ett" },
+{ text: "RESONEMANG", type: "ett" },
+{ text: "FÖRBUD", type: "ett" },
+{ text: "MEDDELANDE", type: "ett" },
+{ text: "NÄRINGSLIV", type: "ett" },
+{ text: "KÖN", type: "ett" },
+{ text: "LÅN", type: "ett" },
+{ text: "TÄNKANDE", type: "ett" },
+{ text: "BRUK", type: "ett" },
+{ text: "VÄDER", type: "ett" },
+{ text: "HINDER", type: "ett" },
+{ text: "BRÖD", type: "ett" },
+{ text: "FARTYG", type: "ett" },
+{ text: "INTRYCK", type: "ett" },
+{ text: "TACK", type: "ett" },
+{ text: "ENGAGEMANG", type: "ett" },
+{ text: "GÄNG", type: "ett" },
+{ text: "FÖREMÅL", type: "ett" },
+{ text: "MILJÖPARTI", type: "ett" },
+{ text: "BLOD", type: "ett" },
+{ text: "HÅR", type: "ett" },
+{ text: "ORGAN", type: "ett" },
+{ text: "MISSTAG", type: "ett" },
+{ text: "TRÄD", type: "ett" },
+{ text: "TAK", type: "ett" },
+{ text: "STRAFF", type: "ett" },
+{ text: "VERKTYG", type: "ett" },
+{ text: "BETYG", type: "ett" },
+{ text: "BELOPP", type: "ett" },
+{ text: "SAMBAND", type: "ett" },
+{ text: "URSPRUNG", type: "ett" },
+{ text: "FORUM", type: "ett" },
+{ text: "KORT", type: "ett" },
+{ text: "FÖNSTER", type: "ett" },
+{ text: "LJUD", type: "ett" },
+{ text: "PAPPER", type: "ett" },
+{ text: "FENOMEN", type: "ett" },
+{ text: "DECENNIUM", type: "ett" },
+{ text: "HOTELL", type: "ett" },
+{ text: "MÄRKE", type: "ett" },
+{ text: "KÖTT", type: "ett" },
+{ text: "SNITT", type: "ett" },
+{ text: "BESKED", type: "ett" },
+{ text: "AVSEENDE", type: "ett" },
+{ text: "KAFFE", type: "ett" },
+{ text: "FÖRFARANDE", type: "ett" },
+{ text: "TYG", type: "ett" },
+{ text: "ÖGONBLICK", type: "ett" },
+{ text: "UTSLÄPP", type: "ett" },
+{ text: "KÖP", type: "ett" },
+{ text: "HELVETE", type: "ett" },
+{ text: "JORDBRUK", type: "ett" },
+{ text: "SÄLLSKAP", type: "ett" },
+{ text: "VIN", type: "ett" },
+{ text: "KONTOR", type: "ett" },
+{ text: "FÖRDRAG", type: "ett" },
+{ text: "INSTRUMENT", type: "ett" },
+{ text: "GENOMFÖRANDE", type: "ett" },
+{ text: "YTTRANDE", type: "ett" },
+{ text: "BISTÅND", type: "ett" },
+{ text: "DYGN", type: "ett" },
+{ text: "RYKTE", type: "ett" },
+{ text: "BIBLIOTEK", type: "ett" },
+{ text: "BOENDE", type: "ett" },
+{ text: "MUSEUM", type: "ett" },
+{ text: "VETE", type: "ett" },
+{ text: "ÖRA", type: "ett" },
+{ text: "LED", type: "ett" },
+{ text: "MÖRKER", type: "ett" },
+{ text: "AGERANDE", type: "ett" },
+{ text: "MOTIV", type: "ett" },
+{ text: "HUSHÅLL", type: "ett" },
+{ text: "HAT", type: "ett" },
+{ text: "MÖNSTER", type: "ett" },
+{ text: "VARUMÄRKE", type: "ett" },
+{ text: "KILO", type: "ett" },
+{ text: "LÖFTE", type: "ett" },
+{ text: "ANSTÄLLD", type: "ett" },
+{ text: "LIDANDE", type: "ett" },
+{ text: "GOLV", type: "ett" },
+{ text: "STATSRÅD", type: "ett" },
+{ text: "FRAMSTEG", type: "ett" },
+{ text: "FINGER", type: "ett" },
+{ text: "HÅL", type: "ett" },
+{ text: "GULD", type: "ett" },
+{ text: "MÅTT", type: "ett" },
+{ text: "ÄNDAMÅL", type: "ett" },
+{ text: "TORG", type: "ett" },
+{ text: "KÖK", type: "ett" },
+{ text: "UNDERLAG", type: "ett" },
+{ text: "UPPROR", type: "ett" },
+{ text: "FÖRTRYCK", type: "ett" },
+{ text: "EVANGELIUM", type: "ett" },
+{ text: "FÄLT", type: "ett" },
+{ text: "FÅTAL", type: "ett" },
+{ text: "STOPP", type: "ett" },
+{ text: "PROV", type: "ett" },
+{ text: "SINNE", type: "ett" },
+{ text: "ARV", type: "ett" },
+{ text: "SEMINARIUM", type: "ett" },
+{ text: "ÖVERGREPP", type: "ett" },
+{ text: "PASS", type: "ett" },
+{ text: "LÄGER", type: "ett" },
+{ text: "KONTRAKT", type: "ett" },
+{ text: "DELTAGANDE", type: "ett" },
+{ text: "KORS", type: "ett" },
+{ text: "MOD", type: "ett" },
+{ text: "LANDSKAP", type: "ett" },
+{ text: "FACK", type: "ett" },
+{ text: "PROTOKOLL", type: "ett" },
+{ text: "FÖRLAG", type: "ett" },
+{ text: "DATUM", type: "ett" },
+{ text: "KRITERIUM", type: "ett" },
+{ text: "ANGREPP", type: "ett" },
+{ text: "TESTAMENTE", type: "ett" },
+{ text: "YRKE", type: "ett" },
+{ text: "ÅRHUNDRADE", type: "ett" },
+{ text: "ANSLAG", type: "ett" },
+{ text: "LÄKEMEDEL", type: "ett" },
+{ text: "STÄLLNINGSTAGANDE", type: "ett" },
+{ text: "REGN", type: "ett" },
+{ text: "BLOGGINLÄGG", type: "ett" },
+{ text: "GLAS", type: "ett" },
+{ text: "ALBUM", type: "ett" },
+{ text: "TERRITORIUM", type: "ett" },
+{ text: "SKEDE", type: "ett" },
+{ text: "LEDARSKAP", type: "ett" },
+{ text: "LOV", type: "ett" },
+{ text: "INSTITUT", type: "ett" },
+{ text: "HÖRN", type: "ett" },
+{ text: "ÖL", type: "ett" },
+{ text: "REGELVERK", type: "ett" },
+{ text: "VITTNE", type: "ett" },
+{ text: "SLOTT", type: "ett" },
+{ text: "ANSPRÅK", type: "ett" },
+{ text: "BYTE", type: "ett" },
+{ text: "TEMPEL", type: "ett" },
+{ text: "MEDLEMSKAP", type: "ett" },
+{ text: "KONTO", type: "ett" },
+{ text: "PAKET", type: "ett" },
+{ text: "TILLÄGG", type: "ett" },
+{ text: "FORDON", type: "ett" },
+{ text: "MANDAT", type: "ett" },
+{ text: "INFÖRANDE", type: "ett" },
+{ text: "FLYGPLAN", type: "ett" },
+{ text: "UTSEENDE", type: "ett" },
+{ text: "UNIVERSUM", type: "ett" },
+{ text: "UTBYTE", type: "ett" },
+{ text: "BLAD", type: "ett" },
+{ text: "VARV", type: "ett" },
+{ text: "FLYG", type: "ett" },
+{ text: "ANFALL", type: "ett" },
+{ text: "HEMLAND", type: "ett" },
+{ text: "SKEPP", type: "ett" },
+{ text: "GENOMSNITT", type: "ett" },
+{ text: "GYMNASIUM", type: "ett" },
+{ text: "KNÄ", type: "ett" },
+{ text: "ELEMENT", type: "ett" },
+{ text: "TVIVEL", type: "ett" },
+{ text: "UTBUD", type: "ett" },
+{ text: "SKADESTÅND", type: "ett" },
+
+];
+
+const TIMELINE = {
+
+// --- KONTROLLPANEL TIDER OCH VARAKTIGHET ---
+
+// --- KULANS HASTIGHET: hur snabbt spelet rullar framåt ---
+SPEED: 0.7,
+
+// --- NÄR FÖRSTA SKYLT VISAS: från det att spelet startas ---
+SHOW_WORD: 0.5,
+
+// --- NÄR VALPASSAGEN BÖRJAR SYNAS: från det att skylten har försvunnit ---
+SHOW_CHOICES: 2.0,
+
+// --- VARAKTIGHET TILL KOLLISION: från det att valen började synas ---
+COLLISION: 3.5,
+
+// --- VARAKTIGHET TILL NY RUNDA: från det att valpassagen har passerats ---
+PAUSE_AFTER: 1.5
+
+};
+
+// Hjälpvariabler för att veta exakta tidpunkter (Cumulative time)
+const TIME_STAMP_WORD = TIMELINE.SHOW_WORD;
+const TIME_STAMP_CHOICES = TIME_STAMP_WORD + TIMELINE.SHOW_CHOICES;
+const TIME_STAMP_COLLISION = TIME_STAMP_CHOICES + TIMELINE.COLLISION;
+const TIME_STAMP_END = TIME_STAMP_COLLISION + TIMELINE.PAUSE_AFTER;
+
+// --- SPELVARIABLER ---
+let availableWords = [...words];
+let score = 0;         // Meter
+let health = 10;       // Startar på 10 liv
+const MAX_HEALTH = 100;
+let stars = 0;
+let gameActive = false;
+let timer = 0; // Endast en deklaration av timer
+let targetX = 0;
+let font = null;
+let currentWord = null;
+let roadSegments = [];
+let portalGroup = null;
+let wordGroup = null;
+let starParticles = [];
+let yVelocity = 0;
+let isJumping = false;
+let isRabbitTrap = false;
+let challengeData = { enX: 0, ettX: 0, animalX: 0, processed: false };
+
+// --- GULDMYNT & DISTANS ---
+const COINS_PER_JUMP = 10;      // Mynt som krävs för att hoppa över muren
+const ROUNDS_PER_WALL = 3;      // Antal vanliga rundor innan kaninmur
+const COINS_PER_ROUND = 5;      // Antal mynt som spawnas per runda
+let coins = 0;                  // Nuvarande mynt-saldo
+let distanceTraveled = 0;
+let coinMeshes = [];
+let lastCoinLane = -99;
+let roundsSinceWall = 0;        // Antal vanliga rundor avklarade sedan senaste muren
+let rabbitWallPending = false;  // Flagga: nästa artikelpassage = kaninmur
+
+const GRAVITY = -0.018, JUMP_FORCE = 0.5;
+
+// (updateStartImage och dekorationsfunktioner förblir desamma som i din kod...)
+const startImages = ['start-1.png', 'start-2.png', 'start-3.png', 'start-4.png', 'start-5.png'];
+let remainingImages = [];
+
+function updateStartImage() {
+    if (remainingImages.length === 0) remainingImages = [...startImages];
+    const randomIndex = Math.floor(Math.random() * remainingImages.length);
+    const selectedImage = remainingImages.splice(randomIndex, 1)[0];
+    const imgElement = document.getElementById('start-img');
+    if (imgElement) imgElement.src = selectedImage;
+}
+updateStartImage();
+
+function createHouse(x, z) {
+    const group = new THREE.Group();
+    const wallColors = [0xf5cba7, 0xfdebd0, 0xd5e8d4, 0xdae8fc, 0xf8d7da, 0xfff9c4];
+    const roofColors = [0xc0392b, 0x7f8c8d, 0x884ea0, 0x1a5276, 0x6e2f0a];
+    const wallColor = wallColors[Math.floor(Math.random() * wallColors.length)];
+    const roofColor = roofColors[Math.floor(Math.random() * roofColors.length)];
+    const w = 2.5 + Math.random() * 1.5, h = 2 + Math.random() * 1.2, d = 2 + Math.random() * 1.2;
+    const walls = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color: wallColor, roughness: 0.8 }));
+    walls.position.y = h / 2; group.add(walls);
+    const roofGeo = new THREE.CylinderGeometry(0, w * 0.78, h * 0.7, 4);
+    const roof = new THREE.Mesh(roofGeo, new THREE.MeshStandardMaterial({ color: roofColor, roughness: 0.7 }));
+    roof.position.y = h + h * 0.35 - 0.1; roof.rotation.y = Math.PI / 4; group.add(roof);
+
+    const winMat = new THREE.MeshStandardMaterial({ color: 0xadd8e6, emissive: 0x223344, roughness: 0.1 });
+
+    // Door on the front face (towards road, +x side for right, -x for left — handled by rotation below)
+    const door = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.9, 0.05), new THREE.MeshStandardMaterial({ color: 0x6d4c41 }));
+    door.position.set(0, 0.45, d / 2 + 0.03); group.add(door);
+
+    // Front face windows (beside door)
+    [-0.7, 0.7].forEach(ox => {
+        const win = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.05), winMat);
+        win.position.set(ox, h * 0.6, d / 2 + 0.03); group.add(win);
+    });
+
+    // Back face windows
+    [-0.7, 0.7].forEach(ox => {
+        const win = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.45, 0.05), winMat);
+        win.position.set(ox, h * 0.6, -(d / 2 + 0.03)); group.add(win);
+    });
+
+    // Left side windows
+    [-0.0].forEach(oz => {
+        const win = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.45, 0.45), winMat);
+        win.position.set(-(w / 2 + 0.03), h * 0.6, oz); group.add(win);
+    });
+
+    // Right side windows
+    [-0.0].forEach(oz => {
+        const win = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.45, 0.45), winMat);
+        win.position.set(w / 2 + 0.03, h * 0.6, oz); group.add(win);
+    });
+
+    // Rotate house so front door faces the road (towards x=0)
+    // Houses on the right (x > 0) rotate -90°, houses on left (x < 0) rotate +90°
+    group.rotation.y = x > 0 ? Math.PI / 2 : -Math.PI / 2;
+
+    group.position.set(x, 0, z); return group;
+}
+
+function createScenery(z) {
+    const group = new THREE.Group();
+    const count = 2 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) {
+        const roll = Math.random(), side = Math.random() > 0.5 ? 1 : -1;
+        const x = side * (7 + Math.random() * 5), scale = 0.5 + Math.random() * 1.5, zOff = (Math.random() - 0.5) * 5;
+        if (roll > 0.65) {
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1), new THREE.MeshStandardMaterial({color: 0x5d4037}));
+            const foliage = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2.5, 8), new THREE.MeshStandardMaterial({color: 0x2e7d32}));
+            foliage.position.y = 1.5; const tree = new THREE.Group(); tree.add(trunk, foliage);
+            tree.position.set(x, 0.5, zOff); tree.scale.setScalar(scale); group.add(tree);
+        } else if (roll > 0.3) {
+            const bush = new THREE.Mesh(new THREE.SphereGeometry(0.7, 8, 8), new THREE.MeshStandardMaterial({color: 0x388e3c}));
+            bush.position.set(x, 0.3, zOff); bush.scale.set(scale, scale * 0.7, scale); group.add(bush);
+        } else {
+            const house = createHouse(x, zOff); house.scale.setScalar(0.7 + Math.random() * 0.6); group.add(house);
+        }
+    }
+    return group;
+}
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playStarSound() {
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+}
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xa2d2ff);
+scene.fog = new THREE.Fog(0xa2d2ff, 40, 90);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const texLoader = new THREE.TextureLoader();
+const bunnyTexture = texLoader.load('https://learnswedish.github.io/html/bunny.png');
+
+function createTextTexture(text, color) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512; canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+    ctx.beginPath(); ctx.roundRect(10, 10, 492, 236, 40); ctx.fill();
+    ctx.lineWidth = 15; ctx.strokeStyle = color; ctx.stroke();
+    ctx.fillStyle = color; ctx.font = 'bold 140px Work Sans, Arial';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 256, 128);
+    return new THREE.CanvasTexture(canvas);
+}
+
+const enTex = createTextTexture("EN", "#1a5d1a");
+const ettTex = createTextTexture("ETT", "#8b0000");
+
+scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 0.7);
+sun.position.set(10, 20, 10); scene.add(sun);
+
+const player = new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 32), new THREE.MeshStandardMaterial({color: 0xff4444, roughness: 0.3}));
+player.position.y = 0.6; scene.add(player);
+
+portalGroup = new THREE.Group(); scene.add(portalGroup);
+
+function triggerStarEffect() {
+    playStarSound();
+    for(let i=0; i<15; i++) {
+        const p = new THREE.Mesh(new THREE.IcosahedronGeometry(0.2, 0), new THREE.MeshStandardMaterial({color: 0xf1c40f, emissive: 0xf1c40f}));
+        p.position.set(player.position.x, player.position.y + 0.5, player.position.z);
+        p.userData = { vel: new THREE.Vector3((Math.random()-0.5)*0.4, Math.random()*0.4, (Math.random()-0.5)*0.2), life: 1.0 };
+        starParticles.push(p); scene.add(p);
+    }
+}
+
+// --- GULDMYNT ---
+function spawnCoinBatch(spawnStartZ) {
+    const lanes = [-3, 0, 3];
+    const spacing = 22; 
+    
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin('anonymous');
+    const coinTexture = loader.load('https://learnswedish.github.io/html/rabbit-coin.png');
+
+    for (let i = 0; i < COINS_PER_ROUND; i++) {
+        const available = lanes.filter(l => l !== lastCoinLane);
+        const x = available[Math.floor(Math.random() * available.length)];
+        lastCoinLane = x;
+
+        const z = spawnStartZ - i * spacing;
+        
+        // Vi använder PlaneGeometry för en platt bild
+        const coinGeo = new THREE.PlaneGeometry(1.5, 1.5);
+        const coinMat = new THREE.MeshBasicMaterial({ 
+            map: coinTexture, 
+            transparent: true,
+            side: THREE.DoubleSide // Gör att bilden syns när den snurrat ett halvt varv
+        });
+        
+        const coinMesh = new THREE.Mesh(coinGeo, coinMat);
+        coinMesh.position.set(x, 1.0, z);
+        
+        scene.add(coinMesh);
+        coinMeshes.push(coinMesh);
+    }
+}
+
+function updateCoins() {
+    for (let i = coinMeshes.length - 1; i >= 0; i--) {
+        const coin = coinMeshes[i];
+
+        // Detta får myntet att rotera runt stående (vertikalt)
+        coin.rotation.y += 0.1; 
+
+        // Resten av din befintliga kod för borttagning och kollision...
+        if (coin.position.z > player.position.z + 2) {
+            scene.remove(coin);
+            coinMeshes.splice(i, 1);
+            continue;
+        }
+
+        const dx = coin.position.x - player.position.x;
+        const dz = coin.position.z - player.position.z;
+        if (Math.abs(dx) < 1.2 && Math.abs(dz) < 1.5) {
+            const wasReady = coins >= COINS_PER_JUMP;
+            coins = Math.min(coins + 1, COINS_PER_JUMP);
+            updateCoinIndicator();
+            if (!wasReady && coins >= COINS_PER_JUMP) {
+                document.getElementById('jump-available').play();
+            } else {
+                playStarSound();
+            }
+            scene.remove(coin);
+            coinMeshes.splice(i, 1);
+        }
+    }
+}
+
+function updateCoinIndicator() {
+    const pct = Math.min(100, (coins / COINS_PER_JUMP) * 100);
+    document.getElementById('coin-bar').style.width = pct + '%';
+    if (coins >= COINS_PER_JUMP) {
+        document.getElementById('coin-count-label').textContent = '✅ Ready!';
+        document.getElementById('coin-bar').style.background = 'linear-gradient(90deg,#2ed573,#00b894)';
+    } else {
+        document.getElementById('coin-count-label').textContent = `${coins} / ${COINS_PER_JUMP}`;
+        document.getElementById('coin-bar').style.background = 'linear-gradient(90deg, #f1c40f, #ff9800)';
+    }
+}
+
+// --- KANINMUR ---
+// Lägger 6 kaniner (2 rader × 3 banor) direkt i den givna groupen
+function buildRabbitWall(impactZ) {
+    const lanes = [-3, 0, 3];
+    const rowOffsets = [0, -3.5];
+    lanes.forEach(x => {
+        rowOffsets.forEach(dz => {
+            const bunny = new THREE.Sprite(new THREE.SpriteMaterial({ map: bunnyTexture, transparent: true }));
+            bunny.scale.set(2.3, 2.3, 1);
+            bunny.center.set(0.5, 0);
+            bunny.position.set(x, 0, impactZ + dz);
+            portalGroup.add(bunny);
+        });
+    });
+}
+
+function createGlossyPlate(width, height, color = 0xffffff) {
+    const shape = new THREE.Shape();
+    const w = width/2, h = height/2, r = 0.4;
+    shape.moveTo(-w+r, -h); shape.lineTo(w-r, -h); shape.quadraticCurveTo(w, -h, w, -h+r);
+    shape.lineTo(w, h-r); shape.quadraticCurveTo(w, h, w-r, h);
+    shape.lineTo(-w+r, h); shape.quadraticCurveTo(-w, h, -w, h-r);
+    shape.lineTo(-w, -h+r); shape.quadraticCurveTo(-w, -h, -w+r, -h);
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.1, bevelEnabled: true, bevelSize: 0.05, bevelThickness: 0.05 });
+    return new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({ color: color, roughness: 0.1, clearcoat: 1 }));
+}
+
+function createRoadSegment(z) {
+    const group = new THREE.Group();
+    const road = new THREE.Mesh(new THREE.PlaneGeometry(10, 5.1), new THREE.MeshBasicMaterial({color: 0x333333}));
+    road.rotation.x = -Math.PI/2; group.add(road);
+    const line = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 2), new THREE.MeshBasicMaterial({color: 0xffffff}));
+    line.rotation.x = -Math.PI/2; line.position.y = 0.01; group.add(line);
+    const grass = new THREE.Mesh(new THREE.PlaneGeometry(60, 5.1), new THREE.MeshStandardMaterial({color: 0x7cb342}));
+    grass.rotation.x = -Math.PI/2; grass.position.y = -0.05; group.add(grass);
+    group.add(createScenery(z)); group.position.z = z; scene.add(group); return group;
+}
+
+for(let i=0; i<100; i++) roadSegments.push(createRoadSegment(-i * 5));
+
+const loader = new FontLoader();
+loader.load('https://cdn.jsdelivr.net/npm/three@0.158.0/examples/fonts/droid/droid_sans_bold.typeface.json', f => {
+    font = f;
+    const hs = localStorage.getItem('grammarHigh') || 0;
+    document.getElementById('high-score-display').textContent = `RECORD: ${hs}`;
+});
+
+function initRound() {
+    if (availableWords.length === 0) { endGame(true); return; }
+
+    timer = 0;
+    challengeData.processed = false;
+    isRabbitTrap = false;
+
+    // Rensa gamla objekt
+    portalGroup.clear();
+    if (wordGroup) { scene.remove(wordGroup); wordGroup = null; }
+
+    // Räkna upp rundor. Efter ROUNDS_PER_WALL vanliga rundor → kaninmur
+    roundsSinceWall++;
+    if (roundsSinceWall > ROUNDS_PER_WALL) {
+        // Dags för kaninmur – sätt flagga, välj ord MEN ta INTE bort det från listan
+        rabbitWallPending = true;
+        roundsSinceWall = 0;
+    } else {
+        rabbitWallPending = false;
+    }
+
+    // Välj ord (alltid – även vid kaninmurrunda visar vi substantivet)
+    const idx = Math.floor(Math.random() * availableWords.length);
+    currentWord = availableWords[idx];
+    // Ta bara bort ordet om det INTE är en kaninmurrunda
+    if (!rabbitWallPending) {
+        availableWords.splice(idx, 1);
+    }
+
+    // Slumpa banplacering (används vid vanliga rundor, ignoreras vid kaninmur)
+    let lanes = [-3, 0, 3].sort(() => Math.random() - 0.5);
+    challengeData.enX = lanes[0];
+    challengeData.ettX = lanes[1];
+    challengeData.animalX = lanes[2];
+}
+
+function endGame(victory) {
+    gameActive = false; 
+    document.getElementById('bg-music').pause();
+    
+    // Avrunda poängen till heltal innan de sparas och visas
+    const finalScore = Math.floor(score); 
+    const high = parseInt(localStorage.getItem('grammarHigh')) || 0;
+    
+    if (finalScore > high) {
+        localStorage.setItem('grammarHigh', finalScore);
+    }
+    
+    const currentHigh = localStorage.getItem('grammarHigh') || 0;
+    
+    document.getElementById('modal-title').textContent = victory ? "SESSION COMPLETE" : "GAME OVER";
+    
+    // Uppdaterad display: Inga decimaler, inga mynt, rätt etikett för rekord
+    document.getElementById('final-stats').innerHTML = `
+        Score: ${finalScore} m<br>
+        Personal best: ${currentHigh} m
+    `;
+    
+    document.getElementById('victory-modal').style.display = 'block';
+}
+
+window.addEventListener('keydown', e => {
+    if(!gameActive) return;
+    if(e.key === "ArrowLeft") targetX = Math.max(-3, targetX - 3);
+    if(e.key === "ArrowRight") targetX = Math.min(3, targetX + 3);
+    if(e.code === "Space" && !isJumping && coins >= COINS_PER_JUMP) {
+        coins = 0; stars = 0; yVelocity = JUMP_FORCE; isJumping = true;
+        document.getElementById('jump-sound').play();
+        
+        updateCoinIndicator();
+    }
+});
+
+function animate() {
+    requestAnimationFrame(animate);
+    if (!gameActive) return;
+
+    // 1. TIDSHANTERING
+    timer += 1 / 60;
+
+    // 2. SPELARRÖRELSE
+    player.position.z -= TIMELINE.SPEED;
+    player.position.x += (targetX - player.position.x) * 0.2;
+    
+    player.position.y += yVelocity;
+    yVelocity += GRAVITY;
+    if (player.position.y <= 0.6) { 
+        player.position.y = 0.6; 
+        yVelocity = 0; 
+        isJumping = false; 
+    }
+    player.rotation.x -= TIMELINE.SPEED * 1.5;
+
+    // 3. UI-UPPDATERING (METER & HÄLSA)
+    // Räkna "riktiga" meter baserat på framfart
+    distanceTraveled += TIMELINE.SPEED * 0.5; 
+    score = Math.floor(distanceTraveled);
+    document.getElementById('score-val').textContent = score + ' m';
+    
+    // Uppdatera Livsindikatorn (Hälsa)
+    const healthBar = document.getElementById('health-bar');
+    const healthVal = document.getElementById('health-val');
+    if (healthBar && healthVal) {
+        const healthPct = Math.max(0, (health / 100) * 100);
+        healthBar.style.width = healthPct + '%';
+        healthVal.textContent = `${Math.ceil(health)} / 100`;
+        
+        // Byt färg på hälsa om den är låg
+        healthBar.style.background = health < 30 ? '#ff4444' : '#f44336';
+    }
+
+    // DÖDS-CHECK: Om hälsan når noll
+    if (health <= 0) {
+        health = 0;
+        endGame(false);
+        return;
+    }
+
+    
+    camera.position.set(0, 5, player.position.z + 9);
+    camera.lookAt(0, 1.2, player.position.z - 5);
+
+    updateCoins();
+
+    // 4. PARTIKELSYSTEM
+    for (let i = starParticles.length - 1; i >= 0; i--) {
+        const p = starParticles[i];
+        p.position.add(p.userData.vel);
+        p.userData.life -= 0.02;
+        p.scale.setScalar(p.userData.life);
+        if (p.userData.life <= 0) {
+            scene.remove(p);
+            starParticles.splice(i, 1);
+        }
+    }
+
+    // --- TIMELINE LOGIK ---
+
+    // FAS A: VISA ORDET
+    if (timer >= TIME_STAMP_WORD && !wordGroup && font) {
+        wordGroup = new THREE.Group();
+        const geo = new TextGeometry(currentWord.text, { font: font, size: 0.72, height: 0.12, curveSegments: 14 });
+        geo.center();
+        
+        const plateW = Math.max(5.2, (geo.boundingBox ? geo.boundingBox.max.x - geo.boundingBox.min.x : 5) + 2.2);
+        const signColor = 0x1a5276;
+        
+        const border = createGlossyPlate(plateW + 0.22, 1.9 + 0.22, 0xdddddd);
+        border.position.z = -0.02;
+        const plate = createGlossyPlate(plateW, 1.9, signColor);
+        const txt = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.15 }));
+        txt.position.z = 0.18;
+        
+        wordGroup.add(border, plate, txt);
+        wordGroup.position.set(0, 10, player.position.z - 12);
+        scene.add(wordGroup);
+    }
+
+    if (wordGroup) {
+        if (timer < TIME_STAMP_CHOICES) {
+            wordGroup.position.z = player.position.z - 12;
+            wordGroup.position.y += (3.5 - wordGroup.position.y) * 0.1;
+            wordGroup.lookAt(camera.position);
+        } else {
+            wordGroup.position.y += (1.2 - wordGroup.position.y) * 0.1;
+        }
+    }
+
+    // FAS B: VISA VALEN
+    if (timer >= TIME_STAMP_CHOICES && portalGroup.children.length === 0) {
+        const distRemaining = TIMELINE.COLLISION * TIMELINE.SPEED * 60;
+        const impactZ = player.position.z - distRemaining;
+
+        if (rabbitWallPending) {
+            buildRabbitWall(impactZ);
+        } else {
+            const createSign = (tex, x) => {
+                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
+                sprite.scale.set(3, 1.75, 1); sprite.position.set(x, 1.2, impactZ);
+                portalGroup.add(sprite);
+            };
+            createSign(enTex, challengeData.enX);
+            createSign(ettTex, challengeData.ettX);
+            const animal = new THREE.Sprite(new THREE.SpriteMaterial({ map: bunnyTexture, transparent: true }));
+            animal.scale.set(2.3, 2.3, 1); animal.center.set(0.5, 0); animal.position.set(challengeData.animalX, 0, impactZ);
+            portalGroup.add(animal);
+        }
+    }
+
+    // FAS C: KOLLISION
+    if (timer >= TIME_STAMP_COLLISION && !challengeData.processed) {
+        challengeData.processed = true;
+
+        if (rabbitWallPending) {
+            if (player.position.y < 1.8) {
+                document.getElementById('rabbit-hurt').play();
+                scene.background = new THREE.Color(0xff4444);
+                setTimeout(() => { if(gameActive) scene.background = new THREE.Color(0xa2d2ff); }, 200);
+                endGame(false);
+                return;
+            } else {
+                coins = 0; roundsSinceWall = 0; rabbitWallPending = false;
+                
+                updateCoinIndicator();
+            }
+        } else {
+            const playerLane = Math.round(player.position.x / 3) * 3;
+            if (player.position.y < 1.8) {
+                if (playerLane === challengeData.animalX) {
+                    document.getElementById('rabbit-hurt').play();
+                    scene.background = new THREE.Color(0xff4444);
+                    setTimeout(() => { if(gameActive) scene.background = new THREE.Color(0xa2d2ff); }, 200);
+                    endGame(false);
+                    return;
+                } else {
+                    const chosenType = (playerLane === challengeData.enX) ? "en" : "ett";
+                    if (chosenType === currentWord.type) {
+                        triggerStarEffect();
+                        health = Math.min(100, health + 10); // BONUS: +10 Liv
+                    } else {
+                        document.getElementById('error-sound').play();
+                        health -= 20; // STRAFF: -20 Liv
+                        scene.background = new THREE.Color(0xff4444);
+                        setTimeout(() => { if(gameActive) scene.background = new THREE.Color(0xa2d2ff); }, 150);
+                    }
+                }
+            }
+            spawnCoinBatch(player.position.z - 35);
+        }
+    }
+
+    // FAS D: NY RUNDA
+    if (timer >= TIME_STAMP_END) {
+        initRound();
+    }
+
+    // 5. ROAD RECYCLING
+    roadSegments.forEach(s => { 
+        if (s.position.z > player.position.z + 15) {
+            s.position.z -= 500;
+            const sceneryGroup = s.children[s.children.length - 1];
+            sceneryGroup.children.forEach(obj => { obj.position.z = (Math.random() - 0.5) * 5; });
+        }
+    });
+
+    renderer.render(scene, camera);
+}
+
+window.addEventListener('keydown', (e) => { if (e.key === "Enter" && !gameActive) document.getElementById('overlay').click(); });
+
+document.getElementById('overlay').addEventListener('click', () => {
+    // 1. Ljud och bakgrund
+    audioCtx.resume();
+    scene.background = new THREE.Color(0xa2d2ff);
+    document.getElementById('bg-music').volume = 0.3;
+    document.getElementById('bg-music').play().catch(e => {});
+
+    // 2. Rekord och UI
+    const hs = localStorage.getItem('grammarHigh') || 0;
+    document.getElementById('high-score-display').textContent = `RECORD: ${hs} m`;
+    updateCoinIndicator();
+
+    // 3. Nollställ alla spelvariabler (inga dubbletter här nu)
+    availableWords = [...words];
+    score = 0;
+    distanceTraveled = 0;
+    health = 10;            // Startar på 10 liv enligt dina nya regler
+    coins = 0;
+    stars = 0;
+    timer = 0;
+    targetX = 0;
+    yVelocity = 0;
+    isJumping = false;
+    roundsSinceWall = 0;
+    rabbitWallPending = false;
+    lastCoinLane = -99;
+
+    // 4. Rensa gamla objekt från scenen
+    coinMeshes.forEach(c => scene.remove(c));
+    coinMeshes = [];
+    if (wordGroup) { scene.remove(wordGroup); wordGroup = null; }
+    portalGroup.clear();
+
+    // 5. Återställ positioner
+    player.position.set(0, 0.6, 0);
+    roadSegments.forEach((s, i) => s.position.z = -i * 5);
+
+    // 6. Starta spelet
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('victory-modal').style.display = 'none';
+    gameActive = true;
+    initRound();
+});
+animate();
+</script>
+</body>
+</html>
