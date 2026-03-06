@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pronunciation of 'g'</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@0,700;1,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root, [data-theme="light"] {
+      --bg:        #e8edf5;
+      --bg2:       #dde3ef;
+      --card:      #f4f7fc;
+      --card2:     #eaeef7;
+      --border:    #c5cde0;
+      --text:      #1a2338;
+      --muted:     #5a6a8a;
+      --accent:    #2d5be3;
+      --accent2:   #1a3ba8;
+      --highlight: #d4380d;
+      --ok-bg:     #e6f4ea; --ok-text: #1b5e20; --ok-border: #a5d6a7;
+      --err-bg:    #fdecea; --err-text: #7f1d1d; --err-border: #f5c6c6;
+      --shadow:    0 8px 32px rgba(45,91,227,.10),0 2px 8px rgba(0,0,0,.07);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,.07);
+      --score-bg:  rgba(244,247,252,.92);
+      --radius:    22px; --radius-sm: 14px;
+      --toggle-bg: #c5cde0;
+    }
+    [data-theme="dark"] {
+      --bg:#0f1117; --bg2:#181c28; --card:#1e2235; --card2:#252a40;
+      --border:#2e3450; --text:#e8ecf8; --muted:#7a84aa;
+      --accent:#5b8af0; --accent2:#3a6de0; --highlight:#ff6b4a;
+      --ok-bg:#0d2a1a; --ok-text:#7dd6a0; --ok-border:#1e5c3a;
+      --err-bg:#2a0d0d; --err-text:#f09090; --err-border:#5c1e1e;
+      --shadow:0 8px 40px rgba(0,0,0,.40),0 2px 8px rgba(0,0,0,.25);
+      --shadow-sm:0 2px 8px rgba(0,0,0,.25);
+      --score-bg:rgba(30,34,53,.95);
+      --toggle-bg: #2e3450;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+
+    body {
+      font-family:'DM Sans',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      transition:background .4s,color .4s;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 20% -10%, color-mix(in srgb,var(--accent) 8%,transparent),transparent),
+        radial-gradient(ellipse 60% 40% at 80% 110%,color-mix(in srgb,var(--accent) 6%,transparent),transparent);
+    }
+
+    /* SCOREBOARD */
+.scoreboard, .theory-btn {
+      width: 120px; /* Samma fasta bredd som på förra sidan */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 12px;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--score-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-sm);
+      font-weight: 700;
+      font-size: .85rem;
+      transition: all .2s ease;
+    }
+
+.scoreboard {
+      cursor: default;
+    }
+
+    .theory-btn {
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .theory-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .theory-btn i {
+      font-size: 0.9rem;
+    }
+
+    /* Justering för mobil */
+    @media(max-width: 640px){
+      .top-right {
+        top: 14px;
+        right: 14px;
+      }
+      .scoreboard, .theory-btn {
+        width: 100px; /* Något smalare på mobil */
+        font-size: 0.75rem;
+      }
+    }
+    .score-num{color:var(--accent);}
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+      position:fixed;top:20px;left:20px;
+      z-index:100;
+      background:var(--score-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      border:1px solid var(--border);border-radius:999px;
+      padding:8px 14px;box-shadow:var(--shadow-sm);
+      display:flex;align-items:center;gap:10px;
+      transition:background .4s,border-color .4s;
+    }
+    .toggle-label{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+    .toggle-switch {
+      position:relative;width:44px;height:24px;cursor:pointer;
+    }
+    .toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+    .toggle-track {
+      position:absolute;inset:0;
+      background:var(--toggle-bg);border-radius:999px;
+      transition:background .3s;border:1px solid var(--border);
+    }
+    .toggle-switch input:checked + .toggle-track{background:var(--accent);}
+    .toggle-knob {
+      position:absolute;top:50%;left:4px;
+      width:16px;height:16px;border-radius:50%;
+      background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);
+      transform:translateY(-50%);
+      transition:left .3s cubic-bezier(.4,0,.2,1);
+      pointer-events:none;
+    }
+    .toggle-switch input:checked ~ .toggle-knob{left:calc(100% - 20px);}
+    .toggle-icon{font-size:1rem;line-height:1;}
+
+    /* LAYOUT */
+    .wrap{max-width:660px;margin:0 auto;padding:80px 20px 40px;}
+
+    /* HEADER */
+    .header{margin-bottom:24px;animation:fadeUp .5s ease both;}
+    .header-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+    .header h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.6rem,3.5vw,2.4rem);line-height:1.1;font-weight:700;}
+    .header h1 em{color:var(--highlight);}
+    .header p{margin-top:8px;color:var(--muted);font-size:1.05rem;max-width:52ch;line-height:1.5;}
+
+    /* CARD */
+    .card {
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--radius);box-shadow:var(--shadow);
+      padding:24px 28px;
+      transition:background .4s,border-color .4s,box-shadow .4s;
+      animation:fadeUp .5s .1s ease both;
+    }
+
+    /* PROGRESS */
+    .progress-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+    .progress-track{flex:1;height:5px;background:var(--card2);border-radius:999px;overflow:hidden;border:1px solid var(--border);}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 60%,var(--highlight)));border-radius:999px;transition:width .45s cubic-bezier(.4,0,.2,1);}
+    .progress-label{font-size:.82rem;font-weight:700;color:var(--muted);white-space:nowrap;}
+
+    /* WORD BOX */
+    .word-box {
+      background:var(--card2);border:1px solid var(--border);
+      border-radius:var(--radius-sm);padding:20px 20px;
+      text-align:center;margin-bottom:16px;
+      position:relative;overflow:hidden;
+      transition:background .4s,opacity .2s,transform .2s;
+    }
+    .word-box::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 70% 60% at 50% 0%,color-mix(in srgb,var(--accent) 7%,transparent),transparent);
+      pointer-events:none;
+    }
+    .word-box.transitioning{opacity:0;transform:translateY(8px);}
+
+    .word{
+      font-family:'Playfair Display',Georgia,serif;
+      font-size:clamp(2rem,4.5vw,3rem);
+      font-weight:700;letter-spacing:.02em;line-height:1;
+      position:relative;z-index:1;
+    }
+    .word .target-letter{color:var(--highlight);position:relative;}
+    .word .target-letter::after{
+      content:'';position:absolute;bottom:-3px;left:0;right:0;
+      height:3px;background:var(--highlight);border-radius:2px;opacity:.6;
+    }
+
+    /* CHOICES */
+    .choices{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+    @media(max-width:500px){.choices{grid-template-columns:repeat(2,1fr);}}
+
+    .choice-btn {
+      appearance:none;border:1.5px solid var(--border);background:var(--card);
+      color:var(--text);border-radius:var(--radius-sm);padding:16px 8px;
+      font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;
+      cursor:pointer;position:relative;overflow:hidden;
+      transition:background .15s,border-color .15s,transform .15s,box-shadow .15s;
+      letter-spacing:.02em;
+    }
+    .choice-btn::before{content:'';position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity .15s;}
+    .choice-btn:hover:not(:disabled){border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 20%,transparent);}
+    .choice-btn:hover:not(:disabled)::before{opacity:.06;}
+    .choice-btn:active:not(:disabled){transform:translateY(0);}
+    .choice-btn:disabled{cursor:default;}
+    .choice-btn.correct{background:var(--ok-bg);color:var(--ok-text);border-color:var(--ok-border);box-shadow:0 4px 16px color-mix(in srgb,var(--ok-text) 12%,transparent);}
+    .choice-btn.wrong{background:var(--err-bg);color:var(--err-text);border-color:var(--err-border);}
+
+    /* FEEDBACK */
+    .feedback {
+      min-height:46px;padding:11px 16px;
+      border-radius:var(--radius-sm);border:1.5px solid var(--border);
+      font-weight:600;font-size:.93rem;
+      display:flex;align-items:center;gap:10px;
+      transition:all .25s ease;margin-bottom:16px;
+      color:var(--muted);background:var(--card2);
+    }
+    .feedback.correct{background:var(--ok-bg);color:var(--ok-text);border-color:var(--ok-border);}
+    .feedback.wrong  {background:var(--err-bg);color:var(--err-text);border-color:var(--err-border);}
+    .feedback-icon{font-size:1.1rem;flex-shrink:0;}
+
+    /* CONTROLS */
+    .controls{display:flex;gap:10px;flex-wrap:wrap;}
+    .nav-btn {
+      appearance:none;border:1.5px solid var(--border);background:var(--card2);
+      color:var(--text);border-radius:var(--radius-sm);padding:11px 18px;
+      font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:700;
+      cursor:pointer;transition:background .15s,border-color .15s,transform .15s;letter-spacing:.01em;
+    }
+    .nav-btn:hover{background:var(--bg2);border-color:var(--muted);}
+    .nav-btn:active{transform:scale(.98);}
+    .nav-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);flex:1;}
+    .nav-btn.primary:hover{background:var(--accent2);border-color:var(--accent2);}
+
+    /* ANIMATIONS */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes pop{0%{transform:scale(1);}40%{transform:scale(1.06);}100%{transform:scale(1);}}
+    @keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-5px);}40%{transform:translateX(5px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+    .animate-pop  {animation:pop .3s ease;}
+    .animate-shake{animation:shake .35s ease;}
+
+    /* FINISH */
+    .finish-display{text-align:center;padding:10px 0 4px;}
+    .finish-score{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,6vw,4rem);font-weight:700;color:var(--accent);line-height:1;}
+    .finish-label{color:var(--muted);margin-top:8px;font-size:.95rem;}
+
+    /* THEORY BUTTON */
+    .theory-btn {
+      display:block;
+      margin-top:8px;
+      background:var(--score-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      border:1px solid var(--border);border-radius:999px;
+      padding:7px 16px;box-shadow:var(--shadow-sm);
+      font-weight:700;font-size:.82rem;letter-spacing:.04em;
+      color:var(--accent);text-decoration:none;
+      text-align:center;
+      transition:background .2s,border-color .2s,color .2s;
+      cursor:pointer;
+    }
+    .theory-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+    /* RIGHT PANEL (scoreboard + theory) */
+    .top-right {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px; /* Lite mer luft mellan */
+    }
+
+    @media(max-width:640px){
+      .wrap{padding-top:80px;}
+      .card{padding:18px 14px;}
+      .theme-toggle{top:auto;bottom:20px;left:50%;transform:translateX(-50%);}
+      .top-right{top:14px;right:14px;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-right">
+  <div class="scoreboard" id="scoreboard">
+    <span class="score-num" id="scoreNum">0</span> / <span id="scoreTotal">170</span>
+  </div>
+  <a class="theory-btn" href="https://learnswedish.github.io/html/swe-g.html" target="_blank" rel="noopener">
+    <i class="fa-solid fa-book-open"></i> Theory
+  </a>
+</div>
+
+<div class="theme-toggle" aria-label="Toggle dark mode">
+  <span class="toggle-icon" id="themeIconSun">☀️</span>
+  <label class="toggle-switch" title="Toggle dark mode">
+    <input type="checkbox" id="themeToggleInput">
+    <div class="toggle-track"></div>
+    <div class="toggle-knob"></div>
+  </label>
+  <span class="toggle-icon" id="themeIconMoon">🌙</span>
+</div>
+
+<div class="wrap">
+  <div class="header">
+    <p class="header-eyebrow">Swedish · Pronunciation</p>
+    <h1>How is <em>g</em> pronounced?</h1>
+    <p>Look at the highlighted <strong style="color:var(--highlight)">g</strong> and choose the correct pronunciation.</p>
+  </div>
+
+  <div class="card">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="progress-label" id="progressLabel">— / —</span>
+    </div>
+
+    <div class="word-box" id="wordBox">
+      <p class="word">—</p>
+    </div>
+
+    <div class="choices" id="choices"></div>
+
+    <div class="feedback" id="feedback" aria-live="polite">
+      <span class="feedback-icon">💡</span>
+      <span id="feedbackText">Choose an option.</span>
+    </div>
+
+    <div class="controls">
+      <button class="nav-btn" id="restartBtn" type="button">↺ Restart</button>
+      <button class="nav-btn primary" id="nextBtn" type="button">Next word →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const rawData = `
+gala	g	no extra info
+galen	g	no extra info
+galopp	g	no extra info
+gammal	g	no extra info
+gapa	g	no extra info
+garn	g	no extra info
+gata	g	no extra info
+gav	g	no extra info
+gavel	g	no extra info
+god	g	no extra info
+goda	g	no extra info
+golf	g	no extra info
+golv	g	no extra info
+gondol	g	no extra info
+gud	g	no extra info
+gul	g	no extra info
+guld	g	no extra info
+gummi	g	no extra info
+gunga	g	first syllable
+gurgla	g	first syllable
+gurka	g	no extra info
+gubbe	g	no extra info
+gå	g	no extra info
+gås	g	no extra info
+gård	g	no extra info
+gåva	g	no extra info
+gåta	g	no extra info
+antropologi	g	no extra info
+arkeologi	g	no extra info
+astrologi	g	no extra info
+biologi	g	no extra info
+ekologi	g	no extra info
+etnologi	g	no extra info
+filologi	g	no extra info
+geologi	g	last syllable
+geologi	j	first syllable
+ideologi	g	no extra info
+meteorologi	g	no extra info
+mytologi	g	no extra info
+patologi	g	no extra info
+psykologi	g	no extra info
+sociologi	g	no extra info
+teknologi	g	no extra info
+teologi	g	no extra info
+terminologi	g	no extra info
+topologi	g	no extra info
+toxikologi	g	no extra info
+urologi	g	no extra info
+zoologi	g	no extra info
+myalgi	g	no extra info
+neuralgi	g	no extra info
+laryngit	g	no extra info
+meningit	g	no extra info
+agera	g	no extra info
+agitera	g	no extra info
+delegera	g	no extra info
+fingera	g	no extra info
+fungera	g	no extra info
+ideologisera	g	no extra info
+intrigera	g	no extra info
+katalogisera	g	no extra info
+konjugera	g	no extra info
+konvergera	g	no extra info
+marginalisera	g	no extra info
+mytologisera	g	no extra info
+navigera	g	no extra info
+negera	g	no extra info
+paginera	g	no extra info
+plagiera	g	no extra info
+privilegiera	g	no extra info
+propagera	g	no extra info
+reagera	g	no extra info
+regionalisera	g	no extra info
+segregera	g	penultimate syllable
+typologisera	g	no extra info
+energi	sj	no extra info
+energisk	g	no extra info
+strategi	sj	no extra info
+strategisk	g	no extra info
+tragedi	sj	no extra info
+tragisk	g	no extra info
+region	g	no extra info
+religiös	sj	no extra info
+religion	j or g	no extra info
+giffel	j or g	first syllable
+gigant	j or g	first syllable
+gigolo	j or g	first syllable
+general	j	no extra info
+gestalt	j	no extra info
+gym	j	no extra info
+gymnastik	j	no extra info
+gympa	j	no extra info
+giljotin	g	no extra info
+arrangera	sj	no extra info
+arrangör	sj	no extra info
+bagage	sj	last syllable
+giraff	sj	no extra info
+gelatin	sj	no extra info
+gelé	sj	no extra info
+genant	sj	no extra info
+generad	sj	no extra info
+generell	sj	no extra info
+generös	sj	no extra info
+geni	sj	no extra info
+genre	sj	no extra info
+gest	sj	no extra info
+ingenjör	sj	no extra info
+kollage	sj	no extra info
+logi	sj	no extra info
+massage	sj	no extra info
+montage	sj	no extra info
+negligera	sj	penultimate syllable
+orangeri	sj	no extra info
+page	sj	no extra info
+passage	sj	no extra info
+passagerare	sj	no extra info
+prestige	sj	no extra info
+redigera	sj	no extra info
+regi	sj	no extra info
+reportage	sj	no extra info
+sabotage	sj	no extra info
+sergeant	sj	no extra info
+geisha	g	no extra info
+gejser	g	no extra info
+gem	g	no extra info
+gibbon	g	no extra info
+giss	g	no extra info
+giffel	j or g	no extra info
+gigant	j or g	no extra info
+gig	j or g	no extra info
+gigolo	j or g	first syllable
+gyro	j or g	no extra info
+ge	j	no extra info
+gedigen	j	first syllable
+gemensam	j	no extra info
+gemenskap	j	no extra info
+gemytlig	j	no extra info
+genast	j	no extra info
+genom	j	no extra info
+gick	j	no extra info
+gift	j	no extra info
+gilla	j	no extra info
+giltig	j	no extra info
+gipa	j	no extra info
+girig	j	no extra info
+gissa	j	no extra info
+gisslan	j	no extra info
+givakt	j	no extra info
+givet	j	no extra info
+givmild	j	no extra info
+gyckel	j	no extra info
+gylf	j	no extra info
+gynna	j	no extra info
+gyttja	j	no extra info
+gäcka	j	no extra info
+gädda	j	no extra info
+gäl	j	no extra info
+gäldenär	j	no extra info
+gälla	j	no extra info
+gäng	j	no extra info
+gärna	j	no extra info
+gäspa	j	no extra info
+gäst	j	no extra info
+göda	j	no extra info
+gök	j	no extra info
+gömma	j	no extra info
+göra	j	no extra info
+göteborgare	j	first syllable
+ange	j	no extra info
+uppgift	j	no extra info
+`.trim();
+
+const TOTAL = 170;
+const answerOptions = ["g","j","sj","j or g"];
+
+const allItems = rawData.split(/\n+/).map(line => {
+  const p = line.trim().split("\t");
+  return {word:p[0]?.trim()||"", answer:p[1]?.trim()||"", extra:p[2]?.trim()||"no extra info"};
+});
+
+function findTargetIndex(word, extra) {
+  const lower = word.toLowerCase();
+  const pos = [];
+  for (let i=0;i<lower.length;i++) if(lower[i]==='g') pos.push(i);
+  if (!pos.length) return -1;
+  if (pos.length===1) return pos[0];
+  const hint = (extra||"").toLowerCase();
+  if (hint.includes("first"))       return pos[0];
+  if (hint.includes("last"))        return pos[pos.length-1];
+  if (hint.includes("penultimate")) return pos.length>=2 ? pos[pos.length-2] : pos[pos.length-1];
+  return pos[0];
+}
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function buildWordHTML(word, extra) {
+  const idx = findTargetIndex(word, extra);
+  if (idx<0) return esc(word);
+  return esc(word.slice(0,idx))+`<span class="target-letter">${esc(word[idx])}</span>`+esc(word.slice(idx+1));
+}
+
+let items=[], currentIndex=0, score=0, answeredCount=0, hasAnswered=false;
+
+const wordBox      = document.getElementById("wordBox");
+const choicesEl    = document.getElementById("choices");
+const feedbackEl   = document.getElementById("feedback");
+const feedbackText = document.getElementById("feedbackText");
+const scoreNumEl   = document.getElementById("scoreNum");
+const scoreTotalEl = document.getElementById("scoreTotal");
+const progressFill = document.getElementById("progressFill");
+const progressLabel= document.getElementById("progressLabel");
+const nextBtn      = document.getElementById("nextBtn");
+const restartBtn   = document.getElementById("restartBtn");
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function updateScoreboard(){
+  scoreNumEl.textContent = score;
+  // Show answered count out of total, but never exceed TOTAL
+  scoreTotalEl.textContent = TOTAL;
+}
+
+function updateProgress(){
+  const total=items.length, done=Math.min(currentIndex,total);
+  progressFill.style.width=(total?(done/total)*100:0)+"%";
+  progressLabel.textContent=`${currentIndex<total?done+1:done} / ${total}`;
+}
+
+function setFeedback(state,icon,text){
+  feedbackEl.className="feedback"+(state?" "+state:"");
+  feedbackEl.querySelector(".feedback-icon").textContent=icon;
+  feedbackText.textContent=text;
+}
+
+function renderCurrentItem(){
+  const item=items[currentIndex];
+  updateProgress();
+
+  if(!item){
+    wordBox.innerHTML=`<div class="finish-display"><div class="finish-score">${score}/${answeredCount}</div><p class="finish-label">Exercise complete — well done!</p></div>`;
+    choicesEl.innerHTML="";
+    setFeedback("correct","🎉",`You got ${score} out of ${answeredCount} correct.`);
+    nextBtn.textContent="↺ Start again";
+    return;
+  }
+
+  hasAnswered=false;
+
+  wordBox.classList.add("transitioning");
+  setTimeout(()=>{
+    wordBox.innerHTML=`<p class="word">${buildWordHTML(item.word,item.extra)}</p>`;
+    wordBox.classList.remove("transitioning");
+  },180);
+
+  setFeedback("","💡","Choose an option.");
+
+  choicesEl.innerHTML="";
+  answerOptions.forEach(option=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="choice-btn";
+    btn.textContent=option;
+    btn.addEventListener("click",()=>handleAnswer(option,btn));
+    choicesEl.appendChild(btn);
+  });
+
+  nextBtn.textContent=currentIndex>=items.length-1?"Finish →":"Next word →";
+}
+
+function handleAnswer(selected,clickedBtn){
+  if(hasAnswered) return;
+  const item=items[currentIndex];
+  hasAnswered=true;
+  answeredCount++;
+
+  [...choicesEl.querySelectorAll(".choice-btn")].forEach(btn=>{
+    btn.disabled=true;
+    if(btn.textContent===item.answer) btn.classList.add("correct");
+  });
+
+  if(selected===item.answer){
+    score++;
+    clickedBtn.classList.add("correct","animate-pop");
+    setFeedback("correct","✓","Correct!");
+  } else {
+    clickedBtn.classList.add("wrong","animate-shake");
+    setFeedback("wrong","✗",`Incorrect. The correct answer is: ${item.answer}.`);
+  }
+  updateScoreboard();
+}
+
+function resetQuiz(){
+  items=shuffle(allItems);
+  currentIndex=score=answeredCount=0;
+  hasAnswered=false;
+  scoreNumEl.textContent = 0;
+  scoreTotalEl.textContent = TOTAL;
+  renderCurrentItem();
+}
+
+nextBtn.addEventListener("click",()=>{
+  if(currentIndex>=items.length){resetQuiz();return;}
+  currentIndex++;
+  renderCurrentItem();
+});
+restartBtn.addEventListener("click",resetQuiz);
+
+// Theme toggle
+const themeInput = document.getElementById("themeToggleInput");
+function applyTheme(dark) {
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeInput.checked = dark;
+  try { localStorage.setItem("sv-g-theme", dark ? "dark" : "light"); } catch(e){}
+}
+themeInput.addEventListener("change", () => applyTheme(themeInput.checked));
+try {
+  const saved = localStorage.getItem("sv-g-theme");
+  if (saved === "dark") applyTheme(true);
+} catch(e){}
+
+resetQuiz();
+</script>
+</body>
+</html>

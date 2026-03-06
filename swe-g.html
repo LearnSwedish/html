@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pronunciation Guide – G</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ──────────────────────────────────────────
+   GLOBAL RESET
+────────────────────────────────────────── */
+
+html, body, * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ──────────────────────────────────────────
+   COLOR SYSTEM
+────────────────────────────────────────── */
+
+:root {
+    --bg: #f4f1ec;
+    --surface: #ffffff;
+    --surface2: #eee9e0;
+
+    --text: #1a1a2e;
+    --text-muted: #6b6b80;
+
+    --accent: #1b5e82;
+    --accent-light: #2a7faf;
+    --accent-glow: rgba(27,94,130,0.18);
+
+    --line-color: #1b5e82;
+
+    --shadow: 0 4px 24px rgba(27,94,130,0.13), 0 1.5px 6px rgba(0,0,0,0.07);
+    --shadow-hover: 0 8px 36px rgba(27,94,130,0.22), 0 2px 10px rgba(0,0,0,0.1);
+
+    --radius: 16px;
+    --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+[data-theme="dark"] {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+
+    --text: #e8e8f0;
+    --text-muted: #8888aa;
+
+    --accent: #4aa8d8;
+    --accent-light: #6ec6f0;
+    --accent-glow: rgba(74,168,216,0.18);
+
+    --line-color: #4aa8d8;
+
+    --shadow: 0 4px 28px rgba(0,0,0,0.45), 0 1.5px 6px rgba(0,0,0,0.3);
+    --shadow-hover: 0 8px 40px rgba(74,168,216,0.2), 0 2px 12px rgba(0,0,0,0.4);
+}
+
+/* ──────────────────────────────────────────
+   PAGE LAYOUT
+────────────────────────────────────────── */
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 40px 20px;
+
+    transition:
+        background-color var(--transition),
+        color var(--transition);
+}
+
+/* ──────────────────────────────────────────
+   THEME SWITCH
+────────────────────────────────────────── */
+
+.top-controls {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+}
+
+/* Vi återanvänder .theme-toggle stilen men tar bort position fixed från själva knappen */
+.theme-toggle {
+    position: static; /* Ändra från fixed */
+    background: var(--surface);
+    border: 1.5px solid var(--surface2);
+    border-radius: 50px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    width: 120px;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.exercise-link {
+    text-decoration: none;
+}
+
+.exercise-btn {
+    border-color: var(--accent-glow);
+    color: var(--accent);
+}
+
+.exercise-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Justering för mobil så de inte täcker för mycket av headern */
+@media (max-width: 500px) {
+    .top-controls {
+        top: 10px;
+        right: 10px;
+    }
+    .theme-toggle {
+        width: 100px;
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+}
+
+/* ──────────────────────────────────────────
+   HEADER
+────────────────────────────────────────── */
+
+.chart-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.chart-header p {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.chart-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+}
+
+/* ──────────────────────────────────────────
+   CHART LAYOUT
+────────────────────────────────────────── */
+
+.org-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: 20px;
+
+    width: 100%;
+    max-width: 1100px;
+}
+
+.node-main {
+    background: var(--surface);
+    border: 1.5px solid var(--accent-glow);
+    border-radius: var(--radius);
+
+    padding: 15px 40px;
+
+    text-align: center;
+    position: relative;
+
+    box-shadow: var(--shadow);
+}
+
+.node-main .label {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+
+    font-size: 10px;
+    padding: 2px 8px;
+
+    border-radius: 20px;
+    margin-bottom: 5px;
+
+    text-transform: uppercase;
+}
+
+.node-main .question {
+    font-size: 24px;
+}
+
+.node-main .question span {
+    color: var(--accent);
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+}
+
+/* ──────────────────────────────────────────
+   CONNECTORS
+────────────────────────────────────────── */
+
+.connector-top {
+    width: 2px;
+    height: 25px;
+    background: var(--line-color);
+    opacity: 0.5;
+}
+
+.branches-container {
+    width: 100%;
+    position: relative;
+}
+
+.branches {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+}
+
+.branch-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    flex: 1;
+    min-width: 180px;
+    max-width: 240px;
+}
+
+.connector-branch {
+    width: 2px;
+    height: 20px;
+    background: var(--line-color);
+    opacity: 0.5;
+}
+
+/* ──────────────────────────────────────────
+   VARIANT NODES
+────────────────────────────────────────── */
+
+.node-variant {
+    background: var(--surface);
+    border: 1.5px solid transparent;
+    border-radius: var(--radius);
+    padding: 20px 15px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    box-shadow: var(--shadow);
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+.node-variant:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.node-variant .phoneme {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+.node-variant .title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.node-variant .desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.word-list {
+    flex: 1;
+    text-align: left;
+    line-height: 1.6;
+}
+
+/* ──────────────────────────────────────────
+   IMAGES
+────────────────────────────────────────── */
+
+.variant-image {
+    height: 50px;
+    width: auto;
+
+    display: block;
+    margin-bottom: 10px;
+
+    border-radius: 4px;
+    object-fit: contain;
+}
+
+.variant-image-small {
+    width: 25px;
+    height: auto;
+}
+
+/* ──────────────────────────────────────────
+   TOOLTIP SYSTEM
+────────────────────────────────────────── */
+
+.has-tooltip {
+    cursor: pointer;
+    border-bottom: 1px dotted var(--text-muted);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.has-tooltip:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.js-tooltip {
+    position: fixed;
+    padding: 6px 10px;
+    font-size: 15px;
+    line-height: 1.4;
+    border-radius: 8px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 3000;
+    white-space: normal;
+    width: max-content;
+    max-width: 320px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,0,0,0.25);
+    transition: opacity 0.12s ease, visibility 0.12s ease;
+}
+
+/* light mode → mörk tooltip */
+[data-theme="light"] .js-tooltip {
+    background: #222;
+    color: #ffffff;
+}
+
+/* dark mode → ljus tooltip */
+[data-theme="dark"] .js-tooltip {
+    background: #ffffff;
+    color: #111;
+    border: 1px solid rgba(0,0,0,0.35);
+}
+
+.js-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ──────────────────────────────────────────
+   IPA DISPLAY
+────────────────────────────────────────── */
+
+.ipa-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    padding: 3px 10px;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+[data-theme="light"] .ipa-chip {
+    background: #ececec;
+    color: #6030aa;
+    border: 1px solid #cfcfcf;
+}
+
+[data-theme="dark"] .ipa-chip {
+    background: #3a3f55;
+    color: #d6b7ff;
+    border: 1px solid #6e7390;
+}
+
+.ipa-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* ──────────────────────────────────────────
+   VOWELS
+────────────────────────────────────────── */
+
+.vowels {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+
+    margin: 8px 0;
+
+    flex-wrap: wrap;
+}
+
+.vowel-chip {
+    background: var(--surface2);
+
+    min-width: 26px;
+    height: 26px;
+
+    padding: 0 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    border-radius: 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ──────────────────────────────────────────
+   BADGES
+────────────────────────────────────────── */
+
+.badges {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+
+    margin-top: 10px;
+
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 13px;
+    font-weight: 700;
+
+    padding: 2px 7px;
+
+    border-radius: 20px;
+
+    text-transform: uppercase;
+}
+
+.badge-majority {
+    background: rgba(34,139,87,0.1);
+    color: #1a7a50;
+    border: 1px solid rgba(34,139,87,0.2);
+}
+
+.badge-exception {
+    background: rgba(210,100,30,0.1);
+    color: #b85a10;
+    border: 1px solid rgba(210,100,30,0.2);
+}
+
+.badge-french {
+    background: rgba(100,60,180,0.1);
+    color: #6030aa;
+    border: 1px solid rgba(100,60,180,0.2);
+}
+
+/* ──────────────────────────────────────────
+   PERCENT TAG
+────────────────────────────────────────── */
+
+.percent {
+    margin-top: 14px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    letter-spacing: 0.04em;
+
+    color: var(--accent);
+
+    background: var(--accent-glow);
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    border: 1px solid var(--accent);
+
+    backdrop-filter: blur(4px);
+
+    transition: var(--transition);
+}
+
+.node-variant:hover .percent {
+    transform: scale(1.05);
+}
+
+/* ──────────────────────────────────────────
+   MODAL
+────────────────────────────────────────── */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0,0,0,0.4);
+
+    backdrop-filter: blur(8px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    z-index: 1000;
+
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--surface);
+    padding: 40px;
+    border-radius: var(--radius);
+    width: 95%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    text-align: center;
+    position: relative;
+    transform: translateY(20px);
+    box-shadow: var(--shadow-hover);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    width: 30px;
+    height: 30px;
+
+    background: none;
+    border: none;
+
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-close span {
+    position: absolute;
+
+    width: 25px;
+    height: 2px;
+
+    background: var(--text-muted);
+
+    transition: all 0.3s ease;
+}
+
+.modal-close span:nth-child(1) { transform: rotate(45deg); }
+.modal-close span:nth-child(2) { transform: rotate(-45deg); }
+
+.modal-close:hover span {
+    background: var(--accent);
+}
+
+.modal-close:hover span:nth-child(1) { transform: rotate(135deg); }
+.modal-close:hover span:nth-child(2) { transform: rotate(45deg); }
+
+/* Modal word rows */
+
+.modal-word-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 2px 0;
+    font-size: 15px;
+}
+
+.modal-word-row .word-label {
+    flex: 1;
+    text-align: left;
+}
+
+.modal-word-row .word-label small {
+    color: var(--text-muted);
+}
+
+.modal-columns {
+    display: grid;
+    grid-template-columns: 50fr 50fr;
+    column-gap: 35px;
+}
+
+/* ──────────────────────────────────────────
+   RESPONSIVE
+────────────────────────────────────────── */
+
+@media (max-width: 850px) {
+
+    .branches {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .branch-item {
+        width: 100%;
+        max-width: 350px;
+    }
+
+    #hline {
+        display: none !important;
+    }
+
+}
+
+</style>
+</head>
+<body>
+
+<header class="chart-header">
+    <h1>Pronunciation of the letter G</h1>
+</header>
+
+<div class="org-chart">
+    <div class="node-main">
+        <div class="question">Two major rules <img src="gear-light.png" class="variant-image-small">&nbsp;<img src="gear-light.png" class="variant-image-small"> &nbsp;... and two exceptions <img src="exception-french-light.png" class="variant-image-small">&nbsp;<img src="exception-light.png" class="variant-image-small"></div>
+    </div>
+
+    <div class="connector-top"></div>
+
+    <div class="branches-container">
+        <div class="branches" id="branches">
+            <div class="branch-item">
+                <div class="connector-branch"></div>
+                <div class="node-variant" data-id="hard-g">
+                    <img src="gear-light.png" class="variant-image">
+                    <span class="phoneme">/g/</span>
+                    <div class="title">Hard G</div>
+                    <div class="vowels">
+                        <span class="vowel-chip">a</span><span class="vowel-chip">o</span><span class="vowel-chip">u</span><span class="vowel-chip">å</span>
+                    </div>
+                    <div class="desc"><em>gata, god, gul, gås</em></div>
+                    <div class="badges"><span class="badge badge-majority">Rule</span></div>
+                    <div class="percent">47%</div>
+                </div>
+            </div>
+
+            <div class="branch-item">
+                <div class="connector-branch"></div>
+                <div class="node-variant" data-id="soft-g">
+                    <img src="gear-light.png" class="variant-image">
+                    <span class="phoneme">/j/</span>
+                    <div class="title">Soft G</div>
+                    <div class="vowels">
+                        <span class="vowel-chip">e</span><span class="vowel-chip">i</span><span class="vowel-chip">y</span><span class="vowel-chip">ä</span><span class="vowel-chip">ö</span>
+                    </div>
+                    <div class="desc"><em>ge, gick, gynna, gärna, göra</em></div>
+                    <div class="badges"><span class="badge badge-majority">Rule</span></div>
+                    <div class="percent">20%</div>
+                </div>
+            </div>
+			
+            <div class="branch-item">
+                <div class="connector-branch"></div>
+                <div class="node-variant" data-id="sj-sound">
+                    <img src="exception-french-light.png" class="variant-image">
+                    <span class="phoneme">/sj/</span>
+                    <div class="title">just as "sju" (seven)</div>
+                    <div class="vowels">
+                        <span class="vowel-chip">French</span>
+                    </div>
+                    <div class="desc"><em>gelé, regi, logi, legär, arrangör</em></div>
+                    <div class="badges">
+                        <span class="badge badge-exception">Exception</span>
+                    </div>
+                    <div class="percent">6%</div>
+                </div>
+            </div>			
+
+            <div class="branch-item">
+                <div class="connector-branch"></div>
+                <div class="node-variant" data-id="hard-g-exc">
+                    <img src="exception-light.png" class="variant-image">
+                    <span class="phoneme">/g/</span>
+                    <div class="title">Hard G</div>
+                    <div class="vowels">
+                        <span class="vowel-chip">Latin, Greek, Science</span>
+                    </div>
+                    <div class="desc"><em>agera, magi, legym, vulgär, vigör</em></div>
+                    <div class="badges"><span class="badge badge-exception">Exception</span></div>
+                    <div class="percent">27%</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="top-controls">
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+        <i class="fa-solid fa-sun" id="themeIcon"></i>
+        <span id="themeLabel">Light Mode</span>
+    </button>
+
+    <a href="https://learnswedish.github.io/html/g-exercise.html" class="exercise-link">
+        <button class="theme-toggle exercise-btn">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Exercise</span>
+        </button>
+    </a>
+</div>
+
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" id="closeModal">
+            <span></span>
+            <span></span>
+        </button>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<script>
+const modalRegistry = {
+    "hard-g": {
+        title: "The hard group &#8594; g + {a; o; u; å}",
+        content: "This is the largest g+vowel group (47%). There are no Swedish words in<br />which ga-, go-, gu- or gå- are pronounced in any way other than with a /g/."
+    },
+
+"soft-g": {
+    title: "The soft group &#8594; g + {e, i, y, ä, ö}",
+    content: `
+        <div style="font-family:'DM Sans', sans-serif; color:var(--text);">
+
+            <div style="margin-bottom:35px;">
+                <p style="font-size:18px; line-height:1.6; margin-top:8px;">
+                    In genuinely Swedish words, a stable phonological rule<br>
+                    applies: <strong>G</strong> followed by a soft vowel is pronounced as <strong>/j/</strong> ("y").
+                </p>
+            </div>
+
+            <div style="background:var(--bg); padding:20px; border-radius:12px; border:1px solid var(--surface2); margin-bottom:40px;">
+                <p style="font-size:14px; color:var(--text-muted); line-height:1.6;">
+                    <i class="fa-solid fa-building-columns" style="margin-right:8px; color:#6030aa;"></i>
+                    This rule primarily applies to genuinely Swedish words. Certain words from other languages behave
+                    in the same way, fx. derivatives in <strong>-gen</strong> (<em>"patogen"</em>) and all forms of
+                    <strong>geo-</strong> (<em>"geografi"</em>).
+                </p>
+            </div>
+
+            <div class="modal-columns">
+
+                <!-- LEFT COLUMN -->
+                <div>
+
+                    <h3 style="font-family:'Playfair Display'; font-size:20px; margin-bottom:20px; border-bottom:2px solid var(--accent-glow); padding-bottom:8px;">
+                        Genuinely Swedish words
+                    </h3>
+
+                    <p style="font-size:15px; line-height:2; color:var(--text); text-align:left;">
+
+                        <span class="has-tooltip" data-tooltip="to give">ge</span>,
+                        <span class="has-tooltip" data-tooltip="solid; substantial; well-made">gedigen</span>,
+                        <span class="has-tooltip" data-tooltip="common; shared">gemensam</span>,
+                        <span class="has-tooltip" data-tooltip="community; fellowship">gemenskap</span>,
+                        <span class="has-tooltip" data-tooltip="genial; convivial; pleasant">gemytlig</span>,
+                        <span class="has-tooltip" data-tooltip="at once; immediately">genast</span>,
+                        <span class="has-tooltip" data-tooltip="through">genom</span>,
+                        <span class="has-tooltip" data-tooltip="went">gick</span>,
+                        <span class="has-tooltip" data-tooltip="married; poison">gift</span>,
+                        <span class="has-tooltip" data-tooltip="to like">gilla</span>,
+                        <span class="has-tooltip" data-tooltip="valid">giltig</span>,
+                        <span class="has-tooltip" data-tooltip="gap">gipa</span>,
+                        <span class="has-tooltip" data-tooltip="greedy">girig</span>,
+                        <span class="has-tooltip" data-tooltip="to guess">gissa</span>,
+                        <span class="has-tooltip" data-tooltip="hostage(s)">gisslan</span>,
+                        <span class="has-tooltip" data-tooltip="attention! (military command)">givakt</span>,
+                        <span class="has-tooltip" data-tooltip="given; of course">givet</span>,
+                        <span class="has-tooltip" data-tooltip="generous">givmild</span>,
+                        <span class="has-tooltip" data-tooltip="mockery; buffoonery">gyckel</span>,
+                        <span class="has-tooltip" data-tooltip="fly (of trousers)">gylf</span>,
+                        <span class="has-tooltip" data-tooltip="to favour; benefit">gynna</span>,
+                        <span class="has-tooltip" data-tooltip="mud; sludge">gyttja</span>,
+                        <span class="has-tooltip" data-tooltip="to mock; outwit; baffle">gäcka</span>,
+                        <span class="has-tooltip" data-tooltip="pike">gädda</span>,
+                        <span class="has-tooltip" data-tooltip="gill">gäl</span>,
+                        <span class="has-tooltip" data-tooltip="debtor">gäldenär</span>,
+                        <span class="has-tooltip" data-tooltip="to apply; be valid">gälla</span>,
+                        <span class="has-tooltip" data-tooltip="gang; group">gäng</span>,
+                        <span class="has-tooltip" data-tooltip="gladly; willingly">gärna</span>,
+                        <span class="has-tooltip" data-tooltip="to yawn">gäspa</span>,
+                        <span class="has-tooltip" data-tooltip="guest">gäst</span>,
+                        <span class="has-tooltip" data-tooltip="to feed up; fatten">göda</span>,
+                        <span class="has-tooltip" data-tooltip="cuckoo">gök</span>,
+                        <span class="has-tooltip" data-tooltip="to hide">gömma</span>,
+                        <span class="has-tooltip" data-tooltip="to do; make">göra</span>,
+                        <span class="has-tooltip" data-tooltip="person from Gothenburg">göteborgare</span>,
+
+                        (+ derivations:
+                        <span class="has-tooltip" data-tooltip="to state; specify; indicate">ange</span>,
+                        <span class="has-tooltip" data-tooltip="task; assignment; piece of information">uppgift</span>,
+                        etc.)
+
+                    </p>
+
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div>
+
+                    <h3 style="font-family:'Playfair Display'; font-size:20px; margin-bottom:20px; border-bottom:2px solid var(--accent-glow); padding-bottom:8px;">
+                        Some non-Swedish words
+                    </h3>
+
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+
+                        <div class="modal-word-row">
+                            <div class="word-list">
+                                <span class="has-tooltip" data-tooltip="gelatin(e)">gelatin</span>,
+                                <span class="has-tooltip" data-tooltip="jelly">gelé</span>,
+                                <span class="has-tooltip" data-tooltip="embarrassing">genant</span>,
+                                <span class="has-tooltip" data-tooltip="general">generell</span>,
+                                <span class="has-tooltip" data-tooltip="genius">geni</span>,
+                                <span class="has-tooltip" data-tooltip="giraffe">giraff</span>
+                            </div>
+                            <span class="ipa-group"><span class="ipa-chip">sj</span></span>
+                        </div>
+
+                        <div class="modal-word-row">
+                            <div class="word-list">
+                                <span class="has-tooltip" data-tooltip="geisha">geisha</span>,
+                                <span class="has-tooltip" data-tooltip="geyser">gejser</span>,
+								<span class="has-tooltip" data-tooltip="paper clip">gem</span>,
+                                <span class="has-tooltip" data-tooltip="gibbon">gibbon</span>,
+                                <span class="has-tooltip" data-tooltip="guillotine">giljotin</span>,
+                                <span class="has-tooltip" data-tooltip="G sharp">giss</span>
+                            </div>
+                            <span class="ipa-group"><span class="ipa-chip">g</span></span>
+                        </div>
+
+                        <div class="modal-word-row">
+                            <div class="word-list">
+                                <span class="has-tooltip" data-tooltip="croissant">giffel</span>,
+                                <span class="has-tooltip" data-tooltip="giant">gigant</span>,
+                                <span class="has-tooltip" data-tooltip="gig">gig</span>,
+                                <span class="has-tooltip" data-tooltip="gigolo">gigolo</span>,
+                                <span class="has-tooltip" data-tooltip="gyro">gyro</span>
+                            </div>
+                            <span class="ipa-group"><span class="ipa-chip">g</span> or <span class="ipa-chip">j</span></span>
+                        </div>
+
+                    </div>
+
+                    <h3 style="font-family:'Playfair Display'; font-size:20px; margin-top:15px; margin-bottom:5px; border-bottom:2px solid var(--accent-glow); padding-bottom:8px;">
+                        Exceptions
+                    </h3>
+
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+
+                        <div class="modal-word-row">
+                            <div class="word-list">
+                                <span class="has-tooltip" data-tooltip="goo, gunk, sludge, to smear (muck up)">gegga</span>,
+								<span class="has-tooltip" data-tooltip="gooey mess, gloopy mess">geggamoja</span>
+                            </div>
+                            <span class="ipa-group"><span class="ipa-chip">g</span></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `
+},
+
+    "sj-sound": {
+        title: "Exception 1: The French group &#8594; sj-sound",
+        content: `
+        <div style="font-family: 'DM Sans', sans-serif; color: var(--text);">
+            <div style="margin-bottom: 35px;">
+                <p style="font-size: 18px; line-height: 1.6; margin-top: 8px;">
+                    If a word appears to be <strong>French</strong> in origin,<br />the <strong>G</strong> is typically pronounced as <strong>/sj/</strong>.
+                </p>
+            </div>
+
+            <div style="background: var(--bg); padding: 20px; border-radius: 12px; border: 1px solid var(--surface2); margin-bottom: 40px;">
+                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+                    <i class="fa-solid fa-building-columns" style="margin-right: 8px; color: #6030aa;"></i>
+                    Many Swedish words come from French — either directly or via French, even when their ultimate origin is Latin or Greek. In these words, g is almost always pronounced with the sj-sound.
+                </p>
+            </div>
+
+            <div class="modal-columns">
+
+                <!-- LEFT COLUMN -->
+                <div>
+
+                    <h3 style="font-family:'Playfair Display'; font-size:20px; margin-bottom:20px; border-bottom:2px solid var(--accent-glow); padding-bottom:8px;">
+                        Words of French origin
+                    </h3>
+
+                    <p style="font-size:15px; line-height:2; color:var(--text); text-align:left;">
+
+                        <span class="has-tooltip" data-tooltip="to arrange">arrangera</span>,
+						<span class="has-tooltip" data-tooltip="organiser; arranger">arrangör</span>,
+						<span class="has-tooltip" data-tooltip="luggage">bagage</span>,						
+						<span class="has-tooltip" data-tooltip="energy">energi</span>,
+						<span class="has-tooltip" data-tooltip="giraffe">giraff</span>,
+						<span class="has-tooltip" data-tooltip="gelatin">gelatin</span>,
+						<span class="has-tooltip" data-tooltip="jelly">gelé</span>,
+						<span class="has-tooltip" data-tooltip="embarrassing">genant</span>,
+						<span class="has-tooltip" data-tooltip="embarrassed">generad</span>,
+						<span class="has-tooltip" data-tooltip="general">generell</span>,
+						<span class="has-tooltip" data-tooltip="generous">generös</span>,
+						<span class="has-tooltip" data-tooltip="genius">geni</span>,
+						<span class="has-tooltip" data-tooltip="genre">genre</span>,
+						<span class="has-tooltip" data-tooltip="gesture">gest</span>,
+						<span class="has-tooltip" data-tooltip="engineer">ingenjör</span>,
+						<span class="has-tooltip" data-tooltip="collage">kollage</span>,
+						<span class="has-tooltip" data-tooltip="lodging; accommodation">logi</span>,
+						<span class="has-tooltip" data-tooltip="massage">massage</span>,
+						<span class="has-tooltip" data-tooltip="montage">montage</span>,
+						<span class="has-tooltip" data-tooltip="to neglect">negligera</span>,
+						<span class="has-tooltip" data-tooltip="orangery">orangeri</span>,
+						<span class="has-tooltip" data-tooltip="page (boy attendant)">page</span>,
+						<span class="has-tooltip" data-tooltip="passage">passage</span>,
+						<span class="has-tooltip" data-tooltip="passenger">passagerare</span>,
+						<span class="has-tooltip" data-tooltip="prestige">prestige</span>,
+						<span class="has-tooltip" data-tooltip="to edit">redigera</span>,
+						<span class="has-tooltip" data-tooltip="direction; staging">regi</span>,			
+						<span class="has-tooltip" data-tooltip="religious">religiös</span>,
+						<span class="has-tooltip" data-tooltip="report">reportage</span>,
+						<span class="has-tooltip" data-tooltip="sabotage">sabotage</span>,
+						<span class="has-tooltip" data-tooltip="sergeant">sergeant</span>,
+						<span class="has-tooltip" data-tooltip="strategy">strategi</span>,
+						<span class="has-tooltip" data-tooltip="tragedy">tragedi</span>
+
+                    </p>
+
+                </div>
+
+                <!-- RIGHT COLUMN -->
+                <div>
+
+                    <h3 style="font-family:'Playfair Display'; font-size:20px; margin-bottom:20px; border-bottom:2px solid var(--accent-glow); padding-bottom:8px;">
+                        But notice!
+                    </h3>
+
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+
+                        <div class="modal-word-row">
+                            <div class="word-list">
+                                <span class="has-tooltip" data-tooltip="general">general</span>,
+                                <span class="has-tooltip" data-tooltip="figure, shape, form, character">gestalt</span>,
+                                <span class="has-tooltip" data-tooltip="workout gymnasium">gym</span>,
+                                <span class="has-tooltip" data-tooltip="gymnastics">gymnastik</span>,
+                                <span class="has-tooltip" data-tooltip="gym, do gymnastics">gympa</span>
+                            </div>
+                            <span class="ipa-group"><span class="ipa-chip">j</span></span>
+                        </div>
+
+                        <div class="modal-word-row">
+                            <div class="word-list">
+                                <span class="has-tooltip" data-tooltip="energetic">energisk</span>,
+								<span class="has-tooltip" data-tooltip="guillotine">giljotin</span>,
+								<span class="has-tooltip" data-tooltip="strategic(al)">strategisk</span>,
+                                <span class="has-tooltip" data-tooltip="tragic(al)">tragisk</span>
+                            </div>
+                            <span class="ipa-group"><span class="ipa-chip">g</span></span>
+                        </div>
+
+                        <div class="modal-word-row">
+                            <div class="word-list">
+                                <span class="has-tooltip" data-tooltip="croissant">giffel</span>,
+                                <span class="has-tooltip" data-tooltip="giant">gigant</span>,
+                                <span class="has-tooltip" data-tooltip="gigolo">gigolo</span>
+                            </div>
+                            <span class="ipa-group"><span class="ipa-chip">j</span> or <span class="ipa-chip">g</span></span>
+                        </div>
+
+                    </div>
+
+                    <h3 style="font-family:'Playfair Display'; font-size:20px; margin-top:15px; margin-bottom:5px; border-bottom:2px solid var(--accent-glow); padding-bottom:8px;">
+                        Watch out!
+                    </h3>
+
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+
+                        <div class="modal-word-row">
+                            <div class="word-list">					
+                                <span class="has-tooltip"
+								data-tooltip="
+								<b>energi</b> <i>(energy)</i><br>
+								<span style='opacity:.75'>Stress:</span> en-er-<b>GI</b> (sj-sound)
+								<br><br>
+								<span style='opacity:.75'>Compare:</span><br>
+								<b>energisk</b> (energetic)<br>
+								<span style='opacity:.75'>Stress:</span> en-<b>ER</b>-gisk (hard g)">energi</span>,
+								<span class="has-tooltip"
+								data-tooltip="
+								<b>strategi</b> (strategy)<br>
+								<span style='opacity:.75'>Stress:</span> stra-te-<b>GI</b> (sj-sound)
+								<br><br>
+								<span style='opacity:.75'>Compare:</span><br>
+								<b>strategisk</b> (strategic[al])<br>
+								<span style='opacity:.75'>Stress:</span> stra-<b>TE</b>-gisk (hard g)">strategi</span>,
+								<span class="has-tooltip"
+								data-tooltip="
+								<b>tragedi</b> (tragedy)<br>
+								<span style='opacity:.75'>Stress:</span> tra-ge-<b>DI</b> (sj-sound)
+								<br><br>
+								<span style='opacity:.75'>Compare:</span><br>
+								<b>tragisk</b> (tragic[al])<br>
+								<span style='opacity:.75'>Stress:</span> <b>TRA</b>-gisk (hard g)">tragedi</span>,
+								<span class="has-tooltip"
+								data-tooltip="
+								<b>region</b> (region)<br>
+								<span style='opacity:.75'>Stress:</span> re-gi-<b>ON</b> (hard g)">region</span>,									
+                                <span class="has-tooltip"
+								data-tooltip="
+								<b>religiös</b> (religious)<br>
+								<span style='opacity:.75'>Stress:</span> re-li-<b>GIÖS</b> (sj-sound)
+								<br><br>
+								<span style='opacity:.75'>Compare:</span><br>
+								<b>religion</b> (religion)<br>
+								<span style='opacity:.75'>Stress:</span> re-li-<b>GION</b> (j or g)">religiös</span>								
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `
+},
+
+"hard-g-exc": {
+    title: "Exception 2: The Science group &#8594; hard /g/",
+    content:` 
+    
+            <div style="margin-bottom:35px;">
+                <p style="font-size:18px; line-height:1.6; margin-top:8px;">
+                    If the word appears to be scientific — and therefore most likely<br />also exists in your own language — g is almost always pronounced hard.
+                </p>
+            </div>
+    
+            <div style="background: var(--bg); padding: 20px; border-radius: 12px; border: 1px solid var(--surface2); margin-bottom: 40px;">
+                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+                    <i class="fa-solid fa-building-columns" style="margin-right: 8px; color: #6030aa;"></i>
+                    In Swedish, the letter g is usually pronounced hard [g] in words borrowed from Latin or Greek, even before front vowels (e, i, y, ä, ö). Examples include sociologi, psykologi, meningit, and terminologi. These belong to the international vocabulary of science and have similar forms across European languages — for example sociology (English), sociologie (French/German), and sociologia (Italian/Spanish). Because of their shared classical origin, both spelling and meaning are largely consistent across languages.
+                </p>
+            </div>
+    
+    <div style="line-height: 2.2; text-align: left; color: var(--text);">
+        <span class='has-tooltip' data-tooltip='anthropology'>antropologi</span>,
+        <span class='has-tooltip' data-tooltip='archaeology'>arkeologi</span>,
+        <span class='has-tooltip' data-tooltip='astrology'>astrologi</span>,
+        <span class='has-tooltip' data-tooltip='biology'>biologi</span>,
+        <span class='has-tooltip' data-tooltip='ecology'>ekologi</span>,
+        <span class='has-tooltip' data-tooltip='ethnology'>etnologi</span>,
+        <span class='has-tooltip' data-tooltip='philology'>filologi</span>,
+        <span class='has-tooltip' data-tooltip='geology'>geologi</span>,
+        <span class='has-tooltip' data-tooltip='ideology'>ideologi</span>,
+        <span class='has-tooltip' data-tooltip='meteorology'>meteorologi</span>,
+        <span class='has-tooltip' data-tooltip='mythology'>mytologi</span>,
+        <span class='has-tooltip' data-tooltip='pathology'>pathology</span>,
+        <span class='has-tooltip' data-tooltip='psychology'>psykologi</span>,
+        <span class='has-tooltip' data-tooltip='sociology'>sociologi</span>,
+        <span class='has-tooltip' data-tooltip='technology'>teknologi</span>,
+        <span class='has-tooltip' data-tooltip='theology'>teologi</span>,
+        <span class='has-tooltip' data-tooltip='terminology'>terminologi</span>,
+        <span class='has-tooltip' data-tooltip='topology'>topologi</span>,
+        <span class='has-tooltip' data-tooltip='toxicology'>toxikologi</span>,
+        <span class='has-tooltip' data-tooltip='urology'>urologi</span>,
+        <span class='has-tooltip' data-tooltip='zoology'>zoologi</span>,
+        <span class='has-tooltip' data-tooltip='myalgia'>myalgi</span>,
+        <span class='has-tooltip' data-tooltip='neuralgia'>neuralgi</span>,
+        <span class='has-tooltip' data-tooltip='laryngitis'>laryngit</span>,
+        <span class='has-tooltip' data-tooltip='meningitis'>meningit</span>,
+        <span class='has-tooltip' data-tooltip='to act'>agera</span>,
+        <span class='has-tooltip' data-tooltip='to agitate'>agitera</span>,
+        <span class='has-tooltip' data-tooltip='to delegate'>delegera</span>,
+        <span class='has-tooltip' data-tooltip='to feign'>fingera</span>,
+        <span class='has-tooltip' data-tooltip='to function'>fungera</span>,
+        <span class='has-tooltip' data-tooltip='to ideologise'>ideologisera</span>,
+        <span class='has-tooltip' data-tooltip='to imagine'>imaginera</span>,
+        <span class='has-tooltip' data-tooltip='to intrigue'>intrigera</span>,
+        <span class='has-tooltip' data-tooltip='to catalogue'>katalogisera</span>,
+        <span class='has-tooltip' data-tooltip='to conjugate'>konjugera</span>,
+        <span class='has-tooltip' data-tooltip='to converge'>konvergera</span>,
+        <span class='has-tooltip' data-tooltip='to marginalise'>marginalisera</span>,
+        <span class='has-tooltip' data-tooltip='to mythologise'>mytologisera</span>,
+        <span class='has-tooltip' data-tooltip='to navigate'>navigera</span>,
+        <span class='has-tooltip' data-tooltip='to negate'>negera</span>,
+        <span class='has-tooltip' data-tooltip='to paginate'>paginera</span>,
+        <span class='has-tooltip' data-tooltip='to plagiarise'>plagiera</span>,
+        <span class='has-tooltip' data-tooltip='to privilege'>privilegiera</span>,
+        <span class='has-tooltip' data-tooltip='to propagate'>propagera</span>,
+        <span class='has-tooltip' data-tooltip='to react'>reagera</span>,
+        <span class='has-tooltip' data-tooltip='to regionalise'>regionalisera</span>,
+        <span class='has-tooltip' data-tooltip='to segregate'>segregera</span>,
+        <span class='has-tooltip' data-tooltip='to typologise'>typologisera</span>
+    </div>
+    `
+}
+};
+
+const modalOverlay = document.getElementById('modalOverlay');
+const modalBody = document.getElementById('modalBody');
+const closeModalBtn = document.getElementById('closeModal');
+
+document.querySelectorAll('.node-variant').forEach(node => {
+    node.addEventListener('click', () => {
+        const id = node.getAttribute('data-id');
+        const data = modalRegistry[id];
+        if (data) {
+            modalBody.innerHTML = `<h2 style="font-family:'Playfair Display'; margin-bottom:15px;">${data.title}</h2><div>${data.content}</div>`;
+            modalOverlay.classList.add('active');
+        }
+    });
+});
+
+closeModalBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
+modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) modalOverlay.classList.remove('active'); });
+
+    function drawLine() {
+        const old = document.getElementById('hline');
+        if (old) old.remove();
+        const branches = document.getElementById('branches');
+        const items = branches.querySelectorAll('.branch-item');
+        if (items.length < 2 || window.innerWidth <= 850) return;
+        
+        const branchesRect = branches.getBoundingClientRect();
+        const firstRect = items[0].getBoundingClientRect();
+        const lastRect = items[items.length - 1].getBoundingClientRect();
+        
+        const left = firstRect.left + firstRect.width / 2 - branchesRect.left;
+        const right = lastRect.left + lastRect.width / 2 - branchesRect.left;
+        
+        const line = document.createElement('div');
+        line.id = 'hline';
+        Object.assign(line.style, {
+            position: 'absolute', top: '0', left: left + 'px', width: (right - left) + 'px',
+            height: '2px', backgroundColor: 'var(--line-color)', opacity: '0.5'
+        });
+        branches.insertBefore(line, branches.firstChild);
+    }
+
+    window.addEventListener('load', drawLine);
+    window.addEventListener('resize', drawLine);
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    const isDark = newTheme === 'dark';
+    document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    document.getElementById('themeLabel').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+
+    const images = document.querySelectorAll('.variant-image, .variant-image-small');
+    images.forEach(img => {
+        let src = img.getAttribute('src');
+        if (isDark) {
+            img.setAttribute('src', src.replace('-light.png', '-dark.png'));
+        } else {
+            img.setAttribute('src', src.replace('-dark.png', '-light.png'));
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        const isDark = savedTheme === 'dark';
+        document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        document.getElementById('themeLabel').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+
+        const images = document.querySelectorAll('.variant-image, .variant-image-small');
+        images.forEach(img => {
+            let src = img.getAttribute('src');
+            if (isDark) {
+                img.setAttribute('src', src.replace('-light.png', '-dark.png'));
+            }
+        });
+    }
+});
+
+const jsTooltip = document.createElement('div');
+jsTooltip.className = 'js-tooltip';
+document.body.appendChild(jsTooltip);
+
+let activeTooltipTarget = null;
+
+document.addEventListener('mouseover', (e) => {
+    const target = e.target.closest('.has-tooltip');
+    if (!target) return;
+
+    activeTooltipTarget = target;
+    jsTooltip.innerHTML = target.dataset.tooltip || '';
+    jsTooltip.classList.add('visible');
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!activeTooltipTarget) return;
+
+    const rect = activeTooltipTarget.getBoundingClientRect();
+
+    const tooltipWidth = jsTooltip.offsetWidth || 200;
+    const tooltipHeight = jsTooltip.offsetHeight || 40;
+
+    let x = rect.left + rect.width / 2 - tooltipWidth / 2;
+    let y = rect.top - tooltipHeight - 10;
+
+    if (x < 8) x = 8;
+    if (x + tooltipWidth > window.innerWidth - 8) {
+        x = window.innerWidth - tooltipWidth - 8;
+    }
+
+    if (y < 8) {
+        y = rect.bottom + 10; // fallback: under ordet
+    }
+
+    jsTooltip.style.left = `${x}px`;
+    jsTooltip.style.top = `${y}px`;
+});
+
+document.addEventListener('mouseout', (e) => {
+    const target = e.target.closest('.has-tooltip');
+    if (!target) return;
+
+    if (target === activeTooltipTarget) {
+        activeTooltipTarget = null;
+        jsTooltip.classList.remove('visible');
+    }
+});
+
+modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) {
+        activeTooltipTarget = null;
+        jsTooltip.classList.remove('visible');
+    }
+});
+
+closeModalBtn.addEventListener('click', () => {
+    activeTooltipTarget = null;
+    jsTooltip.classList.remove('visible');
+});
+</script>
+</body>
+</html>
