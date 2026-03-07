@@ -412,7 +412,7 @@ privilegiera	g	no extra info
 propagera	g	no extra info
 reagera	g	no extra info
 regionalisera	g	no extra info
-segregera	g	penultimate syllable
+segregera	g	g2
 typologisera	g	no extra info
 energi	sj	no extra info
 energisk	g	no extra info
@@ -450,7 +450,7 @@ kollage	sj	no extra info
 logi	sj	no extra info
 massage	sj	no extra info
 montage	sj	no extra info
-negligera	sj	penultimate syllable
+negligera	sj	g2
 orangeri	sj	no extra info
 page	sj	no extra info
 passage	sj	no extra info
@@ -522,13 +522,27 @@ const allItems = rawData.split(/\n+/).map(line => {
 function findTargetIndex(word, extra) {
   const lower = word.toLowerCase();
   const pos = [];
-  for (let i=0;i<lower.length;i++) if(lower[i]==='g') pos.push(i);
-  if (!pos.length) return -1;
-  if (pos.length===1) return pos[0];
-  const hint = (extra||"").toLowerCase();
-  if (hint.includes("first"))       return pos[0];
-  if (hint.includes("last"))        return pos[pos.length-1];
-  if (hint.includes("penultimate")) return pos.length>=2 ? pos[pos.length-2] : pos[pos.length-1];
+  for (let i = 0; i < lower.length; i++) {
+    if (lower[i] === 'g') pos.push(i);
+  }
+  
+  if (pos.length === 0) return -1;
+
+  const hint = (extra || "").toLowerCase().trim();
+
+  // Kolla om hinte innehåller "g" följt av en siffra (t.ex. "g2")
+  const match = hint.match(/g(\d+)/);
+  if (match) {
+    const targetNum = parseInt(match[1], 10); // t.ex. 2
+    // Returnera index för det g-et (justerat för 0-indexering: g1 = pos[0])
+    return pos[targetNum - 1] !== undefined ? pos[targetNum - 1] : pos[0];
+  }
+
+  // Behåll gamla logiken som fallback
+  if (hint.includes("first")) return pos[0];
+  if (hint.includes("last"))  return pos[pos.length - 1];
+  
+  // Standard: första g-et
   return pos[0];
 }
 
@@ -666,4 +680,5 @@ try {
 resetQuiz();
 </script>
 </body>
+
 </html>
