@@ -538,8 +538,13 @@ const TOTAL = 170;
 const answerOptions = ["g", "j", "sj", "j or g", "sj or g"];
 
 const allItems = rawData.split(/\n+/).map(line => {
-  const p = line.trim().split("\t");
-  return {word:p[0]?.trim()||"", answer:p[1]?.trim()||"", extra:p[2]?.trim()||"no extra info"};
+  // Dela upp raden antingen med Tab ELLER med dubbla mellanslag
+  const p = line.trim().split(/\t| {2,}/); 
+  return {
+    word: p[0]?.trim() || "", 
+    answer: p[1]?.trim() || "", 
+    extra: p[2]?.trim() || "no extra info"
+  };
 });
 
 function findTargetIndex(word, extra) {
@@ -743,4 +748,5 @@ resetQuiz();
 </body>
 
 </html>
+
 
