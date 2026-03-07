@@ -193,17 +193,40 @@
     }
 
     /* CHOICES */
-    .choices{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
-    @media(max-width:500px){.choices{grid-template-columns:repeat(2,1fr);}}
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+  justify-content: center;
+}
 
-    .choice-btn {
-      appearance:none;border:1.5px solid var(--border);background:var(--card);
-      color:var(--text);border-radius:var(--radius-sm);padding:16px 8px;
-      font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;
-      cursor:pointer;position:relative;overflow:hidden;
-      transition:background .15s,border-color .15s,transform .15s,box-shadow .15s;
-      letter-spacing:.02em;
-    }
+@media(max-width: 500px) {
+  .choice-btn {
+    flex: 1 1 calc(50% - 10px); /* Två i bredd på mobilen */
+    font-size: 1.1rem;
+    padding: 12px 8px;
+  }
+}
+
+.choice-btn {
+  appearance: none;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px; /* Något mindre padding på höjden för att spara plats */
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem; /* Sänkt något från 1.5rem för att få plats med "sj or g" */
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all .15s ease;
+  flex: 1 1 calc(33% - 10px); /* Tre i bredd som standard */
+  min-width: 100px;
+  text-align: center;
+}
     .choice-btn::before{content:'';position:absolute;inset:0;background:var(--accent);opacity:0;transition:opacity .15s;}
     .choice-btn:hover:not(:disabled){border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 20%,transparent);}
     .choice-btn:hover:not(:disabled)::before{opacity:.06;}
@@ -416,7 +439,7 @@ segregera	g	g2
 typologisera	g	no extra info
 energi	sj	no extra info
 energisk	g	no extra info
-strategi	sj	no extra info
+strategi	sj or g	no extra info
 strategisk	g	no extra info
 tragedi	sj	no extra info
 tragisk	g	no extra info
@@ -512,7 +535,7 @@ uppgift	j	no extra info
 `.trim();
 
 const TOTAL = 170;
-const answerOptions = ["g","j","sj","j or g"];
+const answerOptions = ["g", "j", "sj", "j or g", "sj or g"];
 
 const allItems = rawData.split(/\n+/).map(line => {
   const p = line.trim().split("\t");
@@ -626,26 +649,64 @@ function renderCurrentItem(){
   nextBtn.textContent=currentIndex>=items.length-1?"Finish →":"Next word →";
 }
 
-function handleAnswer(selected,clickedBtn){
-  if(hasAnswered) return;
-  const item=items[currentIndex];
-  hasAnswered=true;
+function handleAnswer(selected, clickedBtn) {
+  if (hasAnswered) return;
+  const item = items[currentIndex];
+  hasAnswered = true;
   answeredCount++;
 
-  [...choicesEl.querySelectorAll(".choice-btn")].forEach(btn=>{
-    btn.disabled=true;
-    if(btn.textContent===item.answer) btn.classList.add("correct");
+  // Inaktivera alla knappar och markera det rätta
+  [...choicesEl.querySelectorAll(".choice-btn")].forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === item.answer) {
+      btn.classList.add("correct");
+    }
   });
 
-  if(selected===item.answer){
+  if (selected === item.answer) {
     score++;
-    clickedBtn.classList.add("correct","animate-pop");
-    setFeedback("correct","✓","Correct!");
+    clickedBtn.classList.add("correct", "animate-pop");
+    setFeedback("correct", "✓", "Correct!");
   } else {
-    clickedBtn.classList.add("wrong","animate-shake");
-    setFeedback("wrong","✗",`Incorrect. The correct answer is: ${item.answer}.`);
+    clickedBtn.classList.add("wrong", "animate-shake");
+    setFeedback("wrong", "✗", `Incorrect. The correct answer is: ${item.answer}.`);
   }
   updateScoreboard();
+}
+
+// Uppdaterad renderCurrentItem
+function renderCurrentItem() {
+  const item = items[currentIndex];
+  updateProgress();
+
+  if (!item) {
+    wordBox.innerHTML = `<div class="finish-display"><div class="finish-score">${score}/${answeredCount}</div><p class="finish-label">Exercise complete!</p></div>`;
+    choicesEl.innerHTML = "";
+    setFeedback("correct", "🎉", `You got ${score} out of ${answeredCount} correct.`);
+    nextBtn.textContent = "↺ Start again";
+    return;
+  }
+
+  hasAnswered = false;
+  wordBox.classList.add("transitioning");
+  setTimeout(() => {
+    wordBox.innerHTML = `<p class="word">${buildWordHTML(item.word, item.extra)}</p>`;
+    wordBox.classList.remove("transitioning");
+  }, 180);
+
+  setFeedback("", "💡", "Choose an option.");
+
+  choicesEl.innerHTML = "";
+  answerOptions.forEach(option => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice-btn";
+    btn.textContent = option;
+    btn.addEventListener("click", () => handleAnswer(option, btn));
+    choicesEl.appendChild(btn);
+  });
+
+  nextBtn.textContent = currentIndex >= items.length - 1 ? "Finish →" : "Next word →";
 }
 
 function resetQuiz(){
