@@ -4,162 +4,254 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Swedish Pronunciation: G</title>
+  
+ <script>
+  // Detta script körs innan sidan ens börjat ritas ut
+  const t = localStorage.getItem('theme');
+  if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+</script>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    :root, [data-theme="light"] {
-      --bg: #e8edf5; --bg2: #dde3ef; --card: #f4f7fc; --card2: #eaeef7;
-      --border: #c5cde0; --text: #1a2338; --muted: #5a6a8a; --accent: #2d5be3;
-      --highlight: #d4380d; --ok-bg: #e6f4ea; --ok-text: #1b5e20; --ok-border: #a8d5b5;
-      --err-bg: #fdecea; --err-text: #7f1d1d; --err-border: #f5b8b8;
-      --shadow: 0 8px 32px rgba(45,91,227,.10);
-      --score-bg: rgba(244,247,252,.92); --radius: 22px; --radius-sm: 14px;
-    }
-    [data-theme="dark"] {
-      --bg:#0f1117; --bg2:#181c28; --card:#1e2235; --card2:#252a40;
-      --border:#2e3450; --text:#e8ecf8; --muted:#7a84aa; --accent:#5b8af0;
-      --highlight:#ff6b4a; --ok-bg:#0d2a1a; --ok-text:#7dd6a0; --ok-border:#2a6b4a;
-      --err-bg:#2a0d0d; --err-text:#f09090; --err-border:#6b2a2a;
-      --score-bg:rgba(30,34,53,.95);
-    }
- 
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
- 
-    /* TOOLTIP */
-    .has-tooltip { cursor: pointer; text-decoration: none; }
-    .js-tooltip {
-      position: fixed;
-      padding: 10px 14px;
-      border-radius: 12px;
-      pointer-events: none;
-      opacity: 0;
-      visibility: hidden;
-      z-index: 9999;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
-      transform: translate(-50%, 10px);
-      left: 0;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .js-tooltip.visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translate(-50%, 0);
-    }
-    [data-theme="light"] .js-tooltip { background: #1a2338; color: #fff; }
-    [data-theme="dark"] .js-tooltip { background: #fff; color: #1a2338; }
-    .tooltip-translation { font-weight: 700; font-size: 1rem; }
-    .tooltip-category { font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; font-weight: 500; }
- 
-    /* UI */
-    .top-right { position: fixed; top: 20px; right: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 100; }
-    .scoreboard, .theory-btn { width: 120px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--score-bg); backdrop-filter: blur(12px); font-weight: 700; font-size: .85rem; }
-    .theory-btn { color: var(--accent); text-decoration: none; transition: .2s; }
-    .theory-btn:hover { background: var(--accent); color: #fff; }
-    
-    .theme-toggle { position:fixed; top:20px; left:20px; background:var(--score-bg); border:1px solid var(--border); border-radius:999px; padding:8px 14px; display:flex; align-items:center; gap:10px; z-index: 100; }
-    .toggle-switch { position:relative; width:44px; height:24px; cursor:pointer; }
-    .toggle-switch input { opacity:0; width:0; height:0; }
-    .toggle-track { position:absolute; inset:0; background:#c5cde0; border-radius:999px; transition:.3s; border:1px solid var(--border); }
-    .toggle-switch input:checked + .toggle-track { background:var(--accent); }
-    .toggle-knob { position:absolute; top:50%; left:4px; width:16px; height:16px; border-radius:50%; background:#fff; transform:translateY(-50%); transition:.3s; }
-    .toggle-switch input:checked ~ .toggle-knob { left:calc(100% - 20px); }
- 
-    .wrap { max-width:660px; margin:0 auto; padding:80px 20px; }
-    .header h1 { font-family:'Playfair Display',serif; font-size: 2.2rem; margin-bottom: 10px; }
-    .header h1 em { color: var(--highlight); font-style: normal; }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px 28px; box-shadow:var(--shadow); }
-    
-    .progress-row { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-    .progress-track { flex:1; height:6px; background:var(--card2); border-radius:999px; overflow:hidden; }
-    .progress-fill { height:100%; background:var(--accent); width:0%; transition:width .3s; }
-    
-    .word-box { background:var(--card2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:40px 20px; text-align:center; margin-bottom:16px; }
-    .word { font-family:'Playfair Display',serif; font-size: 3.5rem; font-weight:700; }
-    .target-letter { color: var(--highlight); border-bottom: 4px solid var(--highlight); }
- 
-    .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px; }
-    .choice-btn { border: 1.5px solid var(--border); background: var(--card); border-radius: var(--radius-sm); padding: 15px; font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: .15s; color: var(--text); }
-    .choice-btn:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
-    .choice-btn.correct { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
-    .choice-btn.wrong { background: var(--err-bg); color: var(--err-text); border-color: var(--err-border); }
- 
-    .feedback { padding: 15px; border-radius: var(--radius-sm); background: var(--card2); border: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-weight: 600; margin-bottom: 20px; }
-    .feedback.correct { background: var(--ok-bg); color: var(--ok-text); }
-    .feedback.wrong { background: var(--err-bg); color: var(--err-text); }
-    
-    .controls { display: flex; gap: 10px; }
-    .nav-btn { padding: 12px 20px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-weight: 700; cursor: pointer; background: var(--card); color: var(--text); }
-    .nav-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); flex: 1; }
- 
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-    }
-    .modal-content {
-      background: var(--card);
-      color: var(--text);
-      padding: 2.5rem;
-      border-radius: var(--radius);
-      max-width: 420px;
-      width: 90%;
-      text-align: center;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-      animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes modalPop {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .modal-content p {
-      line-height: 1.6;
-      font-size: 1.1rem;
-    }
-    .modal-content button {
-      margin-top: 1.5rem;
-      padding: 10px 25px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--accent);
-      color: #fff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-  </style>
+<style>
+  :root, [data-theme="light"] {
+    --bg: #f4f1ec; 
+    --bg2: #dde3ef; 
+    --card: #f4f7fc; 
+    --card2: #eaeef7;
+    --surface: #ffffff;
+    --surface2: #eee9e0;
+    --border: #c5cde0; 
+    --text: #1a2338; 
+    --muted: #5a6a8a; 
+    --accent: #2d5be3;
+    --highlight: #d4380d; 
+    --ok-bg: #e6f4ea; 
+    --ok-text: #1b5e20; 
+    --ok-border: #a8d5b5;
+    --err-bg: #fdecea; 
+    --err-text: #7f1d1d; 
+    --err-border: #f5b8b8;
+    --shadow: 0 8px 32px rgba(45,91,227,.10);
+    --radius: 22px; 
+    --radius-sm: 14px;
+    --transition: 0.3s ease;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0f1117;
+    --bg2: #181c28; 
+    --card: #1e2235; 
+    --card2: #252a40;
+    --surface: #252a40;
+    --surface2: #2e3450;
+    --border: #2e3450;
+    --text: #e8ecf8;
+    --muted: #7a84aa; 
+    --accent: #5b8af0;
+    --highlight: #ff6b4a; 
+    --ok-bg: #0d2a1a; 
+    --ok-text: #7dd6a0; 
+    --ok-border: #2a6b4a;
+    --err-bg: #2a0d0d; 
+    --err-text: #f09090; 
+    --err-border: #6b2a2a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background var(--transition), color var(--transition); }
+
+  /* TOOLTIP */
+  .has-tooltip { cursor: pointer; text-decoration: none; }
+  .js-tooltip {
+    position: fixed;
+    padding: 10px 14px;
+    border-radius: 12px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 9999;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+    transform: translate(-50%, 10px);
+    left: 0; top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .js-tooltip.visible { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  [data-theme="light"] .js-tooltip { background: #1a2338; color: #fff; }
+  [data-theme="dark"] .js-tooltip { background: #fff; color: #1a2338; }
+  .tooltip-translation { font-weight: 700; font-size: 1rem; }
+  .tooltip-category { font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; font-weight: 500; }
+
+  /* TOP-RIGHT CONTROLS - IDENTICAL ON BOTH PAGES */
+  .top-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    z-index: 1000;
+  }
+
+  .theme-toggle {
+    background: var(--surface);
+    border: 1.5px solid var(--surface2);
+    border-radius: 999px;
+    padding: 8px 14px;
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    box-shadow: var(--shadow);
+    transition: background var(--transition), border-color var(--transition);
+	height: 42px;
+  }
+
+.theme-toggle span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    line-height: 1; /* Tar bort extra utrymme runt emojin */
+    height: 24px;   /* Matchar höjden på själva togglen */
+}
+
+.toggle-switch { 
+    position: relative; 
+    width: 44px; 
+    height: 24px; 
+    cursor: pointer; 
+    display: block; 
+}
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-track { 
+    position: absolute; inset: 0; 
+    background: var(--surface2); 
+    border-radius: 999px; 
+    transition: .3s; 
+    border: 1px solid var(--border); 
+  }
+  .toggle-switch input:checked + .toggle-track { background: var(--accent); }
+  .toggle-knob { 
+    position: absolute; top: 50%; left: 4px; 
+    width: 16px; height: 16px; 
+    border-radius: 50%; 
+    background: #fff; 
+    transform: translateY(-50%); 
+    transition: .3s; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle-switch input:checked ~ .toggle-knob { left: calc(100% - 20px); }
+
+  .theory-btn {
+    width: 137px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--text);  
+    text-decoration: none;
+    transition: .2s;
+    box-shadow: var(--shadow);
+  }
+  .theory-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* CONTENT WRAPPER */
+  .wrap { max-width: 660px; margin: 0 auto; padding: 40px 20px; }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 10px; }
+  .header h1 em { color: var(--highlight); font-style: normal; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 28px; box-shadow: var(--shadow); }
+  
+  .progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .progress-track { flex: 1; height: 6px; background: var(--card2); border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+  
+  .word-box { background: var(--card2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 40px 20px; text-align: center; margin-bottom: 16px; }
+  .word { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 700; }
+  .target-letter { color: var(--highlight); border-bottom: 4px solid var(--highlight); }
+
+  .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .choice-btn { border: 1.5px solid var(--border); background: var(--card); border-radius: var(--radius-sm); padding: 15px; font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; cursor: pointer; transition: .15s; color: var(--text); }
+  .choice-btn:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
+  .choice-btn.correct { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
+  .choice-btn.wrong { background: var(--err-bg); color: var(--err-text); border-color: var(--err-border); }
+
+.feedback { 
+    padding: 15px; 
+    border-radius: var(--radius-sm); 
+    background: var(--card2); 
+    border: 1.5px solid var(--border); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; /* Detta centrerar texten horisontellt */
+    text-align: center;      /* Säkerhetsåtgärd för flerradig text */
+    gap: 10px; 
+    font-weight: 600; 
+    margin-bottom: 20px; 
+    min-height: 54px;        /* Ger boxen en fast höjd så att layouten inte hoppar */
+}
+  .feedback.correct { background: var(--ok-bg); color: var(--ok-text); }
+  .feedback.wrong { background: var(--err-bg); color: var(--err-text); }
+  
+  .controls { display: flex; gap: 10px; }
+  .nav-btn { padding: 12px 20px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-weight: 700; cursor: pointer; background: var(--card); color: var(--text); }
+  .nav-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); flex: 1; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+    display: none; justify-content: center; align-items: center; z-index: 10000;
+  }
+  .modal-content {
+    background: var(--card); color: var(--text); padding: 2.5rem;
+    border-radius: var(--radius); max-width: 420px; width: 90%;
+    text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);
+    animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-content p { line-height: 1.6; font-size: 1.1rem; }
+  .modal-content button {
+    margin-top: 1.5rem; padding: 10px 25px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--accent);
+    color: #fff; font-weight: 700; cursor: pointer;
+  }
+</style>
 </head>
 <body>
- 
-<div class="top-right">
-  <div class="scoreboard"><span id="scoreNum">0</span> / <span id="scoreTotal">0</span></div>
-  <a class="theory-btn" href="https://learnswedish.github.io/html/swe-g.html" target="_blank"><i class="fa-solid fa-book-open"></i> Theory</a>
-</div>
- 
-<div class="theme-toggle">
-  <span>☀️</span>
-  <label class="toggle-switch"><input type="checkbox" id="themeToggle"><div class="toggle-track"></div><div class="toggle-knob"></div></label>
-  <span>🌙</span>
+
+<div class="top-controls">
+  <div class="theme-toggle">
+    <span>☀️</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="themeToggle">
+      <div class="toggle-track"></div>
+      <div class="toggle-knob"></div>
+    </label>
+    <span>🌙</span>
+  </div>
+  <a class="theory-btn" href="https://learnswedish.github.io/html/swe-g.html">
+    <i class="fa-solid fa-book-open"></i> Theory
+  </a>
 </div>
  
 <div class="wrap">
   <div class="header">
-    <h1>How is <em>g</em> pronounced?</h1>
-    <p>Hover over the word to see its type and translation.</p>
+    <h1>Exercise: How is <em>g</em> pronounced?</h1>
+    <p>Hover over the word to see its type and translation.</p><br />
   </div>
   <div class="card">
     <div class="progress-row">
@@ -236,8 +328,8 @@ const rawData = [
   { word: "genom", pron: "j", pos: 1, trans: "through", cat: "native word" },
   { word: "genrep", pron: "j", pos: 1, trans: "rehearsal", cat: "native word" },
   { word: "gentemot", pron: "j", pos: 1, trans: "towards", cat: "native word" },
+  { word: "genmäle", pron: "j", pos: 1, trans: "reply; retort", cat: "native word" },
   { word: "gentjänst", pron: "j", pos: 1, trans: "favour in return", cat: "native word" },
-  { word: "gentöver", pron: "j", pos: 1, trans: "across from", cat: "native word" },
   { word: "genväg", pron: "j", pos: 1, trans: "shortcut", cat: "native word" },
   { word: "gestalta", pron: "j", pos: 1, trans: "to shape", cat: "native word" },
   { word: "get", pron: "j", pos: 1, trans: "goat", cat: "native word" },
@@ -294,7 +386,7 @@ const rawData = [
   { word: "geisha", pron: "g", pos: 1, trans: "geisha", cat: "international loanword" },
   { word: "gejser", pron: "g", pos: 1, trans: "geyser", cat: "international loanword" },
   { word: "gem", pron: "g", pos: 1, trans: "paper clip", cat: "international loanword" },
-  { word: "gensare", pron: "g", pos: 1, trans: "guernsey", cat: "international loanword" },
+  { word: "gensare", pron: "g", pos: 1, trans: "Guernsey", cat: "international loanword" },
   { word: "geschäft", pron: "g", pos: 1, trans: "speculative business", cat: "international loanword" },
   { word: "geschwint", pron: "g", pos: 1, trans: "quick", cat: "international loanword" },
   { word: "geist", pron: "g", pos: 1, trans: "pep", cat: "international loanword" },
@@ -311,7 +403,7 @@ const rawData = [
   { word: "orgel", pron: "j", pos: 3, trans: "organ", cat: "international loanword" },
   { word: "regera", pron: "j", pos: 3, trans: "to govern", cat: "international loanword" },
   { word: "regering", pron: "j", pos: 3, trans: "government", cat: "international loanword" },
-  { word: "register", pron: "j", pos: 3, trans: "register", cat: "international loanword" },
+  { word: "register", pron: "j", pos: 3, trans: "register", cat: "scientific term" },
   { word: "Sverige", pron: "j", pos: 6, trans: "Sweden", cat: "native word" },
 
   // FRENCH ORIGIN (SJ-SOUND)
@@ -321,7 +413,7 @@ const rawData = [
   { word: "beige", pron: "sj", pos: 4, trans: "beige", cat: "international loanword" },
   { word: "blamage", pron: "sj", pos: 6, trans: "disgrace", cat: "international loanword" },
   { word: "diligens", pron: "sj", pos: 5, trans: "stagecoach", cat: "international loanword" },
-  { word: "dränage", pron: "sj", pos: 6, trans: "drainage", cat: "international loanword" },
+  { word: "dränage", pron: "sj", pos: 6, trans: "drainage", cat: "scientific term" },
   { word: "ekipage", pron: "sj", pos: 6, trans: "carriage", cat: "international loanword" },
   { word: "energi", pron: "sj", pos: 5, trans: "energy", cat: "international loanword" },
   { word: "emballage", pron: "sj", pos: 8, trans: "packing; wrapping", cat: "international loanword" },  
@@ -329,15 +421,15 @@ const rawData = [
   { word: "etage", pron: "sj", pos: 4, trans: "storey", cat: "international loanword" },
   { word: "gage", pron: "sj", pos: 3, trans: "fee", cat: "international loanword" },
   { word: "garage", pron: "sj", pos: 5, trans: "garage", cat: "international loanword" },
-  { word: "gelatin", pron: "sj", pos: 1, trans: "gelatine", cat: "international loanword" },
+  { word: "gelatin", pron: "sj", pos: 1, trans: "gelatine", cat: "scientific term" },
   { word: "gelé", pron: "sj", pos: 1, trans: "jelly", cat: "international loanword" },
   { word: "genant", pron: "sj", pos: 1, trans: "awkward; embarrassing", cat: "international loanword" },
-  { word: "generalisera", pron: "sj", pos: 1, trans: "to generalise", cat: "international loanword" },
+  { word: "generalisera", pron: "sj", pos: 1, trans: "to generalise", cat: "scientific term" },
   { word: "generell", pron: "sj", pos: 1, trans: "general", cat: "international loanword" },
   { word: "generös", pron: "sj", pos: 1, trans: "generous", cat: "international loanword" },
   { word: "geni", pron: "sj", pos: 1, trans: "genius", cat: "international loanword" },
   { word: "genre", pron: "sj", pos: 1, trans: "genre", cat: "international loanword" },
-  { word: "gestikulera", pron: "sj", pos: 1, trans: "to gesticulate", cat: "international loanword" },
+  { word: "gestikulera", pron: "sj", pos: 1, trans: "to gesticulate", cat: "scientific term" },
   { word: "giraff", pron: "sj", pos: 1, trans: "giraffe", cat: "international loanword" },
   { word: "ingenjör", pron: "sj", pos: 3, trans: "engineer", cat: "international loanword" },
   { word: "kamouflage", pron: "sj", pos: 9, trans: "camouflage", cat: "international loanword" },
@@ -348,7 +440,7 @@ const rawData = [
   { word: "passage", pron: "sj", pos: 6, trans: "passageway", cat: "international loanword" },
   { word: "passagerare", pron: "sj", pos: 6, trans: "passenger", cat: "international loanword" },
   { word: "prestige", pron: "sj", pos: 7, trans: "prestige", cat: "international loanword" },
-  { word: "redigera", pron: "sj", pos: 5, trans: "to edit", cat: "international loanword" },
+  { word: "redigera", pron: "sj", pos: 5, trans: "to edit", cat: "scientific term" },
   { word: "regi", pron: "sj", pos: 3, trans: "direction", cat: "international loanword" },
   { word: "regim", pron: "sj", pos: 3, trans: "regime", cat: "international loanword" },
   { word: "reportage", pron: "sj", pos: 8, trans: "feature story; report", cat: "international loanword" },
@@ -358,26 +450,26 @@ const rawData = [
 
   // EXCEPTIONS & MIXED
   { word: "general", pron: "j", pos: 1, trans: "general", cat: "international loanword" },
-  { word: "generera", pron: "j", pos: 1, trans: "to generate", cat: "international loanword" },
-  { word: "gestalt", pron: "j", pos: 1, trans: "figure; form", cat: "international loanword" },
+  { word: "generera", pron: "j", pos: 1, trans: "to generate", cat: "scientific term" },
+  { word: "gestalt", pron: "j", pos: 1, trans: "figure; form", cat: "native word" },
   { word: "girlang", pron: "j", pos: 1, trans: "garland; festoon", cat: "international loanword" },
   { word: "gitarr", pron: "j", pos: 1, trans: "guitar", cat: "international loanword" },
   { word: "energisk", pron: "g", pos: 5, trans: "energetic", cat: "international loanword" },
   { word: "giljotin", pron: "g", pos: 1, trans: "guillotine", cat: "international loanword" },
-  { word: "region", pron: "g", pos: 3, trans: "region", cat: "international loanword" },
-  { word: "strategisk", pron: "g", pos: 7, trans: "strategic", cat: "international loanword" },
+  { word: "region", pron: "g", pos: 3, trans: "region", cat: "scientific term" },
+  { word: "strategisk", pron: "g", pos: 7, trans: "strategic", cat: "scientific term" },
   { word: "tragisk", pron: "g", pos: 4, trans: "tragic", cat: "international loanword" },
   { word: "gepard", pron: "j or g", pos: 1, trans: "cheetah", cat: "international loanword" },
   { word: "gig", pron: "j or g", pos: 1, trans: "gig", cat: "international loanword" },
   { word: "gigolo", pron: "j or g", pos: 1, trans: "gigolo", cat: "international loanword" },
-  { word: "giffel", pron: "j or g", pos: 1, trans: "croissant", cat: "international loanword" },
+  { word: "giffel", pron: "j or g", pos: 1, trans: "croissant", cat: "native word" },
   { word: "religion", pron: "j or g", pos: 5, trans: "religion", cat: "international loanword" },
-  { word: "sigill", pron: "j or g", pos: 3, trans: "seal", cat: "international loanword" },
+  { word: "sigill", pron: "j or g", pos: 3, trans: "seal", cat: "native word" },
   { word: "dirigent", pron: "sj or g", pos: 5, trans: "conductor", cat: "international loanword" },
-  { word: "dirigera", pron: "sj or g", pos: 5, trans: "to direct; conduct", cat: "international loanword" },
+  { word: "dirigera", pron: "sj or g", pos: 5, trans: "to direct; conduct", cat: "scientific term" },
   { word: "elegi", pron: "sj or g", pos: 4, trans: "elegy", cat: "international loanword" },
   { word: "religiös", pron: "sj or g", pos: 5, trans: "religious", cat: "international loanword" },
-  { word: "strategi", pron: "sj or g", pos: 7, trans: "strategy", cat: "international loanword" },
+  { word: "strategi", pron: "sj or g", pos: 7, trans: "strategy", cat: "scientific term" },
 
   // SCIENTIFIC G
   { word: "agera", pron: "g", pos: 2, trans: "to act", cat: "scientific term" },
@@ -518,9 +610,9 @@ function showPronunciationModal(alternative) {
     const textElement = document.getElementById('modalText');
     
     const pronNames = {
-        'g': 'a hard "g" sound',
-        'j': 'a soft "j" sound',
-        'sj': 'a "sh" sound'
+        'g': 'a hard /g/ sound',
+        'j': 'a soft /j/ sound',
+        'sj': 'a /sj/ sound'
     };
  
     textElement.innerHTML = `Correct! Note that this word can also be pronounced with <strong>${pronNames[alternative]}</strong>.`;
@@ -558,14 +650,11 @@ function handleAnswer(selected, btn) {
         document.getElementById("feedbackText").textContent = `Incorrect. The correct answer is: ${correctText}.`;
         document.getElementById("feedback").className = "feedback wrong";
     }
-    document.getElementById("scoreNum").textContent = score;
 }
  
 function resetQuiz() {
     items = [...rawData].sort(() => Math.random() - 0.5);
     currentIndex = 0; score = 0; answeredCount = 0;
-    document.getElementById("scoreNum").textContent = 0;
-    document.getElementById("scoreTotal").textContent = items.length;
     renderCurrentItem();
 }
  
@@ -599,10 +688,30 @@ document.addEventListener('mouseout', e => {
     }
 });
  
-// THEME
-document.getElementById("themeToggle").onchange = (e) => {
-    document.documentElement.dataset.theme = e.target.checked ? "dark" : "light";
-};
+// THEME MANAGEMENT (Identisk med Theory-sidan)
+const themeInput = document.getElementById('themeToggle');
+
+function applyTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    if (themeInput) themeInput.checked = dark;
+    try { 
+        localStorage.setItem('theme', dark ? 'dark' : 'light'); 
+    } catch(e) {}
+}
+
+if (themeInput) {
+    themeInput.addEventListener('change', () => applyTheme(themeInput.checked));
+}
+
+// Kör vid laddning för att synka togglen
+const savedTheme = localStorage.getItem('theme');
+const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+    applyTheme(true);
+} else {
+    applyTheme(false);
+}
  
 document.addEventListener('keydown', (e) => {
     if (e.key === "Escape") closeModal();
