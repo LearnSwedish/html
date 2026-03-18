@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pronunciation Guide – G</title>
+
+<script>
+  // Detta script körs innan sidan ens börjat ritas ut
+  const t = localStorage.getItem('theme');
+  if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+</script>
+	
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
@@ -11,34 +20,37 @@
 html, body, * { -webkit-user-select:none; user-select:none; }
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
 
-:root {
+:root, [data-theme="light"] {
     --bg: #f4f1ec;
     --surface: #ffffff;
     --surface2: #eee9e0;
-    --text: #1a1a2e;
-    --text-muted: #6b6b80;
-    --accent: #1b5e82;
+    --border: #c5cde0;
+    --text: #1a2338;
+    --text-muted: #5a6a8a;
+    --accent: #2d5be3;
     --accent-light: #2a7faf;
-    --accent-glow: rgba(27,94,130,0.18);
-    --line-color: #1b5e82;
-    --shadow: 0 4px 24px rgba(27,94,130,0.13), 0 1.5px 6px rgba(0,0,0,0.07);
-    --shadow-hover: 0 8px 36px rgba(27,94,130,0.22), 0 2px 10px rgba(0,0,0,0.1);
-    --radius: 16px;
-    --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+    --accent-glow: rgba(45, 91, 227, 0.1);
+    --line-color: #2d5be3;
+	--highlight: #d4380d; 
+    --shadow: 0 8px 32px rgba(45, 91, 227, 0.10);
+    --shadow-hover: 0 12px 40px rgba(45, 91, 227, 0.15);
+    --radius: 22px;
+    --transition: 0.3s ease;
 }
 
 [data-theme="dark"] {
     --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --text: #e8e8f0;
-    --text-muted: #8888aa;
-    --accent: #4aa8d8;
+    --surface: #252a40;
+    --surface2: #2e3450;
+    --border: #2e3450;
+    --text: #e8ecf8;
+    --text-muted: #7a84aa;
+    --accent: #5b8af0;
     --accent-light: #6ec6f0;
-    --accent-glow: rgba(74,168,216,0.18);
-    --line-color: #4aa8d8;
-    --shadow: 0 4px 28px rgba(0,0,0,0.45), 0 1.5px 6px rgba(0,0,0,0.3);
-    --shadow-hover: 0 8px 40px rgba(74,168,216,0.2), 0 2px 12px rgba(0,0,0,0.4);
+    --accent-glow: rgba(91, 138, 240, 0.15);
+    --line-color: #5b8af0;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 body {
@@ -53,29 +65,53 @@ body {
     transition: background-color var(--transition), color var(--transition);
 }
 
-/* TOP CONTROLS */
+.tree-container h1 { 
+    font-family: 'Playfair Display', serif; 
+    font-size: 2.2rem; 
+    margin-bottom: 70px; 
+}
+
+/* TOP CONTROLS - IDENTICAL ON BOTH PAGES */
 .top-controls {
     position: fixed;
-    top: 15px; right: 20px;
-    display: flex; flex-direction: column; gap: 10px;
-    z-index: 100;
+    top: 20px; 
+    right: 20px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-end;
+    gap: 10px;
+    z-index: 1000;
 }
+
 .theme-toggle {
     background: var(--surface);
     border: 1.5px solid var(--surface2);
     border-radius: 999px;
     padding: 8px 14px;
-    display: flex; align-items: center; gap: 10px;
+    display: flex; 
+    align-items: center;
+    gap: 10px;
     box-shadow: var(--shadow);
     transition: background var(--transition), border-color var(--transition);
+	height: 42px;
 }
+
+.theme-toggle span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    line-height: 1; /* Tar bort extra utrymme runt emojin */
+    height: 24px;   /* Matchar höjden på själva togglen */
+}
+
 .toggle-icon { font-size: 1rem; line-height: 1; }
 .toggle-switch { position: relative; width: 44px; height: 24px; cursor: pointer; }
 .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
 .toggle-track {
     position: absolute; inset: 0;
     background: var(--surface2); border-radius: 999px;
-    transition: background .3s; border: 1px solid var(--surface2);
+    transition: background .3s; border: 1px solid var(--border);
 }
 .toggle-switch input:checked + .toggle-track { background: var(--accent); }
 .toggle-knob {
@@ -89,41 +125,32 @@ body {
 .toggle-switch input:checked ~ .toggle-knob { left: calc(100% - 20px); }
 
 .exercise-btn {
+    width: 137px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     background: var(--surface);
-    border: 1.5px solid var(--surface2);
-    border-radius: 999px;
-    padding: 8px 14px;
-    display: flex; align-items: center; gap: 10px;
-    box-shadow: var(--shadow);
-    color: var(--accent);
-    font-size: 12px; font-weight: 500;
-    width: 120px; justify-content: center;
-    transition: var(--transition);
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--text);
     text-decoration: none;
+    transition: .2s;
+    box-shadow: var(--shadow);
 }
-.exercise-btn:hover { background: var(--accent); color: #fff; transform: translateY(-2px); }
+.exercise-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: none; }
 
-/* HEADER */
+/* HEADER & HIGHLIGHTS */
 .chart-header { text-align: center; margin-bottom: 20px; }
 .chart-header h1 { font-family: 'Playfair Display', serif; font-size: 32px; }
 
 mark.g-highlight { background: none; color: #d4380d; font-weight: 700; }
 [data-theme="dark"] mark.g-highlight { color: #ff6b4a; }
 
-mark.s-highlight {
-    background: none;
-    color: #1b7a3e;
-    font-weight: 700;
-    text-decoration: underline;
-    text-decoration-color: #1b7a3e;
-    text-underline-offset: 3px;
-}
-[data-theme="dark"] mark.s-highlight {
-    color: #4dbb72;
-    text-decoration-color: #4dbb72;
-}
-
-/* TREE */
+/* TREE NODES */
 .tree-container {
     display: flex; flex-direction: column; align-items: center;
     width: 100%; max-width: 700px;
@@ -174,12 +201,12 @@ mark.s-highlight {
 .has-tooltip {
     cursor: pointer;
     border-bottom: 1px dotted var(--text-muted);
-    transition: color 0.2s ease, border-color 0.2s ease;
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
 }
 .has-tooltip:hover { color: var(--accent); border-bottom-color: var(--accent); }
 .js-tooltip {
     position: fixed;
-    padding: 6px 12px; /* Något mer luft på sidorna */
+    padding: 6px 12px;
     font-size: 15px;
     line-height: 1.4;
     border-radius: 8px;
@@ -187,12 +214,8 @@ mark.s-highlight {
     opacity: 0;
     visibility: hidden;
     z-index: 3000;
-    
-    /* Ändringar för att slippa wrap: */
-    white-space: nowrap; /* Förhindrar radbrytning */
-    width: auto;         /* Låter bredden anpassas efter innehållet */
-    max-width: none;     /* Tar bort begränsningen */
-    
+    white-space: nowrap; 
+    width: auto;
     box-shadow: 0 6px 18px rgba(0,0,0,0.25);
     border: 1px solid rgba(0,0,0,0.25);
     transition: opacity 0.12s ease, visibility 0.12s ease;
@@ -201,36 +224,9 @@ mark.s-highlight {
 [data-theme="dark"]  .js-tooltip { background: #fff; color: #111; }
 .js-tooltip.visible { opacity: 1; visibility: visible; }
 
-/* IPA */
-.ipa-chip {
-    display: inline-flex; align-items: center; justify-content: center;
-    min-width: 30px; padding: 3px; font-weight: 700; line-height: 1;
-    border-radius: 6px; white-space: nowrap;
-}
-[data-theme="light"] .ipa-chip { background: #ececec; color: #6030aa; border: 1px solid #cfcfcf; }
-[data-theme="dark"]  .ipa-chip { background: #3a3f55; color: #d6b7ff; border: 1px solid #6e7390; }
-.ipa-group { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.tree-container h1 em { color: var(--highlight); font-style: normal; }
 
-.notice-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid transparent;
-    gap: 12px;
-}
-.notice-row:last-child { border-bottom: none; }
-.notice-words {
-    flex: 1;
-    text-align: left;
-    font-size: 15px;
-}
-.notice-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
+/* BADGES & NOTICES */
 .badge-pill {
     display: inline-flex;
     align-items: center;
@@ -242,6 +238,12 @@ mark.s-highlight {
     padding: 4px 11px;
     border-radius: 999px;
     min-width: 30px;
+}
+.notice-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
 }
 
 /* MODAL */
@@ -272,23 +274,8 @@ mark.s-highlight {
 }
 .modal-close span:nth-child(1) { transform: rotate(45deg); }
 .modal-close span:nth-child(2) { transform: rotate(-45deg); }
-.modal-close:hover span { background: var(--accent); }
-.modal-close:hover span:nth-child(1) { transform: rotate(135deg); }
-.modal-close:hover span:nth-child(2) { transform: rotate(45deg); }
 
-.modal-word-row {
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 12px; font-size: 15px;
-}
-
-.modal-content ol {
-    margin: 14px 0;
-    padding-left: 24px;
-    line-height: 1.6;
-}
-[data-theme="dark"] .modal-word-row { border-bottom: 1px solid #ccc; }
-.modal-word-row .word-label { flex: 1; text-align: left; }
-.modal-columns { display: grid; grid-template-columns: 50fr 50fr; column-gap: 35px; }
+.modal-columns { display: grid; grid-template-columns: 1fr 1fr; column-gap: 35px; }
 
 @media (max-width: 850px) {
     .row { flex-direction: column; align-items: center; gap: 20px; }
@@ -299,11 +286,13 @@ mark.s-highlight {
 </head>
 <body>
 
+<body>
+
 <div class="top-controls">
-    <div class="theme-toggle" aria-label="Toggle dark mode">
+    <div class="theme-toggle">
         <span class="toggle-icon">☀️</span>
-        <label class="toggle-switch" title="Toggle dark mode">
-            <input type="checkbox" id="themeToggleInput">
+        <label class="toggle-switch">
+            <input type="checkbox" id="themeToggle">
             <div class="toggle-track"></div>
             <div class="toggle-knob"></div>
         </label>
@@ -316,9 +305,12 @@ mark.s-highlight {
 </div>
 
 <div class="tree-container">
+    <h1>Theory: How is <em>g</em> pronounced?</h1>
+    
     <div class="node node-main">
-        <div class="vowel-label">Pronunciation of g</div>
+        <div class="vowel-label">Two predictable groups<br />and one to watch out for</div>
     </div>
+
     <div class="connector-v"></div>
 
     <div class="row" id="row1">
@@ -327,22 +319,22 @@ mark.s-highlight {
         <div class="branch">
             <div class="connector-v"></div>
             <div class="node node-vowel" data-id="hard-g">
-                <div class="vowel-label">/<mark class="g-highlight">g</mark>/ 👍</div>
+                <div class="vowel-label">/<mark class="g-highlight">g</mark>/</div>
                 <div class="vowels">
                     <span class="vowel-chip">ga</span><span class="vowel-chip">go</span><span class="vowel-chip">gu</span><span class="vowel-chip">gå</span>
                 </div>
-                <div class="type-label">Always hard</div>
+                <div class="type-label">Easy: Always hard</div>
             </div>
         </div>
 
         <div class="branch">
             <div class="connector-v"></div>
             <div class="node node-vowel" style="border: 2px solid var(--accent);" data-id="variable">
-                <div class="vowel-label">? 😳</div>
+                <div class="vowel-label">?</div>
                 <div class="vowels">
                     <span class="vowel-chip">ge</span><span class="vowel-chip">gi</span>
                 </div>
-                <div class="type-label">Origin-sensitive</div>
+                <div class="type-label">Tricky: Origin-sensitive</div>
             </div>
             <div class="connector-v"></div>
             <div class="row" id="row2" style="gap: 20px;">
@@ -351,21 +343,21 @@ mark.s-highlight {
                     <div class="connector-v"></div>
                     <div class="node node-sub" data-id="soft-g">
                         <div class="vowel-label">/j...<mark class="g-highlight">g</mark>/</div>
-                        <div class="type-label"><span style="display:block; margin-top:10px;">Swedish</span></div>
+                        <div class="type-label"><span style="display:block; margin-top:10px;">Nat. Swedish</span></div>
                     </div>
                 </div>
                 <div class="branch">
                     <div class="connector-v"></div>
                     <div class="node node-sub" data-id="sj-sound">
                         <div class="vowel-label">/sj/</div>
-                        <div class="type-label"><span style="display:block; margin-top:10px;">International</span></div>
+                        <div class="type-label"><span style="display:block; margin-top:10px;">Int. loanword</span></div>
                     </div>
                 </div>
                 <div class="branch">
                     <div class="connector-v"></div>
                     <div class="node node-sub" data-id="hard-g-exc">
                         <div class="vowel-label">/<mark class="g-highlight">g</mark>/</div>
-                        <div class="type-label"><span style="display:block; margin-top:10px;">Science</span></div>
+                        <div class="type-label"><span style="display:block; margin-top:10px;">Science term</span></div>
                     </div>
                 </div>
             </div>
@@ -374,11 +366,11 @@ mark.s-highlight {
         <div class="branch">
             <div class="connector-v"></div>
             <div class="node node-vowel" data-id="soft-vowels">
-                <div class="vowel-label">/j/ 👍</div>
+                <div class="vowel-label">/j/</div>
                 <div class="vowels">
                     <span class="vowel-chip">gy</span><span class="vowel-chip">gä</span><span class="vowel-chip">gö</span>
                 </div>
-                <div class="type-label">Always soft</div>
+                <div class="type-label">Easy: Always soft</div>
             </div>
         </div>
     </div>
@@ -396,7 +388,7 @@ const modalRegistry = {
     "hard-g": {
         title: "ga, go, gu, gå &#8594; /<mark class=\"g-highlight\">g</mark>/",
         content: `<p style="font-size:18px;line-height:1.6;margin-top:8px;">
-            This group is straightforward: any word beginning with (or containing) {ga; go; gu; gå} is pronounced with a hard /<mark class="g-highlight">g</mark>/ in about 99 per cent of cases, as in English <em>goat</em>.<br><br> There is really <strong>only one exception</strong>: säga = säja.
+            This group is straightforward: any word beginning with (or containing) {ga; go; gu; gå}<br />is pronounced with a hard /<mark class="g-highlight">g</mark>/ in about 99 per cent of cases, as in English "goat".<br><br> There is really <strong>only one exception</strong>: säga &#8594; säja (to say).
 			<br><br>
             <div style="line-height:2.2;text-align:left;">
 <span class="has-tooltip" data-tooltip="assumption">antagande</span>,
@@ -444,8 +436,10 @@ const modalRegistry = {
     "variable": {
         title: "The Origin-Sensitive Group &#8594; ?",
         content: `<p style="font-size:18px;line-height:1.6;margin-top:8px;">
-            This is the "danger zone". Words beginning with (or containing) "<strong>ge</strong>" or "<strong>gi</strong>"<br />can follow three different patterns depending on the word's origin:<br><br>
-            (1) Native Swedish, (2) Common International Loanword, or (3) Scientific term.</p>
+            This is the "danger zone".<br />Words beginning with (or containing) {<strong>ge</strong>; <strong>gi</strong>} can follow<br />three different patterns depending on the word's origin:<br><br>
+            (1) Is it a native Swedish word?<br />
+			(2) Is it a common international loanword?<br />
+			(3) Is it a scientific term?</p>
         <p style="margin-top:16px;font-size:15px;color:var(--text-muted);">Click the three sub-nodes to explore each group.</p>`
     },
 "soft-g": {
@@ -528,7 +522,7 @@ Pronunciation: [jedi'gen]</p>
 <span class="has-tooltip" data-tooltip="brim; heap">råge</span>,
 <span class="has-tooltip" data-tooltip="struck; beaten">slagen</span>,
 <span class="has-tooltip" data-tooltip="ladder; stepladder">stege</span>,
-<span class="has-tooltip" data-tooltip="sister-in-law">svägerska</span>
+<span class="has-tooltip" data-tooltip="sister-in-law">svägerska</span>,
                 </p>
             </div>
         </div>
@@ -743,8 +737,7 @@ Pronunciation: [jedi'gen]</p>
     "soft-vowels": {
         title: "gy, gä, gö &#8594; /j/",
         content: `<p style="font-size:18px;line-height:1.6;margin-top:8px;">
-            When <mark class="g-highlight">g</mark> is followed by <strong>y, ä</strong> or <strong>ö</strong>,
-            it softens to <strong>/j/</strong> — like "y" in <em>yes</em>.</p>
+This group is also straightforward: when "g" is followed by {y; ä; ö}, it softens to a<br/>/j/ in almost all cases and is pronounced like the "y" in the English word "yes".
         <p style="margin-top:20px;font-size:15px;text-align:left;line-height:2.2;color:var(--text);">
 <span class="has-tooltip" data-tooltip="androgynous">androgyn</span>,
 <span class="has-tooltip" data-tooltip="desire">begär</span>,
@@ -828,15 +821,42 @@ function drawLines() {
 window.addEventListener('load', drawLines);
 window.addEventListener('resize', drawLines);
 
-/* THEME */
-const themeInput = document.getElementById('themeToggleInput');
+//* THEME MANAGEMENT */
+const themeInput = document.getElementById('themeToggle');
+
 function applyTheme(dark) {
+    // Sätt attributet på html-taggen
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    themeInput.checked = dark;
-    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch(e) {}
+    
+    // Synka själva checkboxen (togglen)
+    if (themeInput) themeInput.checked = dark;
+    
+    // Spara valet i webbläsarens minne
+    try { 
+        localStorage.setItem('theme', dark ? 'dark' : 'light'); 
+    } catch(e) {
+        console.error("Kunde inte spara tema:", e);
+    }
 }
-themeInput.addEventListener('change', () => applyTheme(themeInput.checked));
-try { if (localStorage.getItem('theme') === 'dark') applyTheme(true); } catch(e) {}
+
+// Lyssna på klick
+if (themeInput) {
+    themeInput.addEventListener('change', () => {
+        applyTheme(themeInput.checked);
+    });
+}
+
+// KÖR DIREKT VID LADDNING
+// 1. Kolla om användaren har sparat ett val tidigare
+// 2. Om inte, kolla om användaren har mörkt läge inställt i sitt operativsystem
+const savedTheme = localStorage.getItem('theme');
+const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+    applyTheme(true);
+} else {
+    applyTheme(false);
+}
 
 /* TOOLTIP */
 const jsTooltip = document.createElement('div');
