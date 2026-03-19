@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G-Uttal Träd</title>
+<style>
+  :root {
+    --line:    #d1d5db;
+    --hl:      #2563eb;
+    --hard-g:  #059669;
+    --soft-j:  #7c3aed;
+    --sj:      #ea580c;
+    --bg-node: #f3f4f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 80px;
+  }
+  .controls {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    justify-content: center; max-width: 1200px;
+    margin-bottom: 30px;
+  }
+  button {
+    padding: 10px 18px; border: 1px solid var(--line);
+    background: #fff; cursor: pointer; border-radius: 6px;
+    transition: all .2s; font-weight: 500; font-size: 1.2rem; min-width: 115px;
+  }
+  button:hover { background: #f9fafb; border-color: var(--hl); transform: translateY(-1px); }
+  .active-btn  { background: var(--hl) !important; color: #fff; border-color: var(--hl); }
+
+  /* ── TREE CONTAINER ── */
+  #tree-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 1300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #tree-svg {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: visible;
+  }
+
+  /* ── ROOT ROW ── */
+  #root-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Gap between root and families */
+  .vgap { height: 60px; width: 100%; flex-shrink: 0; }
+
+  /* ── FAMILIES ROW ── */
+#families-row {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; /* mitten bredare */
+  align-items: start;
+  width: 70%;
+  gap: 10px;
+}
+
+  /* ── FAMILY ── */
+.family {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+  /* ── SUB ROWS inside ge/gi ── */
+.sub-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+}
+.sub-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px; /* viktig för jämnhet */
+}
+  .gap { height: 56px; }
+
+/* Floating top-right controls */
+.top-right-controls {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;   /* staplade */
+  gap: 8px;
+  z-index: 1000;
+}
+
+/* Basstil */
+.top-btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  transition: all .2s ease;
+  min-width: 90px;
+  text-align: center;
+}
+
+/* Hover */
+.top-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.08);
+}
+
+/* Reset = neutral */
+.top-btn.reset {
+  background: #f9fafb;
+}
+
+.top-btn.reset:hover {
+  background: #f3f4f6;
+}
+
+/* non /g/ = highlight */
+.top-btn.highlight {
+  background: var(--hl);
+  color: #fff;
+  border-color: var(--hl);
+}
+
+.top-btn.highlight:hover {
+  background: #1d4ed8;
+}
+
+.root-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+.controls button {
+  min-width: 120px;
+}
+
+/* Overlay */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(17,24,39,0.55); /* djupare */
+  backdrop-filter: blur(4px);      /* modern effekt */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn .2s ease;
+}
+
+/* Box */
+.modal-box {
+  background: #fff;
+  padding: 22px 26px;
+  border-radius: 14px;
+  max-width: 420px;
+  width: 90%;
+  line-height: 1.55;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  font-size: 0.95rem;
+  position: relative;
+  animation: scaleIn .18s ease;
+}
+
+/* Rubrik */
+.modal-box b {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+}
+
+/* Liten ikon i rubrik */
+.modal-box b::before {
+  content: "ℹ";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--hl);
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+/* Brödtext */
+.modal-box p {
+  color: #374151;
+}
+
+/* Close-knapp */
+.modal-close {
+  margin-top: 16px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #f9fafb;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.modal-close:hover {
+  background: #f3f4f6;
+}
+
+/* X-knapp uppe */
+.modal-x {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.modal-x:hover {
+  color: #111;
+}
+
+/* Animationer */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(.96); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.btn-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-wrap .info-icon {
+  position: absolute;
+  left: -100px;                 /* behåll din margin-left-logik */
+  top: 50%;
+  transform: translateY(-50%);
+
+  /* riktig knapp-look */
+  padding: 6px 10px;
+  height: auto;
+  width: auto;
+
+  border-radius: 8px;
+  border: 1px solid var(--line);
+
+  background: #ffffff;
+  color: #374151;
+
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: all .2s ease;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
+}
+
+.btn-wrap .info-icon:hover {
+  background: var(--hl);
+  color: #fff;
+  border-color: var(--hl);
+  transform: translateY(calc(-50% - 1px));
+  box-shadow: 0 6px 14px rgba(37,99,235,.25);
+}
+
+.play-btn {
+  min-width: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 0.7rem;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.play-btn:hover {
+  background: #f3f4f6;
+  border-color: var(--hl);
+  color: var(--hl);
+}
+
+.divider {
+  width: 100%;
+  max-width: 1200px;
+  height: 1px;
+  background: var(--line);
+  margin: -10px 0 20px;
+}
+
+.trans {
+  font-weight: normal;
+  color: #6b7280;
+  font-size: 0.9em;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.highlight-row button {
+  border: 1px solid #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220,38,38,.2);
+}
+
+.highlight-row {
+  position: relative;
+  z-index: 2100;
+}
+
+body.modal-open .highlight-row {
+  pointer-events: none;
+}
+
+  /* ── NODES ── */
+  .node {
+    border: 2px solid var(--line);
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: var(--bg-node);
+    min-width: 120px;
+    text-align: center;
+    transition: opacity .3s, filter .3s, transform .3s, border-color .3s, box-shadow .3s;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+  }
+  .node b { display: block; font-size: 1.2rem; }
+  .node i { font-size: .72rem; color: #666; font-style: normal; display: block; margin-top: 3px; }
+  .outcome { font-weight: bold; font-size: 1.25rem !important; min-width: 64px; }
+
+  body.hl-mode .node:not(.hl) {
+    opacity: .3; filter: blur(.4px); transform: scale(.97);
+  }
+  .node.hl {
+    opacity: 1 !important; filter: none !important;
+    transform: scale(1.04) !important;
+    background: #fff !important;
+    border-color: var(--hl) !important;
+    box-shadow: 0 4px 18px rgba(37,99,235,.2) !important;
+    z-index: 5;
+  }
+  .hard-target.hl { border-color: var(--hard-g) !important; color: var(--hard-g); box-shadow: 0 0 22px rgba(5,150,105,.4) !important; }
+  .soft-target.hl { border-color: var(--soft-j) !important; color: var(--soft-j); box-shadow: 0 0 22px rgba(124,58,237,.4) !important; }
+  .sj-target.hl   { border-color: var(--sj)     !important; color: var(--sj);     box-shadow: 0 0 22px rgba(234,88,12,.4)  !important; }
+</style>
+</head>
+<body>
+
+<div class="top-right-controls">
+  <button class="top-btn reset" onclick="doReset()">Reset</button>
+  <button class="top-btn highlight" onclick="showEx('nonhardg',this)">Non /g/</button>
+</div>
+
+<div class="controls" id="row1">
+  <div class="btn-wrap">
+    <span class="info-icon" onclick="openModal(1)">Step 1</span>
+    <button onclick="showEx('gata',this)">gata</button>
+  </div>
+
+  <button onclick="showEx('genom',this)">genom</button>
+  <button onclick="showEx('stege',this)">stege</button>
+  <button onclick="showEx('geni',this)">geni</button>
+  <button onclick="showEx('biologi',this)">biologi</button>
+  <button onclick="showEx('begar',this)">begär</button>
+</div>
+
+<div class="divider"></div>
+
+<div class="controls" id="row2">
+  <div class="btn-wrap">
+    <span class="info-icon" onclick="openModal(2)">Step 2</span>
+    <button onclick="showEx('genom',this)" data-audio="giltig">giltig</button>
+  </div>
+
+  <button onclick="showEx('geni',this)" data-audio="massage">massage</button>
+  <button onclick="showEx('begar',this)" data-audio="gadda">gädda</button>
+  <button onclick="showEx('gata',this)" data-audio="gunga">gunga</button>
+  <button onclick="showEx('biologi',this)" data-audio="fingera">fingerar</button>
+  <button onclick="showEx('stege',this)" data-audio="fager">fager</button>
+</div>
+
+<div id="tree-wrap">
+  <svg id="tree-svg"></svg>
+
+  <!-- ROOT -->
+  <div id="root-row">
+    <div class="node" id="root"><b>How do you pronounce that "g"?</b></div>
+  </div>
+
+  <div class="vgap"></div>
+
+  <!-- THREE FAMILIES SIDE BY SIDE -->
+  <div id="families-row">
+
+    <!-- FAMILY 1: ga go gu gå -->
+    <div class="family">
+      <div class="node" id="n-hard"><b>ga, go, gu, gå</b><i>Hard vowels</i></div>
+      <div class="gap"></div>
+      <div class="node outcome hard-target" id="n-endhard">/g/</div>
+    </div>
+
+    <!-- FAMILY 2: ge gi -->
+    <div class="family">
+      <div class="node" id="n-gegi"><b>ge, gi</b><i>Soft vowels | Origin-dependent</i></div>
+      <div class="gap"></div>
+      <div class="sub-row">
+        <div class="sub-cell">
+          <div class="node" id="n-sw"><b>Native Swedish</b></div>
+          <div class="gap"></div>
+          <div class="sub-row">
+            <div class="sub-cell">
+              <div class="node" id="n-init"><b>Word-initial</b></div>
+              <div class="gap"></div>
+              <div class="node outcome soft-target" id="n-endj1">/j/</div>
+            </div>
+            <div class="sub-cell">
+              <div class="node" id="n-within"><b>Within word</b></div>
+              <div class="gap"></div>
+              <div class="node outcome hard-target" id="n-endg1">/g/</div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-cell">
+          <div class="node" id="n-intl"><b>Loanword</b></div>
+          <div class="gap"></div>
+          <div class="node outcome sj-target" id="n-endsj">/sj/</div>
+        </div>
+        <div class="sub-cell">
+          <div class="node" id="n-sci"><b>Science</b></div>
+          <div class="gap"></div>
+          <div class="node outcome hard-target" id="n-endg2">/g/</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAMILY 3: gy gä gö -->
+    <div class="family">
+      <div class="node" id="n-soft"><b>gy, gä, gö</b><i>Soft vowels</i></div>
+      <div class="gap"></div>
+      <div class="node outcome soft-target" id="n-endj2">/j/</div>
+    </div>
+
+  </div><!-- #families-row -->
+</div><!-- #tree-wrap -->
+
+<div id="modal" class="modal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-x" onclick="closeModal()">✕</div>
+    <div id="modal-text"></div>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+const AUDIO = {
+  gata:    "https://lexin.nada.kth.se/sound/gata.mp3",
+  genom:   "https://lexin.nada.kth.se/sound/genom.mp3",
+  stege:   "https://lexin.nada.kth.se/sound/stege.mp3",
+  geni:    "https://lexin.nada.kth.se/sound/geni.mp3",
+  biologi: "https://lexin.nada.kth.se/sound/biologi.mp3",
+  begar:   "https://lexin.nada.kth.se/sound/v2/115523_1.mp3",
+  giltig:  "https://lexin.nada.kth.se/sound/v2/169763_1.mp3",
+  massage: "https://lexin.nada.kth.se/sound/v2/240494_1.mp3",
+  gadda:   "https://lexin.nada.kth.se/sound/v2/176904_1.mp3",
+  gunga:   "https://lexin.nada.kth.se/sound/v2/176088_1.mp3",
+  fingera: "https://lexin.nada.kth.se/sound/fingerar.mp3",
+  fager:   "https://lexin.nada.kth.se/sound/v2/146160_1.mp3"
+};  
+
+const TRANSLATIONS = {
+  gata: "street",
+  genom: "through",
+  stege: "ladder",
+  geni: "genius",
+  biologi: "biology",
+  begar: "desire",
+
+  giltig: "valid",
+  massage: "massage",
+  gadda: "pike",
+  gunga: "swing",
+  fingera: "pretend",
+  fager: "fair"
+};
+
+const EDGES = [
+  ['root',     'n-hard',    'e-root-hard'],
+  ['root',     'n-gegi',    'e-root-gegi'],
+  ['root',     'n-soft',    'e-root-soft'],
+  ['n-hard',   'n-endhard', 'e-hard-end'],
+  ['n-soft',   'n-endj2',   'e-soft-end'],
+  ['n-gegi',   'n-sw',      'e-gegi-sw'],
+  ['n-gegi',   'n-intl',    'e-gegi-intl'],
+  ['n-gegi',   'n-sci',     'e-gegi-sci'],
+  ['n-sw',     'n-init',    'e-sw-init'],
+  ['n-sw',     'n-within',  'e-sw-within'],
+  ['n-init',   'n-endj1',   'e-init-j1'],
+  ['n-within', 'n-endg1',   'e-within-g1'],
+  ['n-intl',   'n-endsj',   'e-intl-sj'],
+  ['n-sci',    'n-endg2',   'e-sci-g2'],
+];
+
+const PATHS = {
+  gata:     { n:['root','n-hard','n-endhard'],
+              e:['e-root-hard','e-hard-end'] },
+  begar:    { n:['root','n-soft','n-endj2'],
+              e:['e-root-soft','e-soft-end'] },
+  genom:    { n:['root','n-gegi','n-sw','n-init','n-endj1'],
+              e:['e-root-gegi','e-gegi-sw','e-sw-init','e-init-j1'] },
+  stege:    { n:['root','n-gegi','n-sw','n-within','n-endg1'],
+              e:['e-root-gegi','e-gegi-sw','e-sw-within','e-within-g1'] },
+  geni:     { n:['root','n-gegi','n-intl','n-endsj'],
+              e:['e-root-gegi','e-gegi-intl','e-intl-sj'] },
+  biologi:  { n:['root','n-gegi','n-sci','n-endg2'],
+              e:['e-root-gegi','e-gegi-sci','e-sci-g2'] },
+  nonhardg: { n:['root','n-gegi','n-sw','n-init','n-endj1',
+                  'n-intl','n-endsj','n-soft','n-endj2'],
+              e:['e-root-gegi','e-gegi-sw','e-sw-init','e-init-j1',
+                 'e-gegi-intl','e-intl-sj','e-root-soft','e-soft-end'] },
+};
+
+const svgEl  = document.getElementById('tree-svg');
+const wrapEl = document.getElementById('tree-wrap');
+const lineMap = {};
+let currentPath = null;
+
+function rel(id) {
+  const er = document.getElementById(id).getBoundingClientRect();
+  const wr = wrapEl.getBoundingClientRect();
+  return {
+    cx:  er.left - wr.left + er.width  / 2,
+    top: er.top  - wr.top,
+    bot: er.top  - wr.top + er.height,
+  };
+}
+
+function openModal(type) {
+  const text = {
+    1: `<b>Step 1</b>
+        <p>On top row, you see six words that guide you through all pronunciation patterns in sequence.</p><br>
+        <p>Each word is translated and includes an audio sample.</p>`,
+
+    2: `<b>Step 2</b>
+        <p>On this row, you see six words in random order.</p><br>
+        <p>Before clicking, try to predict which category each word belongs to.</p>`
+  };
+
+  document.getElementById('modal-text').innerHTML = text[type];
+  document.getElementById('modal').style.display = 'flex';
+
+  document.body.classList.add('modal-open');   // 👈
+
+  if (type === 1) {
+    document.getElementById('row1').classList.add('highlight-row');
+  }
+  if (type === 2) {
+    document.getElementById('row2').classList.add('highlight-row');
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+
+  document.body.classList.remove('modal-open'); // 👈
+
+  document.getElementById('row1').classList.remove('highlight-row');
+  document.getElementById('row2').classList.remove('highlight-row');
+}
+
+function makePoly(pts, stroke, width) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+  el.setAttribute('points', pts.map(([x,y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' '));
+  el.setAttribute('fill', 'none');
+  el.setAttribute('stroke', stroke);
+  el.setAttribute('stroke-width', String(width));
+  el.setAttribute('stroke-linecap', 'round');
+  el.setAttribute('stroke-linejoin', 'round');
+  return el;
+}
+
+function drawAll() {
+  svgEl.innerHTML = '';
+  Object.keys(lineMap).forEach(k => delete lineMap[k]);
+
+  const wr = wrapEl.getBoundingClientRect();
+  svgEl.setAttribute('width',   wr.width);
+  svgEl.setAttribute('height',  wr.height);
+  svgEl.setAttribute('viewBox', `0 0 ${wr.width} ${wr.height}`);
+
+  EDGES.forEach(([pid, cid, eid]) => {
+    const p = rel(pid), c = rel(cid);
+    const vGap = 30;
+const mid = p.bot + vGap;
+const el = makePoly(
+  [[p.cx,p.bot],[p.cx,mid],[c.cx,mid],[c.cx,c.top]],
+  '#d1d5db', 2
+);
+    svgEl.appendChild(el);
+    lineMap[eid] = el;
+  });
+
+  if (currentPath) {
+    currentPath.e.forEach(eid => {
+      const el = lineMap[eid];
+      if (el) {
+        el.setAttribute('stroke', '#2563eb');
+        el.setAttribute('stroke-width', '3');
+        svgEl.appendChild(el);
+      }
+    });
+  }
+}
+
+function doReset() {
+  currentPath = null;
+
+  const rootEl = document.getElementById('root');
+  if (rootEl) {
+    rootEl.innerHTML = `<b>How do you pronounce that "g"?</b>`;
+  }
+
+  document.querySelectorAll('.node').forEach(n => n.classList.remove('hl'));
+  document.querySelectorAll('button').forEach(b => b.classList.remove('active-btn'));
+  document.body.classList.remove('hl-mode');
+
+  Object.values(lineMap).forEach(el => {
+    el.setAttribute('stroke', '#d1d5db');
+    el.setAttribute('stroke-width', '2');
+  });
+}
+
+function playSound(url) {
+  const audio = new Audio(url);
+  audio.play();
+}
+
+function applyPath(key, btn) {
+  doReset();
+  const path = PATHS[key];
+  if (!path) return;
+  currentPath = path;
+const rootEl = document.getElementById('root');
+if (rootEl) {
+  const word = btn ? btn.textContent : key;
+  const audioKey = btn?.dataset.audio || key;
+  const audioUrl = AUDIO[audioKey];
+  const translation = TRANSLATIONS[audioKey];
+
+  rootEl.innerHTML = `
+    <div class="root-inline">
+      <b>${word} ${translation ? `<span class="trans">(${translation})</span>` : ``}</b>
+      ${audioUrl ? `<button class="play-btn" onclick="playSound('${audioUrl}')">▶</button>` : ``}
+    </div>
+  `;
+}
+  if (btn) btn.classList.add('active-btn');
+  document.body.classList.add('hl-mode');
+  path.n.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hl');
+  });
+  path.e.forEach(eid => {
+    const el = lineMap[eid];
+    if (el) {
+      el.setAttribute('stroke', '#2563eb');
+      el.setAttribute('stroke-width', '3');
+      svgEl.appendChild(el);
+    }
+  });
+}
+
+function showEx(key, btn) { applyPath(key, btn); }
+
+window.addEventListener('load',   () => requestAnimationFrame(() => requestAnimationFrame(drawAll)));
+window.addEventListener('resize', () => requestAnimationFrame(drawAll));
+</script>
+</body>
+</html>
