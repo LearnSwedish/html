@@ -565,6 +565,17 @@ const wrapEl = document.getElementById('tree-wrap');
 const lineMap = {};
 let currentPath = null;
 
+function preloadAllAudio() {
+  Object.values(AUDIO).forEach(url => {
+    if (!audioCache[url]) {
+      const audio = new Audio(url);
+      audio.preload = "auto";
+      audio.load();
+      audioCache[url] = audio;
+    }
+  });
+}
+
 function rel(id) {
   const er = document.getElementById(id).getBoundingClientRect();
   const wr = wrapEl.getBoundingClientRect();
@@ -670,8 +681,17 @@ function doReset() {
   });
 }
 
+const audioCache = {};
+
 function playSound(url) {
-  const audio = new Audio(url);
+  if (!audioCache[url]) {
+    const audio = new Audio(url);
+    audio.preload = "auto";
+    audioCache[url] = audio;
+  }
+
+  const audio = audioCache[url];
+  audio.currentTime = 0;
   audio.play();
 }
 
@@ -712,7 +732,10 @@ if (rootEl) {
 
 function showEx(key, btn) { applyPath(key, btn); }
 
-window.addEventListener('load',   () => requestAnimationFrame(() => requestAnimationFrame(drawAll)));
+window.addEventListener('load', () => {
+  preloadAllAudio();
+  requestAnimationFrame(() => requestAnimationFrame(drawAll));
+});
 window.addEventListener('resize', () => requestAnimationFrame(drawAll));
 </script>
 </body>
