@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tänka</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="att-ha.css">
+
+<style>
+    #infoModal .modal-content {
+        text-align: left;
+    }
+	
+#infoModal ul {
+    padding-left: 24px;
+}
+
+#infoModal li {
+    margin-left: 8px;
+}	
+</style>
+	
+    <script>
+
+const sentences = [
+{
+    words: [
+        { word: "Låt mig", translation: "Let me" },
+        { word: `<select data-correct="tänka [cognition]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka mig [imag.]">tänka mig [imag.]</option>
+        </select>` },
+        { word: "lite innan jag svarar.", translation: "... a bit before I answer." }
+    ]
+},
+{
+    words: [
+        { word: "Du", translation: "You're" },
+        { word: `<select data-correct="tänker på [object]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker dig [imag.]">tänker dig [imag.]</option>
+        </select>` },
+        { word: "vad hon sa till dig, eller hur?", translation: "... what she told you, aren't you?" }
+    ]
+},
+{
+    words: [
+        { word: "Vi", translation: "We" },
+        { word: `<select data-correct="tänker [plan to →]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker dig [imag.]">tänker dig [imag.]</option>
+        </select>` },
+        { word: "flytta till Spanien nästa år.", translation: "... move to Spain next year." }
+    ]
+},
+{
+    words: [
+        { word: "Kan du", translation: "Can you" },
+        { word: `<select data-correct="tänka dig [imag.]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka dig [imag.]">tänka dig [imag.]</option>
+        </select>` },
+        { word: "hur det skulle vara att bo här?", translation: "... what it would be like to live here?" }
+    ]
+},
+{
+    words: [
+        { word: "Jag måste", translation: "I must" },
+        { word: `<select data-correct="tänka [cognition]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka mig [imag.]">tänka mig [imag.]</option>
+        </select>` },
+        { word: "innan jag bestämmer mig.", translation: "... before I decide." }
+    ]
+},
+{
+    words: [
+        { word: "Jag ligger ofta vaken och", translation: "I often lie awake and" },
+        { word: `<select data-correct="tänker på [object]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker mig [imag.]">tänker mig [imag.]</option>
+        </select>` },
+        { word: "min barndom.", translation: "... my childhood." }
+    ]
+},
+{
+    words: [
+        { word: "De", translation: "They" },
+        { word: `<select data-correct="tänker [plan to →]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker mig [imag.]">tänker mig [imag.]</option>
+        </select>` },
+        { word: "börja tidigare i morgon.", translation: "... start earlier tomorrow." }
+    ]
+},
+{
+    words: [
+        { word: "Jag kan inte", translation: "I can’t" },
+        { word: `<select data-correct="tänka mig [imag.]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka mig [imag.]">tänka mig [imag.]</option>
+        </select>` },
+        { word: "ett liv utan musik.", translation: "... a life without music." }
+    ]
+},
+{
+    words: [
+        { word: "Sitt ner och", translation: "Sit down and" },
+        { word: `<select data-correct="tänk [cognition]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänk [cognition]">tänk [cognition]</option>
+            <option value="tänk på [object]">tänk på [object]</option>
+            <option value="tänk [plan to →]">tänk [plan to →]</option>
+            <option value="tänk dig [imag.]">tänk dig [imag.]</option>
+        </select>` },
+        { word: "en stund.", translation: "... for a while." }
+    ]
+},
+{
+    words: [
+        { word: "Vad brukar du", translation: "What do you usually" },
+        { word: `<select data-correct="tänka på [object]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka mig [imag.]">tänka mig [imag.]</option>
+        </select>` },
+        { word: "när du hör den här låten?", translation: "... when you hear this song?" }
+    ]
+},
+{
+    words: [
+        { word: "Jag sitter här och", translation: "I’m sitting here and" },
+        { word: `<select data-correct="tänker [cognition]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker mig [imag.]">tänker mig [imag.]</option>
+        </select>` },
+        { word: "en stund.", translation: "... for a while." }
+    ]
+},
+{
+    words: [
+        { word: "Hon ligger i soffan och", translation: "She's lying on the sofa" },
+        { word: `<select data-correct="tänker på [object]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker mig [imag.]">tänker mig [imag.]</option>
+        </select>` },
+        { word: "dig.", translation: "... you." }
+    ]
+},
+{
+    words: [
+        { word: "Vi", translation: "We" },
+        { word: `<select data-correct="tänker [plan to →]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker oss [imag.]">tänker oss [imag.]</option>
+        </select>` },
+        { word: "resa bort över helgen.", translation: "... travel away for the weekend." }
+    ]
+},
+{
+    words: [
+        { word: "Kan han", translation: "Can he" },
+        { word: `<select data-correct="tänka sig [imag.]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka sig [imag.]">tänka sig [imag.]</option>
+        </select>` },
+        { word: "en värld utan internet?", translation: "... a world without internet?" }
+    ]
+},
+{
+    words: [
+        { word: "Vi måste låta honom", translation: "We need to let him" },
+        { word: `<select data-correct="tänka [cognition]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka sig [imag.]">tänka sig [imag.]</option>
+        </select>` },
+        { word: "klart först.", translation: "... it through first." }
+    ]
+},
+{
+    words: [
+        { word: "Vad brukar du", translation: "What do you usually" },
+        { word: `<select data-correct="tänka på [object]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka mig [imag.]">tänka mig [imag.]</option>
+        </select>` },
+        { word: "på kvällarna?", translation: "... in the evenings?" }
+    ]
+},
+{
+    words: [
+        { word: "Jag", translation: "I" },
+        { word: `<select data-correct="tänker [plan to →]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker mig [imag.]">tänker mig [imag.]</option>
+        </select>` },
+        { word: "börja träna igen.", translation: "... start exercising again." }
+    ]
+},
+{
+    words: [
+        { word: "Kan du", translation: "Can you" },
+        { word: `<select data-correct="tänka dig [imag.]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka dig [imag.]">tänka dig [imag.]</option>
+        </select>` },
+        { word: "hur svårt det var?", translation: "... how difficult it was?" }
+    ]
+},
+{
+    words: [
+        { word: "Ta det lugnt. Sitt ner och", translation: "Take it easy. Sit down and" },
+        { word: `<select data-correct="tänk [cognition]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänk [cognition]">tänk [cognition]</option>
+            <option value="tänk på [object]">tänk på [object]</option>
+            <option value="tänk [plan to →]">tänk [plan to →]</option>
+            <option value="tänk dig [imag.]">tänk dig [imag.]</option>
+        </select>` },
+        { word: "lite till.", translation: "... a bit more." }
+    ]
+},
+{
+    words: [
+        { word: "Han går omkring och", translation: "He walks around and" },
+        { word: `<select data-correct="tänker på [object]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker mig [imag.]">tänker mig [imag.]</option>
+        </select>` },
+        { word: "problemet hela tiden.", translation: "... the problem all the time." }
+    ]
+},
+{
+    words: [
+        { word: "De", translation: "They" },
+        { word: `<select data-correct="tänker [plan to →]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker sig [imag.]">tänker sig [imag.]</option>
+        </select>` },
+        { word: "köpa ett hus nästa år.", translation: "... buy a house next year." }
+    ]
+},
+{
+    words: [
+        { word: "Jag kan inte", translation: "I can’t" },
+        { word: `<select data-correct="tänka mig [imag.]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka mig [imag.]">tänka mig [imag.]</option>
+        </select>` },
+        { word: "att han gjorde så.", translation: "... that he did that." }
+    ]
+},
+{
+    words: [
+        { word: "Hon satt tyst för sig själv och", translation: "She sat quietly to herself," },
+        { word: `<select data-correct="tänkte [cognition]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänkte [cognition]">tänkte [cognition]</option>
+            <option value="tänkte på [object]">tänkte på [object]</option>
+            <option value="tänkte [plan to →]">tänkte [plan to →]</option>
+            <option value="tänkte sig [imag.]">tänkte sig [imag.]</option>
+        </select>` },
+        { word: ".", translation: "..." }
+    ]
+},
+{
+    words: [
+        { word: "Vi låg på stranden och", translation: "We lay on the beach and" },
+        { word: `<select data-correct="tänkte på [object]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänkte [cognition]">tänkte [cognition]</option>
+            <option value="tänkte på [object]">tänkte på [object]</option>
+            <option value="tänkte [plan to →]">tänkte [plan to →]</option>
+            <option value="tänkte oss [imag.]">tänkte oss [imag.]</option>
+        </select>` },
+        { word: "livet.", translation: "... life." }
+    ]
+},
+{
+    words: [
+        { word: "Jag", translation: "I" },
+        { word: `<select data-correct="tänker [plan to →]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker mig [imag.]">tänker mig [imag.]</option>
+        </select>` },
+        { word: "säga upp mig idag.", translation: "... resign today." }
+    ]
+},
+{
+    words: [
+        { word: "Kan du", translation: "Can you" },
+        { word: `<select data-correct="tänka dig [imag.]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka dig [imag.]">tänka dig [imag.]</option>
+        </select>` },
+        { word: "att bo där helt själv?", translation: "... living there all by yourself?" }
+    ]
+},
+{
+    words: [
+        { word: "Vi måste", translation: "We must" },
+        { word: `<select data-correct="tänka [cognition]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka oss [imag.]">tänka oss [imag.]</option>
+        </select>` },
+        { word: "noggrant innan vi bestämmer oss.", translation: "... carefully before we decide." }
+    ]
+},
+{
+    words: [
+        { word: "Jag går ofta och", translation: "I often walk around and" },
+        { word: `<select data-correct="tänker på [object]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker mig [imag.]">tänker mig [imag.]</option>
+        </select>` },
+        { word: "framtiden.", translation: "... the future." }
+    ]
+},
+{
+    words: [
+        { word: "De", translation: "They" },
+        { word: `<select data-correct="tänker [plan to →]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänker [cognition]">tänker [cognition]</option>
+            <option value="tänker på [object]">tänker på [object]</option>
+            <option value="tänker [plan to →]">tänker [plan to →]</option>
+            <option value="tänker sig [imag.]">tänker sig [imag.]</option>
+        </select>` },
+        { word: "bygga om huset.", translation: "... renovate the house." }
+    ]
+},
+{
+    words: [
+        { word: "Jag kan inte", translation: "I can’t" },
+        { word: `<select data-correct="tänka mig [imag.]" onchange="evaluateAnswer(this)">
+            <option value="">...</option>
+            <option value="tänka [cognition]">tänka [cognition]</option>
+            <option value="tänka på [object]">tänka på [object]</option>
+            <option value="tänka [plan to →]">tänka [plan to →]</option>
+            <option value="tänka mig [imag.]">tänka mig [imag.]</option>
+        </select>` },
+        { word: "ett bättre liv.", translation: "... a better life." }
+    ]
+}
+];
+    </script>
+	
+	<script src="att-ha.js" defer></script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span id="score">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+        <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span id="score">0</span> / <span class="score-max"></span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title">🧠 Choose the correct type of "tänka"</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+<h2 id="infoModalTitle">This is how you should think! 😂</h2>
+<br />
+<p>
+You will see sentences with a missing form of the verb <em>tänka</em>.
+<br/>Your task is to choose the correct type based on the meaning.
+</p>
+<br />
+
+<p>Focus on what the sentence expresses:</p>
+
+<ul>
+    <li><strong>tänka</strong> → general thinking [option: cognition]</li>
+    <li><strong>tänka på</strong> → what the thought is about [option: object] </li>
+    <li><strong>tänka + infinitive</strong> → a plan or intention [option: plan to →]</li>
+    <li><strong>tänka sig</strong> → imagining a situation [option: imag.]</li>
+</ul>
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
