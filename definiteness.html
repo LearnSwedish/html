@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definiteness in Swedish</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1c1917;
+            --ink-soft: #44403c;
+            --ink-faint: #78716c;
+            --paper: #faf8f5;
+            --paper-warm: #f5f0e8;
+            --rule: #e7e0d5;
+            --blue: #1d4ed8;
+            --blue-pale: #eff6ff;
+            --gold: #b45309;
+            --gold-pale: #fef3c7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            background-color: var(--paper);
+        }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-weight: 300;
+            font-size: 17px;
+            line-height: 1.75;
+            color: var(--ink);
+            background-color: var(--paper);
+            padding: 0 20px 80px;
+        }
+
+        /* ── PAGE HEADER ── */
+        header {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 64px 0 48px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .lang-tag {
+            display: inline-block;
+            font-family: 'Source Serif 4', serif;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            background: var(--gold-pale);
+            padding: 3px 10px 2px;
+            border-radius: 2px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--ink-faint);
+            font-style: italic;
+        }
+
+        /* ── MAIN CONTENT ── */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        section {
+            padding: 44px 0;
+            border-bottom: 1px solid var(--rule);
+            opacity: 0;
+            transform: translateY(18px);
+            animation: fadeUp 0.55s ease forwards;
+        }
+
+        section:nth-child(1) { animation-delay: 0.05s; }
+        section:nth-child(2) { animation-delay: 0.15s; }
+        section:nth-child(3) { animation-delay: 0.25s; }
+        section:nth-child(4) { animation-delay: 0.35s; }
+        section:nth-child(5) { animation-delay: 0.45s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 400;
+            font-size: 1.3rem;
+            color: var(--ink);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 28px;
+            height: 2px;
+            background: var(--gold);
+            flex-shrink: 0;
+        }
+
+        p {
+            color: var(--ink-soft);
+            margin-bottom: 16px;
+        }
+
+        p:last-child { margin-bottom: 0; }
+
+        em {
+            font-style: italic;
+            color: var(--ink);
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        /* ── COMPARISON CARDS ── */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .compare-card {
+            background: var(--paper-warm);
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            padding: 16px 20px;
+        }
+
+        .compare-card .label {
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            margin-bottom: 8px;
+            font-weight: 400;
+            font-family: 'Source Serif 4', serif;
+        }
+
+        .compare-card .example {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .compare-card .explanation {
+            font-size: 13.5px;
+            color: var(--ink-faint);
+            font-style: italic;
+        }
+
+        /* ── LANGUAGE ROW LIST ── */
+        .lang-list {
+            list-style: none;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .lang-list li {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .lang-list li:hover {
+            background: var(--paper-warm);
+        }
+
+        .lang-list .lang-name {
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            font-weight: 400;
+        }
+
+        .lang-list .lang-example {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            color: var(--ink);
+        }
+
+        .lang-list li.highlighted {
+            background: var(--blue-pale);
+            border-left: 3px solid var(--blue);
+            padding-left: 13px;
+        }
+
+        .lang-list li.highlighted .lang-name {
+            color: var(--blue);
+        }
+
+        .lang-list li.highlighted .lang-example {
+            color: var(--blue);
+        }
+
+        /* ── GENDER TABLE ── */
+        .gender-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .gender-card {
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .gender-card-header {
+            background: var(--ink);
+            color: white;
+            padding: 10px 18px;
+            font-size: 11.5px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-family: 'Source Serif 4', serif;
+            font-weight: 400;
+        }
+
+        .gender-card-body {
+            padding: 16px 18px;
+            background: white;
+        }
+
+        .gender-card-body .indef {
+            font-size: 13.5px;
+            color: var(--ink-faint);
+            margin-bottom: 6px;
+        }
+
+        .gender-card-body .def {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .suffix-mark {
+            color: var(--gold);
+        }
+
+        /* ── CALLOUT BOX ── */
+        .callout {
+            background: var(--blue-pale);
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid var(--blue);
+            border-radius: 0 4px 4px 0;
+            padding: 24px 28px;
+            margin: 28px 0;
+        }
+
+        .callout p {
+            color: #1e3a8a;
+            margin-bottom: 12px;
+        }
+
+        .callout p:last-child { margin-bottom: 0; }
+
+        /* ── DOUBLE DEFINITENESS TABLE ── */
+        .def-table-wrapper {
+            margin: 28px 0;
+            overflow-x: auto;
+        }
+
+        .def-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15.5px;
+        }
+
+        .def-table thead tr {
+            background: var(--ink);
+            color: white;
+        }
+
+        .def-table thead th {
+            padding: 12px 20px;
+            text-align: left;
+            font-family: 'Source Serif 4', serif;
+            font-weight: 400;
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .def-table tbody tr {
+            background: white;
+        }
+
+        .def-table tbody tr:last-child {
+            background: var(--paper-warm);
+        }
+
+        .def-table td {
+            padding: 14px 20px;
+            border: 1px solid var(--rule);
+            color: var(--ink-soft);
+        }
+
+        .def-table tbody tr:first-child td {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--ink);
+            font-weight: 400;
+        }
+
+        .def-table tbody tr:first-child td:first-child {
+            color: var(--blue);
+        }
+
+        .def-table tbody tr:first-child td:last-child .suffix-mark {
+            color: var(--gold);
+        }
+
+        .def-table tbody tr:last-child td {
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+        }
+
+        .marker-1 { color: var(--blue) !important; font-style: italic; }
+        .marker-2 { color: var(--gold) !important; font-style: italic; }
+
+        /* ── SUMMARY BOX ── */
+        .summary {
+            background: var(--ink);
+            color: white;
+            border-radius: 6px;
+            padding: 28px 32px;
+            margin-top: 8px;
+        }
+
+        .summary h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 14px;
+            color: #d6d3d1;
+            font-style: italic;
+        }
+
+        .summary p {
+            color: #d6d3d1;
+            font-size: 15.5px;
+            margin-bottom: 10px;
+        }
+
+        .summary strong {
+            color: white;
+        }
+
+        .summary .rule-line {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            padding: 14px 18px;
+            margin-top: 16px;
+            font-size: 15px;
+            color: #e7e5e4;
+        }
+
+        .summary .rule-line .icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        /* responsive */
+        @media (max-width: 500px) {
+            .compare-grid, .gender-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="lang-tag">Swedish Grammar</div>
+    <h1>Definiteness<br>in Swedish</h1>
+    <p class="subtitle">A structural overview with cross-linguistic comparison</p>
+</header>
+
+<main>
+
+    <!-- SECTION 1: What is definiteness -->
+    <section>
+        <h2>What is definiteness?</h2>
+        <p>Definiteness marks whether we are talking about something specific and identifiable, or something general and unspecified.</p>
+        <div class="compare-grid">
+            <div class="compare-card">
+                <div class="label">Indefinite</div>
+                <div class="example">a car</div>
+                <div class="explanation">any car — not yet identified</div>
+            </div>
+            <div class="compare-card">
+                <div class="label">Definite</div>
+                <div class="example">the car</div>
+                <div class="explanation">a particular car — known or already mentioned</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: Cross-linguistic comparison -->
+    <section>
+        <h2>How other languages do it</h2>
+        <p>Most European languages mark definiteness with a separate article placed <em>before</em> the noun. Swedish takes a different path.</p>
+        <ul class="lang-list">
+            <li>
+                <span class="lang-name">English</span>
+                <span class="lang-example"><strong>the</strong> car</span>
+            </li>
+            <li>
+                <span class="lang-name">German</span>
+                <span class="lang-example"><strong>das</strong> Auto</span>
+            </li>
+            <li>
+                <span class="lang-name">Dutch</span>
+                <span class="lang-example"><strong>de</strong> auto</span>
+            </li>
+            <li class="highlighted">
+                <span class="lang-name">Swedish</span>
+                <span class="lang-example">bil<strong>en</strong></span>
+            </li>
+        </ul>
+        <p>In the Scandinavian languages — Swedish, Danish and Norwegian — definiteness is expressed by <strong>adding a suffix to the noun itself</strong>, rather than placing a separate article before it.</p>
+    </section>
+
+    <!-- SECTION 3: Gender & suffixes -->
+    <section>
+        <h2>Gender determines the suffix</h2>
+        <p>Swedish nouns belong to one of two genders: the <em>en-gender</em> or the <em>ett-gender</em>. The gender of a noun dictates which definite suffix it takes.</p>
+        <div class="gender-grid">
+            <div class="gender-card">
+                <div class="gender-card-header">en-gender</div>
+                <div class="gender-card-body">
+                    <div class="indef">en bil &nbsp;→</div>
+                    <div class="def">bil<span class="suffix-mark">en</span></div>
+                </div>
+            </div>
+            <div class="gender-card">
+                <div class="gender-card-header">ett-gender</div>
+                <div class="gender-card-body">
+                    <div class="indef">ett hus &nbsp;→</div>
+                    <div class="def">hus<span class="suffix-mark">et</span></div>
+                </div>
+            </div>
+        </div>
+        <p>To form the definite correctly, you must know a noun's gender — it determines the ending.</p>
+    </section>
+
+    <!-- SECTION 4: Double definiteness -->
+    <section>
+        <h2>The twist: double definiteness</h2>
+        <div class="callout">
+            <p>In English, adding an adjective is simple: <em>the red car</em> — article + adjective + noun. German and Dutch work identically: <em>das rote Auto, de rode auto</em>.</p>
+            <p>You might expect Swedish to follow the same logic — the suffix already marks definiteness, so an adjective would just slot in before it. But Swedish is not that straightforward. Instead, it requires <strong>double definiteness</strong>: both a definite article <strong>(den, det, de)</strong> <em>and</em> the definite suffix on the noun.</p>
+        </div>
+        <p>It is as if Swedish has a hidden "the" that surfaces the moment an adjective enters the phrase.</p>
+        <div class="def-table-wrapper">
+            <table class="def-table">
+                <thead>
+                    <tr>
+                        <th>Definite article</th>
+                        <th>Adjective</th>
+                        <th>Noun + definite suffix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>den</td>
+                        <td>röda</td>
+                        <td>bil<span class="suffix-mark">en</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="marker-1">1st marking</span></td>
+                        <td></td>
+                        <td><span class="marker-2">2nd marking</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- SECTION 5: Summary -->
+    <section>
+        <h2>In summary</h2>
+        <div class="summary">
+            <h3>The core rule</h3>
+            <p>Without an adjective, only the suffix is needed:</p>
+            <p><strong>bil → bilen</strong> &nbsp;·&nbsp; <strong>hus → huset</strong></p>
+            <div class="rule-line">
+                <span class="icon">⚠</span>
+                <span>When an adjective is present, Swedish requires <strong>both</strong> a definite article (den / det / de) <strong>and</strong> a definite suffix on the noun — double definiteness.</span>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

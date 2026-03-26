@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swedish Grammar: Double Definiteness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1c1917;
+            --ink-soft: #44403c;
+            --paper: #faf8f5;
+            --paper-warm: #f5f0e8;
+            --rule: #e7e0d5;
+            --gold: #b45309;
+            --gold-pale: #fef3c7;
+            --blue: #1d4ed8;
+            --blue-pale: #eff6ff;
+            --correct: #15803d;
+            --wrong: #b91c1c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background-color: var(--paper);
+            color: var(--ink);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            z-index: 1000;
+            padding: 40px 20px 20px;
+            border-bottom: 1px solid var(--rule);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        /* NYTT */
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .progress-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 6px;
+            background: var(--rule);
+        }
+        #progress-bar { width: 0%; height: 100%; background: var(--gold); transition: width 0.4s ease; }
+
+        .lang-tag {
+            display: inline-block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--gold); background: var(--gold-pale); padding: 4px 12px; border-radius: 2px; margin-bottom: 10px; font-weight: 600;
+        }
+        h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 5px; font-weight: 700; }
+        .subtitle { font-size: 14px; font-style: italic; color: var(--ink-soft); }
+
+        .container {
+            max-width: 1000px;
+            width: calc(100% - 40px);
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(28, 25, 23, 0.05);
+            border: 1px solid var(--rule);
+            margin-top: 200px;
+            margin-bottom: 60px;
+        }
+
+        #quiz {
+            padding: 40px 60px;
+        }
+
+.exercise-row {
+    font-size: 1.2rem;
+    margin-bottom: 0; /* Ta bort marginalen så att linjerna inte "svävar" */
+    display: flex; 
+    align-items: center;
+    flex-wrap: wrap; 
+    gap: 10px;
+    border-radius: 0; /* Valfritt: Rakare linjer ser ofta bättre ut med border-bottom */
+    transition: background 0.2s ease;
+    padding: 28px 15px; /* Ökad vertikal padding för tydligare radavstånd */
+    border-bottom: 1px solid var(--rule);
+}
+        
+        .exercise-row:hover { background: var(--paper-warm); }
+
+        .exercise-row > *:first-child {
+            margin-left: 0 !important;
+        }
+
+        select {
+            font-family: 'Source Serif 4', serif; 
+            font-size: 1.2rem; 
+			height: 36px;
+			line-height: 1.4;
+			vertical-align: middle;
+            padding: 4px 22px 4px 8px;
+            border: 1px solid var(--rule); 
+            background: white; 
+            border-radius: 4px; 
+            cursor: pointer;
+            appearance: none; 
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat; 
+            background-position: right 6px center;
+        }
+
+        .help-tools { display: flex; gap: 6px; margin-left: auto; align-items: center; }
+        .tool-btn {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+            padding: 4px 6px; border: 1px solid var(--rule); background: white;
+            border-radius: 3px; cursor: pointer; color: var(--ink-soft); transition: 0.2s;
+            position: relative;
+        }
+        .tool-btn:hover { background: var(--ink); color: white; border-color: var(--ink); }
+
+.info-bubble {
+    position: absolute; 
+    bottom: 130%; 
+    left: 50%; 
+    transform: translateX(-50%);
+    background: var(--ink); 
+    color: white; 
+    padding: 8px 12px; 
+    border-radius: 4px;
+    font-size: 16px; 
+    white-space: nowrap; 
+    pointer-events: none; 
+    opacity: 0;
+    visibility: hidden; /* Lägg till denna */
+    transition: opacity 0.2s, visibility 0.2s; 
+    z-index: 1100; 
+    font-family: 'Source Serif 4', serif;
+    text-transform: none; 
+    letter-spacing: normal; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+        .tool-btn:hover .info-bubble { 
+    opacity: 1; 
+    visibility: visible;
+}
+
+        .status-icon { 
+		min-height: 1.6em;
+		width: 20px; 
+		font-weight: 700; 
+		text-align: center; 
+		}
+
+        button.main-btn {
+            font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 12px;
+            text-transform: uppercase; letter-spacing: 0.15em; padding: 14px 28px;
+            border-radius: 4px; cursor: pointer; transition: 0.3s;
+        }
+        .check-btn { background: var(--ink); color: white; border: none; }
+        .reset-btn { background: white; border: 1px solid var(--rule); color: var(--ink-soft); }
+
+        .correct-ui { border-color: var(--correct) !important; color: var(--correct) !important; }
+        .wrong-ui { border-color: var(--wrong) !important; color: var(--wrong) !important; }
+
+        @media (max-width: 768px) {
+            .fixed-header { padding: 30px 20px 15px; }
+            .container { margin-top: 200px; width: calc(100% - 20px); }
+            #quiz { padding: 20px; }
+            .help-tools { width: 100%; margin-top: 10px; border-top: 1px solid var(--rule); padding-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="fixed-header">
+    <div class="progress-container"><div id="progress-bar"></div></div>
+
+    <!-- NYTT -->
+    <div class="top-buttons">
+        <button class="main-btn reset-btn" onclick="initQuiz()">Reshuffle</button>
+        <button class="main-btn check-btn" onclick="checkAnswers()">Check Answers</button>
+    </div>
+
+    <div class="lang-tag">Swedish Definiteness</div>
+    <h1>Double Definiteness</h1>
+    <p class="subtitle">Match the articles and nouns. Use buttons for help.</p>
+</div>
+
+<div class="container">
+    <div id="quiz"></div>
+</div>
+
+<script>
+    const data = [
+        { start: "", adj: "röda", end: "står på gatan.", correct: ["Den", "bilen"], gender: "en-gender", translate: "The red car is standing in the street.", options: [["Det", "Den", "En", "Ett"], ["bil", "bilen", "bilet"]] },
+        { start: "", adj: "bruna", end: "har sålts.", correct: ["Det", "huset"], gender: "ett-gender", translate: "The brown house has been sold.", options: [["Det", "Den", "En", "Ett"], ["hus", "husen", "huset"]] },
+        { start: "Jag köpte", adj: "fina", end: ".", correct: ["den", "blomman"], gender: "en-gender", translate: "I bought the fine flower.", options: [["en", "ett", "den", "det"], ["blomma", "blomman", "blommat"]] },
+        { start: "Jag såg", adj: "vita", end: ".", correct: ["den", "hästen"], gender: "en-gender", translate: "I saw the white horse.", options: [["en", "ett", "den", "det"], ["häst", "hästen"]] },
+        { start: "Hon har sålt", adj: "fula", end: ".", correct: ["det", "bordet"], gender: "ett-gender", translate: "She has sold the ugly table.", options: [["en", "ett", "den", "det"], ["bord", "borden", "bordet"]] },
+        { start: "Såg du", adj: "vackra", end: "?", correct: ["det", "trädet"], gender: "ett-gender", translate: "Did you see the beautiful tree?", options: [["en", "ett", "den", "det"], ["träd", "träden", "trädet"]] },
+        { start: "", adj: "nya", end: "är stulen.", correct: ["Den", "cykeln"], gender: "en-gender", translate: "The new bicycle has been stolen.", options: [["Det", "Den", "En", "Ett"], ["cykel", "cykeln", "cykelet"]] },
+        { start: "Jag hittade", adj: "våta", end: ".", correct: ["den", "vanten"], gender: "en-gender", translate: "I found the wet glove.", options: [["en", "ett", "den", "det"], ["vante", "vanten", "vantet"]] },
+        { start: "Vi såg", adj: "stora", end: ".", correct: ["det", "molnet"], gender: "ett-gender", translate: "We saw the large cloud.", options: [["en", "ett", "den", "det"], ["moln", "molnen", "molnet"]] }
+    ];
+	
+// Funktion för att slumpa ordningen i en array (Fisher-Yates)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function initQuiz() {
+    const quizContainer = document.getElementById('quiz');
+    quizContainer.innerHTML = ''; // Rensa behållaren
+    document.getElementById('progress-bar').style.width = '0%'; // Nollställ progress
+
+    // 1. Slumpa ordningen på frågorna varje gång funktionen körs
+    shuffleArray(data);
+
+    data.forEach((item, index) => {
+const row = document.createElement('div');
+row.className = 'exercise-row';
+
+const sentenceRow = document.createElement('div');
+sentenceRow.className = 'sentence-row';
+        
+        // Start-text (om den finns)
+        if (item.start && item.start.trim() !== "") {
+            const startSpan = document.createElement('span');
+            startSpan.textContent = item.start;
+            row.appendChild(startSpan);
+        }
+        
+        // Generera select-boxar och adjektiv
+        item.options.forEach((opts, optIdx) => {
+            // Skjut in adjektivet mellan den första och andra select-boxen
+            if(optIdx === 1) {
+                const adjSpan = document.createElement('span');
+                adjSpan.className = 'adj-fixed';
+                adjSpan.textContent = item.adj;
+                row.appendChild(adjSpan);
+            }
+            
+            const sel = document.createElement('select');
+            sel.id = `s-${index}-${optIdx}`;
+            sel.onchange = updateProgress;
+            
+            // Slumpa startvärdet i varje select-box så det inte alltid är facit
+            let r;
+            do { r = Math.floor(Math.random() * opts.length); } 
+            while (opts[r] === item.correct[optIdx] && opts.length > 1);
+
+            opts.forEach((o, i) => {
+                const opt = document.createElement('option');
+                opt.value = o;
+                opt.textContent = o;
+                if (i === r) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            row.appendChild(sel);
+        });
+
+        // Slut-text (punkt, frågetecken etc.)
+        const endSpan = document.createElement('span');
+        endSpan.textContent = item.end;
+        row.appendChild(endSpan);
+
+        // Status-ikon (✓/✕) - börjar tom med ett 'non-breaking space' för stabilitet
+        const status = document.createElement('span');
+        status.id = `status-${index}`;
+        status.className = 'status-icon';
+        status.innerHTML = '&nbsp;'; 
+        row.appendChild(status);
+        
+// Hjälpverktyg (Translate & Gender)
+        const tools = document.createElement('div');
+        tools.className = 'help-tools';
+        tools.innerHTML = `
+            <button class="tool-btn" type="button" tabindex="0">
+                Translate
+                <div class="info-bubble">${item.translate}</div>
+            </button>
+            <button class="tool-btn" type="button" tabindex="0">
+                Gender
+                <div class="info-bubble">${item.gender}</div>
+            </button>`;
+        row.appendChild(tools);
+
+        quizContainer.appendChild(row);
+    });
+    
+    // Scrolla upp till toppen vid reshuffle
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+}
+
+    function updateProgress() {
+        let correctCount = 0;
+        data.forEach((item, index) => {
+            const s0 = document.getElementById(`s-${index}-0`);
+            const s1 = document.getElementById(`s-${index}-1`);
+            if (s0 && s1 && s0.value === item.correct[0] && s1.value === item.correct[1]) correctCount++;
+        });
+        document.getElementById('progress-bar').style.width = (correctCount / data.length) * 100 + '%';
+    }
+
+    function checkAnswers() {
+        data.forEach((item, index) => {
+            let rowCorrect = true;
+            item.options.forEach((opts, optIdx) => {
+                const el = document.getElementById(`s-${index}-${optIdx}`);
+                if (el.value === item.correct[optIdx]) { el.className = 'correct-ui'; } 
+                else { el.className = 'wrong-ui'; rowCorrect = false; }
+            });
+            const st = document.getElementById(`status-${index}`);
+            st.innerText = rowCorrect ? '✓' : '✕';
+            st.className = 'status-icon ' + (rowCorrect ? 'correct-ui' : 'wrong-ui');
+        });
+        updateProgress();
+    }
+
+    initQuiz();
+</script>
+
+</body>
+</html>

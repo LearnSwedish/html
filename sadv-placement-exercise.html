@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swedish Grammar: Sentence Adverbial Drag & Drop</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1c1917;
+            --ink-soft: #44403c;
+            --paper: #faf8f5;
+            --paper-warm: #f5f0e8;
+            --rule: #e7e0d5;
+            --gold: #b45309;
+            --gold-pale: #fef3c7;
+            --correct: #15803d;
+            --correct-bg: #d1fae5;
+            --wrong: #b91c1c;
+            --wrong-bg: #fee2e2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background-color: var(--paper);
+            color: var(--ink);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fixed-header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: white; z-index: 1000;
+            padding: 40px 20px 20px;
+            border-bottom: 1px solid var(--rule);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .top-buttons { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
+
+        .lang-tag {
+            display: inline-block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--gold); background: var(--gold-pale); padding: 4px 12px; border-radius: 2px; margin-bottom: 10px; font-weight: 600;
+        }
+
+        h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 5px; font-weight: 700; }
+        .subtitle { font-size: 14px; font-style: italic; color: var(--ink-soft); }
+
+        .container {
+            max-width: 1200px;
+            width: calc(100% - 40px);
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(28, 25, 23, 0.05);
+            border: 1px solid var(--rule);
+            margin-top: 220px;
+            margin-bottom: 60px;
+            padding: 20px 40px;
+        }
+
+        .exercise-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--rule);
+        }
+        .exercise-row:last-child { border-bottom: none; }
+
+        .sentence-display {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 1.2rem;
+            flex-grow: 1;
+        }
+
+        .plain-text { color: var(--ink); padding: 8px 0; }
+
+        /* Den inramade zonen */
+        .drop-zone {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border: 2px dashed var(--rule);
+            border-radius: 6px;
+            background: var(--paper-warm);
+            min-height: 60px;
+            transition: 0.3s;
+        }
+
+        /* State: Hover (när man drar över) */
+        .drop-zone.drag-over {
+            border-color: var(--gold);
+            background: var(--gold-pale);
+        }
+
+        /* State: Rätt */
+        .drop-zone.correct-zone {
+            border-color: var(--correct);
+            background: var(--correct-bg);
+            border-style: solid;
+        }
+
+        /* State: Fel */
+        .drop-zone.wrong-zone {
+            border-color: var(--wrong);
+            background: var(--wrong-bg);
+            border-style: solid;
+        }
+
+        /* Orden inuti zonen */
+.zone-word {
+    padding: 8px 16px; /* Matchar draggable */
+    background: white;
+    border: 2px solid transparent; /* Osynlig border för att matcha draggable-word */
+    border-radius: 4px;
+    user-select: none;
+    line-height: 1.2; /* Låst radhöjd */
+}
+
+/* Det dragbara adverbialet */
+.draggable-word {
+    padding: 8px 16px;
+    background: white;
+    border: 2px solid var(--gold);
+    border-radius: 4px;
+    cursor: grab;
+    font-weight: 600;
+    color: var(--gold);
+    user-select: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    line-height: 1.2; /* Låst radhöjd */
+}
+        .draggable-word:active { cursor: grabbing; }
+
+        /* Poolen för det drabbara ordet (startposition) */
+        .adverbial-pool {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            min-height: 60px;
+            flex-shrink: 0;
+        }
+
+        .status-icon { 
+            width: 30px; 
+            font-weight: 700; 
+            text-align: center; 
+            font-size: 1.6rem;
+            margin-left: 10px;
+        }
+        .correct-ui { color: var(--correct); }
+        .wrong-ui { color: var(--wrong); }
+
+        /* Help tools */
+        .right-group { display: flex; align-items: center; gap: 80px; flex-shrink: 0; }
+        .help-tools { display: flex; gap: 6px; align-items: center; }
+        .tool-btn {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+            padding: 4px 6px; border: 1px solid var(--rule); background: white;
+            border-radius: 3px; cursor: pointer; color: var(--ink-soft); transition: 0.2s;
+            position: relative;
+        }
+        .tool-btn:hover { background: var(--ink); color: white; border-color: var(--ink); }
+
+.info-bubble {
+    position: absolute; 
+    bottom: 130%; 
+    left: 50%; 
+    transform: translateX(-50%);
+    background: var(--ink); 
+    color: white; 
+    padding: 8px 12px; 
+    border-radius: 4px;
+    font-size: 16px; 
+    white-space: nowrap; 
+    pointer-events: none; 
+    opacity: 0;
+    visibility: hidden; /* Lägg till denna */
+    transition: opacity 0.2s, visibility 0.2s; 
+    z-index: 1100; 
+    font-family: 'Source Serif 4', serif;
+    text-transform: none; 
+    letter-spacing: normal; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+        .tool-btn:hover .info-bubble { opacity: 1; visibility: visible; }
+
+        button.main-btn {
+            font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 12px;
+            text-transform: uppercase; letter-spacing: 0.15em; padding: 14px 25px;
+            border-radius: 4px; cursor: pointer; transition: 0.3s;
+            background: var(--ink); color: white; border: none;
+        }
+        button.main-btn:hover { opacity: 0.8; }
+		
+.progress-container {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 6px;
+    background: var(--rule);
+}
+#progress-bar { 
+    width: 0%; 
+    height: 100%; 
+    background: var(--gold); 
+    transition: width 0.4s ease; 
+}		
+
+        /* Ghost style under drag */
+        .sortable-ghost { opacity: 0.3; }
+
+        @media (max-width: 900px) {
+            .exercise-row { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .right-group { width: 100%; justify-content: space-between; flex-direction: row-reverse; }
+            .fixed-header { padding: 30px 10px 15px; }
+            .container { margin-top: 230px; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="fixed-header">
+    <div class="progress-container"><div id="progress-bar"></div></div>
+    
+    <div class="top-buttons">
+        <button class="main-btn" onclick="renderExercises()">Reshuffle</button>
+    </div>
+    <div class="lang-tag">Positioning</div>
+    <h1>The Sentence Adverbial</h1>
+    <p class="subtitle">Drag the word on the right into its correct position inside the framed zone.</p>
+</div>
+
+<div class="container" id="main-container"></div>
+
+<script>
+// Data. Strukturen är: prefix, [inramad del], suffix, adverbial, översättning
+// Uppdaterad data med specifika positioner för adverbialet
+const exercisesData = [
+    { framed: "Jag har sett henne på två år", suffix: ".", adverbial: "inte", correctPos: 2, translate: "I haven't seen her for two years." },
+    { framed: "Igår såg jag henne på skolan", suffix: ".", adverbial: "inte", correctPos: 3, translate: "Yesterday I didn't see her at school." },
+    { framed: "Vi går förbi kyrkan på vägen hem", suffix: ".", adverbial: "alltid", correctPos: 2, translate: "We always walk past the church on the way home." },
+    { framed: "Jag kan", suffix: "eftersom jag inte har tid.", adverbial: "inte", correctPos: 2, translate: "I can't because I don't have time." },
+    { prefix: "Vi kommer att träffa honom", framed: "eftersom han är där", suffix: ".", adverbial: "alltid", correctPos: 2, translate: "We will meet him because he is always there." },
+    { framed: "I lördags var jag i skolan", suffix: "eftersom jag var sjuk.", adverbial: "inte", correctPos: 4, translate: "Last Saturday I wasn't at school because I was ill." },
+    { framed: "Hon går till gymmet", suffix: "när hon har slutat jobba.", adverbial: "ofta", correctPos: 2, translate: "She often goes to the gym when she has finished work." },
+    { framed: "Jag förstår vad problemet är", suffix: ".", adverbial: "inte", correctPos: 2, translate: "I don't understand what the problem is." },
+    { framed: "Hon skulle ta på sig vita jeans", suffix: ".", adverbial: "aldrig", correctPos: 2, translate: "She would never put on white jeans." },
+    { framed: "De kommer för sent", suffix: "när jag bjuder på middag.", adverbial: "alltid", correctPos: 2, translate: "They always arrive too late when I'm having dinner." }
+];
+
+function renderExercises() {
+    const container = document.getElementById('main-container');
+    container.innerHTML = '';
+    
+    // LÄGG TILL DETTA FÖR ATT NOLLSTÄLLA BAREN:
+    if(document.getElementById('progress-bar')) {
+        document.getElementById('progress-bar').style.width = '0%';
+    }
+	
+    const shuffledData = [...exercisesData].sort(() => Math.random() - 0.5);
+
+    shuffledData.forEach((data, index) => {
+        const row = document.createElement('div');
+        row.className = 'exercise-row';
+
+        const sentenceDisplay = document.createElement('div');
+        sentenceDisplay.className = 'sentence-display';
+
+        // 1. Prefix (text före ramen)
+        if (data.prefix) {
+            const pre = document.createElement('span');
+            pre.className = 'plain-text';
+            pre.innerText = data.prefix;
+            sentenceDisplay.appendChild(pre);
+        }
+
+        // 2. Drop Zone (den inramade delen)
+        const dropZone = document.createElement('div');
+        dropZone.className = 'drop-zone';
+        dropZone.id = `zone-${index}`;
+        
+        const framedWords = data.framed.split(' ');
+        
+        framedWords.forEach(word => {
+            const wSpan = document.createElement('span');
+            wSpan.className = 'zone-word';
+            wSpan.innerText = word;
+            wSpan.setAttribute('data-static', 'true'); 
+            dropZone.appendChild(wSpan);
+        });
+
+        sentenceDisplay.appendChild(dropZone);
+
+        // 3. Suffix (text efter ramen)
+        if (data.suffix) {
+            const suf = document.createElement('span');
+            suf.className = 'plain-text';
+            suf.innerText = data.suffix;
+            sentenceDisplay.appendChild(suf);
+        }
+
+        // 4. Status-ikon
+        const status = document.createElement('span');
+        status.id = `status-${index}`;
+        status.className = 'status-icon';
+        status.innerHTML = '&nbsp;';
+        sentenceDisplay.appendChild(status);
+
+        row.appendChild(sentenceDisplay);
+
+        // --- HÖGER GRUPP (Adverbial till vänster om Translate) ---
+        const rightGroup = document.createElement('div');
+        rightGroup.className = 'right-group';
+
+        // A. Adverbial Pool (hamnar först/vänster)
+        const pool = document.createElement('div');
+        pool.className = 'adverbial-pool';
+        pool.id = `pool-${index}`;
+
+        const dragWord = document.createElement('div');
+        dragWord.className = 'draggable-word';
+        dragWord.id = `adv-${index}`;
+        dragWord.innerText = data.adverbial;
+        dragWord.setAttribute('data-correct-index', data.correctPos); 
+
+        pool.appendChild(dragWord);
+        rightGroup.appendChild(pool);
+
+        // B. Translate-verktyg (hamnar sist/höger)
+        const tools = document.createElement('div');
+        tools.className = 'help-tools';
+        tools.innerHTML = `
+            <button class="tool-btn" type="button">Translate
+                <div class="info-bubble">${data.translate}</div>
+            </button>
+        `;
+        rightGroup.appendChild(tools);
+
+        row.appendChild(rightGroup);
+        container.appendChild(row);
+
+        // --- Initiera Sortable ---
+        new Sortable(pool, {
+            group: { name: `shared-${index}`, pull: 'clone', put: false },
+            sort: false,
+            animation: 150
+        });
+
+        new Sortable(dropZone, {
+            group: { name: `shared-${index}`, put: true, pull: true },
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onDragEnter: () => dropZone.classList.add('drag-over'),
+            onDragLeave: () => dropZone.classList.remove('drag-over'),
+            onAdd: function (evt) {
+                dropZone.classList.remove('drag-over');
+                if (evt.clone) {
+                    evt.from.innerHTML = '&nbsp;'; 
+                }
+                checkSentence(index);
+            },
+            onEnd: function(evt) {
+                 checkSentence(index);
+            }
+        });
+    });
+}
+
+function checkSentence(index) {
+    const zone = document.getElementById(`zone-${index}`);
+    const status = document.getElementById(`status-${index}`);
+    const currentElements = Array.from(zone.children);
+    const draggedAdv = currentElements.find(el => el.classList.contains('draggable-word'));
+    
+    if (!draggedAdv) return;
+
+    const currentIndex = currentElements.indexOf(draggedAdv);
+    const expectedIndex = parseInt(draggedAdv.getAttribute('data-correct-index'));
+
+    zone.classList.remove('correct-zone', 'wrong-zone');
+
+    if (currentIndex === expectedIndex) {
+        zone.classList.add('correct-zone');
+        status.innerText = "✓";
+        status.className = "status-icon correct-ui";
+    } else {
+        zone.classList.add('wrong-zone');
+        status.innerText = "✕";
+        status.className = "status-icon wrong-ui";
+    }
+	updateProgress();
+}
+
+function updateProgress() {
+    const total = exercisesData.length;
+    // Räkna hur många zoner som har klassen 'correct-zone'
+    const correctOnes = document.querySelectorAll('.correct-zone').length;
+    const progressPercent = (correctOnes / total) * 100;
+    document.getElementById('progress-bar').style.width = progressPercent + '%';
+}
+
+window.onload = renderExercises;
+</script>
+
+</body>
+</html>

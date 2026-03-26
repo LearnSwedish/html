@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The V2 Rule in Swedish</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1c1917;
+            --ink-soft: #44403c;
+            --ink-faint: #78716c;
+            --paper: #faf8f5;
+            --paper-warm: #f5f0e8;
+            --rule: #e7e0d5;
+            --blue: #1d4ed8;
+            --blue-pale: #eff6ff;
+            --gold: #b45309;
+            --gold-pale: #fef3c7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            background-color: var(--paper);
+        }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-weight: 300;
+            font-size: 17px;
+            line-height: 1.75;
+            color: var(--ink);
+            background-color: var(--paper);
+            padding: 0 20px 80px;
+        }
+
+        /* ── PAGE HEADER ── */
+        header {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 64px 0 48px;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .lang-tag {
+            display: inline-block;
+            font-family: 'Source Serif 4', serif;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            background: var(--gold-pale);
+            padding: 3px 10px 2px;
+            border-radius: 2px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--ink-faint);
+            font-style: italic;
+        }
+
+        /* ── MAIN CONTENT ── */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        section {
+            padding: 44px 0;
+            border-bottom: 1px solid var(--rule);
+            opacity: 0;
+            transform: translateY(18px);
+            animation: fadeUp 0.55s ease forwards;
+        }
+
+        section:nth-child(1) { animation-delay: 0.05s; }
+        section:nth-child(2) { animation-delay: 0.15s; }
+        section:nth-child(3) { animation-delay: 0.25s; }
+        section:nth-child(4) { animation-delay: 0.35s; }
+        section:nth-child(5) { animation-delay: 0.45s; }
+        section:nth-child(6) { animation-delay: 0.55s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 400;
+            font-size: 1.3rem;
+            color: var(--ink);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 28px;
+            height: 2px;
+            background: var(--gold);
+            flex-shrink: 0;
+        }
+
+        p {
+            color: var(--ink-soft);
+            margin-bottom: 16px;
+        }
+
+        p:last-child { margin-bottom: 0; }
+
+        em {
+            font-style: italic;
+            color: var(--ink);
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        /* ── COMPARISON CARDS ── */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .compare-card {
+            background: var(--paper-warm);
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            padding: 16px 20px;
+        }
+
+        .compare-card .label {
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            margin-bottom: 8px;
+            font-weight: 400;
+            font-family: 'Source Serif 4', serif;
+        }
+
+        .compare-card .example {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .compare-card .explanation {
+            font-size: 13.5px;
+            color: var(--ink-faint);
+            font-style: italic;
+        }
+
+        /* ── LANGUAGE ROW LIST ── */
+        .lang-list {
+            list-style: none;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .lang-list li {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .lang-list li:hover {
+            background: var(--paper-warm);
+        }
+
+        .lang-list .lang-name {
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            font-weight: 400;
+        }
+
+        .lang-list .lang-example {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            color: var(--ink);
+        }
+
+        .lang-list li.highlighted {
+            background: var(--blue-pale);
+            border-left: 3px solid var(--blue);
+            padding-left: 13px;
+        }
+
+        .lang-list li.highlighted .lang-name {
+            color: var(--blue);
+        }
+
+        .lang-list li.highlighted .lang-example {
+            color: var(--blue);
+        }
+
+        /* ── TWO-COLUMN CARD GRID (reused for sentence slots) ── */
+        .gender-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .gender-card {
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .gender-card-header {
+            background: var(--ink);
+            color: white;
+            padding: 10px 18px;
+            font-size: 11.5px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-family: 'Source Serif 4', serif;
+            font-weight: 400;
+        }
+
+        .gender-card-body {
+            padding: 16px 18px;
+            background: white;
+        }
+
+        .gender-card-body .indef {
+            font-size: 13.5px;
+            color: var(--ink-faint);
+            margin-bottom: 6px;
+        }
+
+        .gender-card-body .def {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--ink);
+            font-weight: 400;
+        }
+
+        .suffix-mark {
+            color: var(--gold);
+        }
+
+        .blue-mark {
+            color: var(--blue);
+        }
+
+        /* ── CALLOUT BOX ── */
+        .callout {
+            background: var(--blue-pale);
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid var(--blue);
+            border-radius: 0 4px 4px 0;
+            padding: 24px 28px;
+            margin: 28px 0;
+        }
+
+        .callout p {
+            color: #1e3a8a;
+            margin-bottom: 12px;
+        }
+
+        .callout p:last-child { margin-bottom: 0; }
+
+        /* ── SENTENCE STRUCTURE TABLE ── */
+        .def-table-wrapper {
+            margin: 28px 0;
+            overflow-x: auto;
+        }
+
+        .def-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15.5px;
+        }
+
+        .def-table thead tr {
+            background: var(--ink);
+            color: white;
+        }
+
+        .def-table thead th {
+            padding: 12px 20px;
+            text-align: left;
+            font-family: 'Source Serif 4', serif;
+            font-weight: 400;
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .def-table tbody tr {
+            background: white;
+        }
+
+        .def-table tbody tr:nth-child(even) {
+            background: var(--paper-warm);
+        }
+
+        .def-table td {
+            padding: 14px 20px;
+            border: 1px solid var(--rule);
+            color: var(--ink-soft);
+        }
+
+        .def-table tbody tr.example-row td {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            color: var(--ink);
+            font-weight: 400;
+        }
+
+        .def-table tbody tr.label-row td {
+            font-size: 11.5px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            background: var(--paper-warm);
+        }
+
+        .marker-1 { color: var(--gold) !important; font-style: italic; }
+        .marker-2 { color: var(--blue) !important; font-style: italic; }
+
+        /* ── POSITION SLOT DISPLAY ── */
+        .slot-row {
+            display: flex;
+            gap: 0;
+            margin: 28px 0;
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .slot {
+            flex: 1;
+            padding: 14px 16px;
+            text-align: center;
+            border-right: 1px solid var(--rule);
+        }
+
+        .slot:last-child { border-right: none; }
+
+        .slot .slot-label {
+            font-size: 10.5px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            margin-bottom: 8px;
+            font-family: 'Source Serif 4', serif;
+        }
+
+        .slot .slot-content {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--ink);
+        }
+
+        .slot.slot-v2 {
+            background: var(--blue-pale);
+            border-top: 3px solid var(--blue);
+        }
+
+        .slot.slot-v2 .slot-label {
+            color: var(--blue);
+        }
+
+        .slot.slot-v2 .slot-content {
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        .slot.slot-front {
+            background: var(--gold-pale);
+            border-top: 3px solid var(--gold);
+        }
+
+        .slot.slot-front .slot-label {
+            color: var(--gold);
+        }
+
+        .slot.slot-front .slot-content {
+            color: var(--gold);
+        }
+
+        /* ── SUMMARY BOX ── */
+        .summary {
+            background: var(--ink);
+            color: white;
+            border-radius: 6px;
+            padding: 28px 32px;
+            margin-top: 8px;
+        }
+
+        .summary h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 14px;
+            color: #d6d3d1;
+            font-style: italic;
+        }
+
+        .summary p {
+            color: #d6d3d1;
+            font-size: 15.5px;
+            margin-bottom: 10px;
+        }
+
+        .summary strong {
+            color: white;
+        }
+
+        .summary .rule-line {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            padding: 14px 18px;
+            margin-top: 16px;
+            font-size: 15px;
+            color: #e7e5e4;
+        }
+
+        .summary .rule-line .icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        /* responsive */
+        @media (max-width: 500px) {
+            .compare-grid, .gender-grid { grid-template-columns: 1fr; }
+            .slot-row { flex-wrap: wrap; }
+            .slot { border-right: none; border-bottom: 1px solid var(--rule); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="lang-tag">Swedish Grammar</div>
+    <h1>The V2 Rule<br>in Swedish</h1>
+    <p class="subtitle">Word order and verb placement in main clauses</p>
+</header>
+
+<main>
+
+    <!-- SECTION 1: What is the V2 rule -->
+    <section>
+        <h2>What is the V2 rule?</h2>
+        <p>The V2 rule — short for <em>verb-second</em> — is a word order rule stating that the finite verb must always occupy the <strong>second position</strong> in a main clause. No matter what comes first in the sentence, the verb follows immediately after.</p>
+        <div class="compare-grid">
+            <div class="compare-card">
+                <div class="label">Subject first</div>
+                <div class="example">Jag äter äpplet.</div>
+                <div class="explanation">I eat the apple.</div>
+            </div>
+            <div class="compare-card">
+                <div class="label">Adverb first</div>
+                <div class="example">Idag äter jag äpplet.</div>
+                <div class="explanation">Today I eat the apple.</div>
+            </div>
+        </div>
+        <p>Notice that when <em>idag</em> (today) moves to the front, the subject <em>jag</em> shifts to after the verb — so that the verb always stays in second position.</p>
+    </section>
+
+    <!-- SECTION 2: Cross-linguistic comparison -->
+    <section>
+        <h2>How other languages compare</h2>
+        <p>The V2 rule is characteristic of the Germanic languages. English once had it too, but has largely lost it — keeping it only in a few formal or literary constructions.</p>
+        <ul class="lang-list">
+            <li>
+                <span class="lang-name">English</span>
+                <span class="lang-example">Today <strong>I eat</strong> the apple.</span>
+            </li>
+            <li>
+                <span class="lang-name">German</span>
+                <span class="lang-example">Heute <strong>esse</strong> ich den Apfel.</span>
+            </li>
+            <li>
+                <span class="lang-name">Dutch</span>
+                <span class="lang-example">Vandaag <strong>eet</strong> ik de appel.</span>
+            </li>
+            <li class="highlighted">
+                <span class="lang-name">Swedish</span>
+                <span class="lang-example">Idag <strong>äter</strong> jag äpplet.</span>
+            </li>
+        </ul>
+        <p>In German, Dutch, and Swedish, the verb moves to second position whenever the sentence begins with anything other than the subject. English does not enforce this — the verb stays in place.</p>
+    </section>
+
+    <!-- SECTION 3: The three positions -->
+    <section>
+        <h2>The three key positions</h2>
+        <p>It helps to think of a Swedish main clause as having three named positions. The V2 rule concerns the relationship between position 1 and position 2.</p>
+        <div class="slot-row">
+            <div class="slot slot-front">
+                <div class="slot-label">Position 1 — Front</div>
+                <div class="slot-content">Anything</div>
+            </div>
+            <div class="slot slot-v2">
+                <div class="slot-label">Position 2 — V2</div>
+                <div class="slot-content">Finite verb</div>
+            </div>
+            <div class="slot">
+                <div class="slot-label">Position 3+ — Rest</div>
+                <div class="slot-content">Subject · objects · adverbs</div>
+            </div>
+        </div>
+        <p>Position 1 can be filled by the subject, a time adverbial, a place adverbial, an object, or almost any other constituent. Whatever is placed there, the <strong>finite verb must follow directly in position 2</strong>.</p>
+        <p>When the subject does not occupy position 1, it is pushed to position 3 — immediately after the verb. This is called <em>inversion</em>.</p>
+    </section>
+
+    <!-- SECTION 4: Inversion in practice -->
+    <section>
+        <h2>Inversion in practice</h2>
+        <div class="callout">
+            <p>In English, moving an adverbial to the front of a sentence does not change the order of subject and verb: <em>Today I eat the apple</em> — the subject still comes before the verb.</p>
+            <p>In Swedish, moving anything other than the subject to position 1 <strong>triggers inversion</strong>: the subject and verb swap places so that the verb can remain in second position. This is the direct consequence of the V2 rule.</p>
+        </div>
+        <div class="def-table-wrapper">
+            <table class="def-table">
+                <thead>
+                    <tr>
+                        <th>Position 1</th>
+                        <th>Position 2 (verb)</th>
+                        <th>Position 3+ (rest)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="example-row">
+                        <td><span class="marker-1">Jag</span></td>
+                        <td><span class="marker-2">äter</span></td>
+                        <td>äpplet varje dag.</td>
+                    </tr>
+                    <tr class="label-row">
+                        <td>Subject</td>
+                        <td>Finite verb</td>
+                        <td>Object · adverbial</td>
+                    </tr>
+                    <tr class="example-row">
+                        <td><span class="marker-1">Varje dag</span></td>
+                        <td><span class="marker-2">äter</span></td>
+                        <td>jag äpplet.</td>
+                    </tr>
+                    <tr class="label-row">
+                        <td>Adverbial</td>
+                        <td>Finite verb</td>
+                        <td>Subject · object</td>
+                    </tr>
+                    <tr class="example-row">
+                        <td><span class="marker-1">Äpplet</span></td>
+                        <td><span class="marker-2">äter</span></td>
+                        <td>jag varje dag.</td>
+                    </tr>
+                    <tr class="label-row">
+                        <td>Object (topicalised)</td>
+                        <td>Finite verb</td>
+                        <td>Subject · adverbial</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>Notice that the finite verb <em>äter</em> occupies position 2 in all three sentences, regardless of what has been fronted.</p>
+    </section>
+
+    <!-- SECTION 5: V2 does not apply in subclauses -->
+<section>
+        <h2>A Note on Subordinate Clauses</h2>
+        <div class="callout" style="background: var(--paper-warm); border-color: var(--rule); border-left-color: var(--gold);">
+            <p style="color: var(--ink);">It is important to note that the V2 rule is a <strong>main clause rule</strong>. </p>
+            <p>In subordinate clauses (sentences starting with words like <em>att, eftersom, om</em>), Swedish uses a different, more fixed word order where the V2 principle does not apply. In these cases, the subject always stays before the verb.</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>In summary</h2>
+        <div class="summary">
+            <h3>The core rule</h3>
+            <p>In a Swedish main clause, the finite verb always occupies <strong>second position</strong>.</p>
+            <p>If anything other than the subject is placed first, the subject and verb swap places — <strong>inversion</strong>.</p>
+            <div class="rule-line">
+                <span class="icon">⚠</span>
+                <span>The V2 rule applies to <strong>main clauses only</strong>.</span>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>
