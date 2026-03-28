@@ -317,12 +317,104 @@ body.dark-mode .keyboard-hint {
   kbd { background: var(--cream); color: var(--ink); border-color: var(--muted); }
   .keyboard-hint { color: var(--muted); }
   
+/* Button Style */
+.read-btn {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    background: var(--gold);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+.read-btn:hover { transform: scale(1.05); background: var(--gold2); }
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--modal-overlay);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    max-width: 900px;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    overflow-y: auto;
+    animation: modalFadeIn 0.3s ease-out;
+    border: 1px solid rgba(201,168,76,0.2);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-body { padding: 40px; line-height: 1.6; }
+.modal-body h2 { font-family: 'Playfair Display', serif; margin-bottom: 20px; color: var(--gold); }
+.modal-body h3 { margin-top: 25px; margin-bottom: 10px; font-size: 18px; border-bottom: 1px solid var(--cream); padding-bottom: 5px; }
+.modal-body ul { margin-bottom: 15px; padding-left: 20px; }
+.modal-body p { margin-bottom: 10px; }
+.example-box { background: var(--paper); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 14px; margin: 10px 0; border-left: 3px solid var(--gold); }
+
+.modal-body sup {
+    font-weight: 900;
+    color: var(--blue2); /* Ger siffrorna en distinkt färg så de syns tydligt */
+    font-size: 0.8em;
+    margin-right: 1px;
+    vertical-align: super;
+    line-height: 0;
+}
+
+body.dark-mode .modal-body sup {
+    color: var(--gold2);
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+.close-modal:hover { color: var(--red); transform: rotate(90deg); transition: all 0.3s; }
+
+/* Dark mode overrides for modal */
+body.dark-mode .modal-content { background: #1e1e1e; border-color: #333; }
+body.dark-mode .example-box { background: #2a2a2a; color: #eee; }
+body.dark-mode .modal-overlay { background: rgba(0,0,0,0.7); }  
+  
 </style>
 </head>
 <body>
 
 <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
   <i class="fas fa-moon"></i>
+</button>
+<button class="read-btn" onclick="toggleModal()" id="readBtn" title="Read about Swedish stress">
+  Read this
 </button>
 
 <div class="container">
@@ -357,6 +449,48 @@ body.dark-mode .keyboard-hint {
 
   <div class="keyboard-hint">
     Press <kbd>Space</kbd> to check answer ··· <kbd>Space</kbd> for next word ··· <kbd>1–5</kbd> to select syllables ··· <kbd>Enter</kbd> to play sound
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-content">
+    <button class="close-modal" onclick="toggleModal()">&times;</button>
+<div class="modal-body">
+  <h2>Some basics about Swedish word stress</h2>
+  
+  <h3>1. Suffixes that attract stress</h3>
+  <p><strong>Primary stress (Main stress):</strong></p>
+  <ul>
+    <li>The suffix <strong>"-ik"</strong> almost always carries the primary stress.<br><em>Examples: politik, teknik, musik, kritik, praktik, metodik.</em></li>
+    <li>The suffix <strong>"-i"</strong> (derived from Latin and Greek) almost always carries the primary stress.<br><em>Examples: energi, ekonomi, akademi, magi, sympati, demokrati, strategi, filosofi.</em></li>
+    <li>The suffixes <strong>"-tion"</strong> and <strong>"-sion"</strong> (from Latin) carry the primary stress.<br><em>Examples: funktion, situation, tradition, vegetation.</em></li>
+    <li>The suffix <strong>"-nell"</strong> carries the primary stress.<br><em>Examples: professionell, funktionell, traditionell.</em></li>
+  </ul>
+
+  <p><strong>Secondary stress:</strong></p>
+  <p>Final suffixes such as <strong>"-bar", "-het", "-sam", "-skap", "-full", "-lös",</strong> and <strong>"-vis"</strong> almost always carry secondary stress. Importantly, these suffixes tend to "override" previous secondary stresses in the word (see section 3).</p>
+
+  <h3>2. The "Step-back Rule"</h3>
+  <p>When a word takes an ending such as <strong>"-er"</strong> or <strong>"-isk"</strong> — for example, <em>politik</em> becoming <em>politiker</em>, or <em>ekonomi</em> becoming <em>ekonomisk</em> — the stress often shifts one syllable to the left.</p>
+  <p class="example-box">po-li-TIK » po-LI-ti-ker<br>e-ko-no-MI » e-ko-NO-misk</p>
+
+  <h3>3. Unstable Secondary Stress</h3>
+  <p>Many Swedish words are polysyllabic and feature a primary stress (marked <sup>1</sup>... below) followed by one or more secondary stresses (marked <sup>2</sup>... below):</p>
+  <p class="example-box">ar-be-te » <sup>1</sup>ar-<sup>2</sup>be-te<br>an-stän-dig » <sup>1</sup>an-<sup>2</sup>stän-dig<br>fort-sätt-ning » <sup>1</sup>fort-<sup>2</sup>sätt-ning</p>
+
+  <p><strong>The Displacement Rule:</strong></p>
+  <p>If you add a "heavy" suffix (like -lös, -het, -skap) to these words, the new suffix takes over the secondary stress, causing the previous one to disappear.</p>
+  <p class="example-box">Example: <sup>1</sup>an-<sup>2</sup>stän-dig » <sup>1</sup>an-stän-dig-<sup>2</sup>het.</p>
+  
+  <p>A common mistake for learners is to keep the original secondary stress while also stressing the new suffix. For instance, while it is correct ✅ to say <sup>1</sup>fort-<sup>2</sup>sätt-ning, it is incorrect ❌ to say <sup>1</sup>fort-<sup>2</sup>sätt-nings-<sup>2</sup>vis. The correct pronunciation is <strong><sup>1</sup>fort-sätt-nings-<sup>2</sup>vis</strong>.</p>
+  
+  <p>Note that the secondary stress moves further down the line each time a new heavy suffix is added:</p>
+  <p class="example-box">
+    mått-lig » <sup>1</sup>mått-<sup>2</sup>lig<br>
+    mått-lig-het » <sup>1</sup>mått-lig-<sup>2</sup>het<br>
+    mått-lig-hets-full » <sup>1</sup>mått-lig-hets-<sup>2</sup>full
+  </p>
+</div>
   </div>
 </div>
 
@@ -690,6 +824,20 @@ function toggleTheme() {
     document.getElementById('themeBtn').innerHTML = '<i class="fas fa-sun"></i>';
   }
 })();
+
+function toggleModal() {
+    const modal = document.getElementById('modalOverlay');
+    const isVisible = modal.style.display === 'flex';
+    modal.style.display = isVisible ? 'none' : 'flex';
+    // Förhindra scrolling på body när modal är öppen
+    document.body.style.overflow = isVisible ? 'auto' : 'hidden';
+}
+
+function closeModal(e) {
+    if (e.target.id === 'modalOverlay') {
+        toggleModal();
+    }
+}
 
 document.addEventListener('keydown', e => {
   // Mellanslag hanterar Check/Next
