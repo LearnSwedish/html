@@ -618,7 +618,7 @@ body.dark-mode .gender-toggle:hover {
 
 </head>
 
-<body>
+<body tabindex="-1">
 
     <!-- Menu Items for Desktop -->
     <div class="score-container">
@@ -1049,15 +1049,19 @@ function createSelect(correct, alt1, alt2, sv, en) {
 
 // Initialize the application once the DOM is fully loaded.
 document.addEventListener('DOMContentLoaded', ()=> {
-		const isMobile=window.matchMedia("(max-width: 700px)").matches;
+    const isMobile=window.matchMedia("(max-width: 700px)").matches;
 
-		if (isMobile) return;
+    if (isMobile) return;
 
-		renderSentences();
-		updateMaxScore(); // Sätt maxpoäng direkt
-		resetScore(); // Sätt startpoäng
-		initializeModalsAndDarkMode(); // Init toggles sist
-	});
+    renderSentences();
+    updateMaxScore();
+    resetScore();
+    initializeModalsAndDarkMode();
+
+    setTimeout(() => {
+        document.body.focus();
+    }, 0);
+});
 </script>
 
 </body>
