@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Predicative Adjectives</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+/* Reset and Base Styles */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9fafb;
+	color: #2d3748;
+	line-height: 1.6;
+	font-size: 16px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	min-height: 100vh;
+	padding: 20px;
+	overflow-y: auto;
+	position: relative;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+	background-color: #121212;
+	color: #e2e8f0;
+}
+
+/* Close Button Styling */
+.close-button {
+	float: right;
+	padding: 5px;
+	cursor: pointer;
+	font-size: 18px;
+	background-color: #ccc;
+	border: none;
+	border-radius: 50%;
+	line-height: 20px;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, transform 0.3s;
+}
+
+body.dark-mode .close-button {
+	background-color: #555;
+	color: #ffcccc;
+}
+
+body.dark-mode .close-button:hover {
+	background-color: #ff6666;
+	color: white;
+	transform: scale(1.2) rotate(90deg);
+}
+
+/* Container */
+.container {
+	background-color: #ffffff;
+	padding: 40px 30px;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	max-width: 850px;
+	width: 100%;
+	text-align: center;
+	position: relative;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	margin-top: 20px;
+}
+
+body.dark-mode .container {
+	background-color: #1a202c;
+	box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+    justify-content: flex-start;
+    padding: 0 10px;
+    gap: 10px;
+    cursor: pointer; /* Ändra från default till pointer */
+    user-select: none;
+}
+
+/* Page Title */
+.page-title {
+	text-align: center;
+	color: #333333;
+	font-size: 28px;
+	margin-bottom: 20px;
+	line-height: 1.4;
+	padding-top: 10px;
+	position: relative;
+	z-index: 1;
+	transition: color 0.3s ease;
+}
+
+body.dark-mode .page-title {
+	color: #ffffff;
+}
+
+/* Score, Start Over, and Dark Mode Toggle Container */
+.score-container {
+	position: fixed;
+	top: 20px;
+	right: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 150px;
+	z-index: 1001;
+	gap: 10px;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Sentence Styling */
+.sentence {
+	background-color: #f7fafc;
+	padding: 20px;
+	padding-bottom: 5px;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	position: relative;
+	transition: background-color 0.3s, border 0.3s;
+	border-left: 6px solid transparent;
+	text-align: left;
+	/* Removed invalid data-state property */
+}
+
+body.dark-mode .sentence {
+	background-color: #2d3748;
+	box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+}
+
+.sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #cdffcd;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+body.dark-mode .sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #22543d;
+}
+
+.sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #FFADB0;
+	transition: border 0.3s, background-color 0.3s;
+}
+
+body.dark-mode .sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #742a2a;
+}
+
+.sentence p {
+	font-size: 1.1rem;
+	margin-bottom: 10px;
+	transition: color 0.3s;
+	position: relative;
+    display: block;
+    width: 100%;
+}
+
+body.dark-mode .sentence p {
+	color: #edf2f7;
+}
+
+.sentence select.first-dropdown {
+    margin-left: 0 !important;
+}
+
+.sentence select:not(:first-child) {
+    margin-left: 10px;
+}
+
+/* Select Element Styling */
+.sentence select {
+    padding: 4px 4px;
+    font-size: inherit;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    background-color: #edf2f7;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+    width: auto;
+    margin-left: 10px;   /* Avstånd till texten framför */
+    margin-right: 10px;  /* Avstånd till texten efter */
+}
+
+.interp {
+    margin-left: -9px;
+    position: relative;
+    z-index: 1;
+}
+
+body.dark-mode .sentence select {
+	background-color: #4a5568;
+	color: #edf2f7;
+	border: 1px solid #718096;
+}
+
+.sentence select:focus {
+	border-color: #3182ce;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+}
+
+body.dark-mode .sentence select:focus {
+	border-color: #63b3ed;
+	box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+}
+
+/* Sentences */
+.sentences {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+}
+
+/* Slider Container */
+.switch {
+	position: relative;
+	width: 40px;
+	height: 20px;
+	display: inline-block;
+}
+
+/* Hide Default Checkbox */
+.switch input {
+	display: none;
+}
+
+/* Slider Appearance */
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #ccc;
+	transition: 0.4s;
+	border-radius: 20px;
+}
+
+.slider::before {
+	position: absolute;
+	content: "";
+	height: 14px;
+	width: 14px;
+	left: 3px;
+	bottom: 3px;
+	background-color: white;
+	transition: 0.4s;
+	border-radius: 50%;
+}
+
+/* Slider Active State */
+.switch input:checked+.slider {
+	background-color: #007BFF;
+}
+
+.switch input:checked+.slider::before {
+	transform: translateX(20px);
+}
+
+/* Start Over Button */
+.start-over {
+	background-color: #007BFF;
+	color: white;
+	cursor: pointer;
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s ease;
+}
+
+.start-over:hover {
+	background-color: #0056b3;
+	color: white;
+}
+
+/* Unified Button Styling */
+.score,
+.dark-mode-toggle,
+.start-over {
+	width: 100%;
+	height: 40px;
+	padding: 0 10px;
+	box-sizing: border-box;
+	font-size: 16px;
+	text-align: center;
+	background-color: #fff;
+	color: #333;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, color 0.3s;
+	cursor: pointer;
+	border: none;
+}
+
+/* Modal */
+.modal {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+	background: white;
+	color: black;
+	padding: 30px;
+	/* Något mer luft för läsbarhet */
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	text-align: left;
+	/* Ändrat från center till left */
+	max-width: 600px;
+	width: 90%;
+	/* Lite bredare på mobiler */
+	max-height: 80vh;
+	/* Säkerställer att den inte täcker hela skärmen på höjden */
+	overflow-y: auto;
+	/* Gör innehållet rullbart om det är långt */
+	transform: translateY(-20px);
+	transition: transform 0.3s ease-in-out;
+}
+
+/* Specifik styling för element inuti modalen */
+.modal-content h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 1.5rem;
+}
+
+.modal-content p {
+	margin-bottom: 15px;
+	line-height: 1.6;
+}
+
+.modal-content ul {
+	margin-left: 20px;
+	/* Ger punktlistan ett korrekt indrag */
+	margin-bottom: 15px;
+}
+
+.modal-content li {
+	margin-bottom: 10px;
+}
+
+body.dark-mode .modal-content {
+	background-color: #1a202c;
+	color: #edf2f7;
+	border: 1px solid #2d3748;
+	/* Lade till en tunn kant för definition */
+}
+
+.modal.show {
+	display: flex;
+	opacity: 1;
+}
+
+.modal.show .modal-content {
+	transform: translateY(0);
+}
+
+/* Translation toggle – default: OFF */
+body:not(.show-translation) .tooltip-text {
+	display: none;
+}
+
+/* Tooltip Container */
+.sentence p {
+	position: relative;
+	/* Tog bort cursor: help; nu används standardmarkör */
+	display: block;
+	/* Ändrat till block så att vi kan utgå från vänsterkanten */
+}
+
+/* Tooltip Text */
+.sentence .tooltip-text {
+	visibility: hidden;
+	white-space: nowrap;
+	background-color: #2d3748;
+	color: #fff;
+	text-align: left;
+	border-radius: 6px;
+	padding: 10px 15px;
+	position: absolute;
+	z-index: 10;
+	bottom: 110%;
+	left: 0;
+	opacity: 0;
+	transition: opacity 0.3s, transform 0.3s;
+	font-size: 1.05rem;
+	font-style: normal;
+	pointer-events: none;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	left: 0;
+	bottom: 125%;
+	width: max-content;
+	max-width: 90%;
+}
+
+/* Tooltip Pil - flyttad till vänster för att matcha starten */
+.sentence .tooltip-text::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 20px;
+	/* Pilen flyttad närmare starten av meningen */
+	border-width: 6px;
+	border-style: solid;
+	border-color: #2d3748 transparent transparent transparent;
+}
+
+/* Visa vid hover */
+.sentence:hover .tooltip-text {
+	visibility: visible;
+	opacity: 1;
+	transform: translateY(-5px);
+}
+
+/* Anpassning för Dark Mode */
+body.dark-mode .sentence .tooltip-text {
+	background-color: #4a5568;
+	color: #edf2f7;
+}
+
+body.dark-mode .sentence .tooltip-text::after {
+	border-color: #4a5568 transparent transparent transparent;
+}
+
+
+/* Container som håller ihop badge och knapp längst till höger */
+.gender-control-wrapper {
+    float: right;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 👈 EXAKT 10px mellan badge och knapp */
+    margin-left: 15px;
+}
+
+/* Uppdaterad gender-hint (badgen) */
+.gender-hint {
+    display: inline-block; 
+    visibility: hidden;    
+    opacity: 0;
+    transform: translateX(10px); /* Startar lite till höger */
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 400;
+    border: 1.5px solid #cbd5e0;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-family: Arial, sans-serif;
+    white-space: nowrap;
+    line-height: normal; 
+}
+
+/* Styling för dropdown-tooltip */
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.select-tooltip {
+    visibility: hidden;
+    background-color: #2d3748;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 100;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.select-tooltip em {
+    font-style: italic;
+    color: #e2e8f0;
+}
+
+.select-wrapper:hover .select-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Visningslogik när Show gender klickas */
+.sentence.show-gender .gender-hint {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Knappen - ingen float här eftersom wrappern sköter det */
+.gender-toggle {
+    width: 110px;
+    height: 28px;
+    position: relative; /* Nödvändigt för absolut positionering inuti */
+    overflow: hidden;   /* Döljer texten som glider ut */
+    border-radius: 6px;
+    border: 1.5px solid #94a3b8;
+    background-color: #e2e8f0;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.gender-toggle span {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: block;
+    text-align: center;
+}
+
+/* "Hide gender" är osynlig och lite nedsänkt initialt */
+.gender-toggle .text-hide {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+/* När klassen .show-gender finns på föräldern (.sentence) */
+.sentence.show-gender .gender-toggle .text-show {
+    opacity: 0;
+    transform: translateY(-25px); /* Glider uppåt och försvinner */
+}
+
+.sentence.show-gender .gender-toggle .text-hide {
+    opacity: 1;
+    transform: translateY(-50%); /* Glider upp till mitten */
+}
+
+.sentence.show-gender .gender-toggle {
+    background-color: #0ea5e9;
+    border-color: #0284c7;
+    color: white;
+}
+
+.gender-toggle:hover {
+	background-color: #cbd5e1;
+	border-color: #64748b;
+}
+
+/* Dark Mode anpassning */
+body.dark-mode .gender-hint, 
+body.dark-mode .gender-toggle {
+    background-color: #2d3748;
+    color: #edf2f7;
+    border-color: #718096;
+}
+
+body.dark-mode .gender-toggle:hover {
+    background-color: #475569;
+}
+
+/* 🚫 Block entire site on small screens */
+@media (max-width: 700px) {
+
+    body > *:not(#mobileBlockModal) {
+        display: none !important;
+    }
+
+    #mobileBlockModal {
+        display: flex !important;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        opacity: 1;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span class="score-display">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+<!-- Translation Toggle -->
+<div class="dark-mode-toggle">
+    <label class="switch">
+        <input type="checkbox" id="translationSwitch">
+        <span class="slider"></span>
+    </label>
+    <span>Translation</span>
+</div>		
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+         <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">Predicative Adjectives: Agreement at a Distance</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+<h2 id="infoModalTitle">Information</h2>
+<p>
+    This exercise focuses on <strong>predicative adjectives</strong>. An adjective becomes predicative when it is <strong>not</strong> placed directly before the noun it describes. Instead, it appears later in the sentence, introduced by a verb (often together with an adverb). For example:
+</p>
+
+<p style="font-style: italic; background-color: rgba(0,0,0,0.05); padding: 10px; border-radius: 5px; margin: 10px 0;">
+	Subject: The house we saw yesterday<br>
+	Verb: is / looks /seems<br> 
+	Adverb: rather / quite / brand<br>
+	Adjective: <strong>new</strong>.
+</p>
+
+<p>
+    Remember that in Swedish, most adjectives have three different forms: one for <strong>en-gender</strong> nouns, a second for <strong>ett-gender</strong> nouns, and a third for <strong>plural</strong> (regardless of gender). Because the adjective stands at a distance, you must look back at the subject to ensure they <strong>agree</strong> in gender/number:
+</p>
+
+<p>Featured in this exercise are <strong>tooltips with translations and gender indicators</strong>.</p>
+        </div>
+    </div>
+
+    <!-- Congratulations Modal -->
+<div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+    <div class="modal-content">
+        <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+        <h2 id="congratulationsModalTitle">Congratulations!</h2> 
+        <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+    </div>
+</div>
+
+<div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true" aria-labelledby="mobileBlockTitle">
+    <div class="modal-content" style="text-align:center;">
+        <h2 id="mobileBlockTitle">Not available on mobile</h2>
+        <p>
+            This page — an exercise on Swedish adjectives — is not designed for mobile phones,
+            mainly because many of the interactive features do not work well on small touchscreens.
+        </p>
+    </div>
+</div>
+
+<div class="modal" id="specialNoteModal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="text-align:center;">
+        <button class="close-button" type="button" onclick="closeModal('specialNoteModal')">&times;</button>
+        <h2>Wait a moment…!</h2>
+        <p id="specialNoteText"></p> 
+    </div>
+</div>
+
+<script>
+
+const sentences = [
+    // EN-ORD (Ingen ändelse på adjektivet)
+    { translation: "My neighbour is always pleasant when we meet.", words: [{part: "Min granne är alltid "}, {part: createSelect("trevlig", "trevligt", "trevliga", "trevlig", "pleasant")}, {part: " när vi ses. <span class='gender-hint'>en</span>"}] },
+    { translation: "My brother's dog is very kind to children.", words: [{part: "Min brors hund är väldigt "}, {part: createSelect("snäll", "snällt", "snälla", "snäll", "kind")}, {part: " mot barn. <span class='gender-hint'>en</span>"}] },
+    { translation: "The cat we have is so crazy when it plays.", words: [{part: "Katten vi har är så "}, {part: createSelect("knasig", "knasigt", "knasiga", "knasig", "crazy")}, {part: " när den leker. <span class='gender-hint'>en</span>"}] },
+    { translation: "The apple harvest this year will probably be very plentiful.", words: [{part: "Äppelskörden i år blir nog väldigt "}, {part: createSelect("riklig", "rikligt", "rikliga", "riklig", "plentiful")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The present that I got on my birthday was really fine.", words: [{part: "Presenten som jag fick på min födelsedag var verkligen "}, {part: createSelect("fin", "fint", "fina", "fin", "fine")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "That sofa is starting to become properly worn out.", words: [{part: "Den där soffan börjar bli ordentligt "}, {part: createSelect("sliten", "slitet", "slitna", "sliten", "worn out")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The story that my sister told was strange.", words: [{part: "Historien som min syster berättade var "}, {part: createSelect("konstig", "konstigt", "konstiga", "konstig", "strange")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "This adjective exercise isn't that difficult, is it?", words: [{part: "Den här adjektivövningen är väl inte så "}, {part: createSelect("svår", "svårt", "svåra", "svår", "difficult")}, {part: "? <span class='gender-hint'>en</span>"}] },
+    { translation: "The road through the forest is quite narrow.", words: [{part: "Vägen genom skogen är ganska "}, {part: createSelect("smal", "smalt", "smala", "smal", "narrow")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The air in here feels stuffy.", words: [{part: "Luften här inne känns "}, {part: createSelect("instängd", "instängt", "instängda", "instängd", "stuffy")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The whole situation is quite complicated.", words: [{part: "Hela situationen är ganska "}, {part: createSelect("komplicerad", "komplicerat", "komplicerade", "komplicerad", "complicated")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The explanation was not particularly clear.", words: [{part: "Förklaringen var inte särskilt "}, {part: createSelect("tydlig", "tydligt", "tydliga", "tydlig", "clear")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The atmosphere at the meeting was good.", words: [{part: "Stämningen på mötet var "}, {part: createSelect("god", "gott", "goda", "god", "good")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "That plot of land feels completely bare.", words: [{part: "Den där tomten känns ju helt "}, {part: createSelect("naken", "naket", "nakna", "naken", "bare")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "That journey was wonderful.", words: [{part: "Den där resan var "}, {part: createSelect("underbar", "underbart", "underbara", "underbar", "wonderful")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "His reaction was completely unexpected.", words: [{part: "Hans reaktion var helt "}, {part: createSelect("oväntad", "oväntat", "oväntade", "oväntad", "unexpected")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The ground outside is already frozen.", words: [{part: "Marken ute är redan "}, {part: createSelect("frusen", "fruset", "frusna", "frusen", "frozen")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "Her look was serious.", words: [{part: "Hennes blick var "}, {part: createSelect("allvarlig", "allvarligt", "allvarliga", "allvarlig", "serious")}, {part: ". <span class='gender-hint'>en</span>"}] },
+
+    // ETT-ORD (Adjektivet får ändelsen -t)
+    { translation: "The table in the living room is really beautiful.", words: [{part: "Bordet i vardagsrummet är riktigt "}, {part: createSelect("vackert", "vacker", "vackra", "vacker", "beautiful")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The house that we saw on the way here looks a bit worn out.", words: [{part: "Huset som vi såg på vägen hit ser lite "}, {part: createSelect("slitet", "sliten", "slitna", "sliten", "worn out")}, {part: " ut. <span class='gender-hint'>ett</span>"}] },
+    { translation: "That piano is very old.", words: [{part: "Det där pianot är väldigt "}, {part: createSelect("gammalt", "gammal", "gamla", "gammal", "old")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The home where my grandmother lives always feels clean.", words: [{part: "Hemmet där min mormor bor känns alltid "}, {part: createSelect("rent", "ren", "rena", "ren", "clean")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The room where we sat was completely dark.", words: [{part: "Rummet där vi satt var helt "}, {part: createSelect("mörkt", "mörk", "mörka", "mörk", "dark")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The coffee tastes a bit bitter today.", words: [{part: "Kaffet smakar lite "}, {part: createSelect("beskt", "besk", "beska", "besk", "bitter")}, {part: " idag. <span class='gender-hint'>ett</span>"}] },
+    { translation: "The window was open all night.", words: [{part: "Fönstret var "}, {part: createSelect("öppet", "öppen", "öppna", "öppen", "open")}, {part: "hela natten. <span class='gender-hint'>ett</span>"}] },
+    { translation: "That proposal seems reasonable.", words: [{part: "Det där förslaget verkar "}, {part: createSelect("rimligt", "rimlig", "rimliga", "rimlig", "reasonable")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The floor in the hallway is slippery.", words: [{part: "Golvet i hallen är "}, {part: createSelect("halt", "hal", "hala", "hal", "slippery")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The light in the room suddenly became weak.", words: [{part: "Ljuset i rummet blev plötsligt "}, {part: createSelect("svagt", "svag", "svaga", "svag", "weak")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The project feels more manageable now.", words: [{part: "Projektet känns mer "}, {part: createSelect("hanterbart", "hanterbar", "hanterbara", "hanterbar", "manageable")}, {part: " nu. <span class='gender-hint'>ett</span>"}] },
+
+    // PLURAL (Adjektivet får ändelsen -a)
+    { translation: "The trousers that I bought yesterday were quite expensive.", words: [{part: "Byxorna som jag köpte igår var ganska "}, {part: createSelect("dyra", "dyr", "dyrt", "dyr", "expensive")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "These challenges feel really tough.", words: [{part: "De här utmaningarna känns riktigt "}, {part: createSelect("tuffa", "tuff", "tufft", "tuff", "tough")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The experiences from that holiday are truly memorable.", words: [{part: "Upplevelserna från den semestern är riktigt "}, {part: createSelect("minnesvärda", "minnesvärd", "minnesvärt", "minnesvärd", "memorable")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The cousins that we met last summer were quite strange.", words: [{part: "Kusinerna som vi träffade i somras var ganska "}, {part: createSelect("konstiga", "konstig", "konstigt", "konstig", "strange")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The cars that my uncle drives are incredibly fast.", words: [{part: "Bilarna som min farbror kör är otroligt "}, {part: createSelect("snabba", "snabb", "snabbt", "snabb", "fast")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The socks that I was wearing yesterday are dirty.", words: [{part: "Strumporna som jag hade på mig igår är "}, {part: createSelect("smutsiga", "smutsig", "smutsigt", "smutsig", "dirty")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The children were unusually quiet during the lesson.", words: [{part: "Barnen var ovanligt "}, {part: createSelect("lugna", "lugn", "lugnt", "lugn", "quiet")}, {part: " under lektionen. <span class='gender-hint'>ett</span>"}] },
+	{ 
+    translation: "The results from the study are very interesting.", 
+    isSpecial: true, 
+    specialMessage: "There were only two different options?!<br><br>That's right, some adjectives have the same form for both en-gender and ett-gender nouns. The adjective \"intressant\" is one such example. However, in the plural it becomes \"intressanta\". The grand total is: two options.<br><br>Interesting, isn’t it? 🔎",
+    words: [
+        {part: "Resultaten från studien är väldigt "}, 
+        {part: createSelect("intressant", "intressanta", "intressant", "intressant", "interesting")}, 
+        {part: ". <span class='gender-hint'>plural</span>"}
+    ] 
+	},
+    { translation: "Several of his arguments were strong.", words: [{part: "Flera av hans argument var "}, {part: createSelect("starka", "stark", "starkt", "stark", "strong")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The plans still feel uncertain.", words: [{part: "Planerna känns fortfarande "}, {part: createSelect("osäkra", "osäker", "osäkert", "osäker", "uncertain")}, {part: ". <span class='gender-hint'>en</span>"}] },
+
+    // MENINGAR MED FLERA ADJEKTIV
+    { translation: "That book is thick, dusty and ugly.", words: [{part: "Den där boken är "}, {part: createSelect("tjock", "tjockt", "tjocka", "tjock", "thick")}, {part: ", "}, {part: createSelect("dammig", "dammigt", "dammiga", "dammig", "dusty")}, {part: " och "}, {part: createSelect("ful", "fult", "fula", "ful", "ugly")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "That apple was sweet and juicy and good.", words: [{part: "Det där äpplet var "}, {part: createSelect("sött", "söt", "sötta", "söt", "sweet")}, {part: " och "}, {part: createSelect("saftigt", "saftig", "saftiga", "saftig", "juicy")}, {part: " och "}, {part: createSelect("gott", "god", "goda", "god", "good")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "My friends are both wise and clever.", words: [{part: "Mina vänner är både "}, {part: createSelect("visa", "vis", "vist", "vis", "wise")}, {part: " och "}, {part: createSelect("kloka", "klok", "klokt", "klok", "clever")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "The working day became really long and boring today.", words: [{part: "Arbetsdagen blev verkligen "}, {part: createSelect("lång", "långt", "långa", "lång", "long")}, {part: " och "}, {part: createSelect("tråkig", "tråkigt", "tråkiga", "tråkig", "boring")}, {part: " idag. <span class='gender-hint'>en</span>"}] },
+    { translation: "My new duvet is so fluffy and comfortable.", words: [{part: "Mitt nya täcke är så "}, {part: createSelect("fluffigt", "fluffig", "fluffiga", "fluffig", "fluffy")}, {part: " och "}, {part: createSelect("skönt", "skön", "sköna", "skön", "comfortable")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The cupboard in the living room might be ugly but practical.", words: [{part: "Skåpet i vardagsrummet är kanske "}, {part: createSelect("fult", "ful", "fula", "ful", "ugly")}, {part: " men "}, {part: createSelect("praktiskt", "praktisk", "praktiska", "praktisk", "practical")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { 
+    translation: "The film that we saw yesterday was exciting.", 
+    isSpecial: true, 
+    specialMessage: "There was only one option?!<br><br>That's right, adjectives ending in \"-ande\" or \"-ende\" have the same form regardless of gender or number. It's always \"spännande\". For a very brief moment, you found yourself outside an entirely normal universe.<br><br>Exciting, isn’t it? 🚀",
+    words: [
+        {part: "Filmen som vi såg igår var riktigt "}, 
+        {part: createSelect("spännande", "spännande", "spännande", "spännande", "exciting")}, 
+        {part: ". <span class='gender-hint'>en</span>"}
+    ] 
+	},
+    { translation: "The water in the lake is cold and fresh.", words: [{part: "Vattnet i sjön är "}, {part: createSelect("kallt", "kall", "kalla", "kall", "cold")}, {part: " och "}, {part: createSelect("friskt", "frisk", "friska", "frisk", "fresh")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "The discussion quickly became chilly and aggressive.", words: [{part: "Diskussionen blev snabbt "}, {part: createSelect("kylig", "kyligt", "kyliga", "kylig", "chilly")}, {part: " och "}, {part: createSelect("aggressiv", "aggressivt", "aggressiva", "aggressiv", "aggressive")}, {part: ". <span class='gender-hint'>en</span>"}] },
+    { translation: "Her answer was long and strange.", words: [{part: "Hennes svar var "}, {part: createSelect("långt", "lång", "långa", "lång", "long")}, {part: " och "}, {part: createSelect("konstigt", "konstig", "konstiga", "konstig", "strange")}, {part: ". <span class='gender-hint'>ett</span>"}] },
+    { translation: "Her hair is long and dark.", words: [{part: "Hennes hår är "}, {part: createSelect("långt", "lång", "långa", "lång", "long")}, {part: " och "}, {part: createSelect("mörkt", "mörk", "mörka", "mörk", "dark")}, {part: ". <span class='gender-hint'>ett</span>"}] }
+];
+
+let score=0;
+
+// Fisher-Yates shuffle algorithm to shuffle an array.
+function shuffleArray(array) {
+	for (let i=array.length - 1; i > 0; i--) {
+		const j=Math.floor(Math.random() * (i + 1));
+		[array[i],
+		array[j]]=[array[j],
+		array[i]];
+	}
+
+	return array;
+}
+
+function toggleTranslation() {
+	document.body.classList.toggle('show-translation');
+
+	const enabled=document.body.classList.contains('show-translation');
+	localStorage.setItem('translationMode', enabled ? 'enabled' : 'disabled');
+}
+
+function toggleGender(button) {
+	const sentenceDiv = button.closest('.sentence');
+    sentenceDiv.classList.toggle('show-gender');
+}
+
+function capitalize(word) {
+	return word.charAt(0).toUpperCase()+word.slice(1);
+}
+
+
+// Function to generate HTML for a single sentence
+function generateSentenceHTML(sentence, index) {
+    let extractedGenderBadge = "";
+    
+    // Vi loopar igenom alla delar i 'words'
+    const sentenceHTML = sentence.words.map((item) => {
+    let text = item.part;
+
+    // Om texten börjar med ett skiljetecken, lägg på klassen .interp
+    if (/^[.,?!]/.test(text)) {
+        text = `<span class="interp">${text}</span>`;
+    }
+
+        // Extrahera gender-hint om den finns
+        if (text.includes("gender-hint")) {
+            const badgeRegex = /<span class=['"]gender-hint[^>]*>.*?<\/span>/;
+            const match = text.match(badgeRegex);
+            if (match) {
+                extractedGenderBadge = match[0];
+                text = text.replace(badgeRegex, "");
+            }
+        }
+        return text;
+    }).join('');
+
+    const tooltipSpan = sentence.translation
+        ? `<span class="tooltip-text">${sentence.translation}</span>`
+        : "";
+
+    return `<div class="sentence">
+        <p>
+            ${sentenceHTML}
+            <span class="gender-control-wrapper">
+                ${extractedGenderBadge}
+                <button class="gender-toggle" onclick="toggleGender(this)">
+                    <span class="text-show">Show gender</span>
+                    <span class="text-hide">Hide gender</span>
+                </button>
+            </span>
+            ${tooltipSpan}
+        </p>
+    </div>`;
+}
+
+// Render sentences in a shuffled order.
+function renderSentences() {
+    const shuffledSentences = shuffleArray([...sentences]);
+    const sentencesHTML = shuffledSentences.map((sentence, index) => generateSentenceHTML(sentence, index)).join('');
+    document.getElementById('sentences').innerHTML = sentencesHTML;
+    updateMaxScore(); // Uppdatera maxpoäng efter att rullistorna skapats
+}
+
+// Evaluates the user's answer and updates the score and UI accordingly.
+function evaluateAnswer(selectElement) {
+    const isCorrect = selectElement.value === selectElement.getAttribute('data-correct');
+    const parent = selectElement.closest('.sentence');
+    const allSelectsInSentence = parent.querySelectorAll('select');
+    
+    const tooltipElement = parent.querySelector('.tooltip-text');
+    const translationText = tooltipElement ? tooltipElement.textContent : "";
+    const originalSentence = sentences.find(s => s.translation === translationText);
+
+    if (isCorrect && !selectElement.classList.contains('was-correct')) {
+        score++;
+        selectElement.classList.add('was-correct');
+        
+        // TRIGGA SPECIAL-MODAL DYNAMISKT
+        if (originalSentence && originalSentence.isSpecial && originalSentence.specialMessage) {
+            // 1. Hitta textelementet i modalen
+            const modalText = document.getElementById('specialNoteText');
+            // 2. Byt ut texten mot den som hör till just denna mening
+            modalText.innerHTML = originalSentence.specialMessage;
+            // 3. Öppna modalen
+            openModal('specialNoteModal');
+        }
+    } else if (!isCorrect && selectElement.classList.contains('was-correct')) {
+        score--;
+        selectElement.classList.remove('was-correct');
+    }
+
+    // (Resten av koden är samma som förut...)
+    let allCorrect = true;
+    let anyIncorrect = false;
+    allSelectsInSentence.forEach(sel => {
+        if (sel.value === "") allCorrect = false;
+        else if (sel.value !== sel.getAttribute('data-correct')) anyIncorrect = true;
+    });
+
+    parent.classList.remove('correct', 'incorrect');
+    if (anyIncorrect) parent.classList.add('incorrect');
+    else if (allCorrect) parent.classList.add('correct');
+
+    document.querySelectorAll('.score-display').forEach(d => d.textContent = score);
+    checkAllCorrect();
+}
+
+// Updates the score display based on value change.
+function updateScore(value) {
+	score+=value;
+
+	// Hämta det faktiska antalet meningar dynamiskt
+	const maxScore=sentences.length;
+
+	// Förhindra att poängen går utanför gränserna (0 till max)
+	// Notera: Om du vill tillåta minuspoäng, använd -maxScore
+	if (score > maxScore) {
+		score=maxScore;
+	}
+
+	else if (score < 0) {
+		score=0;
+	}
+
+	// Uppdatera alla element med klassen "score-display"
+	document.querySelectorAll('.score-display').forEach((element)=> {
+			element.textContent=score;
+		});
+
+}
+
+// Checks if all sentences are correctly answered.
+function checkAllCorrect() {
+	const allCorrect=Array.from(document.querySelectorAll('.sentence')).every(sentence=> sentence.classList.contains('correct'));
+
+	if (allCorrect) {
+		openModal('congratulationsModal');
+	}
+}
+
+// Opens a modal by its ID.
+function openModal(modalId) {
+	const modal=document.getElementById(modalId);
+
+	if (modal) {
+		modal.style.display='flex';
+		modal.classList.add('show');
+	}
+}
+
+// Closes a modal by its ID.
+function closeModal(modalId) {
+	const modal=document.getElementById(modalId);
+
+	if (modal) {
+		modal.style.display='none';
+		modal.classList.remove('show');
+	}
+}
+
+// Close modal when clicking outside of the modal content
+window.addEventListener('click', (event)=> {
+		const infoModal=document.getElementById('infoModal');
+		const congratulationsModal=document.getElementById('congratulationsModal');
+
+		if (event.target===infoModal) {
+			closeModal('infoModal');
+		}
+
+		else if (event.target===congratulationsModal) {
+			closeModal('congratulationsModal');
+		}
+	});
+
+// Function to toggle dark mode
+function toggleDarkMode() {
+	document.body.classList.toggle('dark-mode');
+
+	const isDarkModeEnabled=document.body.classList.contains('dark-mode');
+	localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
+}
+
+// Initialize the dark mode toggle with stored preference
+function initializeModalsAndDarkMode() {
+	const darkModeToggle=document.getElementById('darkModeSwitch');
+	const translationToggle=document.getElementById('translationSwitch');
+
+	/* ---- Dark mode ---- */
+	const isDarkModeEnabled=localStorage.getItem('darkMode')==='enabled';
+	document.body.classList.toggle('dark-mode', isDarkModeEnabled);
+	darkModeToggle.checked=isDarkModeEnabled;
+	darkModeToggle.addEventListener('change', toggleDarkMode);
+
+	/* ---- Translation mode ---- */
+	const isTranslationEnabled=localStorage.getItem('translationMode')==='enabled';
+	document.body.classList.toggle('show-translation', isTranslationEnabled);
+	translationToggle.checked=isTranslationEnabled;
+	translationToggle.addEventListener('change', toggleTranslation);
+}
+
+// Function to update the maximum score in the HTML
+function updateMaxScore() {
+    const totalQuestions = document.querySelectorAll('#sentences select').length;
+    document.querySelectorAll('.score-max').forEach(el => el.textContent = totalQuestions);
+}
+
+// Resets the quiz and score, then re-renders sentences.
+function startOver() {
+	renderSentences();
+	resetScore();
+	closeModal('congratulationsModal');
+}
+
+// Resets the score to zero.
+function resetScore() {
+	score=0;
+
+	document.querySelectorAll('.score-display').forEach((element)=> {
+			element.textContent=score;
+		});
+
+	// Återställ alla meningars tillstånd
+	document.querySelectorAll('.sentence').forEach(sentence=> {
+			sentence.classList.remove('correct', 'incorrect');
+		});
+}
+
+function createSelect(correct, alt1, alt2, sv, en) {
+    const options = [correct, alt1, alt2].sort(() => Math.random() - 0.5);
+    return `
+    <span class="select-wrapper">
+        <span class="select-tooltip">${sv} | <em>${en}</em></span>
+        <select data-correct="${correct}" onchange="evaluateAnswer(this)">
+            <option value="">Select</option>
+            ${options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+        </select>
+    </span>`;
+}
+
+// Initialize the application once the DOM is fully loaded.
+document.addEventListener('DOMContentLoaded', ()=> {
+		const isMobile=window.matchMedia("(max-width: 700px)").matches;
+
+		if (isMobile) return;
+
+		renderSentences();
+		updateMaxScore(); // Sätt maxpoäng direkt
+		resetScore(); // Sätt startpoäng
+		initializeModalsAndDarkMode(); // Init toggles sist
+	});
+</script>
+
+</body>
+
+</html>
