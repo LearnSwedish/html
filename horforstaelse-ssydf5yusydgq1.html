@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hörförståelse 2</title>
+
+<style>
+:root {
+    --bg:#f0f2f5;
+    --card:#fff;
+    --text:#333;
+    --accent:#1a73e8;
+    --border:#ddd;
+    --correct:#2e7d32;
+    --wrong:#c62828;
+}
+
+body.dark {
+    --bg:#121212;
+    --card:#1e1e1e;
+    --text:#eee;
+    --accent:#4dabf7;
+    --border:#333;
+}
+
+body {
+    font-family:system-ui;
+    background:var(--bg);
+    color:var(--text);
+    max-width:720px;
+    margin:40px auto;
+    padding:20px;
+
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    background:var(--card);
+    padding:30px;
+    border-radius:10px;
+    border:1px solid var(--border);
+
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.topbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.toggle {
+    cursor: pointer;
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    border-radius: 6px;
+
+    width: 110px;              /* fast bredd */
+    text-align: center;        /* centrerad text */
+    display: inline-block;
+
+    transition: all 0.2s ease;
+}
+
+.toggle:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.toggle, .option, button {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.option {
+    display:block;
+    padding:10px;
+    margin:6px 0;
+    border:1px solid var(--border);
+    border-radius:6px;
+}
+
+button {
+    width:100%;
+    margin-top:15px;
+    padding:12px;
+    background:var(--accent);
+    color:white;
+    border:none;
+    border-radius:6px;
+}
+
+.result-item {
+    margin-bottom:20px;
+    padding:10px;
+    border-left:4px solid var(--border);
+}
+
+.correct { border-color:var(--correct); }
+.wrong { border-color:var(--wrong); }
+
+.small { font-size:14px; opacity:0.8; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="topbar">
+<h2>Hörförståelse 2</h2>
+<div class="toggle" onclick="toggleDark()">Dark mode</div>
+</div>
+
+<p id="status"><strong>Frågorna visas först när du har lyssnat på hela ljudklippet.</strong></p>
+
+<audio id="audio" controls style="width:100%">
+<source src="https://learnswedish.github.io/html/aldre-svenskar-lyckliga.mp3">
+</audio>
+
+<div id="quiz"></div>
+<div id="result" style="display:none"></div>
+
+</div>
+
+<script>
+const questions = [
+{
+q:"Vad visar den nya studien?",
+correct:["a","b"],
+answers:[
+["a","Studien visar att äldre personer i Sverige är bland de lyckligaste i världen."],
+["b","Studien visar att yngre svenskar mår sämre än äldre."],
+["c","Studien visar att alla svenskar är lika lyckliga oavsett ålder."],
+["d","Studien visar att äldre personer mår sämre än unga i Sverige."]
+]
+},
+{
+q:"Vad säger Lena och Björn om sin uppväxt?",
+correct:["a","b"],
+answers:[
+["a","De säger att de hade en bra uppväxt med mycket utveckling i samhället."],
+["b","De säger att det fanns gott om jobb när de växte upp."],
+["c","De säger att det var svårt att få arbete när de var unga."],
+["d","De säger att samhället stod stilla under deras uppväxt."]
+]
+},
+{
+q:"Vad sägs om utbildning under deras uppväxt?",
+correct:["a","b"],
+answers:[
+["a","De säger att alla kunde studera om de ville."],
+["b","De säger att människor hade råd att gå i skolan."],
+["c","De säger att endast rika personer kunde utbilda sig."],
+["d","De säger att utbildning var ovanlig och svårtillgänglig."]
+]
+},
+{
+q:"Vad handlar forskningen om?",
+correct:["a","b"],
+answers:[
+["a","Forskningen handlar om människor i omkring 20 länder."],
+["b","Den svenska delen av studien är gjord vid Handelshögskolan i Stockholm."],
+["c","Forskningen handlar bara om människor i Sverige."],
+["d","Studien är gjord av ett privat företag utan koppling till forskning."]
+]
+},
+{
+q:"Vad visar studien om olika åldersgrupper?",
+correct:["a","b"],
+answers:[
+["a","Studien visar att personer över 70 år mår bättre än yngre personer."],
+["b","Studien visar att personer mellan 18 och 24 år mår sämre."],
+["c","Studien visar att unga och äldre mår exakt lika bra."],
+["d","Studien visar att endast medelålders personer mår bra."]
+]
+},
+{
+q:"Vad säger Nora Hansson Bittár?",
+correct:["a","b"],
+answers:[
+["a","Hon säger att unga mår sämre än äldre svenskar."],
+["b","Hon säger att människor blir nöjdare med livet när de blir äldre."],
+["c","Hon säger att unga mår bättre än äldre."],
+["d","Hon säger att livstillfredsställelse minskar med åldern."]
+]
+},
+{
+q:"Vilken förklaring antyds i klippet?",
+correct:["a"],
+answers:[
+["a","Äldre kan vara mer nöjda om de har upplevt utveckling och stabilitet."],
+["b","Äldre är lyckligare eftersom de arbetar mer än unga."],
+["c","Yngre mår sämre eftersom de aldrig har gått i skolan."],
+["d","Lycka beror enbart på vädret i Sverige."]
+]
+}
+];
+
+let index = 0;
+let userAnswers = [];
+
+function shuffle(arr){
+    return arr.sort(()=>Math.random()-0.5);
+}
+
+function render(){
+    const q = questions[index];
+    const shuffled = shuffle([...q.answers]);
+
+    document.getElementById("quiz").innerHTML = `
+        <p><strong>${index+1}/${questions.length}</strong> ${q.q}</p>
+        ${shuffled.map(a=>`
+            <label class="option">
+                <input type="checkbox" value="${a[0]}">
+                ${a[1]}
+            </label>
+        `).join("")}
+        <button id="next" disabled>Fortsätt</button>
+    `;
+
+    const inputs = document.querySelectorAll("input");
+    inputs.forEach(i=>{
+        i.addEventListener("change",()=>{
+            document.getElementById("next").disabled = false;
+        });
+    });
+
+    document.getElementById("next").onclick = ()=>{
+        const selected = [...inputs]
+            .filter(i=>i.checked)
+            .map(i=>i.value);
+
+        userAnswers.push(selected);
+        index++;
+
+        if(index < questions.length){
+            render();
+        } else {
+            showResult();
+        }
+    };
+}
+
+function arraysEqual(a,b){
+    return a.length===b.length && a.every(v=>b.includes(v));
+}
+
+function scoreQuestion(user, correct){
+    let points = 0;
+
+    user.forEach(u=>{
+        if(correct.includes(u)) {
+            points += 1;     // rätt val
+        } else {
+            points -= 1;     // fel val
+        }
+    });
+
+    return Math.max(points, 0); // aldrig negativt
+}
+
+function showResult(){
+    document.getElementById("quiz").style.display="none";
+    const result = document.getElementById("result");
+
+    let html = "<h3>Resultat</h3>";
+    let totalPoints = 0;
+    let maxPoints = 0;
+
+    questions.forEach((q,i)=>{
+        const correct = q.correct;
+        const user = userAnswers[i];
+
+        const points = scoreQuestion(user, correct);
+        const max = correct.length;
+
+        totalPoints += points;
+        maxPoints += max;
+
+        const isFullyCorrect = points === max;
+
+        html += `
+        <div class="result-item ${isFullyCorrect?"correct":"wrong"}">
+            <strong>Fråga ${i+1}:</strong> ${points}/${max} poäng
+            ${!isFullyCorrect ? `
+                <div class="small">
+                Rätt svar: ${q.answers
+                    .filter(a=>correct.includes(a[0]))
+                    .map(a=>a[1]).join(" / ")}
+                </div>` : ""}
+        </div>`;
+    });
+
+    html = `<h2>${totalPoints}/${maxPoints} poäng</h2>` + html;
+
+    result.innerHTML = html;
+    result.style.display="block";
+}
+
+document.getElementById("audio").onended = ()=>{
+    document.getElementById("status").innerHTML = "Du kan nu börja svara på frågorna. <strong>NOTERA! Vissa frågor har mer än ett rätt svar.</strong>";
+    render();
+};
+
+function toggleDark(){
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("dark", isDark);
+
+    document.querySelector(".toggle").innerText = isDark ? "Ljust tema" : "Mörkt tema";
+}
+
+const toggleBtn = document.querySelector(".toggle");
+
+if(localStorage.getItem("dark")==="true"){
+    document.body.classList.add("dark");
+    toggleBtn.innerText = "Ljust tema";
+} else {
+    toggleBtn.innerText = "Mörkt tema";
+}
+
+if(localStorage.getItem("dark")==="true"){
+    document.body.classList.add("dark");
+}
+</script>
+
+</body>
+</html>
