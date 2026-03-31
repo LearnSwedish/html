@@ -336,6 +336,20 @@ body.dark-mode .keyboard-hint {
 }
 .read-btn:hover { transform: scale(1.05); background: var(--gold2); }
 
+.card {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.card.fade-out {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.card.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Modal Styles */
 .modal-overlay {
     position: fixed;
@@ -387,6 +401,37 @@ body.dark-mode .modal-body sup {
     color: var(--gold2);
 }
 
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--cream);
+  background: var(--paper);
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.tab-btn.active {
+  background: var(--gold);
+  color: white;
+  border-color: var(--gold);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
 .close-modal {
     position: absolute;
     top: 15px;
@@ -413,8 +458,12 @@ body.dark-mode .modal-overlay { background: rgba(0,0,0,0.7); }
 <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
   <i class="fas fa-moon"></i>
 </button>
-<button class="read-btn" onclick="toggleModal()" id="readBtn" title="Read about Swedish stress">
-  Read this
+<button class="read-btn" onclick="toggleInfoModal()" id="infoBtn" style="top: 70px;" title="About this exercise">
+  Info
+</button>
+
+<button class="read-btn" onclick="toggleModal()" id="readBtn" style="top: 120px;" title="Read about Swedish stress">
+  Basics
 </button>
 
 <div class="container">
@@ -452,210 +501,253 @@ body.dark-mode .modal-overlay { background: rgba(0,0,0,0.7); }
   </div>
 </div>
 
+<div class="modal-overlay" id="infoModalOverlay" onclick="closeInfoModal(event)">
+  <div class="modal-content">
+    <button class="close-modal" onclick="toggleInfoModal()">&times;</button>
+    <div class="modal-body">
+      <h2>About this exercise</h2>
+
+      <p>This exercise trains you to identify word stress, with a focus on how stress changes within related words.</p>
+
+      <p>You are shown a word divided into syllables. Your task is to click the syllable(s) that carry the main (and sometimes secondary) stress, then check your answer. After each attempt, the correct stress pattern is revealed, and you can hear the pronunciation.</p>
+<br/>
+	  <p><strong>64 groups</strong></p>
+      <p>The words are organised into 64 groups, each containing two or more related forms (e.g. a base word and its derivatives). This lets you observe how stress shifts, disappears, or reappears as suffixes are added, removed, or replaced.</p>
+<br/>
+<p><strong>Need a quick run-through?</strong></p>
+<p>For a theoretical warm-up where you learn all the magic of Swedish stress patterns, see the "Basics" button.</p>	  
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal-content">
     <button class="close-modal" onclick="toggleModal()">&times;</button>
 <div class="modal-body">
   <h2>Some basics about Swedish word stress</h2>
-  
-  <h3>1. Suffixes that attract stress</h3>
-  <p><strong>Primary stress (Main stress):</strong></p>
-  <ul>
-    <li>The suffix <strong>"-ik"</strong> almost always carries the primary stress.<br><em>Examples: politik, teknik, musik, kritik, praktik, metodik.</em></li>
-    <li>The suffix <strong>"-i"</strong> (derived from Latin and Greek) almost always carries the primary stress.<br><em>Examples: energi, ekonomi, akademi, magi, sympati, demokrati, strategi, filosofi.</em></li>
-    <li>The suffixes <strong>"-tion"</strong> and <strong>"-sion"</strong> (from Latin) carry the primary stress.<br><em>Examples: funktion, situation, tradition, vegetation.</em></li>
-    <li>The suffix <strong>"-ell"</strong> carries the primary stress, even in forms derived from "-tion / -sion".<br><em>Examples: professionell, funktionell, traditionell, speciell, kulturell.</em></li>
-  </ul>
 
-  <p><strong>Secondary stress:</strong></p>
-  <p>Final suffixes such as <strong>"-bar", "-het", "-sam", "-skap", "-full", "-lös",</strong> and <strong>"-vis"</strong> almost always carry secondary stress. Importantly, these suffixes tend to "override" previous secondary stresses in the word (see section 3).</p>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(0)">1</button>
+    <button class="tab-btn" onclick="switchTab(1)">2</button>
+    <button class="tab-btn" onclick="switchTab(2)">3</button>
+  </div>
 
-  <h3>2. The "Step-back Rule"</h3>
-  <p>When a word takes an ending such as <strong>"-er"</strong> or <strong>"-isk"</strong> — for example, <em>politik</em> becoming <em>politiker</em>, or <em>ekonomi</em> becoming <em>ekonomisk</em> — the stress often shifts one syllable to the left.</p>
-  <p class="example-box">po-lit-<strong>IK</strong> » po-<strong>LI</strong>-tik-<u>er</u><br>e-ko-nom-<strong>I</strong> » e-ko-<strong>NOM</strong>-<u>isk</u></p>
+  <!-- TAB 1 -->
+  <div class="tab-content active">
+    <h3>1. Stress-attracting word endings and suffixes</h3>
+    <p><strong>Primary stress (Main stress):</strong></p>
+    <ul>
+      <li>Most words ending in <strong>"-i"</strong> (often of Latin or Greek origin) carry the primary stress on the final syllable.<br><em>Examples: energi, ekonomi, akademi</em></li>
+      <li>All words ending in <strong>"-ik"</strong> almost always carries the primary stress.<br><em>Examples: politik, teknik, musik, kritik</em></li>
+      <li>All words ending in <strong>"-tion / -sion"</strong> (from Latin) carry the primary stress.<br><em>Examples: funktion, tradition, profession</em></li>
+      <li>However, the suffix <strong>"-(n)ell"</strong> takes the primary stress and overrides the stress pattern of "-tion / -sion".<br><em>Examples: funktionell, traditionell, professionell.</em></li>
+    </ul>
 
-  <h3>3. Unstable Secondary Stress</h3>
-  <p>Many Swedish words are polysyllabic and feature a primary stress (marked <sup>1</sup>... below) followed by one or more secondary stresses (marked <sup>2</sup>... below):</p>
-  <p class="example-box">ar-be-te » <sup>1</sup>ar-<sup>2</sup>be-te<br>an-stän-dig » <sup>1</sup>an-<sup>2</sup>stän-dig<br>fort-sätt-ning » <sup>1</sup>fort-<sup>2</sup>sätt-ning</p>
+    <p><strong>Secondary stress:</strong></p>
+    <p>Final suffixes such as <strong>"-bar", "-het", "-sam", "-skap", "-full", "-lös",</strong> and <strong>"-vis"</strong> almost always carry secondary stress. Importantly, these suffixes tend to "override" previous secondary stresses in the word (see section 3).</p>
+  </div>
 
-  <p><strong>The Displacement Rule:</strong></p>
-  <p>If you add a "heavy" suffix (like -lös, -het, -skap) to these words, the new suffix takes over the secondary stress, causing the previous one to disappear.</p>
-  <p class="example-box">Example: <sup>1</sup>an-<sup>2</sup>stän-dig » <sup>1</sup>an-stän-dig-<sup>2</sup>het.</p>
-  
-  <p>A common mistake for learners is to keep the original secondary stress while also stressing the new suffix. For instance, while it is correct ✅ to say <sup>1</sup>fort-<sup>2</sup>sätt-ning, it is incorrect ❌ to say <sup>1</sup>fort-<sup>2</sup>sätt-nings-<sup>2</sup>vis. The correct pronunciation is <strong><sup>1</sup>fort-sätt-nings-<sup>2</sup>vis</strong>.</p>
-  
-  <p>Note that the secondary stress moves further down the line each time a new heavy suffix is added:</p>
-  <p class="example-box">
-    mått-lig » <sup>1</sup>mått-<sup>2</sup>lig<br>
-    mått-lig-het » <sup>1</sup>mått-lig-<sup>2</sup>het<br>
-    mått-lig-hets-full » <sup>1</sup>mått-lig-hets-<sup>2</sup>full
-  </p>
+  <!-- TAB 2 -->
+  <div class="tab-content">
+    <h3>2. The "Step-back Rule"</h3>
+    <p><strong>Some suffixes never carry stress</strong>, such as "-er", "-isk", and "-(l)ig". If one of these is added directly after the syllable that carries the main stress, the stress shifts one syllable to the left. If the suffix instead replaces that stressed position, the stress likewise shifts one syllable to the left.</p>
+
+    <p class="example-box">
+      po-li-TIK → add the suffix "-er" → po-LI-tik-er<br>
+      po-li-TIK → replace it with "-(t)isk" → po-LI-tisk
+    </p>
+  </div>
+
+  <!-- TAB 3 -->
+  <div class="tab-content">
+    <h3>3. Unstable Secondary Stress</h3>
+    <p>Many Swedish words are polysyllabic and feature a primary stress (<sup>1</sup>) followed by a secondary stress (<sup>2</sup>):</p>
+    <p class="example-box">ar-be-te » <sup>1</sup>ar-<sup>2</sup>be-te<br>an-stän-dig » <sup>1</sup>an-<sup>2</sup>stän-dig</p>
+
+    <p>If you add a "heavy" suffix (like -bar, -lös, -het) to these words (see section 1), the added suffix takes over the secondary stress, causing the previous one to disappear.</p>
+    <p class="example-box">Example: <sup>1</sup>an-<sup>2</sup>stän-dig » <sup>1</sup>an-stän-dig-<sup>2</sup>het.</p>
+    
+    <p>A common mistake for learners is to keep the original secondary stress while also stressing the new suffix. For instance, while it is correct ✅ to say <sup>1</sup>fort-<sup>2</sup>sätt-ning, it is incorrect ❌ to say <sup>1</sup>fort-<sup>2</sup>sätt-nings-<sup>2</sup>vis. The correct pronunciation is <strong><sup>1</sup>fort-sätt-nings-<sup>2</sup>vis</strong>.</p>
+    
+    <p>Note that the secondary stress moves further down the line each time a new heavy suffix is added:</p>
+    <p class="example-box">
+      mått-lig → <sup>1</sup>mått-<sup>2</sup>lig<br>
+      mått-lig-het → <sup>1</sup>mått-lig-<sup>2</sup>het<br>
+      mått-lig-hets-full → <sup>1</sup>mått-lig-hets-<sup>2</sup>full
+    </p>
+  </div>
 </div>
   </div>
 </div>
 
 <script>
 const words = [
-  { syllables: ["en", "erg", "i"], polysyllabic: false, primary: [2], tr: "n. energy", audio: "https://lexin.nada.kth.se/sound/energi.mp3" },
-  { syllables: ["en", "erg", "isk"], polysyllabic: false, primary: [1], tr: "a. energetic", audio: "https://lexin.nada.kth.se/sound/energisk.mp3" },
-  { syllables: ["po", "lit", "ik"], polysyllabic: false, primary: [2], tr: "n. politics", audio: "https://lexin.nada.kth.se/sound/politik.mp3" },
-  { syllables: ["po", "lit", "ik", "er"], polysyllabic: false, primary: [1], tr: "n. politician", audio: "https://lexin.nada.kth.se/sound/politiker.mp3" },
-  { syllables: ["tek", "nik"], polysyllabic: false, primary: [1], tr: "n. technique", audio: "https://lexin.nada.kth.se/sound/teknik.mp3" },
-  { syllables: ["tek", "nik", "er"], polysyllabic: false, primary: [0], tr: "n. technician", audio: "https://lexin.nada.kth.se/sound/tekniker.mp3" },
-  { syllables: ["re", "tor", "ik"], polysyllabic: false, primary: [2], tr: "n. rhetoric", audio: "https://lexin.nada.kth.se/sound/v2/297681_1.mp3" },
-  { syllables: ["re", "tor", "ik", "er"], polysyllabic: false, primary: [1], tr: "n. rhetorician", audio: "https://isolve-so-service.appspot.com/pronounce?id=297683_1.mp3" },
-  { syllables: ["e", "ko", "nom", "i"], polysyllabic: false, primary: [3], tr: "n. economy", audio: "https://lexin.nada.kth.se/sound/v2/141518_1.mp3" },
-  { syllables: ["e", "ko", "nom", "isk"], polysyllabic: false, primary: [2], tr: "a. economic", audio: "https://lexin.nada.kth.se/sound/v2/141564_1.mp3" },
-  { syllables: ["a", "ka", "dem", "i"], polysyllabic: false, primary: [3], tr: "n. academy", audio: "https://lexin.nada.kth.se/sound/v2/101415_1.mp3" },
-  { syllables: ["a", "ka", "dem", "isk"], polysyllabic: false, primary: [2], tr: "a. academic", audio: "https://lexin.nada.kth.se/sound/v2/101436_1.mp3" },
-  { syllables: ["mus", "ik"], polysyllabic: false, primary: [1], tr: "n. music", audio: "https://lexin.nada.kth.se/sound/v2/249960_1.mp3" },
-  { syllables: ["mu", "sik", "er"], polysyllabic: false, primary: [0], tr: "n. musician", audio: "https://lexin.nada.kth.se/sound/v2/250013_1.mp3" },
-  { syllables: ["krit", "ik"], polysyllabic: false, primary: [1], tr: "n. criticism", audio: "https://lexin.nada.kth.se/sound/v2/218418_1.mp3" },
-  { syllables: ["krit", "isk"], polysyllabic: false, primary: [0], tr: "a. critical", audio: "https://lexin.nada.kth.se/sound/v2/218445_1.mp3" },
-  { syllables: ["krit", "ti", "cism"], polysyllabic: false, primary: [2], tr: "n. criticism", audio: "https://isolve-so-service.appspot.com/pronounce?id=218411_1.mp3" },
-  { syllables: ["an", "a", "lys"], polysyllabic: false, primary: [2], tr: "n. analysis", audio: "https://lexin.nada.kth.se/sound/v2/103611_1.mp3" },
-  { syllables: ["an", "a", "lys", "er", "a"], polysyllabic: false, primary: [3], tr: "v. analyse", audio: "https://isolve-so-service.appspot.com/pronounce?id=103615_1.mp3" },
-  { syllables: ["e", "stet", "ik"], polysyllabic: false, primary: [2], tr: "n. aesthetics", audio: "https://isolve-so-service.appspot.com/pronounce?id=144442_1.mp3" },
-  { syllables: ["e", "stet", "ik", "er"], polysyllabic: false, primary: [1], tr: "n. aesthetician", audio: "https://isolve-so-service.appspot.com/pronounce?id=144444_1.mp3" },
-  { syllables: ["dra", "mat", "ik"], polysyllabic: false, primary: [2], tr: "n. drama", audio: "https://lexin.nada.kth.se/sound/v2/137617_1.mp3" },
-  { syllables: ["dra", "mat", "isk"], polysyllabic: false, primary: [1], tr: "a. dramatic", audio: "https://lexin.nada.kth.se/sound/v2/137627_1.mp3" },
-  { syllables: ["pro", "blem"], polysyllabic: false, primary: [1], tr: "n. problem", audio: "https://lexin.nada.kth.se/sound/v2/286447_1.mp3" },
-  { syllables: ["pro", "blem", "at", "isk"], polysyllabic: false, primary: [2], tr: "a. problematic", audio: "https://lexin.nada.kth.se/sound/v2/286456_1.mp3" },
-  { syllables: ["mag", "i"], polysyllabic: false, primary: [1], tr: "n. magic", audio: "https://lexin.nada.kth.se/sound/v2/237456_1.mp3" },
-  { syllables: ["mag", "isk"], polysyllabic: false, primary: [0], tr: "a. magical", audio: "https://lexin.nada.kth.se/sound/v2/237466_1.mp3" },
-  { syllables: ["sym", "pat", "i"], polysyllabic: false, primary: [2], tr: "n. sympathy", audio: "https://lexin.nada.kth.se/sound/v2/351921_1.mp3" },
-  { syllables: ["sym", "pat", "isk"], polysyllabic: false, primary: [1], tr: "a. sympathetic", audio: "https://lexin.nada.kth.se/sound/v2/351931_1.mp3" },
-  { syllables: ["de", "mo", "krat", "i"], polysyllabic: false, primary: [3], tr: "n. democracy", audio: "https://lexin.nada.kth.se/sound/v2/133787_1.mp3" },
-  { syllables: ["de", "mo", "krat", "isk"], polysyllabic: false, primary: [2], tr: "a. democratic", audio: "https://lexin.nada.kth.se/sound/v2/133798_1.mp3" },
-  { syllables: ["prakt", "ik"], polysyllabic: false, primary: [1], tr: "n. practice", audio: "https://lexin.nada.kth.se/sound/v2/284494_1.mp3" },
-  { syllables: ["prakt", "ik", "er"], polysyllabic: false, primary: [0], tr: "n. practitioner", audio: "https://isolve-so-service.appspot.com/pronounce?id=284511_1.mp3" },
-  { syllables: ["pro", "fess", "ion"], polysyllabic: false, primary: [2], tr: "n. profession", audio: "https://isolve-so-service.appspot.com/pronounce?id=286824_1.mp3" },
-  { syllables: ["pro", "fess", "ion", "ell"], polysyllabic: false, primary: [3], tr: "a. professional", audio: "https://lexin.nada.kth.se/sound/v2/286834_1.mp3" },
-  { syllables: ["funk", "tion"], polysyllabic: false, primary: [1], tr: "n. function", audio: "https://lexin.nada.kth.se/sound/v2/158094_1.mp3" },
-  { syllables: ["funk", "tion", "ell"], polysyllabic: false, primary: [2], tr: "a. functional", audio: "https://lexin.nada.kth.se/sound/v2/158104_1.mp3" },
-  { syllables: ["ar", "bet", "e"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. work", audio: "https://lexin.nada.kth.se/sound/v2/106480_1.mp3" },
-  { syllables: ["ar", "bet", "sam"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. hard-working", audio: "https://lexin.nada.kth.se/sound/v2/106489_1.mp3" },
-  { syllables: ["alls", "mäkt", "ig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. almighty", audio: "https://lexin.nada.kth.se/sound/v2/102570_1.mp3" },
-  { syllables: ["alls", "mäkt", "ig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. omnipotence", audio: "https://learnswedish.github.io/html/allsmaktighet.mp3" },
-  { syllables: ["all", "var", "lig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. serious", audio: "https://lexin.nada.kth.se/sound/v2/102694_1.mp3" },
-  { syllables: ["all", "var", "lig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. seriousness", audio: "https://learnswedish.github.io/html/allvarlighet.mp3" },
-  { syllables: ["a", "na", "lyt", "isk"], polysyllabic: false, primary: [2], tr: "a. analytical", audio: "https://lexin.nada.kth.se/sound/v2/103632_1.mp3" },
-  { syllables: ["an", "grip", "a", "re"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. attacker", audio: "https://isolve-so-service.appspot.com/pronounce?id=104356_1.mp3" },
-  { syllables: ["an", "grip", "bar"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. assailable", audio: "https://learnswedish.github.io/html/angripbar.mp3" },
-  { syllables: ["an", "strängd"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. strained", audio: "https://isolve-so-service.appspot.com/pronounce?id=105367_1.mp3" },
-  { syllables: ["an", "strängd", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. tension", audio: "https://learnswedish.github.io/html/anstrangdhet.mp3" },
-  { syllables: ["an", "ständ", "ig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. decent", audio: "https://lexin.nada.kth.se/sound/v2/105406_1.mp3" },
-  { syllables: ["an", "ständ", "ig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. decency", audio: "https://lexin.nada.kth.se/sound/v2/105408_1.mp3" },
-  { syllables: ["ve", "ten", "skap"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. science", audio: "https://lexin.nada.kth.se/sound/v2/389934_1.mp3" },
-  { syllables: ["ve", "ten", "skap", "lig", "het"], polysyllabic: true, primary: [0], secondary: [4], tr: "n. scientificity", audio: "https://learnswedish.github.io/html/vetenskaplighet.mp3" },
-  { syllables: ["me", "tod"], polysyllabic: false, primary: [1], tr: "n. method", audio: "https://lexin.nada.kth.se/sound/v2/243754_1.mp3" },
-  { syllables: ["me", "tod", "ik"], polysyllabic: false, primary: [2], tr: "n. methodology", audio: "https://lexin.nada.kth.se/sound/v2/243760_1.mp3" },
-  { syllables: ["me", "lod", "i"], polysyllabic: false, primary: [2], tr: "n. melody", audio: "https://lexin.nada.kth.se/sound/v2/242953_1.mp3" },
-  { syllables: ["me", "lod", "isk"], polysyllabic: false, primary: [1], tr: "a. melodic", audio: "https://lexin.nada.kth.se/sound/v2/242969_1.mp3" },
-  { syllables: ["stra", "teg", "i"], polysyllabic: false, primary: [2], tr: "n. strategy", audio: "https://lexin.nada.kth.se/sound/v2/344483_2.mp3" },
-  { syllables: ["stra", "teg", "isk"], polysyllabic: false, primary: [1], tr: "a. strategic", audio: "https://lexin.nada.kth.se/sound/v2/344485_1.mp3" },
-  { syllables: ["fa", "milj"], polysyllabic: false, primary: [1], tr: "n. family", audio: "https://lexin.nada.kth.se/sound/v2/146529_1.mp3" },
-  { syllables: ["fa", "mil", "jär"], polysyllabic: false, primary: [2], tr: "a. familiar", audio: "https://lexin.nada.kth.se/sound/v2/146624_1.mp3" },
-  { syllables: ["in", "tress", "e"], polysyllabic: false, primary: [1], tr: "n. interest", audio: "https://lexin.nada.kth.se/sound/v2/196341_1.mp3" },
-  { syllables: ["in", "tress", "se", "rad"], polysyllabic: false, primary: [2], tr: "a. interested", audio: "https://lexin.nada.kth.se/sound/v2/196383_1.mp3" },
-  { syllables: ["ju", "li"], polysyllabic: false, primary: [0], tr: "n. July", audio: "https://lexin.nada.kth.se/sound/v2/199473_1.mp3" },
-  { syllables: ["ka", "tolsk"], polysyllabic: false, primary: [1], tr: "a. Catholic", audio: "https://lexin.nada.kth.se/sound/v2/205549_2.mp3" },
-  { syllables: ["kli", "mat"], polysyllabic: false, primary: [1], tr: "n. climate", audio: "https://lexin.nada.kth.se/sound/v2/207644_1.mp3" },
-  { syllables: ["kul", "tur"], polysyllabic: false, primary: [1], tr: "n. culture", audio: "https://lexin.nada.kth.se/sound/v2/220267_1.mp3" },
-  { syllables: ["kul", "tur", "ell"], polysyllabic: false, primary: [2], tr: "a. cultural", audio: "https://lexin.nada.kth.se/sound/v2/220305_1.mp3" },
-  { syllables: ["mil", "jon"], polysyllabic: false, primary: [1], tr: "n. million", audio: "https://lexin.nada.kth.se/sound/v2/244453_1.mp3" },
-  { syllables: ["pas", "sa", "ge", "ra", "re"], polysyllabic: false, primary: [2], tr: "n. passenger", audio: "https://lexin.nada.kth.se/sound/v2/276461_1.mp3" },
-  { syllables: ["por", "tion"], polysyllabic: false, primary: [1], tr: "n. portion", audio: "https://lexin.nada.kth.se/sound/v2/283444_1.mp3" },
-  { syllables: ["pro", "gram"], polysyllabic: false, primary: [1], tr: "n. programme", audio: "https://lexin.nada.kth.se/sound/v2/287015_1.mp3" },
-  { syllables: ["re", "stau", "rang"], polysyllabic: false, primary: [2], tr: "n. restaurant", audio: "https://lexin.nada.kth.se/sound/v2/297370_1.mp3" },
-  { syllables: ["stu", "dent"], polysyllabic: false, primary: [1], tr: "n. student", audio: "https://lexin.nada.kth.se/sound/v2/346161_1.mp3" },
-  { syllables: ["to", "a", "lett"], polysyllabic: false, primary: [2], tr: "n. toilet", audio: "https://lexin.nada.kth.se/sound/v2/364150_1.mp3" },
-  { syllables: ["sit", "u", "a", "tion"], polysyllabic: false, primary: [3], tr: "n. situation", audio: "https://lexin.nada.kth.se/sound/v2/314707_1.mp3" },
-  { syllables: ["tra", "di", "tion"], polysyllabic: false, primary: [2], tr: "n. tradition", audio: "https://lexin.nada.kth.se/sound/v2/366049_1.mp3" },
-  { syllables: ["tra", "di", "tion", "ell"], polysyllabic: false, primary: [3], tr: "a. traditional", audio: "https://lexin.nada.kth.se/sound/v2/366059_1.mp3" },
-  { syllables: ["un", "i", "ver", "sit", "et"], polysyllabic: false, primary: [4], tr: "n. university", audio: "https://lexin.nada.kth.se/sound/v2/377061_1.mp3" },
-  { syllables: ["ve", "ge", "ta", "tion"], polysyllabic: false, primary: [3], tr: "n. vegetation", audio: "https://lexin.nada.kth.se/sound/v2/389076_1.mp3" },
-  { syllables: ["cho", "klad"], polysyllabic: false, primary: [1], tr: "n. chocolate", audio: "https://lexin.nada.kth.se/sound/v2/130824_1.mp3" },
-  { syllables: ["de", "mo", "krat"], polysyllabic: false, primary: [2], tr: "n. democrat", audio: "https://lexin.nada.kth.se/sound/v2/133784_1.mp3" },
-  { syllables: ["jour", "na", "list"], polysyllabic: false, primary: [2], tr: "n. journalist", audio: "https://lexin.nada.kth.se/sound/v2/199152_1.mp3" },
-  { syllables: ["litt", "e", "ra", "tur"], polysyllabic: false, primary: [3], tr: "n. literature", audio: "https://lexin.nada.kth.se/sound/v2/230001_1.mp3" },
-  { syllables: ["rel", "i", "gion"], polysyllabic: false, primary: [2], tr: "n. religion", audio: "https://lexin.nada.kth.se/sound/v2/295688_1.mp3" },
-  { syllables: ["ref", "e", "rens"], polysyllabic: false, primary: [2], tr: "n. reference", audio: "https://lexin.nada.kth.se/sound/v2/294292_1.mp3" },
-  { syllables: ["chauff", "ör"], polysyllabic: false, primary: [1], tr: "n. chauffeur", audio: "https://lexin.nada.kth.se/sound/v2/130547_1.mp3" },
-  { syllables: ["jan", "u", "a", "ri"], polysyllabic: false, primary: [2], tr: "n. January", audio: "https://lexin.nada.kth.se/sound/v2/198156_1.mp3" },
-  { syllables: ["feb", "ru", "a", "ri"], polysyllabic: false, primary: [2], tr: "n. February", audio: "https://lexin.nada.kth.se/sound/v2/147631_1.mp3" },
-  { syllables: ["jun", "i"], polysyllabic: false, primary: [0], tr: "n. June", audio: "https://lexin.nada.kth.se/sound/v2/199680_1.mp3" },
-  { syllables: ["au", "gust", "i"], polysyllabic: false, primary: [1], tr: "n. August", audio: "https://lexin.nada.kth.se/sound/v2/108684_1.mp3" },
-  { syllables: ["sy", "stem"], polysyllabic: false, primary: [1], tr: "n. system", audio: "https://lexin.nada.kth.se/sound/v2/352651_1.mp3" },
-  { syllables: ["tel", "e", "fon"], polysyllabic: false, primary: [2], tr: "n. telephone", audio: "https://lexin.nada.kth.se/sound/v2/358246_1.mp3" },
-  { syllables: ["re", "sult", "at"], polysyllabic: false, primary: [2], tr: "n. result", audio: "https://lexin.nada.kth.se/sound/v2/297509_1.mp3" },
-  { syllables: ["spec", "i", "ell"], polysyllabic: false, primary: [2], tr: "a. special", audio: "https://lexin.nada.kth.se/sound/v2/335435_1.mp3" },
-  { syllables: ["kat", "e", "gor", "i"], polysyllabic: false, primary: [3], tr: "n. category", audio: "https://lexin.nada.kth.se/sound/v2/205468_1.mp3" },
-  { syllables: ["kat", "e", "gor", "isk"], polysyllabic: false, primary: [2], tr: "a. categorical", audio: "https://lexin.nada.kth.se/sound/v2/205479_1.mp3" },
-  { syllables: ["fil", "o", "sof", "i"], polysyllabic: false, primary: [3], tr: "n. philosophy", audio: "https://lexin.nada.kth.se/sound/v2/149050_1.mp3" },
-  { syllables: ["fil", "o", "sof", "isk"], polysyllabic: false, primary: [2], tr: "a. philosophical", audio: "https://lexin.nada.kth.se/sound/v2/149054_1.mp3" },
-  { syllables: ["bi", "o", "log", "i"], polysyllabic: false, primary: [3], tr: "n. biology", audio: "https://lexin.nada.kth.se/sound/v2/119490_1.mp3" },
-  { syllables: ["de", "mon", "stra", "tion"], polysyllabic: false, primary: [3], tr: "n. demonstration", audio: "https://lexin.nada.kth.se/sound/v2/133822_1.mp3" },
-  { syllables: ["kun", "skap"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. knowledge",  audio: "https://lexin.nada.kth.se/sound/kunskap.mp3" },
-  { syllables: ["o", "kun", "skap"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. ignorance",  audio: "https://isolve-so-service.appspot.com/pronounce?id=266617_1.mp3" },
-  { syllables: ["an", "svar"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. responsibility",  audio: "https://lexin.nada.kth.se/sound/ansvar.mp3" },
-  { syllables: ["an", "svars", "lös"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. irresponsible",  audio: "https://lexin.nada.kth.se/sound/v2/105460_1.mp3" },
-  { syllables: ["an", "svars", "lös", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. irresponsibility",  audio: "https://learnswedish.github.io/html/ansvarsloshet.mp3" },
-  { syllables: ["all", "män"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. general",  audio: "https://lexin.nada.kth.se/sound/v2/102386_1.mp3" },
-  { syllables: ["all", "män", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. public; generality",  audio: "https://lexin.nada.kth.se/sound/v2/102420_1.mp3" },
-  { syllables: ["fort", "sätt", "ning"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. continuation",  audio: "https://lexin.nada.kth.se/sound/v2/154000_1.mp3" },
-  { syllables: ["fort", "sätt", "nings", "vis"], polysyllabic: true, primary: [0], secondary: [3], tr: "adv. henceforth",  audio: "https://isolve-so-service.appspot.com/pronounce?id=154008_1.mp3" },
-  { syllables: ["för", "akt"], polysyllabic: false, primary: [1], tr: "n. contempt",  audio: "https://lexin.nada.kth.se/sound/v2/160497_1.mp3" },
-  { syllables: ["för", "akt", "full"], polysyllabic: true, primary: [1], secondary: [2], tr: "a. contemptuous",  audio: "https://isolve-so-service.appspot.com/pronounce?id=160501_1.mp3" },
-  { syllables: ["hat", "full"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. hateful",  audio: "https://isolve-so-service.appspot.com/pronounce?id=180080_1.mp3" },
-  { syllables: ["hat", "full", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. hatefulness",  audio: "https://learnswedish.github.io/html/hatfullhet.mp3" },
-  { syllables: ["hopp", "full"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. hopeful",  audio: "https://lexin.nada.kth.se/sound/v2/184020_1.mp3" },
-  { syllables: ["hopp", "full", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. hopefulness",  audio: "https://learnswedish.github.io/html/hoppfullhet.mp3" },
-  { syllables: ["hän", "syns", "full"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. considerate",  audio: "https://lexin.nada.kth.se/sound/v2/188401_1.mp3" },
-  { syllables: ["hän", "syns", "full", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. considerateness",  audio: "https://learnswedish.github.io/html/hansynsfullhet.mp3" },
-  { syllables: ["mått", "lig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. moderate",  audio: "https://lexin.nada.kth.se/sound/v2/251825_1.mp3" },
-  { syllables: ["mått", "lig", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. moderation",  audio: "https://isolve-so-service.appspot.com/pronounce?id=251827_1.mp3" },
-  { syllables: ["mått", "lig", "hets", "full"], polysyllabic: true, primary: [0], secondary: [3], tr: "a. moderate; restrained",  audio: "https://learnswedish.github.io/html/mattlighetsfull.mp3" },
-  { syllables: ["ar", "bets", "lös"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. unemployed",  audio: "https://lexin.nada.kth.se/sound/v2/106683_1.mp3" },
-  { syllables: ["ar", "bets", "lös", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. unemployment",  audio: "https://isolve-so-service.appspot.com/pronounce?id=106685_1.mp3" },
-  { syllables: ["möj", "ligt", "vis"], polysyllabic: true, primary: [0], secondary: [2], tr: "adv. possibly",  audio: "https://lexin.nada.kth.se/sound/v2/253178_1.mp3" },
-  { syllables: ["nöd", "vänd", "ig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. necessary",  audio: "https://lexin.nada.kth.se/sound/v2/263434_1.mp3" },
-  { syllables: ["nöd", "vänd", "ig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. necessity",  audio: "https://lexin.nada.kth.se/sound/v2/263440_1.mp3" },
-  { syllables: ["nöd", "vänd", "igt", "vis"], polysyllabic: true, primary: [0], secondary: [3], tr: "adv. necessarily",  audio: "https://lexin.nada.kth.se/sound/v2/263446_1.mp3" },
-  { syllables: ["o", "lyck", "lig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. unhappy",  audio: "https://lexin.nada.kth.se/sound/v2/267298_1.mp3" },
-  { syllables: ["o", "lyck", "ligt", "vis"], polysyllabic: true, primary: [0], secondary: [3], tr: "adv. unfortunately",  audio: "https://lexin.nada.kth.se/sound/v2/267303_1.mp3" },
-  { syllables: ["o", "nöd", "ig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. unnecessary",  audio: "https://lexin.nada.kth.se/sound/v2/269364_1.mp3" },
-  { syllables: ["o", "nöd", "ig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. unnecessariness",  audio: "https://learnswedish.github.io/html/onodighet.mp3" },
-  { syllables: ["o", "nöd", "igt", "vis"], polysyllabic: true, primary: [0], secondary: [3], tr: "adv. unnecessarily",  audio: "https://isolve-so-service.appspot.com/pronounce?id=269370_1.mp3" },
-  { syllables: ["ork", "es", "lös"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. weak; listless",  audio: "https://lexin.nada.kth.se/sound/v2/271116_1.mp3" },
-  { syllables: ["ork", "es", "lös", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. listlessness",  audio: "https://learnswedish.github.io/html/orkesloshet.mp3" },
-  { syllables: ["prin", "cip", "lös"], polysyllabic: true, primary: [1], secondary: [2], tr: "a. unprincipled",  audio: "https://learnswedish.github.io/html/principlos.mp3" },
-  { syllables: ["prin", "cip", "lös", "het"], polysyllabic: true, primary: [1], secondary: [3], tr: "n. lack of principles",  audio: "https://learnswedish.github.io/html/principloshet.mp3" },
-  { syllables: ["re", "spekt", "lös"], polysyllabic: true, primary: [1], secondary: [2], tr: "a. disrespectful",  audio: "https://lexin.nada.kth.se/sound/v2/297296_1.mp3" },
-  { syllables: ["re", "spekt", "lös", "het"], polysyllabic: true, primary: [1], secondary: [3], tr: "n. disrespect",  audio: "https://learnswedish.github.io/html/respektloshet.mp3" },
-  { syllables: ["sam", "vets", "lös"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. unscrupulous",  audio: "https://isolve-so-service.appspot.com/pronounce?id=308027_1.mp3" },
-  { syllables: ["sam", "vets", "lös", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. unscrupulousness",  audio: "https://learnswedish.github.io/html/samvetsloshet.mp3" },
-  { syllables: ["lång", "sam"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. slow",  audio: "https://lexin.nada.kth.se/sound/v2/234226_1.mp3" },
-  { syllables: ["lång", "sam", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. slowness",  audio: "https://learnswedish.github.io/html/langsamhet.mp3" },
-  { syllables: ["var", "sam"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. cautious",  audio: "https://lexin.nada.kth.se/sound/v2/387580_1.mp3" },
-  { syllables: ["var", "sam", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. cautiousness",  audio: "https://learnswedish.github.io/html/varsamhet.mp3" },
-  { syllables: ["för", "e", "tag", "sam"], polysyllabic: true, primary: [0], secondary: [3], tr: "a. enterprising",  audio: "https://isolve-so-service.appspot.com/pronounce?id=161564_1.mp3" },
-  { syllables: ["för", "e", "tag", "sam", "het"], polysyllabic: true, primary: [0], secondary: [4], tr: "n. enterprise; initiative",  audio: "https://isolve-so-service.appspot.com/pronounce?id=161566_1.mp3" },
-  { syllables: ["an", "pass", "ning"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. adaptation",  audio: "https://lexin.nada.kth.se/sound/v2/105053_1.mp3" },
-  { syllables: ["an", "pass", "nings", "bar"], polysyllabic: true, primary: [0], secondary: [3], tr: "a. adaptable",  audio: "https://isolve-so-service.appspot.com/pronounce?id=892513_1.mp3" },
-  { syllables: ["an", "träff", "bar"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. reachable",  audio: "https://lexin.nada.kth.se/sound/v2/105871_1.mp3" },
-  { syllables: ["an", "tänd", "bar"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. flammable",  audio: "https://learnswedish.github.io/html/antandbar.mp3" },
-  { syllables: ["an", "vänd", "bar"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. useful",  audio: "https://lexin.nada.kth.se/sound/v2/105935_1.mp3" },
-  { syllables: ["red", "bar"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. upright; honest",  audio: "https://lexin.nada.kth.se/sound/v2/294063_1.mp3" },
-  { syllables: ["red", "bar", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. integrity",  audio: "https://learnswedish.github.io/html/redbarhet.mp3" },
-  { syllables: ["ut", "an", "för"], polysyllabic: true, primary: [0], secondary: [2], tr: "adv. outside",  audio: "https://lexin.nada.kth.se/sound/v2/381181_1.mp3" },
-  { syllables: ["ut", "an", "för", "skap"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. exclusion",  audio: "https://lexin.nada.kth.se/sound/v2/815135_1.mp3" },
-  { syllables: ["äkt", "en", "skap"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. marriage",  audio: "https://lexin.nada.kth.se/sound/v2/401709_1.mp3" },
-  { syllables: ["a", "del", "skap"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. nobility",  audio: "https://isolve-so-service.appspot.com/pronounce?id=100625_1.mp3" },
-  { syllables: ["be", "skydd", "a"], polysyllabic: false, primary: [1], tr: "v. protect",  audio: "https://isolve-so-service.appspot.com/pronounce?id=117135_1.mp3" },
-  { syllables: ["be", "skydd", "ar", "skap"], polysyllabic: true, primary: [1], secondary: [3], tr: "n. patronage",  audio: "https://learnswedish.github.io/html/beskyddarskap.mp3" },
-  { syllables: ["brod", "er"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. brother",  audio: "https://lexin.nada.kth.se/sound/v2/125501_1.mp3" },
-  { syllables: ["brod", "er", "skap"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. brotherhood", audio: "https://lexin.nada.kth.se/sound/v2/125543_1.mp3" }
+{ group: 1, syllables: ["a", "ka", "dem", "i"], polysyllabic: false, primary: [3], tr: "n. academy", audio: "https://lexin.nada.kth.se/sound/v2/101415_1.mp3" },
+{ group: 1, syllables: ["a", "ka", "dem", "ik", "er"], polysyllabic: false, primary: [2], tr: "n. academic", audio: "https://isolve-so-service.appspot.com/pronounce?id=101422_1.mp3" },
+{ group: 1, syllables: ["a", "ka", "dem", "isk"], polysyllabic: false, primary: [2], tr: "a. academic", audio: "https://lexin.nada.kth.se/sound/v2/101436_1.mp3" },
+{ group: 2, syllables: ["all", "män"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. general", audio: "https://lexin.nada.kth.se/sound/v2/102386_1.mp3" },
+{ group: 2, syllables: ["all", "män", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. public; generality", audio: "https://lexin.nada.kth.se/sound/v2/102420_1.mp3" },
+{ group: 3, syllables: ["alls", "mäkt", "ig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. almighty", audio: "https://lexin.nada.kth.se/sound/v2/102570_1.mp3" },
+{ group: 3, syllables: ["alls", "mäkt", "ig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. omnipotence", audio: "https://learnswedish.github.io/html/allsmaktighet.mp3" },
+{ group: 4, syllables: ["all", "var", "lig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. serious", audio: "https://lexin.nada.kth.se/sound/v2/102694_1.mp3" },
+{ group: 4, syllables: ["all", "var", "lig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. seriousness", audio: "https://learnswedish.github.io/html/allvarlighet.mp3" },
+{ group: 5, syllables: ["an", "a", "lys"], polysyllabic: false, primary: [2], tr: "n. analysis", audio: "https://lexin.nada.kth.se/sound/v2/103611_1.mp3" },
+{ group: 5, syllables: ["an", "a", "lys", "er", "a"], polysyllabic: false, primary: [3], tr: "v. analyse", audio: "https://isolve-so-service.appspot.com/pronounce?id=103615_1.mp3" },
+{ group: 5, syllables: ["a", "na", "lyt", "isk"], polysyllabic: false, primary: [2], tr: "a. analytical", audio: "https://lexin.nada.kth.se/sound/v2/103632_1.mp3" },
+{ group: 6, syllables: ["an", "grip", "a"], polysyllabic: true, primary: [0], secondary: [1], tr: "v. attack", audio: "https://isolve-so-service.appspot.com/pronounce?id=104352_1.mp3" },
+{ group: 6, syllables: ["an", "grip", "a", "re"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. attacker", audio: "https://isolve-so-service.appspot.com/pronounce?id=104356_1.mp3" },
+{ group: 6, syllables: ["an", "grip", "bar"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. assailable", audio: "https://learnswedish.github.io/html/angripbar.mp3" },
+{ group: 7, syllables: ["an", "pass", "a"], polysyllabic: true, primary: [0], secondary: [1], tr: "v. suit; adapt", audio: "https://isolve-so-service.appspot.com/pronounce?id=105043_1.mp3" },
+{ group: 7, syllables: ["an", "pass", "ning"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. adaptation", audio: "https://lexin.nada.kth.se/sound/v2/105053_1.mp3" },
+{ group: 7, syllables: ["an", "pass", "nings", "bar"], polysyllabic: true, primary: [0], secondary: [3], tr: "a. adaptable", audio: "https://isolve-so-service.appspot.com/pronounce?id=892513_1.mp3" },
+{ group: 8, syllables: ["an", "strängd"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. strained", audio: "https://isolve-so-service.appspot.com/pronounce?id=105367_1.mp3" },
+{ group: 8, syllables: ["an", "strängd", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. tension", audio: "https://learnswedish.github.io/html/anstrangdhet.mp3" },
+{ group: 9, syllables: ["an", "ständ", "ig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. decent", audio: "https://lexin.nada.kth.se/sound/v2/105406_1.mp3" },
+{ group: 9, syllables: ["an", "ständ", "ig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. decency", audio: "https://lexin.nada.kth.se/sound/v2/105408_1.mp3" },
+{ group: 10, syllables: ["an", "svar"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. responsibility", audio: "https://lexin.nada.kth.se/sound/ansvar.mp3" },
+{ group: 10, syllables: ["an", "svars", "lös"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. irresponsible", audio: "https://lexin.nada.kth.se/sound/v2/105460_1.mp3" },
+{ group: 10, syllables: ["an", "svars", "lös", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. irresponsibility", audio: "https://learnswedish.github.io/html/ansvarsloshet.mp3" },
+{ group: 11, syllables: ["an", "träff", "a"], polysyllabic: true, primary: [0], secondary: [1], tr: "v. find; meet with", audio: "https://isolve-so-service.appspot.com/pronounce?id=105869_1.mp3" },
+{ group: 11, syllables: ["an", "träff", "bar"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. reachable", audio: "https://lexin.nada.kth.se/sound/v2/105871_1.mp3" },
+{ group: 12, syllables: ["an", "tänd", "a"], polysyllabic: true, primary: [0], secondary: [1], tr: "v. set fire to", audio: "https://isolve-so-service.appspot.com/pronounce?id=105893_1.mp3" },
+{ group: 12, syllables: ["an", "tänd", "bar"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. flammable", audio: "https://learnswedish.github.io/html/antandbar.mp3" },
+{ group: 13, syllables: ["an", "vänd", "bar"], polysyllabic: true, primary: [0], secondary: [1], tr: "v. use", audio: "https://isolve-so-service.appspot.com/pronounce?id=105931_1.mp3" },
+{ group: 13, syllables: ["an", "vänd", "bar"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. useful", audio: "https://lexin.nada.kth.se/sound/v2/105935_1.mp3" },
+{ group: 14, syllables: ["ar", "bet", "e"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. work", audio: "https://lexin.nada.kth.se/sound/v2/106480_1.mp3" },
+{ group: 14, syllables: ["ar", "bet", "sam"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. hard-working", audio: "https://lexin.nada.kth.se/sound/v2/106489_1.mp3" },
+{ group: 14, syllables: ["ar", "bets", "lös"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. unemployed", audio: "https://lexin.nada.kth.se/sound/v2/106683_1.mp3" },
+{ group: 14, syllables: ["ar", "bets", "lös", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. unemployment", audio: "https://isolve-so-service.appspot.com/pronounce?id=106685_1.mp3" },
+{ group: 15, syllables: ["be", "skydd", "a"], polysyllabic: false, primary: [1], tr: "v. protect", audio: "https://isolve-so-service.appspot.com/pronounce?id=117135_1.mp3" },
+{ group: 15, syllables: ["be", "skydd", "ar", "skap"], polysyllabic: true, primary: [1], secondary: [3], tr: "n. patronage", audio: "https://learnswedish.github.io/html/beskyddarskap.mp3" },
+{ group: 16, syllables: ["bi", "o", "log", "i"], polysyllabic: false, primary: [3], tr: "n. biology", audio: "https://lexin.nada.kth.se/sound/v2/119490_1.mp3" },
+{ group: 16, syllables: ["bi", "o", "log", "isk"], polysyllabic: false, primary: [2], tr: "a. biological", audio: "https://isolve-so-service.appspot.com/pronounce?id=119498_1.mp3" },
+{ group: 17, syllables: ["brod", "er"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. brother", audio: "https://lexin.nada.kth.se/sound/v2/125501_1.mp3" },
+{ group: 17, syllables: ["brod", "er", "skap"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. brotherhood", audio: "https://lexin.nada.kth.se/sound/v2/125543_1.mp3" },
+{ group: 18, syllables: ["de", "mo", "krat"], polysyllabic: false, primary: [2], tr: "n. democrat", audio: "https://lexin.nada.kth.se/sound/v2/133784_1.mp3" },
+{ group: 18, syllables: ["de", "mo", "krat", "i"], polysyllabic: false, primary: [3], tr: "n. democracy", audio: "https://lexin.nada.kth.se/sound/v2/133787_1.mp3" },
+{ group: 18, syllables: ["de", "mo", "krat", "isk"], polysyllabic: false, primary: [2], tr: "a. democratic", audio: "https://lexin.nada.kth.se/sound/v2/133798_1.mp3" },
+{ group: 19, syllables: ["dra", "ma"], polysyllabic: false, primary: [0], tr: "n. drama", audio: "https://isolve-so-service.appspot.com/pronounce?id=137614_1.mp3" },
+{ group: 19, syllables: ["dra", "ma", "tik"], polysyllabic: false, primary: [2], tr: "n. drama", audio: "https://lexin.nada.kth.se/sound/v2/137617_1.mp3" },
+{ group: 19, syllables: ["dra", "ma", "tik", "er"], polysyllabic: false, primary: [1], tr: "n. playwright", audio: "https://isolve-so-service.appspot.com/pronounce?id=137620_1.mp3" },
+{ group: 19, syllables: ["dra", "ma", "tisk"], polysyllabic: false, primary: [1], tr: "a. dramatic", audio: "https://lexin.nada.kth.se/sound/v2/137627_1.mp3" },
+{ group: 20, syllables: ["e", "ko", "nom"], polysyllabic: false, primary: [2], tr: "n. economist", audio: "https://isolve-so-service.appspot.com/pronounce?id=141511_1.mp3" },
+{ group: 20, syllables: ["e", "ko", "nom", "i"], polysyllabic: false, primary: [3], tr: "n. economy", audio: "https://lexin.nada.kth.se/sound/v2/141518_1.mp3" },
+{ group: 20, syllables: ["e", "ko", "nom", "isk"], polysyllabic: false, primary: [2], tr: "a. economic", audio: "https://lexin.nada.kth.se/sound/v2/141564_1.mp3" },
+{ group: 21, syllables: ["en", "er", "gi"], polysyllabic: false, primary: [2], tr: "n. energy", audio: "https://lexin.nada.kth.se/sound/energi.mp3" },
+{ group: 21, syllables: ["en", "er", "gisk"], polysyllabic: false, primary: [1], tr: "a. energetic", audio: "https://lexin.nada.kth.se/sound/energisk.mp3" },
+{ group: 22, syllables: ["e", "stet"], polysyllabic: false, primary: [1], tr: "n. aesthete", audio: "https://isolve-so-service.appspot.com/pronounce?id=144436_1.mp3" },
+{ group: 22, syllables: ["e", "ste", "tik"], polysyllabic: false, primary: [2], tr: "n. aesthetics", audio: "https://isolve-so-service.appspot.com/pronounce?id=144442_1.mp3" },
+{ group: 22, syllables: ["e", "ste", "tik", "er"], polysyllabic: false, primary: [1], tr: "n. aesthetician", audio: "https://isolve-so-service.appspot.com/pronounce?id=144444_1.mp3" },
+{ group: 22, syllables: ["e", "ste", "tisk"], polysyllabic: false, primary: [1], tr: "a. aesthetic[al]", audio: "https://isolve-so-service.appspot.com/pronounce?id=144449_1.mp3" },
+{ group: 23, syllables: ["fi", "lo", "sof"], polysyllabic: false, primary: [2], tr: "n. philosopher", audio: "https://isolve-so-service.appspot.com/pronounce?id=149043_1.mp3" },
+{ group: 23, syllables: ["fi", "lo", "sof", "i"], polysyllabic: false, primary: [3], tr: "n. philosophy", audio: "https://lexin.nada.kth.se/sound/v2/149050_1.mp3" },
+{ group: 23, syllables: ["fi", "lo", "sof", "isk"], polysyllabic: false, primary: [2], tr: "a. philosophical", audio: "https://lexin.nada.kth.se/sound/v2/149054_1.mp3" },
+{ group: 24, syllables: ["fort", "sätt", "ning"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. continuation", audio: "https://lexin.nada.kth.se/sound/v2/154000_1.mp3" },
+{ group: 24, syllables: ["fort", "sätt", "nings", "vis"], polysyllabic: true, primary: [0], secondary: [3], tr: "adv. henceforth", audio: "https://isolve-so-service.appspot.com/pronounce?id=154008_1.mp3" },
+{ group: 25, syllables: ["främ", "ling"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. stranger", audio: "https://isolve-so-service.appspot.com/pronounce?id=157465_1.mp3" },
+{ group: 25, syllables: ["främ", "ling", "skap"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. alien status", audio: "https://isolve-so-service.appspot.com/pronounce?id=157471_1.mp3" },
+{ group: 26, syllables: ["funk", "tion"], polysyllabic: false, primary: [1], tr: "n. function", audio: "https://lexin.nada.kth.se/sound/v2/158094_1.mp3" },
+{ group: 26, syllables: ["funk", "tion", "ell"], polysyllabic: false, primary: [2], tr: "a. functional", audio: "https://lexin.nada.kth.se/sound/v2/158104_1.mp3" },
+{ group: 27, syllables: ["för", "akt"], polysyllabic: false, primary: [1], tr: "n. contempt", audio: "https://lexin.nada.kth.se/sound/v2/160497_1.mp3" },
+{ group: 27, syllables: ["för", "akt", "full"], polysyllabic: true, primary: [1], secondary: [2], tr: "a. contemptuous", audio: "https://isolve-so-service.appspot.com/pronounce?id=160501_1.mp3" },
+{ group: 28, syllables: ["för", "e", "tag"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. company", audio: "https://isolve-so-service.appspot.com/pronounce?id=161551_1.mp3" },
+{ group: 28, syllables: ["för", "e", "tag", "sam"], polysyllabic: true, primary: [0], secondary: [3], tr: "a. enterprising", audio: "https://isolve-so-service.appspot.com/pronounce?id=161564_1.mp3" },
+{ group: 28, syllables: ["för", "e", "tag", "sam", "het"], polysyllabic: true, primary: [0], secondary: [4], tr: "n. enterprise; initiative", audio: "https://isolve-so-service.appspot.com/pronounce?id=161566_1.mp3" },
+{ group: 29, syllables: ["hat", "full"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. hateful", audio: "https://isolve-so-service.appspot.com/pronounce?id=180080_1.mp3" },
+{ group: 29, syllables: ["hat", "full", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. hatefulness", audio: "https://learnswedish.github.io/html/hatfullhet.mp3" },
+{ group: 30, syllables: ["hopp", "full"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. hopeful", audio: "https://lexin.nada.kth.se/sound/v2/184020_1.mp3" },
+{ group: 30, syllables: ["hopp", "full", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. hopefulness", audio: "https://learnswedish.github.io/html/hoppfullhet.mp3" },
+{ group: 31, syllables: ["hän", "syn"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. consideration", audio: "https://isolve-so-service.appspot.com/pronounce?id=188398_1.mp3" },
+{ group: 31, syllables: ["hän", "syns", "full"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. considerate", audio: "https://lexin.nada.kth.se/sound/v2/188401_1.mp3" },
+{ group: 31, syllables: ["hän", "syns", "full", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. considerateness", audio: "https://learnswedish.github.io/html/hansynsfullhet.mp3" },
+{ group: 32, syllables: ["in", "tress", "ant"], polysyllabic: false, primary: [2], tr: "a. interesting", audio: "https://isolve-so-service.appspot.com/pronounce?id=196339_1.mp3" },
+{ group: 32, syllables: ["in", "tress", "e"], polysyllabic: false, primary: [1], tr: "n. interest", audio: "https://lexin.nada.kth.se/sound/v2/196341_1.mp3" },
+{ group: 32, syllables: ["in", "tress", "se", "rad"], polysyllabic: false, primary: [2], tr: "a. interested", audio: "https://lexin.nada.kth.se/sound/v2/196383_1.mp3" },
+{ group: 33, syllables: ["ka", "te", "go", "ri"], polysyllabic: false, primary: [3], tr: "n. category", audio: "https://lexin.nada.kth.se/sound/v2/205468_1.mp3" },
+{ group: 33, syllables: ["ka", "te", "go", "risk"], polysyllabic: false, primary: [2], tr: "a. categorical", audio: "https://lexin.nada.kth.se/sound/v2/205479_1.mp3" },
+{ group: 34, syllables: ["kri", "tik"], polysyllabic: false, primary: [1], tr: "n. criticism", audio: "https://lexin.nada.kth.se/sound/v2/218418_1.mp3" },
+{ group: 34, syllables: ["kri", "tik", "er"], polysyllabic: false, primary: [0], tr: "n. critic; reviewer", audio: "https://isolve-so-service.appspot.com/pronounce?id=218421_1.mp3" },
+{ group: 34, syllables: ["kri", "tisk"], polysyllabic: false, primary: [0], tr: "a. critical", audio: "https://lexin.nada.kth.se/sound/v2/218445_1.mp3" },
+{ group: 35, syllables: ["kul", "tur"], polysyllabic: false, primary: [1], tr: "n. culture", audio: "https://lexin.nada.kth.se/sound/v2/220267_1.mp3" },
+{ group: 35, syllables: ["kul", "tur", "ell"], polysyllabic: false, primary: [2], tr: "a. cultural", audio: "https://lexin.nada.kth.se/sound/v2/220305_1.mp3" },
+{ group: 36, syllables: ["lyck", "lig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. happy", audio: "https://isolve-so-service.appspot.com/pronounce?id=233187_1.mp3" },
+{ group: 36, syllables: ["lyck", "ligt", "vis"], polysyllabic: true, primary: [0], secondary: [2], tr: "adv. fortunately", audio: "https://isolve-so-service.appspot.com/pronounce?id=233196_1.mp3" },
+{ group: 37, syllables: ["lång", "sam"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. slow", audio: "https://lexin.nada.kth.se/sound/v2/234226_1.mp3" },
+{ group: 37, syllables: ["lång", "sam", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. slowness", audio: "https://learnswedish.github.io/html/langsamhet.mp3" },
+{ group: 38, syllables: ["ma", "gi"], polysyllabic: false, primary: [1], tr: "n. magic", audio: "https://lexin.nada.kth.se/sound/v2/237456_1.mp3" },
+{ group: 38, syllables: ["ma", "gik", "er"], polysyllabic: true, primary: [0], tr: "n. magician", audio: "https://isolve-so-service.appspot.com/pronounce?id=237460_1.mp3" },
+{ group: 38, syllables: ["ma", "gisk"], polysyllabic: false, primary: [0], tr: "a. magical", audio: "https://lexin.nada.kth.se/sound/v2/237466_1.mp3" },
+{ group: 39, syllables: ["me", "lod", "i"], polysyllabic: false, primary: [2], tr: "n. melody", audio: "https://lexin.nada.kth.se/sound/v2/242953_1.mp3" },
+{ group: 39, syllables: ["me", "lod", "isk"], polysyllabic: false, primary: [1], tr: "a. melodic", audio: "https://lexin.nada.kth.se/sound/v2/242969_1.mp3" },
+{ group: 40, syllables: ["me", "tod"], polysyllabic: false, primary: [1], tr: "n. method", audio: "https://lexin.nada.kth.se/sound/v2/243754_1.mp3" },
+{ group: 40, syllables: ["me", "tod", "ik"], polysyllabic: false, primary: [2], tr: "n. methodology", audio: "https://lexin.nada.kth.se/sound/v2/243760_1.mp3" },
+{ group: 41, syllables: ["mu", "sik"], polysyllabic: false, primary: [1], tr: "n. music", audio: "https://lexin.nada.kth.se/sound/v2/249960_1.mp3" },
+{ group: 41, syllables: ["mu", "sik", "er"], polysyllabic: false, primary: [0], tr: "n. musician", audio: "https://lexin.nada.kth.se/sound/v2/250013_1.mp3" },
+{ group: 42, syllables: ["mått", "lig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. moderate", audio: "https://lexin.nada.kth.se/sound/v2/251825_1.mp3" },
+{ group: 42, syllables: ["mått", "lig", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. moderation", audio: "https://isolve-so-service.appspot.com/pronounce?id=251827_1.mp3" },
+{ group: 42, syllables: ["mått", "lig", "hets", "full"], polysyllabic: true, primary: [0], secondary: [3], tr: "a. moderate; restrained", audio: "https://learnswedish.github.io/html/mattlighetsfull.mp3" },
+{ group: 43, syllables: ["möj", "lig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. possible", audio: "https://isolve-so-service.appspot.com/pronounce?id=253169_1.mp3" },
+{ group: 43, syllables: ["möj", "lig", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. possibility", audio: "https://isolve-so-service.appspot.com/pronounce?id=253175_1.mp3" },
+{ group: 43, syllables: ["möj", "ligt", "vis"], polysyllabic: true, primary: [0], secondary: [2], tr: "adv. possibly", audio: "https://lexin.nada.kth.se/sound/v2/253178_1.mp3" },
+{ group: 44, syllables: ["nöd", "vänd", "ig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. necessary", audio: "https://lexin.nada.kth.se/sound/v2/263434_1.mp3" },
+{ group: 44, syllables: ["nöd", "vänd", "ig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. necessity", audio: "https://lexin.nada.kth.se/sound/v2/263440_1.mp3" },
+{ group: 44, syllables: ["nöd", "vänd", "igt", "vis"], polysyllabic: true, primary: [0], secondary: [3], tr: "adv. necessarily", audio: "https://lexin.nada.kth.se/sound/v2/263446_1.mp3" },
+{ group: 45, syllables: ["o", "lyck", "lig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. unhappy", audio: "https://lexin.nada.kth.se/sound/v2/267298_1.mp3" },
+{ group: 45, syllables: ["o", "lyck", "ligt", "vis"], polysyllabic: true, primary: [0], secondary: [3], tr: "adv. unfortunately", audio: "https://lexin.nada.kth.se/sound/v2/267303_1.mp3" },
+{ group: 46, syllables: ["o", "nöd", "ig"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. unnecessary", audio: "https://lexin.nada.kth.se/sound/v2/269364_1.mp3" },
+{ group: 46, syllables: ["o", "nöd", "ig", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. unnecessariness", audio: "https://learnswedish.github.io/html/onodighet.mp3" },
+{ group: 46, syllables: ["o", "nöd", "igt", "vis"], polysyllabic: true, primary: [0], secondary: [3], tr: "adv. unnecessarily", audio: "https://isolve-so-service.appspot.com/pronounce?id=269370_1.mp3" },
+{ group: 47, syllables: ["ork", "es", "lös"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. weak; listless", audio: "https://lexin.nada.kth.se/sound/v2/271116_1.mp3" },
+{ group: 47, syllables: ["ork", "es", "lös", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. listlessness", audio: "https://learnswedish.github.io/html/orkesloshet.mp3" },
+{ group: 48, syllables: ["po", "li", "tik"], polysyllabic: false, primary: [2], tr: "n. politics", audio: "https://lexin.nada.kth.se/sound/politik.mp3" },
+{ group: 48, syllables: ["po", "li", "tik", "er"], polysyllabic: false, primary: [1], tr: "n. politician", audio: "https://lexin.nada.kth.se/sound/politiker.mp3" },
+{ group: 48, syllables: ["po", "li", "tisk"], polysyllabic: false, primary: [1], tr: "a. political", audio: "https://isolve-so-service.appspot.com/pronounce?id=282678_1.mp3" },
+{ group: 49, syllables: ["prak", "tik"], polysyllabic: false, primary: [1], tr: "n. practice", audio: "https://lexin.nada.kth.se/sound/v2/284494_1.mp3" },
+{ group: 49, syllables: ["prak", "tik", "er"], polysyllabic: false, primary: [0], tr: "n. practitioner", audio: "https://isolve-so-service.appspot.com/pronounce?id=284511_1.mp3" },
+{ group: 49, syllables: ["prak", "tisk"], polysyllabic: false, primary: [0], tr: "a. practical", audio: "https://isolve-so-service.appspot.com/pronounce?id=284541_1.mp3" },
+{ group: 50, syllables: ["prin", "cip"], polysyllabic: false, primary: [1], tr: "n. principle", audio: "https://isolve-so-service.appspot.com/pronounce?id=285805_1.mp3" },
+{ group: 50, syllables: ["prin", "cip", "lös"], polysyllabic: true, primary: [1], secondary: [2], tr: "a. unprincipled", audio: "https://learnswedish.github.io/html/principlos.mp3" },
+{ group: 50, syllables: ["prin", "cip", "lös", "het"], polysyllabic: true, primary: [1], secondary: [3], tr: "n. lack of principles", audio: "https://learnswedish.github.io/html/principloshet.mp3" },
+{ group: 51, syllables: ["pro", "blem"], polysyllabic: false, primary: [1], tr: "n. problem", audio: "https://lexin.nada.kth.se/sound/v2/286447_1.mp3" },
+{ group: 51, syllables: ["pro", "blem", "at", "ik"], polysyllabic: false, primary: [3], tr: "complex of problems", audio: "https://isolve-so-service.appspot.com/pronounce?id=286452_1.mp3" },
+{ group: 51, syllables: ["pro", "blem", "at", "isk"], polysyllabic: false, primary: [2], tr: "a. problematic", audio: "https://lexin.nada.kth.se/sound/v2/286456_1.mp3" },
+{ group: 52, syllables: ["pro", "fess", "ion"], polysyllabic: false, primary: [2], tr: "n. profession", audio: "https://isolve-so-service.appspot.com/pronounce?id=286824_1.mp3" },
+{ group: 52, syllables: ["pro", "fess", "ion", "ell"], polysyllabic: false, primary: [3], tr: "a. professional", audio: "https://lexin.nada.kth.se/sound/v2/286834_1.mp3" },
+{ group: 53, syllables: ["red", "bar"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. upright; honest", audio: "https://lexin.nada.kth.se/sound/v2/294063_1.mp3" },
+{ group: 53, syllables: ["red", "bar", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. integrity", audio: "https://learnswedish.github.io/html/redbarhet.mp3" },
+{ group: 54, syllables: ["re", "spekt"], polysyllabic: false, primary: [1], tr: "n. respect", audio: "https://isolve-so-service.appspot.com/pronounce?id=297272_1.mp3" },
+{ group: 54, syllables: ["re", "spekt", "lös"], polysyllabic: true, primary: [1], secondary: [2], tr: "a. disrespectful", audio: "https://lexin.nada.kth.se/sound/v2/297296_1.mp3" },
+{ group: 54, syllables: ["re", "spekt", "lös", "het"], polysyllabic: true, primary: [1], secondary: [3], tr: "n. disrespect", audio: "https://learnswedish.github.io/html/respektloshet.mp3" },
+{ group: 55, syllables: ["re", "sult", "at"], polysyllabic: false, primary: [2], tr: "n. result", audio: "https://lexin.nada.kth.se/sound/v2/297509_1.mp3" },
+{ group: 55, syllables: ["re", "sult", "at", "lös"], polysyllabic: true, primary: [2], secondary: [3], tr: "a. fruitless; ineffective", audio: "https://isolve-so-service.appspot.com/pronounce?id=297515_1.mp3" },
+{ group: 56, syllables: ["re", "tor", "ik"], polysyllabic: false, primary: [2], tr: "n. rhetoric", audio: "https://lexin.nada.kth.se/sound/v2/297681_1.mp3" },
+{ group: 56, syllables: ["re", "tor", "ik", "er"], polysyllabic: false, primary: [1], tr: "n. rhetorician", audio: "https://isolve-so-service.appspot.com/pronounce?id=297683_1.mp3" },
+{ group: 56, syllables: ["re", "tor", "isk"], polysyllabic: false, primary: [1], tr: "a. rhetorical", audio: "https://isolve-so-service.appspot.com/pronounce?id=297685_1.mp3" },
+{ group: 57, syllables: ["sam", "vet", "e"], polysyllabic: true, primary: [0], secondary: [1], tr: "n. conscience", audio: "https://isolve-so-service.appspot.com/pronounce?id=307996_1.mp3" },
+{ group: 57, syllables: ["sam", "vets", "lös"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. unscrupulous", audio: "https://isolve-so-service.appspot.com/pronounce?id=308027_1.mp3" },
+{ group: 57, syllables: ["sam", "vets", "lös", "het"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. unscrupulousness", audio: "https://learnswedish.github.io/html/samvetsloshet.mp3" },
+{ group: 58, syllables: ["stra", "teg"], polysyllabic: false, primary: [1], tr: "n. strategist", audio: "https://isolve-so-service.appspot.com/pronounce?id=344481_1.mp3" },
+{ group: 58, syllables: ["stra", "teg", "i"], polysyllabic: false, primary: [2], tr: "n. strategy", audio: "https://lexin.nada.kth.se/sound/v2/344483_2.mp3" },
+{ group: 58, syllables: ["stra", "teg", "isk"], polysyllabic: false, primary: [1], tr: "a. strategic", audio: "https://lexin.nada.kth.se/sound/v2/344485_1.mp3" },
+{ group: 59, syllables: ["sym", "pat", "i"], polysyllabic: false, primary: [2], tr: "n. sympathy", audio: "https://lexin.nada.kth.se/sound/v2/351921_1.mp3" },
+{ group: 59, syllables: ["sym", "pat", "isk"], polysyllabic: false, primary: [1], tr: "a. sympathetic", audio: "https://lexin.nada.kth.se/sound/v2/351931_1.mp3" },
+{ group: 60, syllables: ["tek", "nik"], polysyllabic: false, primary: [1], tr: "n. technique", audio: "https://lexin.nada.kth.se/sound/teknik.mp3" },
+{ group: 60, syllables: ["tek", "nik", "er"], polysyllabic: false, primary: [0], tr: "n. technician", audio: "https://lexin.nada.kth.se/sound/tekniker.mp3" },
+{ group: 60, syllables: ["tek", "nisk"], polysyllabic: false, primary: [0], tr: "a. technical", audio: "https://isolve-so-service.appspot.com/pronounce?id=358182_1.mp3" },
+{ group: 60, syllables: ["tek", "no", "krat", "i"], polysyllabic: false, primary: [3], tr: "n. technocracy", audio: "https://isolve-so-service.appspot.com/pronounce?id=358194_1.mp3" },
+{ group: 60, syllables: ["tek", "no", "log"], polysyllabic: false, primary: [2], tr: "n. student of technology", audio: "https://isolve-so-service.appspot.com/pronounce?id=358200_1.mp3" },
+{ group: 60, syllables: ["tek", "no", "log", "i"], polysyllabic: false, primary: [3], tr: "n. technology", audio: "https://isolve-so-service.appspot.com/pronounce?id=358202_1.mp3" },
+{ group: 60, syllables: ["tek", "no", "log", "isk"], polysyllabic: false, primary: [2], tr: "a. technological", audio: "https://isolve-so-service.appspot.com/pronounce?id=358206_1.mp3" },
+{ group: 61, syllables: ["tra", "di", "tion"], polysyllabic: false, primary: [2], tr: "n. tradition", audio: "https://lexin.nada.kth.se/sound/v2/366049_1.mp3" },
+{ group: 61, syllables: ["tra", "di", "tion", "ell"], polysyllabic: false, primary: [3], tr: "a. traditional", audio: "https://lexin.nada.kth.se/sound/v2/366059_1.mp3" },
+{ group: 62, syllables: ["u", "tan", "för"], polysyllabic: true, primary: [0], secondary: [2], tr: "adv. outside", audio: "https://lexin.nada.kth.se/sound/v2/381181_1.mp3" },
+{ group: 62, syllables: ["u", "tan", "för", "skap"], polysyllabic: true, primary: [0], secondary: [3], tr: "n. exclusion", audio: "https://lexin.nada.kth.se/sound/v2/815135_1.mp3" },
+{ group: 63, syllables: ["var", "sam"], polysyllabic: true, primary: [0], secondary: [1], tr: "a. cautious", audio: "https://lexin.nada.kth.se/sound/v2/387580_1.mp3" },
+{ group: 63, syllables: ["var", "sam", "het"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. cautiousness", audio: "https://learnswedish.github.io/html/varsamhet.mp3" },
+{ group: 64, syllables: ["vet", "en", "skap"], polysyllabic: true, primary: [0], secondary: [2], tr: "n. science", audio: "https://lexin.nada.kth.se/sound/v2/389934_1.mp3" },
+{ group: 64, syllables: ["vet", "en", "skap", "lig"], polysyllabic: true, primary: [0], secondary: [2], tr: "a. scientific", audio: "https://isolve-so-service.appspot.com/pronounce?id=389940_1.mp3" },
+{ group: 64, syllables: ["vet", "en", "skap", "lig", "het"], polysyllabic: true, primary: [0], secondary: [4], tr: "n. scientificity", audio: "https://learnswedish.github.io/html/vetenskaplighet.mp3" },
 
 ];
 
@@ -668,7 +760,34 @@ function shuffle(arr) {
   return a;
 }
 
-let queue = shuffle([...Array(words.length).keys()]);
+/* =========================
+   GROUP-BASED QUEUE LOGIC
+   ========================= */
+
+// 1. Bygg grupper
+const groups = {};
+words.forEach((w, i) => {
+  if (!groups[w.group]) groups[w.group] = [];
+  groups[w.group].push(i);
+});
+
+// 2. Bygg queue: slumpa grupper + slumpa inom grupper
+function buildQueue() {
+  const groupKeys = shuffle(Object.keys(groups));
+  let q = [];
+
+  groupKeys.forEach(g => {
+    const shuffledGroup = shuffle(groups[g]);
+    q = q.concat(shuffledGroup);
+  });
+
+  return q;
+}
+
+let queue = buildQueue();
+
+/* ========================= */
+
 let current = 0;
 let selected = new Set();
 let checked = false;
@@ -685,30 +804,58 @@ function updateProgress() {
 }
 
 function render() {
-  checked = false;
-  selected.clear();
-  
-  // Rensar feedback-ytan (och därmed även den gamla ljudknappen)
-  document.getElementById('feedbackArea').innerHTML = '';
+  const card = document.getElementById('mainCard');
 
-  const w = words[queue[current]];
-  
-  document.getElementById('fullSwedish').textContent = w.syllables.join('');
-  document.getElementById('fullEnglish').textContent = w.tr;
+  // Fade out först
+  card.classList.add('fade-out');
 
-  const container = document.getElementById('wordDisplay');
-  container.innerHTML = '';
+  setTimeout(() => {
+    checked = false;
+    selected.clear();
+    document.getElementById('feedbackArea').innerHTML = '';
 
-  w.syllables.forEach((s, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'syllable-btn';
-    btn.textContent = s;
-    btn.onclick = () => toggleSyllable(i, btn);
-    container.appendChild(btn);
+    const w = words[queue[current]];
+    
+    document.getElementById('fullSwedish').textContent = w.syllables.join('');
+    document.getElementById('fullEnglish').textContent = w.tr;
+
+    const container = document.getElementById('wordDisplay');
+    container.innerHTML = '';
+
+    w.syllables.forEach((s, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'syllable-btn';
+      btn.textContent = s;
+      btn.onclick = () => toggleSyllable(i, btn);
+      container.appendChild(btn);
+    });
+
+    document.getElementById('btnRow').innerHTML = `<button class="btn btn-primary" onclick="checkAnswer()">Check</button>`;
+    updateProgress();
+
+    // Fade in igen
+    card.classList.remove('fade-out');
+    card.classList.add('fade-in');
+
+    // Ta bort fade-in klass efteråt (så den kan triggas igen)
+    setTimeout(() => {
+      card.classList.remove('fade-in');
+    }, 250);
+
+  }, 200); // matchar CSS-duration
+}
+
+function switchTab(index) {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-content');
+
+  tabs.forEach((t, i) => {
+    t.classList.toggle('active', i === index);
   });
 
-  document.getElementById('btnRow').innerHTML = `<button class="btn btn-primary" onclick="checkAnswer()">Check</button>`;
-  updateProgress();
+  panels.forEach((p, i) => {
+    p.classList.toggle('active', i === index);
+  });
 }
 
 function toggleSyllable(i, btn) {
@@ -720,7 +867,6 @@ function toggleSyllable(i, btn) {
 function checkAnswer() {
   if (checked) { nextWord(); return; }
   
-  // Om ingen stavelse valts, visa bara ett varningsmeddelande utan play-knapp
   if (selected.size === 0) { 
     document.getElementById('feedbackArea').innerHTML = `<div class="feedback-pill wrong"><span>Please select a syllable!</span></div>`;
     return; 
@@ -754,7 +900,6 @@ function checkAnswer() {
     }
   });
 
-  // Här anropas showFeedback som nu skapar play-knappen till höger om texten
   if (isCorrect && selected.size === correctSet.size) {
     scoreCorrect++;
     showFeedback('Correct!', 'correct');
@@ -777,7 +922,6 @@ function playAudio() {
 }
 
 function showFeedback(msg, type) {
-  // Skapar pillret med texten OCH play-knappen bredvid varandra
   document.getElementById('feedbackArea').innerHTML = `
     <div class="feedback-pill ${type}">
       <span>${msg}</span>
@@ -786,6 +930,7 @@ function showFeedback(msg, type) {
       </button>
     </div>`;
 }
+
 function nextWord() {
   current++;
   if (current >= words.length) { showCompletion(); return; }
@@ -825,11 +970,23 @@ function toggleTheme() {
   }
 })();
 
+function toggleInfoModal() {
+    const modal = document.getElementById('infoModalOverlay');
+    const isVisible = modal.style.display === 'flex';
+    modal.style.display = isVisible ? 'none' : 'flex';
+    document.body.style.overflow = isVisible ? 'auto' : 'hidden';
+}
+
+function closeInfoModal(e) {
+    if (e.target.id === 'infoModalOverlay') {
+        toggleInfoModal();
+    }
+}
+
 function toggleModal() {
     const modal = document.getElementById('modalOverlay');
     const isVisible = modal.style.display === 'flex';
     modal.style.display = isVisible ? 'none' : 'flex';
-    // Förhindra scrolling på body när modal är öppen
     document.body.style.overflow = isVisible ? 'auto' : 'hidden';
 }
 
@@ -840,26 +997,22 @@ function closeModal(e) {
 }
 
 document.addEventListener('keydown', e => {
-  // Mellanslag hanterar Check/Next
   if (e.key === ' ') { 
     e.preventDefault(); 
     if (checked) nextWord(); else checkAnswer(); 
   }
   
-  // Enter spelar ljud (om svaret är kollat)
   if (e.key === 'Enter') {
     e.preventDefault();
     if (checked) playAudio();
   }
 
-  // Siffertangenter 1–9 väljer stavelser
   if (e.key >= '1' && e.key <= '9') {
     const idx = parseInt(e.key) - 1;
     const btns = document.querySelectorAll('.syllable-btn');
     if (idx < btns.length && !checked) btns[idx].click();
   }
   
-  // Behåll P som alternativ för ljud
   if (e.key.toLowerCase() === 'p' && checked) playAudio();
 });
 
