@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Verb "ha" (to have)</title>
+
+    <!-- Font Awesome CDN for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+/* ==========================================================================
+   1. RESET & BASE STYLES
+   ========================================================================== */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9fafb;
+	color: #2d3748;
+	line-height: 1.6;
+	font-size: 16px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	min-height: 100vh;
+	padding: 20px;
+	overflow-y: auto;
+	position: relative;
+	transition: background-color 0.3s, color 0.3s;
+	/* Förhindra markering av text för en app-känsla */
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;	
+}
+
+body.dark-mode {
+	background-color: #121212;
+	color: #e2e8f0;
+}
+
+/* ==========================================================================
+   2. TOP MENU & SCORE (Fixed Side Container)
+   ========================================================================== */
+.score-container {
+	position: fixed;
+	top: 20px;
+	right: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 150px;
+	z-index: 1001;
+	gap: 10px;
+}
+
+/* Gemensam stil för Score, Dark Mode Toggle och Knappar i menyn */
+.score,
+.dark-mode-toggle,
+.start-over {
+	width: 100%;
+	height: 40px;
+	padding: 0 10px;
+	box-sizing: border-box;
+	font-size: 16px;
+	text-align: center;
+	background-color: #fff;
+	color: #333;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, color 0.3s;
+	cursor: pointer;
+	border: none;
+}
+
+/* Score Specifikt */
+.score { cursor: default; }
+
+/* Dark Mode Switch Specifikt */
+.dark-mode-toggle {
+	justify-content: flex-start;
+	gap: 10px;
+	user-select: none;
+}
+
+.switch {
+	position: relative;
+	width: 40px;
+	height: 20px;
+	display: inline-block;
+}
+
+.switch input { display: none; }
+
+.slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0; left: 0; right: 0; bottom: 0;
+	background-color: #ccc;
+	transition: 0.4s;
+	border-radius: 20px;
+}
+
+.slider::before {
+	position: absolute;
+	content: "";
+	height: 14px; width: 14px;
+	left: 3px; bottom: 3px;
+	background-color: white;
+	transition: 0.4s;
+	border-radius: 50%;
+}
+
+.switch input:checked + .slider { background-color: #007BFF; }
+.switch input:checked + .slider::before { transform: translateX(20px); }
+
+/* Start Over & Info Knappar */
+.start-over {
+	background-color: #007BFF;
+	color: white;
+	transition: background-color 0.3s ease;
+}
+
+.start-over:hover {
+	background-color: #0056b3;
+}
+
+/* ==========================================================================
+   3. HEADER & MAIN CONTAINER
+   ========================================================================== */
+.page-title {
+	text-align: center;
+	color: #333333;
+	font-size: 28px;
+	margin-bottom: 20px;
+	line-height: 1.4;
+	padding-top: 10px;
+}
+
+body.dark-mode .page-title { color: #ffffff; }
+
+.container {
+	background-color: #ffffff;
+	padding: 40px 30px;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	max-width: 850px;
+	width: 100%;
+	text-align: center;
+	position: relative;
+	transition: background-color 0.3s, box-shadow 0.3s;
+	margin-top: 20px;
+}
+
+body.dark-mode .container {
+	background-color: #1a202c;
+	box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+}
+
+.sentences {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+}
+
+/* ==========================================================================
+   4. SENTENCE CARD & INTERACTION
+   ========================================================================== */
+.sentence {
+	background-color: #dae1eb;
+	padding: 20px 20px 10px 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+	position: relative;
+	transition: background-color 0.3s, border 0.3s, box-shadow 0.3s;
+	border-left: 6px solid transparent;
+	text-align: left;
+}
+
+body.dark-mode .sentence { background-color: #2d3748; }
+
+/* Status: Unanswered (Hover) */
+.sentence.unanswered:hover {
+	background-color: #e2e8f0;
+	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+	border-left: 6px solid #3182ce;
+}
+
+body.dark-mode .sentence.unanswered:hover {
+	background-color: #374151;
+	border-left: 6px solid #63b3ed;
+}
+
+/* Status: Correct */
+.sentence.correct {
+	border-left: 6px solid #38a169;
+	background-color: #cdffcd;
+}
+
+body.dark-mode .sentence.correct { background-color: #22543d; }
+
+/* Status: Incorrect */
+.sentence.incorrect {
+	border-left: 6px solid #e53e3e;
+	background-color: #FFADB0;
+}
+
+body.dark-mode .sentence.incorrect { background-color: #742a2a; }
+
+/* Inaktivera hover-effekt när meningen är besvarad */
+.sentence:not(.unanswered):hover { box-shadow: none; }
+
+/* Text inuti mening */
+.sentence p {
+	font-size: 1.1rem;
+	margin-bottom: 10px;
+	color: inherit;
+	display: block;
+	width: 100%;
+}
+
+body.dark-mode .sentence p { color: #edf2f7; }
+
+/* ==========================================================================
+   5. DROPDOWNS & SELECTS
+   ========================================================================== */
+.select-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.sentence select {
+	padding: 4px;
+	font-size: inherit;
+	border: 1px solid #cbd5e0;
+	border-radius: 6px;
+	background-color: #edf2f7;
+	cursor: pointer;
+	transition: border-color 0.3s, background-color 0.3s;
+	width: auto;
+	margin: 0 10px;
+	user-select: auto;
+}
+
+.sentence select.first-dropdown { margin-left: 0 !important; }
+
+body.dark-mode .sentence select {
+	background-color: #4a5568;
+	color: #edf2f7;
+	border: 1px solid #718096;
+}
+
+.sentence select:focus {
+	border-color: #3182ce;
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+}
+
+/* Interpunktion justering */
+.interp {
+	margin-left: -9px;
+	position: relative;
+	z-index: 1;
+}
+
+/* ==========================================================================
+   6. HINTS & TOGGLE (Inside Sentence Header)
+   ========================================================================== */
+.sentence-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+/* Text-animering (Kategori vs Översättning) */
+.hint-text-wrapper {
+	position: relative;
+	height: 24px;
+	overflow: hidden;
+	flex-grow: 1;
+	margin-right: 20px;
+}
+
+.hint-content {
+	position: absolute;
+	width: 100%;
+	white-space: nowrap;
+	transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+	display: flex;
+	align-items: center;
+	font-size: 1rem;
+}
+
+.hint-text-wrapper:not(.show-eng) .hint-category { transform: translateX(0); opacity: 1; }
+.hint-text-wrapper:not(.show-eng) .hint-translation { transform: translateX(-100%); opacity: 0; }
+
+.hint-text-wrapper.show-eng .hint-category { transform: translateX(100%); opacity: 0; }
+.hint-text-wrapper.show-eng .hint-translation { 
+	transform: translateX(0); 
+	opacity: 1; 
+	font-style: italic;
+}
+
+/* Hint Toggle Kontroller (Ikoner + Switch) */
+.hint-controls {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 80px;
+}
+
+.hint-toggle-container {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 0.9rem;
+	color: #4a5568;
+}
+
+body.dark-mode .hint-toggle-container { color: #a0aec0; }
+
+.hint-toggle-container i {
+	font-size: 1.1rem;
+	color: #353638;
+	transition: color 0.3s ease, transform 0.2s ease;
+}
+
+body.dark-mode .hint-toggle-container i { color: #cbd5e0; }
+
+/* Aktiv färg för ikoner vid val */
+.hint-toggle-container:not(:has(input:checked)) .icon-form,
+.hint-toggle-container:has(input:checked) .icon-eng {
+	color: #f7a414;
+	transform: scale(1.5);
+}
+
+/* Hint Switchen */
+.hint-switch {
+	position: relative;
+	display: inline-block;
+	width: 34px; height: 18px;
+}
+
+.hint-switch input { opacity: 0; width: 0; height: 0; }
+
+.hint-slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0; left: 0; right: 0; bottom: 0;
+	background-color: #cbd5e0;
+	transition: .3s;
+	border-radius: 18px;
+	border: 1px solid #718096;
+}
+
+.hint-slider:before {
+	position: absolute;
+	content: "";
+	height: 12px; width: 12px;
+	left: 2px; bottom: 2px;
+	background-color: #4a5568;
+	transition: .3s;
+	border-radius: 50%;
+}
+
+input:checked + .hint-slider:before { transform: translateX(16px); }
+input:checked + .hint-slider { background-color: #edf2f7; }
+
+/* ==========================================================================
+   7. AUDIO PLAYER (Play Button)
+   ========================================================================== */
+.play-btn-container {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: 0px; 
+	margin-left: 7px;
+	height: 0;
+}
+
+.sentence-play-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: #8a8078;
+	padding: 0;
+	line-height: 1;
+	transition: all 0.2s ease;
+	opacity: 0;
+}
+
+.sentence-play-btn i { font-size: 1.4rem; }
+
+.sentence-play-btn:hover {
+	color: #f7a414;
+	transform: scale(1.1);
+}
+
+@keyframes playIconArrive {
+	0% { transform: scale(0.5); opacity: 0; filter: drop-shadow(0 0 0px #f7a414); }
+	50% { transform: scale(1.3); filter: drop-shadow(0 0 8px #f7a414); }
+	100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 2px rgba(247, 164, 20, 0.3)); }
+}
+
+.sentence-play-btn {
+	animation: playIconArrive 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* ==========================================================================
+   8. MODALS (General, Close Button & Dark Mode)
+   ========================================================================== */
+.modal {
+	display: none;
+	position: fixed;
+	left: 0; top: 0; width: 100%; height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	justify-content: center;
+	align-items: center;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.modal.show { display: flex; opacity: 1; }
+
+.modal-content {
+	background: white;
+	color: black;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	text-align: left;
+	max-width: 750px;
+	width: 90%;
+	max-height: 80vh;
+	overflow-y: auto;
+	transform: translateY(-20px);
+	transition: transform 0.3s ease-in-out;
+	position: relative;
+}
+
+.modal.show .modal-content { transform: translateY(0); }
+
+body.dark-mode .modal-content {
+	background-color: #1a202c;
+	color: #edf2f7;
+	border: 1px solid #2d3748;
+}
+
+/* Modal Inner Typography */
+.modal-content h2 { margin-top: 0; margin-bottom: 20px; font-size: 1.5rem; }
+.modal-content p { margin-bottom: 15px; line-height: 1.6; }
+.modal-content ul { margin-left: 20px; margin-bottom: 15px; }
+.modal-content li { margin-bottom: 10px; }
+
+/* Modal Close Button (X) */
+.close-button {
+	position: absolute;
+	top: 14px; right: 14px;
+	width: 34px; height: 34px;
+	background-color: #f1f5f9;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+	transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.close-button .line {
+	position: absolute;
+	width: 16px; height: 2px;
+	background-color: #334155;
+	border-radius: 2px;
+	transition: transform 0.25s, background-color 0.2s;
+}
+
+.close-button .line:nth-child(1) { transform: rotate(45deg); }
+.close-button .line:nth-child(2) { transform: rotate(-45deg); }
+
+.close-button:hover {
+	transform: scale(1.08);
+	background-color: #ef4444;
+	box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.close-button:hover .line { background-color: #ffffff; }
+.close-button:active { transform: scale(0.95); }
+
+body.dark-mode .close-button { background-color: #2d3748; }
+body.dark-mode .close-button .line { background-color: #e2e8f0; }
+body.dark-mode .close-button:hover { background-color: #f56565; }
+
+/* Styling för den grå boxen i modalen */
+.info-link-box {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-size: 0.95rem;
+}
+
+body.dark-mode .info-link-box {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Länk-styling som fungerar i båda lägena */
+.external-link {
+    color: #3182ce; /* Snygg blå i light mode */
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+body.dark-mode .external-link {
+    color: #63b3ed; /* Ljusare, mer läsbar blå i dark mode */
+}
+
+.external-link:hover {
+    color: #f7a414; /* Orange vid hover för att matcha ditt tema */
+}
+
+/* ==========================================================================
+   9. MOBILE BLOCKER & RESPONSIVE
+   ========================================================================== */
+@media (max-width: 700px) {
+	/* Dölj allt innehåll på små skärmar */
+	body > *:not(#mobileBlockModal) {
+		display: none !important;
+	}
+
+	#mobileBlockModal {
+		display: flex !important;
+		position: fixed;
+		inset: 0;
+		z-index: 9999;
+		opacity: 1;
+	}
+}
+</style>
+
+</head>
+
+<body tabindex="-1">
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span class="score-display">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+         <!-- Start Over Button for Desktop -->
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">The verb "ha" (to have)</h1>
+    <p>Read the "Info" to understand what this exercise is about.</p>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">
+    <span class="line"></span>
+    <span class="line"></span>
+</button>
+<h2 id="infoModalTitle">Information</h2>
+<p>
+    This exercise focuses on the different forms of the Swedish verb <strong>ha</strong> (to have). 
+    In Swedish, just like in English, the verb changes depending on the <strong>tense</strong> (time).
+</p>
+
+<div class="info-link-box">
+    <strong>Verb forms in this exercise:</strong>
+    <p style="margin-top: 10px;">
+        See a full overview here: 
+        <a href="https://learnswedish.github.io/html/8-verbs.html" target="_blank" rel="noopener noreferrer" class="external-link">
+            Eight high-frequency verbs (opens in a new tab)
+        </a>
+    </p>
+</div>
+
+<p>
+    <strong>Split Verb Structures:</strong><br>
+    Note that the words in compound forms like <strong>har haft</strong> (has had) or <strong>kommer att ha</strong> (will have) don't always appear right next to each other. Swedish sentences often place other words between (like the subject or an adverb).
+</p>
+
+<p style="font-style: italic; border-left: 4px solid #f7a414; padding-left: 15px; margin: 15px 0;">
+    Example: "Jag <strong>har</strong> inte <strong>haft</strong> tid idag."<br>
+    (I have not had time today.)
+</p>
+
+<p>
+    <strong>Listen to the sentence:</strong><br>
+    Once you have answered a sentence correctly, a <strong>play icon</strong> 
+    <i class="fa-solid fa-circle-play" style="color: #f7a414; font-size: 0.9em;"></i> 
+    will appear, which makes it possible for you to hear the full sentence 
+    read aloud.
+</p>
+
+<p>
+    Use the <strong>Form/English toggle</strong> to see the grammatical category or a full translation of each sentence. Good luck!
+</p>
+        </div>
+    </div>
+
+    <!-- Congratulations Modal -->
+<div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+    <div class="modal-content">
+        <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">
+            <span class="line"></span>
+            <span class="line"></span>
+        </button>
+        <h2 id="congratulationsModalTitle">Congratulations!</h2> 
+        <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+    </div>
+</div>
+
+<div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true" aria-labelledby="mobileBlockTitle">
+    <div class="modal-content" style="text-align:center;">
+        <h2 id="mobileBlockTitle">Not available on mobile</h2>
+        <p>
+            This page — a verb exercise — is not designed for mobile phones, mainly because many of the interactive features do not work well on small touchscreens.
+        </p>
+    </div>
+</div>
+
+<script>
+/* ==========================================================================
+   1. DATA & KONFIGURATION
+   ========================================================================== */
+
+// Alternativ för rullistorna (Dropdowns)
+const OPTIONS = {
+    alt: [
+        {label: "ha", value: "ha"},
+        {label: "kommer att ha", value: "kommer att ha"},
+        {label: "har", value: "har"},
+        {label: "hade", value: "hade"},
+        {label: "har haft", value: "har haft"},
+        {label: "hade haft", value: "hade haft"}
+    ],
+    auxiliary: [
+        {label: "har", value: "har"},
+        {label: "hade", value: "hade"},
+        {label: "kommer", value: "kommer"}
+    ],
+    mainVerb: [
+        {label: "att ha", value: "att ha"},
+        {label: "har", value: "har"},
+        {label: "hade", value: "hade"},
+        {label: "haft", value: "haft"}
+    ]
+};
+
+// Övningsmeningarna
+const sentences = [
+    // PRESENT TENSE (har)
+    { category: "Present tense", translation: "She has a very large house.", words: [{part: "Hon "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " ett väldigt stort hus."}] },
+    { category: "Present tense", translation: "It has a strange smell.", words: [{part: "Det "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " en märklig lukt."}] },
+    { category: "Present tense", translation: "The food has too much salt.", words: [{part: "Maten "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " för mycket salt."}] },
+    { category: "Present tense", translation: "They have many interesting ideas.", words: [{part: "De "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " många intressanta idéer."}] },
+    { category: "Present tense", translation: "The car has four doors.", words: [{part: "Bilen "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " fyra dörrar."}] },
+    { category: "Present tense", translation: "The clock has no batteries.", words: [{part: "Klockan "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " inga batterier."}] },
+    { category: "Present tense", translation: "I have a headache today.", words: [{part: "Jag "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " ont i huvudet idag."}] },
+    { category: "Present tense", translation: "Where do you have your keys?", words: [{part: "Var "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " du dina nycklar?"}] },
+    { category: "Present tense", translation: "If you don’t have any income, it becomes difficult.", words: [{part: "Om man inte "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " någon inkomst, då blir det tufft."}] },
+    { category: "Present tense", translation: "It has a great impact on the result.", words: [{part: "Det "}, {type:"select", optionSet:"alt", correct:"har"}, {part: " stor betydelse för resultatet."}] },
+
+    // PAST TENSE (hade)
+    { category: "Past tense", translation: "Yesterday they had a lot of fun.", words: [{part: "Igår "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " de väldigt roligt."}] },
+    { category: "Past tense", translation: "We had a small dog when I was little.", words: [{part: "Vi "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " en liten hund när jag var liten."}] },
+    { category: "Past tense", translation: "The film actually had a good ending.", words: [{part: "Filmen "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " faktiskt ett bra slut."}] },
+    { category: "Past tense", translation: "They didn't have any money left.", words: [{part: "De "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " inga pengar kvar."}] },
+    { category: "Past tense", translation: "The museum had a very pleasant atmosphere.", words: [{part: "Museet "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " en väldigt trevlig atmosfär."}] },
+    { category: "Past tense", translation: "I had more time in the past.", words: [{part: "Jag "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " mer tid förr."}] },
+    { category: "Past tense", translation: "It had a strange effect on me.", words: [{part: "Det "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " en märklig effekt på mig."}] },
+    { category: "Past tense", translation: "Where did you have the meeting?", words: [{part: "Var "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " ni mötet?"}] },
+    { category: "Past tense", translation: "The house had a beautiful garden.", words: [{part: "Huset "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " en vacker trädgård."}] },
+    { category: "Past tense", translation: "It had nothing to do with me.", words: [{part: "Det "}, {type:"select", optionSet:"alt", correct:"hade"}, {part: " ingenting med mig att göra."}] },
+
+    // PERFECT TENSE (har haft)
+    { category: "Perfect tense", translation: "I have had this car for three years.", words: [{part: "Jag "}, {type:"select", optionSet:"alt", correct:"har haft"}, {part: " den här bilen i tre år."}] },
+    { category: "Perfect tense", translation: "She has had quite a difficult time lately.", words: [{part: "Hon "}, {type: "select", optionSet: "auxiliary", correct: "har"}, {part: " på sistone "}, {type: "select", optionSet: "mainVerb", correct: "haft"}, {part: " det ganska besvärligt."}] },
+    { category: "Perfect tense", translation: "She has had a cold for a week now.", words: [{part: "Hon "}, {type:"select", optionSet:"alt", correct:"har haft"}, {part: " en förkylning i en vecka nu."}] },
+    { category: "Perfect tense", translation: "We have really had a fantastic day.", words: [{part: "Vi "}, {type: "select", optionSet: "auxiliary", correct: "har"}, {part: " verkligen "}, {type: "select", optionSet: "mainVerb", correct: "haft"}, {part: " en fantastisk dag."}] },
+    { category: "Perfect tense", translation: "They have had so many illnesses in that family.", words: [{part: "De "}, {type:"select", optionSet:"alt", correct:"har haft"}, {part: " så mycket sjukdomar i den familjen."}] },
+    { category: "Perfect tense", translation: "We have had a lot to do at school today.", words: [{part: "Vi "}, {type:"select", optionSet:"alt", correct:"har haft"}, {part: " mycket att göra i skolan idag."}] },
+    { category: "Perfect tense", translation: "Where have you had your office?", words: [{part: "Var "}, {type: "select", optionSet: "auxiliary", correct: "har"}, {part: " du "}, {type: "select", optionSet: "mainVerb", correct: "haft"}, {part: " ditt kontor?"}] },
+    { category: "Perfect tense", translation: "The food has really been lovely, thank you!", words: [{part: "Vi "}, {type: "select", optionSet: "auxiliary", correct: "har"}, {part: " verkligen "}, {type: "select", optionSet: "mainVerb", correct: "haft"}, {part: " det jättetrevligt, tack!"}] },
+    { category: "Perfect tense", translation: "How have you been today?", words: [{part: "Hur "}, {type: "select", optionSet: "auxiliary", correct: "har"}, {part: " du "}, {type: "select", optionSet: "mainVerb", correct: "haft"}, {part: " det idag?"}] },
+    { category: "Perfect tense", translation: "It has really been a real pleasure.", words: [{part: "Det "}, {type: "select", optionSet: "auxiliary", correct: "har"}, {part: " verkligen "}, {type: "select", optionSet: "mainVerb", correct: "haft"}, {part: " sin charm."}] },
+
+    // PLUPERFECT TENSE (hade haft)
+    { category: "Pluperfect tense", translation: "If I had had more time, I would have come.", words: [{part: "Om jag "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " mer tid hade jag kommit."}] },
+    { category: "Pluperfect tense", translation: "I would have had enough money if I had saved.", words: [{part: "Jag "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " råd om jag hade sparat pengar."}] },
+    { category: "Pluperfect tense", translation: "She had had the same job for several years.", words: [{part: "Hon "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " samma jobb i flera år."}] },
+    { category: "Pluperfect tense", translation: "We had had some problems with the car.", words: [{part: "Vi "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " en del problem med bilen."}] },
+    { category: "Pluperfect tense", translation: "I thought they had had enough.", words: [{part: "Jag trodde att de "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " nog."}] },
+    { category: "Pluperfect tense", translation: "Imagine if I had had a Lamborghini.", words: [{part: "Tänk om jag "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " en Lamborghini."}] },
+    { category: "Pluperfect tense", translation: "They had had good weather all week.", words: [{part: "De "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " bra väder hela veckan."}] },
+    { category: "Pluperfect tense", translation: "If I had known that, I would have had a plan.", words: [{part: "Om jag hade vetat det, "}, {type: "select", optionSet: "auxiliary", correct: "hade"}, {part: " jag "}, {type: "select", optionSet: "mainVerb", correct: "haft"}, {part: " en plan."}] },
+    { category: "Pluperfect tense", translation: "They had had the house for many years.", words: [{part: "De "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " huset i många år."}] },
+    { category: "Pluperfect tense", translation: "I wish I had had more courage.", words: [{part: "Jag önskar att jag "}, {type:"select", optionSet:"alt", correct:"hade haft"}, {part: " mer mod."}] },
+
+    // FUTURE TENSE (kommer att ha)
+    { category: "Future tense", translation: "Self-driving cars will have many sensors.", words: [{part: "Självstyrande bilar "}, {type: "select", optionSet: "auxiliary", correct: "kommer"}, {part: " inom några år "}, {type: "select", optionSet: "mainVerb", correct: "att ha"}, {part: " många sensorer."}] },
+    { category: "Future tense", translation: "It will be challenging, but we will have fun.", words: [{part: "Det blir svårt, men vi "}, {type:"select", optionSet:"alt", correct:"kommer att ha"}, {part: " roligt."}] },
+    { category: "Future tense", translation: "The shop will have a sale on Sunday.", words: [{part: "Butiken "}, {type:"select", optionSet:"alt", correct:"kommer att ha"}, {part: " rea på söndag."}] },
+    { category: "Future tense", translation: "She says that we will have a lot to do.", words: [{part: "Hon säger att vi "}, {type:"select", optionSet:"alt", correct:"kommer att ha"}, {part: " mycket att göra."}] },
+    { category: "Future tense", translation: "The school will have too few pupils within a few years.", words: [{part: "Skolan "}, {type: "select", optionSet: "auxiliary", correct: "kommer"}, {part: " inom några år "}, {type: "select", optionSet: "mainVerb", correct: "att ha"}, {part: " för få elever."}] },
+    { category: "Future tense", translation: "The project will have a final meeting next year.", words: [{part: "Projektet "}, {type:"select", optionSet:"alt", correct:"kommer att ha"}, {part: " ett slutmöte nästa år."}] },
+    { category: "Future tense", translation: "We will have good weather over the next four days.", words: [{part: "Vi "}, {type:"select", optionSet:"alt", correct:"kommer att ha"}, {part: " fint väder de kommande fyra dagarna."}] },
+    { category: "Future tense", translation: "They will have meetings every week this year.", words: [{part: "De "}, {type:"select", optionSet:"alt", correct:"kommer att ha"}, {part: " möten varje vecka det här året."}] },
+    { category: "Future tense", translation: "It will be of great importance.", words: [{part: "Det "}, {type:"select", optionSet:"alt", correct:"kommer att ha"}, {part: " stor betydelse."}] },
+    { category: "Future tense", translation: "We will have staff in the park throughout the summer.", words: [{part: "Vi "}, {type: "select", optionSet: "auxiliary", correct: "kommer"}, {part: " under hela sommaren "}, {type: "select", optionSet: "mainVerb", correct: "att ha"}, {part: " personal i parken."}] },
+
+    // INFINITIVE (ha)
+    { category: "Infinitive", translation: "It is nice to have time off.", words: [{part: "Det är skönt att "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " ledigt."}] },
+    { category: "Infinitive", translation: "I want to have a coffee.", words: [{part: "Jag vill "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " en kaffe."}] },
+    { category: "Infinitive", translation: "One must have patience.", words: [{part: "Man måste "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " tålamod."}] },
+    { category: "Infinitive", translation: "It can have its advantages.", words: [{part: "Det kan "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " sina fördelar."}] },
+    { category: "Infinitive", translation: "She seems to have a good time.", words: [{part: "Hon verkar "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " det bra."}] },
+    { category: "Infinitive", translation: "You need a permit here to keep animals.", words: [{part: "Här krävs det tillstånd för att "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " djur."}] },
+    { category: "Infinitive", translation: "Shouldn’t the cat have a name?", words: [{part: "Borde inte katten "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " ett namn?"}] },
+    { category: "Infinitive", translation: "How can he have such enormous bad luck?", words: [{part: "Hur kan han "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " sådan enorm otur?"}] },
+    { category: "Infinitive", translation: "This treatment is said to have many advantages.", words: [{part: "Den här behandlingen sägs "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " många fördelar."}] },
+    { category: "Infinitive", translation: "I am trying to have a positive attitude.", words: [{part: "Jag försöker "}, {type:"select", optionSet:"alt", correct:"ha"}, {part: " en positiv inställning."}] }
+];
+
+let score = 0;
+
+/* ==========================================================================
+   2. RENDERINGSLOGIK (HTML-GENERERING)
+   ========================================================================== */
+
+// Skapar HTML för en rullista och slumpar alternativen
+function createSelect(optionSet, correct) {
+    const options = OPTIONS[optionSet];
+    const shuffled = shuffleArray([...options]);
+
+    return `<span class="select-wrapper"><select data-correct="${correct}" onchange="evaluateAnswer(this)">
+        <option value="">Select</option>
+        ${shuffled.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
+    </select></span>`;
+}
+
+// Genererar den fullständiga HTML-strukturen för ett "menings-kort"
+function generateSentenceHTML(sentence, index) {
+    let isFirstElement = true;
+
+    const sentenceHTML = sentence.words.map((item) => {
+        if (item.type === "select") {
+            const html = createSelect(item.optionSet, item.correct);
+            if (isFirstElement) {
+                isFirstElement = false;
+                return html.replace("<select", '<select class="first-dropdown"');
+            }
+            isFirstElement = false;
+            return html;
+        }
+
+        let text = item.part;
+        if (isFirstElement && text.trim() !== "") {
+            text = text.charAt(0).toUpperCase() + text.slice(1);
+            isFirstElement = false;
+        }
+        if (/^[.,?!]/.test(text)) {
+            text = `<span class="interp">${text}</span>`;
+        }
+        return text;
+    }).join('');
+
+    return `
+    <div class="sentence unanswered">
+        <div class="sentence-header">
+            <div class="hint-text-wrapper" id="hint-wrapper-${index}">
+                <div class="hint-content hint-category">${sentence.category}</div>
+                <div class="hint-content hint-translation">${sentence.translation}</div>
+            </div>
+            
+            <div class="hint-controls">
+                <div class="hint-toggle-container">
+                    <i class="fas fa-shapes icon-form" title="Form"></i> 
+                    <label class="hint-switch">
+                        <input type="checkbox" onchange="toggleHintAnimation(this, ${index})">
+                        <span class="hint-slider"></span>
+                    </label>
+                    <i class="fas fa-language icon-eng" title="English"></i> 
+                </div>
+            </div>
+        </div>
+        <p>
+            ${sentenceHTML}
+            <span class="play-btn-container" id="play-container-${index}"></span>
+        </p>
+    </div>`;
+}
+
+// Slumpar ordningen på meningarna och ritar ut dem på sidan
+function renderSentences() {
+    const shuffledSentences = shuffleArray([...sentences]);
+    const sentencesHTML = shuffledSentences.map((sentence, index) => generateSentenceHTML(sentence, index)).join('');
+    document.getElementById('sentences').innerHTML = sentencesHTML;
+    updateMaxScore();
+}
+
+/* ==========================================================================
+   3. INTERAKTION & VALIDERING
+   ========================================================================== */
+
+// Kontrollerar användarens svar, uppdaterar poäng och visar play-knapp vid rätt svar
+function evaluateAnswer(selectElement) {
+    const parent = selectElement.closest('.sentence');
+    const index = Array.from(document.querySelectorAll('.sentence')).indexOf(parent);
+    const allSelectsInSentence = parent.querySelectorAll('select');
+    const playContainer = document.getElementById(`play-container-${index}`);
+
+    let allCorrect = true;
+    let anyIncorrect = false;
+    let anyAnswered = false;
+
+    allSelectsInSentence.forEach(sel => {
+        if (sel.value !== "") anyAnswered = true;
+        if (sel.value === "") allCorrect = false;
+        else if (sel.value !== sel.getAttribute('data-correct')) anyIncorrect = true;
+    });
+
+    const wasCorrect = parent.classList.contains('correct');
+    parent.classList.remove('correct', 'incorrect', 'unanswered');
+
+    if (!anyAnswered) parent.classList.add('unanswered');
+    else if (anyIncorrect) parent.classList.add('incorrect');
+    else if (allCorrect) parent.classList.add('correct');
+
+    // Hantera Play-knappen (Ljuduppspelning)
+    if (parent.classList.contains('correct')) {
+        if (!playContainer.hasChildNodes()) {
+            const playBtn = document.createElement('button');
+            playBtn.className = 'sentence-play-btn';
+            playBtn.innerHTML = '<i class="fa-solid fa-circle-play"></i>';
+            playBtn.onclick = () => {
+                let fullText = "";
+                parent.querySelector('p').childNodes.forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE) fullText += node.textContent;
+                    else if (node.classList && node.classList.contains('select-wrapper')) {
+                        fullText += node.querySelector('select').getAttribute('data-correct');
+                    } else {
+                        fullText += node.textContent;
+                    }
+                });
+                speakSentence(fullText);
+            };
+            playContainer.appendChild(playBtn);
+        }
+    } else {
+        playContainer.innerHTML = "";
+    }
+
+    // Uppdatera den globala poängen (1 poäng per mening)
+    const isNowCorrect = parent.classList.contains('correct');
+    if (isNowCorrect && !wasCorrect) score++;
+    else if (!isNowCorrect && wasCorrect) score--;
+
+    document.querySelectorAll('.score-display').forEach(d => d.textContent = score);
+    checkAllCorrect();
+}
+
+// Växlar mellan "Form" och "English" ledtråd
+function toggleHintAnimation(checkbox, index) {
+    const wrapper = document.getElementById(`hint-wrapper-${index}`);
+    if (checkbox.checked) {
+        wrapper.classList.add('show-eng');
+    } else {
+        wrapper.classList.remove('show-eng');
+    }
+}
+
+// Kontrollerar om hela övningen är klar
+function checkAllCorrect() {
+    const allCorrect = Array.from(document.querySelectorAll('.sentence')).every(sentence => sentence.classList.contains('correct'));
+    if (allCorrect) {
+        openModal('congratulationsModal');
+    }
+}
+
+/* ==========================================================================
+   4. MODALER (INFO & GRATTIS)
+   ========================================================================== */
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+    }
+}
+
+// Stäng modal vid klick utanför innehållet
+window.addEventListener('click', (event) => {
+    const infoModal = document.getElementById('infoModal');
+    const congratulationsModal = document.getElementById('congratulationsModal');
+    if (event.target === infoModal) closeModal('infoModal');
+    else if (event.target === congratulationsModal) closeModal('congratulationsModal');
+});
+
+/* ==========================================================================
+   5. SYSTEMFUNKTIONER (DARK MODE, SCORE, SHUFFLE)
+   ========================================================================== */
+
+// Dark Mode logik
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDarkModeEnabled = document.body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkModeEnabled ? 'enabled' : 'disabled');
+}
+
+function initializeModalsAndDarkMode() {
+    const darkModeToggle = document.getElementById('darkModeSwitch');
+    const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+    document.body.classList.toggle('dark-mode', isDarkModeEnabled);
+    if (darkModeToggle) {
+        darkModeToggle.checked = isDarkModeEnabled;
+        darkModeToggle.addEventListener('change', toggleDarkMode);
+    }
+}
+
+// Uppdaterar maxpoängen baserat på antal meningar
+function updateMaxScore() {
+    const totalSentences = document.querySelectorAll('.sentence').length;
+    document.querySelectorAll('.score-max').forEach(el => el.textContent = totalSentences);
+}
+
+// Startar om övningen
+function startOver() {
+    renderSentences();
+    resetScore();
+    closeModal('congratulationsModal');
+}
+
+function resetScore() {
+    score = 0;
+    document.querySelectorAll('.score-display').forEach((element) => {
+        element.textContent = score;
+    });
+    document.querySelectorAll('.sentence').forEach(sentence => {
+        sentence.classList.remove('correct', 'incorrect');
+    });
+}
+
+// Fisher-Yates slumpalgoritm
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+/* ==========================================================================
+   6. TALSYNTES (TTS)
+   ========================================================================== */
+
+function speakSentence(text) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const voices = window.speechSynthesis.getVoices();
+
+    // Prioritera Premium/Natural röster
+    const swedishVoice = voices.find(v => v.lang.includes("sv") && v.name.includes("Premium")) || 
+                         voices.find(v => v.lang.includes("sv") && v.name.includes("Natural")) ||
+                         voices.find(v => v.lang.includes("sv"));
+
+    if (swedishVoice) u.voice = swedishVoice;
+    u.lang = "sv-SE";
+    u.rate = 0.7; // Pedagogiskt tempo
+    u.pitch = 1.0;
+    u.volume = 1.0;
+
+    window.speechSynthesis.speak(u);
+}
+
+/* ==========================================================================
+   7. INITIALISERING (DOM LOAD)
+   ========================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const isMobile = window.matchMedia("(max-width: 700px)").matches;
+    if (isMobile) return;
+
+    renderSentences();
+    updateMaxScore();
+    resetScore();
+    initializeModalsAndDarkMode();
+
+    // Sätt fokus på body för att hantera tangentbordsinteraktioner
+    setTimeout(() => {
+        document.body.focus();
+    }, 0);
+});
+</script>
+</body>
+</html>

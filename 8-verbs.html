@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eight high-frequency verbs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+  --bg: #f6f4f0;
+  --surface: #ffffff;
+  --surface2: #f0ede8;
+  --surface3: #e8e4dd;
+  --text: #1a1714;
+  --text-muted: #8a8078;
+  --border: #e2ddd7;
+  --shadow: rgba(0,0,0,0.07);
+  --shadow-md: rgba(0,0,0,0.13);
+
+  --inf: #1d6fa4;
+  --inf-bg: #e8f3fb;
+  --inf-border: #b8d8f0;
+  --pres: #1e7e4e;
+  --pres-bg: #e6f7ee;
+  --pres-border: #a8dfc0;
+  --past: #b8540a;
+  --past-bg: #fdf0e6;
+  --past-border: #f0c89a;
+  --supine: #7b3fa0;
+  --supine-bg: #f4edfb;
+  --supine-border: #d4b0f0;
+  --imp: #c0392b;
+  --imp-bg: #fceae9;
+
+  --accent: #c0392b;
+  --radius: 12px;
+  --transition: 0.22s ease;
+}
+
+[data-theme="dark"] {
+  --bg: #141210;
+  --surface: #1e1c19;
+  --surface2: #2a2722;
+  --surface3: #332f28;
+  --text: #f0ece5;
+  --text-muted: #8a8078;
+  --border: #333028;
+  --shadow: rgba(0,0,0,0.3);
+  --shadow-md: rgba(0,0,0,0.5);
+
+  --inf: #5ab0e8;
+  --inf-bg: #162335;
+  --inf-border: #2a4a68;
+  --pres: #4ec483;
+  --pres-bg: #112a1d;
+  --pres-border: #1e5038;
+  --past: #e8934a;
+  --past-bg: #2a1a0a;
+  --past-border: #5a3518;
+  --supine: #be8de8;
+  --supine-bg: #221535;
+  --supine-border: #4a2870;
+  --imp: #ff7675;
+  --imp-bg: #2d1616;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  padding: 40px 20px 60px;
+  transition: background var(--transition), color var(--transition);
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.wrap { max-width: 1150px; margin: auto; }
+
+/* ─── HEADER ─── */
+header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.title-group h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(26px, 5vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.title-group p {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin-top: 6px;
+  font-weight: 300;
+}
+
+/* ─── THEME TOGGLE ─── */
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: all var(--transition);
+  box-shadow: 0 1px 4px var(--shadow);
+  white-space: nowrap;
+}
+.theme-toggle:hover { color: var(--text); box-shadow: 0 2px 8px var(--shadow-md); }
+.theme-toggle i { font-size: 14px; }
+
+/* ─── HOW IT WORKS BANNER ─── */
+.how-it-works {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 1px 8px var(--shadow);
+}
+
+.how-it-works-icon {
+  font-size: 22px;
+  color: var(--inf);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.how-it-works-content h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: 0.1px;
+}
+
+.how-it-works-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hiw-step {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.hiw-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.hiw-sep { color: var(--border); font-size: 16px; }
+
+/* ─── TENSE LEGEND ─── */
+.tense-legend {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.tense-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.tense-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.tense-card.inf::before  { background: var(--inf); }
+.tense-card.pres::before { background: var(--pres); }
+.tense-card.past::before { background: var(--past); }
+.tense-card.supine::before { background: var(--supine); }
+
+.tense-card-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.tense-card.inf    .tense-card-label { color: var(--inf); }
+.tense-card.pres   .tense-card-label { color: var(--pres); }
+.tense-card.past   .tense-card-label { color: var(--past); }
+.tense-card.supine .tense-card-label { color: var(--supine); }
+
+.tense-card-use {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.tense-card-example {
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ─── TABLE ─── */
+.table-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 2px 16px var(--shadow);
+  margin-bottom: 14px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  /* Detta tvingar webbläsaren att respektera de bredder vi sätter på th */
+  table-layout: fixed; 
+}
+
+thead tr {
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  width: 20%; 
+  padding: 0;
+  text-align: left;
+  overflow: hidden; /* Förhindrar att innehåll trycker ut kolumnen */
+}
+
+.th-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 18px;
+  gap: 2px;
+}
+
+.th-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.th-sublabel {
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.65;
+  font-style: italic;
+  letter-spacing: 0.2px;
+}
+
+/* Color-coded headers */
+th.col-inf    .th-label { color: var(--inf); }
+th.col-pres   .th-label { color: var(--pres); }
+th.col-past   .th-label { color: var(--past); }
+th.col-supine .th-label { color: var(--supine); }
+th.col-ex     .th-label { color: var(--text-muted); }
+
+th.col-inf    { background: color-mix(in srgb, var(--inf-bg) 60%, var(--surface)); }
+th.col-pres   { background: color-mix(in srgb, var(--pres-bg) 60%, var(--surface)); }
+th.col-past   { background: color-mix(in srgb, var(--past-bg) 60%, var(--surface)); }
+th.col-supine { background: color-mix(in srgb, var(--supine-bg) 60%, var(--surface)); }
+th.col-ex     { background: var(--surface2); }
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface2); }
+
+td { padding: 8px 12px; vertical-align: middle; }
+
+/* ─── VERB CHIP ─── */
+.verb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 17px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all 0.18s ease;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  position: relative;
+  outline: none;
+  width: 100%;
+}
+
+.verb-chip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.verb-chip:hover::before,
+.verb-chip:focus-visible::before { opacity: 1; }
+
+[data-type="inf"]    { color: var(--inf); }
+[data-type="inf"]::before    { background: var(--inf-bg); border: 1px solid var(--inf-border); }
+
+[data-type="pres"]   { color: var(--pres); }
+[data-type="pres"]::before   { background: var(--pres-bg); border: 1px solid var(--pres-border); }
+
+[data-type="past"]   { color: var(--past); }
+[data-type="past"]::before   { background: var(--past-bg); border: 1px solid var(--past-border); }
+
+[data-type="supine"] { color: var(--supine); }
+[data-type="supine"]::before { background: var(--supine-bg); border: 1px solid var(--supine-border); }
+
+[data-type="imp"]    { color: var(--imp); }
+[data-type="imp"]::before    { background: var(--imp-bg); }
+
+.verb-chip span { position: relative; z-index: 1; }
+
+.chip-arrow {
+  position: relative;
+  z-index: 1;
+  font-size: 10px;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all 0.15s ease;
+  margin-left: auto;
+}
+
+.verb-chip:hover .chip-arrow,
+.verb-chip:focus-visible .chip-arrow {
+  opacity: 0.7;
+  transform: translateX(0);
+}
+
+/* ─── TOOLTIP ─── */
+#tooltip {
+  position: fixed;
+  background: var(--text);
+  color: var(--bg);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+  z-index: 999;
+  letter-spacing: 0.2px;
+}
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: var(--surface);
+  width: 100%;
+  max-width: 700px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transform: translateY(24px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.25s ease;
+  opacity: 0;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.modal-overlay.closing .modal-content {
+  transform: translateY(16px) scale(0.97);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-overlay.closing {
+  opacity: 0;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+/* ─── MODAL HEADER ─── */
+.modal-header {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modal-header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+}
+
+/* Big colored indicator bar */
+.modal-color-bar {
+  width: 4px;
+  align-self: stretch;
+  border-radius: 4px;
+  flex-shrink: 0;
+  min-height: 48px;
+}
+
+.modal-title-block {}
+
+.modal-form-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  padding: 3px 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.modal-form-badge i { font-size: 10px; }
+
+.modal-verb {
+  font-family: 'DM Serif Display', serif;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.modal-eng {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* Close button */
+.close-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--transition);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.close-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+  border-color: var(--text-muted);
+  transform: rotate(90deg);
+}
+
+.close-btn i { font-size: 14px; }
+
+/* ─── MODAL BODY ─── */
+.modal-body { padding: 20px 24px 24px; }
+
+/* Tense usage tag inside modal */
+.tense-usage-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.tense-usage-row i {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.tense-usage-row strong {
+  font-weight: 600;
+}
+
+th .help-btn {
+  padding: 4px 10px;
+  background: var(--surface);
+  opacity: 0.8;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+th .help-btn:hover {
+  opacity: 1;
+  background: var(--surface2);
+}
+
+/* Formula pills */
+.formula-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'DM Serif Display', serif;
+}
+
+/* Section divider */
+.modal-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin: 18px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Example card */
+.example-card {
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+  transition: background var(--transition);
+  animation: slideUp 0.3s ease both;
+}
+
+.example-card:last-child { margin-bottom: 0; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.example-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.example-label i { font-size: 15px; }
+
+.example-sv {
+  font-size: 20px;
+  font-weight: 400;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.example-sv-text { flex: 1; line-height: 1.4; }
+
+.example-en {
+  font-size: 15px;
+  color: var(--text-muted);
+  font-style: italic;
+  font-weight: 300;
+  margin-top: 5px;
+}
+
+.header-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 14px;
+  display: inline-flex; /* Ändrat från flex för bättre linjering */
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif; /* Tvingar samma font */
+  color: var(--text-muted);
+  font-weight: 500;
+  transition: all var(--transition);
+  box-shadow: 0 1px 4px var(--shadow);
+  white-space: nowrap;
+  height: 36px; /* Spikar höjden så de är exakt lika höga */
+}
+
+.header-btn:hover {
+  color: var(--text);
+  box-shadow: 0 2px 8px var(--shadow-md);
+  border-color: var(--text-muted);
+}
+
+.header-btn i {
+  font-size: 14px;
+  width: 16px; /* Fixerad bredd på ikonen så texten inte hoppar */
+  text-align: center;
+}
+
+#themeToggle {
+  width: 120px; /* Spikar bredden så den inte ändras när texten skiftar */
+  justify-content: flex-start; /* Håller ikonen till vänster även om bredden är fast */
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* Ser till att knapparna ligger på en rak linje även om titeln är lång */
+  align-self: flex-start; 
+  margin-top: 5px;
+}
+
+/* PLAY BUTTON */
+.play-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 6px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  margin-top: 14px;
+}
+
+.play-btn:hover {
+  color: var(--accent);
+  background: rgba(192, 57, 43, 0.08);
+  transform: scale(1.1);
+}
+
+.play-btn:active { transform: scale(0.95); }
+.play-btn i { font-size: 18px; }
+
+.th-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.about-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px var(--shadow);
+  background: var(--surface);
+}
+
+/* Färgkodade knappar baserat på kolumn */
+.col-inf .about-btn { color: var(--inf); border-color: var(--inf-border); background: var(--inf-bg); }
+.col-pres .about-btn { color: var(--pres); border-color: var(--pres-border); background: var(--pres-bg); }
+.col-past .about-btn { color: var(--past); border-color: var(--past-border); background: var(--past-bg); }
+.col-supine .about-btn { color: var(--supine); border-color: var(--supine-border); background: var(--supine-bg); }
+
+.about-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px var(--shadow-md);
+  filter: brightness(0.95);
+}
+
+.about-btn i {
+  font-size: 12px;
+}
+
+/* Dark mode justering för knapparna */
+[data-theme="dark"] .about-btn {
+  filter: brightness(1.2);
+}
+
+/* Justering av sublabel så den ligger kvar under rubriken */
+.th-sublabel {
+  display: block;
+  min-height: 14px;
+}
+
+/* ─── EXERCISE BTN ─── */
+.exercise-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.exercise-btn i {
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.exercise-btn:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px var(--shadow);
+  transform: translateY(-1px);
+}
+
+.exercise-btn:active { transform: translateY(0); }
+
+/* ─── HINT BAR ─── */
+.hint-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  font-weight: 300;
+}
+
+.hint-bar i { font-size: 12px; }
+
+.help-btn {
+  margin-top: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+
+.help-btn:hover {
+  color: var(--text);
+  box-shadow: 0 2px 8px var(--shadow-md);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 700px) {
+  .tense-legend { grid-template-columns: repeat(2, 1fr); }
+  th, td { padding: 9px 10px; }
+  .verb-chip { font-size: 15px; padding: 5px 9px; }
+  .modal-content { border-radius: 14px; }
+  .how-it-works-steps { flex-direction: column; gap: 6px; }
+  .hiw-sep { display: none; }
+}
+
+@media (max-width: 480px) {
+  .tense-legend { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- ── HEADER ── -->
+<header>
+  <div class="title-group">
+    <h1>Eight high&#8209;frequency verbs</h1>
+    <p>The most common verbs in Swedish — master these first</p>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" id="helpBtn">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>How it works</span>
+    </button>
+
+    <button class="header-btn" id="themeToggle" aria-label="Byt tema">
+      <i class="fa-solid fa-moon" id="themeIcon"></i>
+      <span id="themeLabel">Dark mode</span>
+    </button>
+  </div>
+</header>
+
+  <!-- ── TABLE ── -->
+  <div class="table-box">
+    <table aria-label="Verbtabell">
+<thead>
+  <tr>
+    <th class="col-inf">
+      <div class="th-inner">
+        <div class="th-header-row">
+          <span class="th-label">Infinitive</span>
+          <button class="about-btn" onclick="openAboutModal('inf')">
+            <i class="fa-solid fa-circle-question"></i> About
+          </button>
+        </div>
+        <span class="th-sublabel">base form · to <u>be</u></span>
+      </div>
+    </th>
+    <th class="col-pres">
+      <div class="th-inner">
+        <div class="th-header-row">
+          <span class="th-label">Present tense</span>
+          <button class="about-btn" onclick="openAboutModal('pres')">
+            <i class="fa-solid fa-circle-question"></i> About
+          </button>
+        </div>
+        <span class="th-sublabel">right now / always · he <u>is</u> here</span>
+      </div>
+    </th>
+    <th class="col-past">
+      <div class="th-inner">
+        <div class="th-header-row">
+          <span class="th-label">Past tense</span>
+          <button class="about-btn" onclick="openAboutModal('past')">
+            <i class="fa-solid fa-circle-question"></i> About
+          </button>
+        </div>
+        <span class="th-sublabel">back in time: he <u>was</u> here</span>
+      </div>
+    </th>
+    <th class="col-supine">
+      <div class="th-inner">
+        <div class="th-header-row">
+          <span class="th-label">Supine</span>
+          <button class="about-btn" onclick="openAboutModal('supine')">
+            <i class="fa-solid fa-circle-question"></i> About
+          </button>
+        </div>
+        <span class="th-sublabel">he has/had <u>been</u> here</span>
+      </div>
+    </th>
+    <th class="col-ex">
+      <div class="th-inner">
+        <span class="th-label">Exercises</span>
+        <span class="th-sublabel" style="margin-top: 15px;">test yourself</span>
+      </div>
+    </th>
+  </tr>
+</thead>
+      <tbody id="verb-table"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ── TOOLTIP ── -->
+<div id="tooltip"></div>
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalVerb">
+  <div class="modal-content" id="modalContent">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-color-bar" id="modalColorBar"></div>
+        <div class="modal-title-block">
+          <div class="modal-form-badge" id="modalFormBadge"></div>
+          <div class="modal-verb" id="modalVerb"></div>
+          <div class="modal-eng" id="modalEng"></div>
+        </div>
+      </div>
+      <button class="close-btn" id="closeModal" aria-label="Stäng">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ── HELP MODAL ── -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-title-block">
+        <div class="modal-verb" style="font-size:22px;">How to use this table</div>
+      </div>
+      <button class="close-btn" id="closeHelp">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="how-it-works-steps" style="flex-direction:column; gap:10px;">
+        
+        <div class="hiw-step">
+          <div class="hiw-num">1</div>
+          <span>Click any <strong>verb form</strong> to see example sentences</span>
+        </div>
+
+        <div class="hiw-step">
+          <div class="hiw-num">2</div>
+          <span>Press <i class="fa-solid fa-circle-play" style="color:var(--accent);"></i> to hear pronunciation</span>
+        </div>
+
+        <div class="hiw-step">
+          <div class="hiw-num">3</div>
+          <span>Hover a verb for its English meaning</span>
+        </div>
+
+        <div class="hiw-step">
+          <div class="hiw-num">4</div>
+          <span>Click <strong>Practice</strong> to test yourself</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const verbs = [
+{
+    infinitive: {
+      form: "vara", eng: "to be", formlabel: "Infinitive",
+      examples: [
+        { sv: "Jag vill vara din vän.", en: "I want to be your friend.", label: "Infinitive" },
+        { sv: "Man måste vara försiktig.", en: "One must be careful.", label: "Infinitive" }
+      ],
+      future: { 
+        sv: "Det kommer att vara utmanande, men det löser sig.", 
+        en: "It will be challenging, but it will work out.", 
+        label: "Future tense: kommer att [+ infinitive →] vara" 
+      }
+    },
+    presenttense: { 
+      form: "är", eng: "is / are", formLabel: "Present tense", 
+      examples: [
+        { sv: "Hon är väldigt snäll mot alla.", en: "She is very kind to everyone." }, 
+        { sv: "Det är kallt ute idag.", en: "It is cold outside today." }
+      ] 
+    },
+    pasttense: { 
+      form: "var", eng: "was / were", formLabel: "Past tense", 
+      examples: [
+        { sv: "Vi var i London förra veckan.", en: "We were in London last week." }, 
+        { sv: "Igår var det soligt hela dagen.", en: "Yesterday it was sunny all day." }
+      ] 
+    },
+    supine: {
+      form: "varit", eng: "been", formLabel: "Supine",
+      examples: [
+        { sv: "Jag har varit i Paris tre gånger.", en: "I have been to Paris three times.", label: "Perfect tense: har [+ supine →] varit" },
+        { sv: "Jag trodde att de hade varit där förut.", en: "I thought that they had been there before.", label: "Pluperfect tense: hade [+ supine →] varit" }
+      ]
+    },
+	exerciseUrl: "https://learnswedish.github.io/html/v-vara.html"
+  },
+{
+    infinitive: {
+      form: "ha", eng: "to have", formlabel: "Infinitive",
+      examples: [
+        { sv: "Jag vill ha en kaffe.", en: "I want to have a coffee.", label: "Infinitive" },
+        { sv: "Man måste ha tålamod.", en: "One must have patience.", label: "Infinitive" }
+      ],
+      future: { 
+        sv: "Vi kommer att ha fint väder de kommande fyra dagarna.", 
+        en: "We will have good weather over the next four days.", 
+        label: "Future tense: kommer att [+ infinitive →] ha" 
+      }
+    },
+    presenttense: { 
+      form: "har", eng: "have / has", formLabel: "Present tense", 
+      examples: [
+        { sv: "Hon har ett väldigt stort hus.", en: "She has a very large house." }, 
+        { sv: "Jag har ont i huvudet idag.", en: "I have a headache today." }
+      ] 
+    },
+    pasttense: { 
+      form: "hade", eng: "had", formLabel: "Past tense", 
+      examples: [
+        { sv: "Igår hade de väldigt roligt.", en: "Yesterday they had a lot of fun." }, 
+        { sv: "Vi hade en liten hund när jag var liten.", en: "We had a small dog when I was little." }
+      ] 
+    },
+    supine: {
+      form: "haft", eng: "had", formLabel: "Supine",
+      examples: [
+        { sv: "Jag har haft den här bilen i tre år.", en: "I have had this car for three years.", label: "Perfect tense: har [+ supine →] haft" },
+        { sv: "Jag trodde att de hade haft nog.", en: "I thought they had had enough.", label: "Pluperfect tense: hade [+ supine →] haft" }
+      ]
+    },
+	exerciseUrl: "https://learnswedish.github.io/html/v-ha.html"
+  },
+{
+    infinitive: {
+      form: "göra", eng: "to do / make", formlabel: "Infinitive",
+      examples: [
+        { sv: "Vad vill du göra ikväll?", en: "What do you want to do tonight?", label: "Infinitive" },
+        { sv: "Det är roligt att göra något nytt.", en: "It is fun to do something new.", label: "Infinitive" }
+      ],
+      future: { 
+        sv: "Det här kommer att göra arbetet enklare.", 
+        en: "This will make the work easier.", 
+        label: "Future tense: kommer att [+ infinitive →] göra" 
+      }
+    },
+    presenttense: { 
+      form: "gör", eng: "do / does", formLabel: "Present tense", 
+      examples: [
+        { sv: "Hon gör alltid sitt bästa.", en: "She always does her best." }, 
+        { sv: "Vad gör du just nu?", en: "What are you doing right now?" }
+      ] 
+    },
+    pasttense: { 
+      form: "gjorde", eng: "did", formLabel: "Past tense", 
+      examples: [
+        { sv: "Igår gjorde jag allt jag skulle.", en: "Yesterday I did everything I should." }, 
+        { sv: "Vi gjorde ett stort arbete förra veckan.", en: "We did a lot of work last week." }
+      ] 
+    },
+    supine: {
+      form: "gjort", eng: "done", formLabel: "Supine",
+      examples: [
+        { sv: "De har gjort ett val nu.", en: "They have made a decision now.", label: "Perfect tense: har [+ supine →] gjort" },
+        { sv: "Hon hade aldrig tidigare gjort kanelbullar.", en: "She had never made cinnamon buns before.", label: "Pluperfect tense: hade [+ supine →] gjort" }
+      ]
+    },
+	exerciseUrl: "https://learnswedish.github.io/html/v-gora.html"
+  },
+{
+    infinitive: {
+      form: "säga", eng: "to say", formlabel: "Infinitive",
+      examples: [
+        { sv: "Du måste säga sanningen.", en: "You must say the truth.", label: "Infinitive" },
+        { sv: "Det är viktigt att säga nej ibland.", en: "It is important to say no sometimes.", label: "Infinitive" }
+      ],
+      future: { 
+        sv: "De kommer att säga ja till förslaget.", 
+        en: "They will say yes to the proposal.", 
+        label: "Future tense: kommer att [+ infinitive →] säga" 
+      }
+    },
+    presenttense: { 
+      form: "säger", eng: "say / says", formLabel: "Present tense", 
+      examples: [
+        { sv: "Hon säger alltid vad hon tänker.", en: "She always says what she thinks." }, 
+        { sv: "Vad säger hunden?", en: "What does the dog say?" }
+      ] 
+    },
+    pasttense: { 
+      form: "sa", eng: "said", formLabel: "Past tense", 
+      examples: [
+        { sv: "Experten sa att det var möjligt.", en: "The expert said it was possible." }, 
+        { sv: "Hon sa hejdå och gick.", en: "She said goodbye and left." }
+      ] 
+    },
+    supine: {
+      form: "sagt", eng: "said", formLabel: "Supine",
+      examples: [
+        { sv: "Jag har alltid sagt att du är begåvad.", en: "I have always said you are talented.", label: "Perfect tense: har [+ supine →] sagt" },
+        { sv: "Jag önskar att jag hade sagt sanningen.", en: "I wish I had said the truth.", label: "Pluperfect tense: hade [+ supine →] sagt" }
+      ]
+    },
+	exerciseUrl: "https://learnswedish.github.io/html/v-saga.html"
+  },
+{
+    infinitive: {
+      form: "få", eng: "to get / receive", formlabel: "Infinitive",
+      examples: [
+        { sv: "Kan jag få ett glas vatten?", en: "Can I get a glass of water?", label: "Infinitive" },
+        { sv: "Det är viktigt att få tillräckligt med sömn.", en: "It is important to get enough sleep.", label: "Infinitive" }
+      ],
+      future: { 
+        sv: "Jag kommer att få mer information imorgon.", 
+        en: "I will get more information tomorrow.", 
+        label: "Future tense: kommer att [+ infinitive →] få" 
+      }
+    },
+    presenttense: { 
+      form: "får", eng: "get / may", formLabel: "Present tense", 
+      examples: [
+        { sv: "Du får välja vilken du vill ha.", en: "You get to choose which one you want." }, 
+        { sv: "Man får inte röka här.", en: "One is not allowed to smoke here." }
+      ] 
+    },
+    pasttense: { 
+      form: "fick", eng: "got", formLabel: "Past tense", 
+      examples: [
+        { sv: "Jag fick en ny jacka igår.", en: "I got a new jacket yesterday." }, 
+        { sv: "De fick äntligen svar.", en: "They finally got a reply." }
+      ] 
+    },
+    supine: {
+      form: "fått", eng: "got / received", formLabel: "Supine",
+      examples: [
+        { sv: "Hon har äntligen fått ett jobb.", en: "She has finally got a job.", label: "Perfect tense: har [+ supine →] fått" },
+        { sv: "De hade redan fått sin middag.", en: "They had already got their dinner.", label: "Pluperfect tense: hade [+ supine →] fått" }
+      ]
+    },
+	exerciseUrl: "https://learnswedish.github.io/html/v-fa.html"
+  },
+{
+    infinitive: {
+      form: "gå", eng: "to go / walk", formlabel: "Infinitive",
+      examples: [
+        { sv: "Jag vill gå nu.", en: "I want to go now.", label: "Infinitive" },
+        { sv: "Det är skönt att gå i skogen.", en: "It is nice to walk in the forest.", label: "Infinitive" }
+      ],
+      future: { 
+        sv: "Allt kommer att gå jättebra.", 
+        en: "Everything will go fine.", 
+        label: "Future tense: kommer att [+ infinitive →] gå" 
+      }
+    },
+    presenttense: { 
+      form: "går", eng: "go / walk", formLabel: "Present tense", 
+      examples: [
+        { sv: "Jag går hem nu.", en: "I am going home now." }, 
+        { sv: "Bussen går var tionde minut.", en: "The bus goes every ten minutes." }
+      ] 
+    },
+    pasttense: { 
+      form: "gick", eng: "went", formLabel: "Past tense", 
+      examples: [
+        { sv: "Igår gick vi långt.", en: "Yesterday we walked a long way." }, 
+        { sv: "Allt gick bra till slut.", en: "Everything went well in the end." }
+      ] 
+    },
+    supine: {
+      form: "gått", eng: "gone", formLabel: "Supine",
+      examples: [
+        { sv: "Det har verkligen gått bra.", en: "It has really gone well.", label: "Perfect tense: har [+ supine →] gått" },
+        { sv: "De hade redan gått när jag kom.", en: "They had already gone when I arrived.", label: "Pluperfect tense: hade [+ supine →] gått" }
+      ]
+    },
+	exerciseUrl: "https://learnswedish.github.io/html/v-ga.html"
+  },
+{
+    infinitive: {
+      form: "ta", eng: "to take", formlabel: "Infinitive",
+      examples: [
+        { sv: "Jag vill ta en taxi.", en: "I want to take a taxi.", label: "Infinitive" },
+        { sv: "Det är viktigt att ta pauser.", en: "It is important to take breaks.", label: "Infinitive" }
+      ],
+      future: { 
+        sv: "De kommer att ta tåget imorgon.", 
+        en: "They will take the train tomorrow.", 
+        label: "Future tense: kommer att [+ infinitive →] ta" 
+      }
+    },
+    presenttense: { 
+      form: "tar", eng: "take / takes", formLabel: "Present tense", 
+      examples: [
+        { sv: "Hon tar alltid bussen till jobbet.", en: "She always takes the bus to work." }, 
+        { sv: "Allt tar tid i början.", en: "Everything takes time in the beginning." }
+      ] 
+    },
+    pasttense: { 
+      form: "tog", eng: "took", formLabel: "Past tense", 
+      examples: [
+        { sv: "Igår tog han sista tåget hem.", en: "Yesterday he took the last train home." }, 
+        { sv: "Vi tog en promenad i parken.", en: "We took a walk in the park." }
+      ] 
+    },
+    supine: {
+      form: "tagit", eng: "taken", formLabel: "Supine",
+      examples: [
+        { sv: "Jag har redan tagit min medicin.", en: "I have already taken my medicine.", label: "Perfect tense: har [+ supine →] tagit" },
+        { sv: "Tjuven hade redan tagit pengarna.", en: "The thief had already taken the money.", label: "Pluperfect tense: hade [+ supine →] tagit" }
+      ]
+    },
+	exerciseUrl: "https://learnswedish.github.io/html/v-ta.html"
+  },
+{
+    infinitive: {
+      form: "komma", eng: "to come", formlabel: "Infinitive",
+      examples: [
+        { sv: "Det är skönt att komma hem.", en: "It is nice to come home.", label: "Infinitive" },
+        { sv: "Man måste komma till saken.", en: "One must come to the point.", label: "Infinitive" }
+      ],
+      future: { 
+        sv: "Jag kommer att komma så snart som möjligt.", 
+        en: "I will come as soon as possible.", 
+        label: "Future tense: kommer att [+ infinitive →] komma" 
+      }
+    },
+    presenttense: { 
+      form: "kommer", eng: "come / comes", formLabel: "Present tense", 
+      examples: [
+        { sv: "Sommaren kommer snart.", en: "Summer is coming soon." }, 
+        { sv: "Hon alltid kommer i tid.", en: "She always comes on time." }
+      ] 
+    },
+    pasttense: { 
+      form: "kom", eng: "came", formLabel: "Past tense", 
+      examples: [
+        { sv: "Igår kom han hem vid midnatt.", en: "Yesterday he came home at midnight." }, 
+        { sv: "Det kom som en stor överraskning.", en: "It came as a big surprise." }
+      ] 
+    },
+    supine: {
+      form: "kommit", eng: "come", formLabel: "Supine",
+      examples: [
+        { sv: "Våren har äntligen kommit!", en: "Spring has finally come!", label: "Perfect tense: har [+ supine →] kommit" },
+        { sv: "Plötsligt såg jag att paketet hade kommit.", en: "Suddenly I saw that the package had come.", label: "Pluperfect tense: hade [+ supine →] kommit" }
+      ]
+    },
+	exerciseUrl: "https://learnswedish.github.io/html/v-komma.html"
+  }
+];
+
+const typeMap = {
+  infinitive: "inf",
+  presenttense: "pres",
+  pasttense: "past",
+  supine: "supine",
+};
+
+const formLabels = {
+  inf: "Infinitive",
+  pres: "Present tense",
+  past: "Past tense",
+  supine: "Supine",
+};
+
+const formIcons = {
+  inf: "fa-infinity",
+  pres: "fa-circle",
+  past: "fa-clock-rotate-left",
+  supine: "fa-layer-group",
+};
+
+// Build table
+const tableBody = document.getElementById("verb-table");
+
+verbs.forEach(v => {
+  const tr = document.createElement("tr");
+
+  ["infinitive", "presenttense", "pasttense", "supine"].forEach(type => {
+    const td = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.className = "verb-chip";
+    btn.dataset.type = typeMap[type];
+    btn.dataset.info = JSON.stringify(v[type]);
+    btn.setAttribute("tabindex", "0");
+    btn.innerHTML = `<span>${v[type].form}</span><i class="chip-arrow fa-solid fa-arrow-right"></i>`;
+    td.appendChild(btn);
+    tr.appendChild(td);
+  });
+
+  // Exercise column
+  const tdExercise = document.createElement("td");
+  const exerciseBtn = document.createElement("button");
+  exerciseBtn.className = "exercise-btn";
+  exerciseBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Practice</span>';
+
+exerciseBtn.onclick = () => {
+  if (v.exerciseUrl) {
+    window.open(v.exerciseUrl, '_blank'); // Öppnar din specifika länk
+  } else {
+    // Fallback om du glömt en länk
+    window.open(`https://din-ovnings-sida.se/verb/${v.infinitive.form}`, '_blank');
+  }
+};
+
+  tdExercise.appendChild(exerciseBtn);
+  tr.appendChild(tdExercise);
+  tableBody.appendChild(tr);
+});
+
+// ── Tooltip ──
+const tooltip = document.getElementById("tooltip");
+document.addEventListener("mouseover", e => {
+  const chip = e.target.closest(".verb-chip");
+  if (!chip) return;
+  const data = JSON.parse(chip.dataset.info);
+  tooltip.textContent = data.eng || "";
+  const rect = chip.getBoundingClientRect();
+  tooltip.style.left = rect.left + rect.width / 2 + "px";
+  tooltip.style.top = rect.top - 10 + "px";
+  tooltip.style.transform = "translate(-50%, -100%)";
+  tooltip.style.opacity = "1";
+});
+document.addEventListener("mouseout", e => {
+  if (e.target.closest(".verb-chip")) tooltip.style.opacity = "0";
+});
+
+// ── Modal ──
+const modal = document.getElementById("modal");
+let isClosing = false;
+
+// Data för "About"-modalerna
+const aboutData = {
+inf: {
+    title: "The Infinitive",
+    text: `
+      <p>The <strong>infinitive</strong> is the base form of the verb. In English, it's usually "to be", "to have", etc. In Swedish, it almost always ends in <em>-a</em> (vara, göra, komma).</p>
+      
+      <div class="modal-section-title">Common uses</div>
+      <div class="example-card" style="border-left: 3px solid var(--inf);">
+        <p>1. After modal verbs: <em>Jag vill <strong>vara</strong> glad</em> (I want to be happy).</p>
+        <p>2. After the word 'att': <em>Det är roligt att <strong>ha</strong> hund</em> (It is fun to have a dog).</p>
+      </div>
+
+      <div class="modal-section-title">Forming the Future Tense</div>
+      <p>In Swedish, the infinitive is used to describe things that will happen in the future. You combine a "future marker" with the base form of the verb.</p><br>     
+
+      <div class="example-card" style="border-left: 3px solid var(--inf); background: var(--surface);">
+        <p><strong>Option A: Kommer att + Infinitive</strong> (Predictions/Natural events)</p>
+        <p><em>Det kommer att <strong>regna</strong> imorgon.</em> (It is going to rain tomorrow.)</p>
+        
+        <p style="margin-top: 10px;"><strong>Option B: Ska + Infinitive</strong> (Plans/Intentions)</p>
+        <p><em>Jag ska <strong>få</strong> en present.</em> (I shall get a present / I am going to get a present.)</p>
+      </div>
+    `
+  },
+pres: {
+    title: "The Present Tense",
+    text: `
+      <p>The <strong>present tense</strong> (presens) is used for actions happening now, habits, or things that are always true. In Swedish, most present tense verbs end in <strong>-r</strong>.</p>
+      
+      <div class="modal-section-title">One form, two meanings</div>
+      <p>A key difference from English is that Swedish only has <strong>one</strong> present form. There is no difference between saying you "do" something and you "are doing" something.</p><br>
+      
+      <div class="example-card" style="border-left: 3px solid var(--pres); background: var(--surface);">
+        <p><em>Jag <strong>går</strong></em> can mean:</p>
+        <ul style="margin-left: 20px; margin-top: 5px; list-style-type: disc;">
+          <li>I walk (habit/general)</li>
+          <li>I am walking (right now)</li>
+        </ul>
+      </div>
+
+      <div class="modal-section-title">Examples</div>
+      <div class="example-card" style="border-left: 3px solid var(--pres);">
+        <p><strong>1. Happening now:</strong><br><em>Tåget <strong>går</strong> nu.</em> (The train is leaving now.)</p>
+        <p style="margin-top: 10px;"><strong>2. General truth/Habit:</strong><br><em>Han <strong>är</strong> alltid snäll.</em> (He is always kind.)</p>
+        <p style="margin-top: 10px;"><strong>3. Future intent:</strong><br><em>Jag <strong>kommer</strong> imorgon.</em> (I am coming tomorrow.)</p>
+      </div>
+     `
+  },
+past: {
+    title: "The Past Tense (Preteritum)",
+    text: `
+      <p>The <strong>Past Tense</strong> describes an action that occured (or was relevant) at a specific time in the past. In Swedish, we call this <em>Preteritum</em>.</p>
+      
+      <div class="modal-section-title">The "Time Stamp" Rule</div>
+      <p>Use this form when you have a specific "time stamp" in mind. The moment has passed and the event has no direct link to the present.</p><br>
+      
+      
+
+      <div class="example-card" style="border-left: 3px solid var(--past); background: var(--surface2);">
+        <p><strong>Look for these 'time' words:</strong></p>
+        <p style="font-size: 13px; margin-top: 5px;">
+          <em>igår</em> (yesterday) • <em>förra veckan</em> (last week) • <em>då</em> (then) • <em>för två timmar sedan</em> (two hours ago)
+        </p>
+      </div>
+
+      <div class="modal-section-title">Examples</div>
+      <div class="example-card" style="border-left: 3px solid var(--past);">
+        <p><strong>1. A specific day:</strong><br><em>Vi <strong>var</strong> trötta igår.</em> (We were tired yesterday.)</p>
+        <p style="margin-top: 10px;"><strong>2. A finished period:</strong><br><em>Han <strong>bodde</strong> i London 2010.</em> (He lived in London in 2010.)</p>
+        <p style="margin-top: 10px;"><strong>3. A sequence of events:</strong><br><em>Hon <strong>kom</strong> hem, <strong>tog</strong> en kaffe och <strong>sa</strong> hej.</em> (She came home, took a coffee, and said hello.)</p>
+      </div>
+    `
+  },
+  supine: {
+    title: "The Supine Form",
+    text: `
+      <p>The <strong>supine</strong> is used with <strong>har</strong> (perfect) and <strong>hade</strong> (pluperfect). The tense is shown by <strong>har</strong> or <strong>hade</strong>, not by the supine itself. The supine never changes form and cannot be used on its own.</p>
+      
+      <div class="modal-section-title">1. Perfect Tense (har + supine)</div>
+      <p>Describes an experience or a past action with relevance to the present. The focus is on <em>what</em> has happened, not <em>when</em> it happened.</p><br>
+      <div class="example-card" style="border-left: 3px solid var(--supine);">
+        <em>Jag <strong>har varit</strong> i London.</em> (I have been to London — at some point in my life).
+      </div>
+
+      <div class="modal-section-title">2. Pluperfect Tense (hade + supine)</div>
+      <p>The "past of the past". Describes an action that had already happened before another past action. It is also used in hypothetical situations.</p><br>
+<div class="example-card" style="border-left: 3px solid var(--supine);">
+  <em>Han <strong>hade gått</strong> när jag kom.</em> (He had gone when I arrived).<br>
+  <em>Om han <strong>hade gått</strong> tidigare, hade han kommit i tid.</em> (If he had left earlier, he would have arrived on time).
+</div>
+    `
+  }
+};
+
+// Funktion för att öppna "About"-modalen
+function openAboutModal(type) {
+  const data = aboutData[type];
+  const badge = document.getElementById("modalFormBadge");
+  badge.innerHTML = `<i class="fa-solid ${formIcons[type]}"></i> Grammar Info`;
+  badge.style.color = `var(--${type})`;
+  badge.style.borderColor = `var(--${type}-border)`;
+
+  document.getElementById("modalColorBar").style.background = `var(--${type})`;
+  document.getElementById("modalVerb").textContent = data.title;
+  document.getElementById("modalVerb").style.color = `var(--${type})`;
+
+  const body = document.getElementById("modalBody");
+  body.innerHTML = data.text;
+
+  modal.classList.add("active");
+}
+
+// Uppdaterad version av din vanliga openModal (utan tenseUsage-texten högst upp)
+function openModal(info, type) {
+  const badge = document.getElementById("modalFormBadge");
+  badge.innerHTML = `<i class="fa-solid ${formIcons[type]}"></i> ${formLabels[type]}`;
+  badge.style.color = `var(--${type})`;
+  badge.style.borderColor = `var(--${type}-border)`;
+
+  document.getElementById("modalColorBar").style.background = `var(--${type})`;
+  document.getElementById("modalVerb").textContent = info.form;
+  document.getElementById("modalVerb").style.color = `var(--${type})`;
+  document.getElementById("modalEng").textContent = info.eng;
+
+  const body = document.getElementById("modalBody");
+  let contentHtml = `<div class="modal-section-title">Examples</div>`;
+
+  contentHtml += (info.examples || []).map((ex, i) => `
+    <div class="example-card" style="animation-delay:${i * 60}ms; border-left: 3px solid var(--${type});">
+      ${ex.label ? `<div class="example-label" style="color:var(--${type});">${ex.label}</div>` : ""}
+      <div class="example-sv">
+        <span class="example-sv-text">${ex.sv}</span>
+        <button class="play-btn" data-text="${ex.sv}" aria-label="Spela upp"><i class="fa-solid fa-circle-play"></i></button>
+      </div>
+      <div class="example-en">${ex.en}</div>
+    </div>
+  `).join("");
+
+  if (type === 'inf' && info.future) {
+    contentHtml += `
+      <div class="modal-section-title">Future tense</div>
+      <div class="example-card" style="border-left: 4px solid var(--inf);">
+        <div class="example-label" style="color:var(--inf);font-weight:800;"><i class="fa-solid fa-forward"></i>${info.future.label}</div>
+        <div class="example-sv">
+          <span class="example-sv-text">${info.future.sv}</span>
+          <button class="play-btn" data-text="${info.future.sv}" aria-label="Spela upp"><i class="fa-solid fa-circle-play"></i></button>
+        </div>
+        <div class="example-en">${info.future.en}</div>
+      </div>`;
+  }
+
+  body.innerHTML = contentHtml;
+  modal.classList.add("active");
+}
+
+function closeModal() {
+  if (isClosing) return;
+  isClosing = true;
+  modal.classList.add("closing");
+  setTimeout(() => {
+    modal.classList.remove("active", "closing");
+    isClosing = false;
+  }, 200);
+}
+
+document.addEventListener("click", e => {
+  const chip = e.target.closest(".verb-chip");
+  if (chip) { openModal(JSON.parse(chip.dataset.info), chip.dataset.type); return; }
+  const playBtn = e.target.closest(".play-btn");
+  if (playBtn) { speak(playBtn.dataset.text); return; }
+  if (e.target === modal) closeModal();
+});
+
+document.getElementById("closeModal").addEventListener("click", closeModal);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+// ── TTS ──
+let selectedVoice = null;
+function loadVoices() {
+  const voices = speechSynthesis.getVoices();
+  selectedVoice = voices.find(v => v.lang.startsWith("sv") && /anna|hilda|alva/i.test(v.name)) ||
+                  voices.find(v => v.lang.startsWith("sv")) || null;
+}
+speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+function speak(text) {
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const voices = speechSynthesis.getVoices();
+  const swedishVoice = voices.find(v => v.lang.includes("sv") && v.name.includes("Premium")) ||
+                       voices.find(v => v.lang.includes("sv") && v.name.includes("Natural")) ||
+                       voices.find(v => v.lang.includes("sv"));
+  if (swedishVoice) u.voice = swedishVoice;
+  u.lang = "sv-SE";
+  u.rate = 0.8;
+  u.pitch = 1.2;
+  u.volume = 1.0;
+  speechSynthesis.speak(u);
+}
+
+// ── Theme ──
+const html = document.documentElement;
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+const themeLabel = document.getElementById("themeLabel");
+
+themeToggle.addEventListener("click", () => {
+  const next = html.dataset.theme === "dark" ? "light" : "dark";
+  applyTheme(next);
+  localStorage.setItem("theme", next);
+});
+
+function applyTheme(t) {
+  html.dataset.theme = t;
+  if (t === "dark") {
+    themeIcon.className = "fa-solid fa-sun";
+    themeLabel.textContent = "Light mode";
+  } else {
+    themeIcon.className = "fa-solid fa-moon";
+    themeLabel.textContent = "Dark mode";
+  }
+}
+
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme) applyTheme(savedTheme);
+
+window.addEventListener('load', () => {
+  if (document.activeElement) document.activeElement.blur();
+});
+
+const helpBtn = document.getElementById("helpBtn");
+const helpModal = document.getElementById("helpModal");
+const closeHelp = document.getElementById("closeHelp");
+
+helpBtn.addEventListener("click", () => {
+  helpModal.classList.add("active");
+});
+
+closeHelp.addEventListener("click", () => {
+  helpModal.classList.remove("active");
+});
+
+helpModal.addEventListener("click", e => {
+  if (e.target === helpModal) {
+    helpModal.classList.remove("active");
+  }
+});
+</script>
+</body>
+</html>
