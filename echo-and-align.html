@@ -3,193 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Echo & Align</title>
+    <title>Repeat or Change</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
-/* GRUNDLÄGGANDE STYLING */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial,sans-serif;background-color:#f9fafb;color:#2d3748;line-height:1.6;font-size:16px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;min-height:100vh;padding:20px;overflow-y:auto;position:relative;transition:background-color 0.3s,color 0.3s;}
-body.dark-mode{background-color:#121212;color:#e2e8f0;}
+/* ================================================================
+1. GLOBAL RESET & BASSTYLING 
+================================================================
+*/
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-/* MODALER OCH KNAPPAR */
-.close-button {
-    float: right;
-    padding: 5px;
-    cursor: pointer;
-    font-size: 18px;
-    background-color: #ccc;
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: #f9fafb;
+    color: #2d3748;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-y: auto;
+    position: relative;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e2e8f0;
+}
+
+/* --- Progress Bar Styling --- */
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 16px;
+    background-color: #e2e8f0; /* Light mode bg */
+    z-index: 4000;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4ade80, #3b82f6);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode .progress-container {
+    background-color: #2d3748;
+}
+
+/* --- Fixed Header Logic --- */
+.header-wrapper {
+    position: fixed;
+    top: 0px;
+    left: 0;
+    right: 0;	
+    width: 100%;
+    background-color: #f9fafb;
+    z-index: 1000;
+    padding-top: 50px; 
+    padding-bottom: 20px;
+        text-align: center;
+    transition: background-color 0.3s;
+}
+
+.header-wrapper::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    width: 50%;
+    height: 2px;
+    background-color: #e2e8f0;
+	border-radius: 2px;
+}
+
+body.dark-mode .header-wrapper {
+    background-color: #121212;
+}
+
+body.dark-mode .header-wrapper::after {
+    background-color: #2d3748;
+}
+
+.container {
+    margin-top: 200px;
+    background-color: #ffffff;
+    max-width: 850px;
+    width: 100%;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    position: relative;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .container {
+    background-color: #1a202c;
+    box-shadow: 0 10px 25px rgba(255,255,255,0.1);
+}
+
+.page-title {
+    font-size: 28px;
+    color: #333333;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    padding-top: 10px;
+    transition: color 0.3s ease;
+}
+
+body.dark-mode .page-title {
+    color: #ffffff;
+}
+
+/* ================================================================
+2. SCORE & KONTROLLER (SIDOFÄLT)
+================================================================
+*/
+.score-container {
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 150px;
+}
+
+.score, .dark-mode-toggle, .start-over {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #333;
     border: none;
-    border-radius: 50%;
-    line-height: 20px;
-    width: 30px;
-    height: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Transition gör animationen mjuk */
-    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* Animation vid hovring */
-.close-button:hover {
-    background-color: #e53e3e; /* Röd färg vid hover */
-    color: white;
-    transform: scale(1.1) rotate(90deg); /* Snurrar 90 grader och blir lite större */
+.dark-mode-toggle {
+    justify-content: flex-start;
+    gap: 10px;
+    user-select: none;
 }
 
-body.dark-mode .close-button {
-    background-color: #555;
-    color: #ffcccc;
-}
-
-body.dark-mode .close-button:hover {
-    background-color: #f56565;
+.start-over {
+    background-color: #007BFF;
     color: white;
 }
 
-.container{background-color:#ffffff;padding:40px 30px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.1);max-width:850px;width:100%;text-align:center;position:relative;transition:background-color 0.3s,box-shadow 0.3s;margin-top:20px;}
-body.dark-mode .container{background-color:#1a202c;box-shadow:0 10px 25px rgba(255,255,255,0.1);}
+.start-over:hover {
+    background-color: #0056b3;
+}
 
-.dark-mode-toggle{justify-content:flex-start;padding:0 10px;gap:10px;cursor:pointer;user-select:none;}
-.page-title{text-align:center;color:#333333;font-size:28px;margin-bottom:20px;line-height:1.4;padding-top:10px;position:relative;z-index:1;transition:color 0.3s ease;}
-body.dark-mode .page-title{color:#ffffff;}
+/* Switches (Toggle-knappar) */
+.switch {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    display: inline-block;
+}
 
-.score-container{position:fixed;top:20px;right:40px;display:flex;flex-direction:column;align-items:stretch;width:150px;z-index:1001;gap:10px;transition:background-color 0.3s ease,box-shadow 0.3s ease;}
+.switch input { display: none; }
 
-/* MENINGSKORT - GRUNDSTIL */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    border-radius: 20px;
+    transition: 0.4s;
+}
+
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+.switch input:checked + .slider { background-color: #007BFF; }
+.switch input:checked + .slider::before { transform: translateX(20px); }
+
+/* ================================================================
+3. MENINGSKORT & STATUSFÄRGER 
+================================================================
+*/
+.sentences {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
 .sentence {
     background-color: #f7fafc;
     padding: 20px;
     border-radius: 8px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    position: relative;
     display: flex;
     align-items: center;
     text-align: left;
     transition: all 0.2s ease;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
     margin-bottom: 15px;
+    position: relative;
 }
 
-/* Person A: Frågan */
+body.dark-mode .sentence {
+    background-color: #2d3748;
+    box-shadow: 0 4px 10px rgba(255,255,255,0.05);
+}
+
+.sentence p {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+body.dark-mode .sentence p { color: #edf2f7; }
+
 .question-container {
     flex: 0 0 230px;
+    font-size: 16px;
     color: #4a5568;
-	font-size: 18px;
+    white-space: nowrap;
 }
+
 body.dark-mode .question-container { color: #cbd5e0; }
 
-/* Ditt svar */
 .answer-container {
     flex: 1;
+    margin-left: 65px;
     display: flex;
     align-items: center;
     gap: 5px;
     white-space: nowrap;
-	font-size: 18px;
-	margin-left: 65px;
+    font-size: 18px;
 }
 
-body.dark-mode .sentence {background-color:#2d3748; box-shadow:0 4px 10px rgba(255,255,255,0.05);}
+.period { margin-left: -5px; }
 
-/* STATUSFÄRGER */
-.sentence.correct { border-left-color: #38a169 !important; border-right-color: #38a169 !important; background-color:#cdffcd; }
-body.dark-mode .sentence.correct { background-color:#22543d; }
-
-.sentence.incorrect { border-left-color: #e53e3e !important; border-right-color: #e53e3e !important; background-color:#FFADB0; }
-body.dark-mode .sentence.incorrect { background-color:#742a2a; }
-
-/* HOVER-LOGIK */
-.sentence:hover {
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+/* Statusfärger */
+.sentence.correct {
+    border-color: #38a169 !important;
+    background-color: #cdffcd;
 }
+
+body.dark-mode .sentence.correct { background-color: #22543d; }
+
+.sentence.incorrect {
+    border-color: #e53e3e !important;
+    background-color: #FFADB0;
+}
+
+body.dark-mode .sentence.incorrect { background-color: #742a2a; }
+
+.sentence:hover { box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
 
 .sentence:not(.correct):not(.incorrect):hover {
     border-left-color: #007BFF;
     border-right-color: #007BFF;
 }
+
 body.dark-mode .sentence:not(.correct):not(.incorrect):hover {
     border-left-color: #63b3ed;
     border-right-color: #63b3ed;
     background-color: #334155;
 }
 
-/* TEXT OCH FORMULÄR */
-.sentence p { margin-bottom: 0; display: flex; align-items: center; font-size: 18px;}
-body.dark-mode .sentence p {color:#edf2f7;}
+/* ================================================================
+4. TWO-COLUMN DROPDOWN (CUSTOM SELECT)
+================================================================
+*/
+.two-col-dropdown { position: relative; display: inline-block; }
 
-.sentence select {
+.two-col-btn {
     padding: 6px 10px;
-    font-size: inherit;
-    border: 2px solid #cbd5e0; /* Lite tjockare ram */
+    background-color: #ffffff;
+    border: 2px solid #cbd5e0;
     border-radius: 8px;
-    background-color: #ffffff; /* Alltid vit bakgrund som standard */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     cursor: pointer;
-    transition: all 0.3s;
-    width: auto;
-    margin: 0 4px;
-    vertical-align: middle;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* En liten skugga på själva rutan */
+    font-size: inherit;
+    white-space: nowrap;
+    transition: border-color 0.2s;
 }
 
-/* Dark mode-anpassning för själva rutan */
-body.dark-mode .sentence select {
+body.dark-mode .two-col-btn {
     background-color: #2d3748;
     color: #edf2f7;
-    border: 2px solid #4a5568;
+    border-color: #4a5568;
 }
 
-.sentence select option {
-    background-color: #ffffff;
+.two-col-btn:hover { border-color: #3182ce; }
+.two-col-btn .tc-arrow { font-size: 10px; color: #718096; }
+
+.two-col-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 3000;
+    min-width: 227px;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e0;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    overflow: hidden;
+}
+
+.two-col-panel.open { display: block; }
+body.dark-mode .two-col-panel { background: #2d3748; border-color: #4a5568; }
+
+.two-col-cols { display: grid; grid-template-columns: 1fr 1fr; }
+.two-col-col { padding: 6px 0; }
+.two-col-col:first-child { border-right: 1px solid #e2e8f0; }
+body.dark-mode .two-col-col:first-child { border-color: #4a5568; }
+
+.two-col-col-header {
+    font-size: 11px;
+    font-weight: bold;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 12px 6px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 2px;
+}
+
+body.dark-mode .two-col-col-header { border-color: #4a5568; }
+
+.two-col-opt {
+    padding: 6px 12px;
+    font-size: 15px;
     color: #2d3748;
-    padding: 10px; /* Ger lite mer luft i vissa webbläsare */
+    cursor: pointer;
 }
 
-body.dark-mode .sentence select option {
-    background-color: #1a202c; /* Mörkare bakgrund i listan för dark mode */
-    color: #edf2f7;
+body.dark-mode .two-col-opt { color: #edf2f7; }
+.two-col-opt:hover { background: #ebf8ff; }
+body.dark-mode .two-col-opt:hover { background: #2c5282; }
+
+.two-col-opt.selected {
+    background: #bee3f8;
+    color: #2b6cb0;
+    font-weight: bold;
 }
 
-.sentence.active-focus select:focus {
-    border-color: #007BFF;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+body.dark-mode .two-col-opt.selected {
+    background: #2c5282;
+    color: #90cdf4;
+}
+
+/* Custom Input Wrapper */
+.two-col-opt-wrapper {
+    border-top: 1px solid #eee;
+    margin-top: 5px;
+}
+
+body.dark-mode .two-col-opt-wrapper { border-color: #4a5568; }
+.two-col-col:first-child .two-col-opt-wrapper { padding: 0; }
+
+.subjekt-input-container { padding: 4px 6px; }
+
+.custom-subjekt-input {
+    width: 100%;
+    padding: 11px 8px;
+    margin-top: -2px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.custom-subjekt-input:focus {
+    border-color: #3182ce !important;
+    box-shadow: 0 0 0 1px #3182ce;
     outline: none;
 }
 
-.sentence select:focus{border-color:#3182ce;outline:none;box-shadow:0 0 0 2px rgba(49,130,206,0.2);}
-body.dark-mode .sentence select:focus{border-color:#63b3ed;box-shadow:0 0 0 2px rgba(99,179,237,0.2);}
-
-.sentence .question-label{font-size:0.85rem;color:#718096;margin-bottom:6px;font-style:italic;}
-body.dark-mode .sentence .question-label{color:#a0aec0;}
-
-.sentences{display:grid;grid-template-columns:1fr;gap:20px;}
-
-/* SWITCHES OCH KNAPPAR */
-.switch{position:relative;width:40px;height:20px;display:inline-block;}
-.switch input{display:none;}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:0.4s;border-radius:20px;}
-.slider::before{position:absolute;content:"";height:14px;width:14px;left:3px;bottom:3px;background-color:white;transition:0.4s;border-radius:50%;}
-.switch input:checked+.slider{background-color:#007BFF;}
-.switch input:checked+.slider::before{transform:translateX(20px);}
-
-.start-over{background-color:#007BFF;color:white;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;transition:background-color 0.3s ease;}
-.start-over:hover{background-color:#0056b3;color:white;}
-
-.score,.dark-mode-toggle,.start-over{width:100%;height:40px;padding:0 10px;box-sizing:border-box;font-size:16px;text-align:center;background-color:#fff;color:#333;border-radius:5px;box-shadow:0 2px 4px rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;transition:background-color 0.3s,color 0.3s;cursor:pointer;border:none;}
-
-/* MODALER */
-.modal{display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;opacity:0;transition:opacity 0.3s ease-in-out;}
-.modal-content{background:white;color:black;padding:30px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,0.3);text-align:left;max-width:800px;width:90%;max-height:80vh;overflow-y:auto;transform:translateY(-20px);transition:transform 0.3s ease-in-out;}
-body.dark-mode .modal-content{background-color:#1a202c;color:#edf2f7;border:1px solid #2d3748;}
-.modal.show{display:flex;opacity:1;}
-.modal.show .modal-content{transform:translateY(0);}
-
-.period {
-    margin-left: -5px;
+body.dark-mode .custom-subjekt-input { 
+    background-color: #ffffff; 
+    color: #000000;
+    border-color: #4a5568; 
 }
 
-/* --- TOOLTIP LOGIK --- */
+.custom-subjekt-input::placeholder { color: #a0aec0; opacity: 0.8; }
+
+/* ================================================================
+5. TOOLTIP LOGIK (ÖVERSÄTTNINGAR)
+================================================================
+*/
 .sentence .tooltip-text {
     display: block;
     opacity: 0;
@@ -208,7 +435,6 @@ body.dark-mode .modal-content{background-color:#1a202c;color:#edf2f7;border:1px 
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     transition: opacity 0.3s, transform 0.3s;
     font-size: 1.05rem;
-    font-style: normal;
 }
 
 .sentence .tooltip-text::after {
@@ -221,106 +447,323 @@ body.dark-mode .modal-content{background-color:#1a202c;color:#edf2f7;border:1px 
     border-color: #2d3748 transparent transparent transparent;
 }
 
-/* Dölj tooltips om Translation-toggle är AV (Huvudströmbrytare) */
+body.dark-mode .sentence .tooltip-text { background-color: #4a5568; color: #edf2f7; }
+body.dark-mode .sentence .tooltip-text::after { border-color: #4a5568 transparent transparent transparent; }
+
+/* Huvudströmbrytare för översättning */
 body:not(.show-translation) .tooltip-text {
     display: none !important;
 }
 
-/* Om vi jobbar i en rad (is-working): Dölj alla tooltips som standard */
+/* 1. Om vi jobbar aktivt (is-working): Dölj alla tooltips som standard */
 .sentences.is-working .tooltip-text {
     visibility: hidden !important;
     opacity: 0 !important;
 }
 
-/* Visa ENDAST den aktiva radens tooltip OM togglen är på */
+/* 2. Visa ENDAST den aktiva radens tooltip OM vi jobbar aktivt */
 body.show-translation .sentences.is-working .sentence.active-focus .tooltip-text {
     visibility: visible !important;
     opacity: 1 !important;
     transform: translateY(-80%);
 }
 
-/* Vanlig hovring: Visa tooltip OM togglen är på och vi inte jobbar aktivt */
+/* 3. Vanlig hovring: Visa tooltip när användaren hovrar (om vi INTE jobbar aktivt) */
 body.show-translation .sentences:not(.is-working) .sentence:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
+    visibility: visible !important;
+    opacity: 1 !important;
     transform: translateY(-80%);
 }
 
-/* Dark mode-anpassning för tooltip */
-body.dark-mode .sentence .tooltip-text {background-color: #4a5568; color: #edf2f7;}
-body.dark-mode .sentence .tooltip-text::after {border-color: #4a5568 transparent transparent transparent;}
+/* ================================================================
+6. MODALER & MOBILSPÄRR
+================================================================
+*/
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 5000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: background-color 0.4s ease, opacity 0.4s ease;
+    backdrop-filter: blur(0px);
+    pointer-events: none;
+}
 
-/* RESPONSIVITET */
-@media(max-width:700px){
-    body>*:not(#mobileBlockModal){display:none!important;}
-    #mobileBlockModal{display:flex!important;position:fixed;inset:0;z-index:9999;opacity:1;}
+.modal.show {
+    display: flex;
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: white;
+    color: #2d3748;
+    padding: 40px;
+    border-radius: 16px;
+    max-width: 650px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    
+    /* Animation */
+    transform: translateY(30px) scale(0.95); 
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+body.dark-mode .modal-content { 
+    background-color: #1a202c; 
+    color: #edf2f7; 
+    border: 1px solid #4a5568; 
+}
+
+.close_container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 0;
+}
+
+/* Bakgrundscirkeln (Inverten) */
+.close_container:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 0;
+    width: 0;
+    border: 0 solid #cbd5e0; /* Startfärg */
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Själva ikonen */
+.close_icon {
+    transition: all 0.1s ease-in-out;
+    position: relative;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #718096;
+    border-radius: 50%;
+    color: #718096;
+    font-size: 14px;
+}
+
+/* --- HOVER EFFEKTEN (Invert) --- */
+
+.close_container:hover:before {
+    /* Cirkeln expanderar */
+    border-width: 18px; 
+    border-color: #718096; /* Färgen som fyller cirkeln */
+}
+
+.close_container:hover .close_icon {
+    border-color: #fff;
+    color: #fff; /* Ikonen blir vit mot den mörka bakgrunden */
+}
+
+/* --- ACTIVE EFFEKTEN (Klick) --- */
+
+.close_container:active:before {
+    border-color: #e53e3e; /* Blir röd vid klick */
+}
+
+.close_container:active .close_icon {
+    transform: scale(0.9);
+}
+
+/* --- DARK MODE ANPASSNING --- */
+
+body.dark-mode .close_container:before {
+    border-color: #4a5568;
+}
+
+body.dark-mode .close_icon {
+    border-color: #a0aec0;
+    color: #a0aec0;
+}
+
+body.dark-mode .close_container:hover:before {
+    border-color: #cbd5e0;
+}
+
+body.dark-mode .close_container:hover .close_icon {
+    color: #1a202c; /* Mörk ikon mot ljus bakgrund i dark mode */
+    border-color: #1a202c;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    padding-right: 40px; /* Skapar utrymme för krysset */
+    font-size: 24px;
+}
+
+@media (max-width: 700px) {
+    body > *:not(#mobileBlockModal) { display: none !important; }
+    #mobileBlockModal {
+        display: flex !important;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        opacity: 1;
+    }
 }
 </style>
 </head>
 <body>
 
-<div class="score-container">
-    <div class="score">Score:&nbsp;<span class="score-display">0</span>&nbsp;/&nbsp;<span class="score-max"></span></div>
-    <div class="dark-mode-toggle">
-        <label class="switch"><input type="checkbox" id="darkModeSwitch"><span class="slider"></span></label>
-        <span>Dark mode</span>
+    <div class="score-container">
+        <div class="score">
+            Score:&nbsp;<span class="score-display">0</span>&nbsp;/&nbsp;<span class="score-max"></span>
+        </div>
+        
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="translationSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Translation</span>
+        </div>
+        
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right:8px;"></i> Info
+        </button>
+        
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right:8px;"></i> Start over
+        </button>
     </div>
-    <div class="dark-mode-toggle">
-        <label class="switch"><input type="checkbox" id="translationSwitch"><span class="slider"></span></label>
-        <span>Translation</span>
-    </div>
-    <button class="start-over" id="info-button" onclick="openModal('infoModal')">
-        <i class="fas fa-info-circle" style="margin-right:8px;"></i> Info
-    </button>
-    <button class="start-over" onclick="startOver()">
-        <i class="fas fa-rotate-left" style="margin-right:8px;"></i> Start over
-    </button>
+
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
 </div>
 
-<h1 class="page-title">Echo & Align: Pick the correct verb and subject</h1>
-<p>Read the "Info" to understand what this exercise is about.</p>
-
-<div class="container">
-    <div class="sentences" id="sentences"></div>
+<div class="header-wrapper">
+    <h1 class="page-title">
+        <i class="fas fa-repeat" style="font-size: 0.8em; opacity: 0.7; margin-right: 0px;" title="Repeat"></i>
+        Repeat or 
+        <i class="fas fa-pen-to-square" style="font-size: 0.8em; opacity: 0.7; margin-left: 10px;" title="Adjust"></i>
+        Adjust the verb / subject
+    </h1>
+    <p style="margin-bottom:20px;">Read the "Info" to understand what this exercise is about.</p>
 </div>
 
-<div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
-<div class="modal-content">
-        <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
-        <h2 id="infoModalTitle">Echo & Align</h2>
-        <p>This exercise focuses on <strong>modality</strong> and <strong>perspective</strong> in Swedish. Modality shows how the speaker views an action. For example, "I must go" or "I can go" shows whether an action is a necessity or a possibility.</p><br />
-
-        <p>To provide a correct short answer in Swedish, you must master two things:<br><br>
-<strong>1. Echo (The Verb):</strong> If a question starts with a modal verb (<em>kan, vill, ska, måste, får, bör</em>) or the verbs <strong>vara</strong> (to be) and <strong>ha</strong> (to have), you <strong>echo</strong> (reuse) that verb in your answer.</p>
-                <br><em>Example: "Kan du?" – "Ja, det <strong>kan</strong> jag."</em><br>
-                <br>If the question starts with any other verb, you cannot reuse it. You must use the verb <strong>göra</strong> (to do).<br>
-                <br><em>Example: "Springer du?" – "Ja, det <strong>gör</strong> jag."</em><br><br>
-<strong>2. Align (The Subject):</strong> 
-                You must <strong>align</strong> the subject to the correct perspective. If Person A asks <strong>you</strong> a question, you answer with <strong>"jag"</strong> (I). If they ask about a group you are part of, you answer with <strong>"vi"</strong> (we).
-<br /><br>
-
-       <p>Each card presents a question in Swedish. Your task is to complete the short answer <strong>"Ja, det ___ ___."</strong> by selecting the correct verb and subject from the dropdown menus. Hover over a card or use the Translation toggle for help.</p>
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
     </div>
-</div>
 
-<div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
-    <div class="modal-content">
-        <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
-        <h2 id="congratulationsModalTitle">Congratulations!</h2>
-        <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
-    </div>
-</div>
+	<div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+		<div class="modal-content">
+			<button class="close-button close_container zoom_invert" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">
+				<div class="close_icon"><i class="fas fa-times"></i></div>
+			</button>
+			
+			<h2 id="infoModalTitle">
+				<i class="fas fa-repeat" style="font-size: 0.8em; opacity: 0.7; margin-right: 5px;" title="Repeat"></i>
+				Repeat or 
+				<i class="fas fa-pen-to-square" style="font-size: 0.8em; opacity: 0.7; margin-left: 5px;" title="Adjust"></i>
+				Adjust
+			</h2>
+	
+			<p>
+				This exercise focuses on <strong>modality</strong> and <strong>perspective</strong> in Swedish short answers. 
+				<strong>Modality</strong> indicates how the speaker views an action (e.g. necessity, possibility, or obligation), 
+				while <strong>perspective</strong> refers to the logical shift between the person asking the question and the person providing the answer.
+			</p>
+			
+			<br>
+			<p>To provide a correct short answer in Swedish, you must master two things:</p>
+			
+			<br>
+			<p><strong>1. The Verb: Identification and Logic</strong></p>
+			<p>
+				Swedish short answers follow a logic very similar to English. First, check if the question starts with a <strong>special verb</strong> (a modal verb like <em>kan, vill, ska, måste, får, bör</em> or the primary verbs <em>vara</em> and <em>ha</em>).
+			</p>
+			
+			<br>
+			<p>
+				<strong style="color: #2e7d32;">If YES:</strong> Just like in English ("Can you?" – "Yes, I <strong>can</strong>"), you <strong>repeat</strong> the verb in your answer.
+				<strong style="color: #d32f2f;">If NO:</strong> If it is a standard verb (e.g. <em>springer, äter, sover</em>), you must <strong>adjust</strong> the response by using a form of <strong>göra</strong> (to do).
+			</p>
+			
+			<br>
+			<p><strong>2. Selecting the Subject</strong></p>
+			<p>
+				Imagine that <strong>you</strong> are always the person being asked. You must <strong>adjust</strong> the subject to suit the perspective of the conversation:
+			</p>
+			<p>
+				If the question concerns <strong>you</strong> (<em>du</em>), you answer with <strong>"jag"</strong> (I). 
+				If the question concerns <strong>you and someone else</strong> (<em>ni</em>), you answer with <strong>"vi"</strong> (we), and so on.
+			</p>
+			
+			<br>
+			<p><strong>Enable Translation toggle to see translations when hovering over a card.</strong></p>
+		</div>
+	</div>
 
-<div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true">
-    <div class="modal-content" style="text-align:center;">
-        <h2>Not available on mobile</h2>
-        <p>This exercise is not designed for mobile phones, as many interactive features do not work well on small touchscreens.</p>
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+			<button class="close-button close_container zoom_invert" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">
+				<div class="close_icon"><i class="fas fa-times"></i></div>
+			</button>			
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all the questions correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
     </div>
-</div>
+
+    <div class="modal" id="mobileBlockModal" role="dialog" aria-modal="true">
+        <div class="modal-content" style="text-align:center;">
+            <h2>Not available on mobile</h2>
+            <p>This exercise is not designed for mobile phones, as many interactive features do not work well on small touchscreens.</p>
+        </div>
+    </div>
 
 <script>
-const verbBank = ["kan", "ska", "bör", "får", "måste", "är", "har", "vill", "gör"];
-const subjektBank = ["jag", "du", "han", "hon", "den", "det", "vi", "ni", "de"];
+/**
+ * REPEAT OR CHANGE - JAVASCRIPT
+ * * Innehåll:
+ * 1. Data: Exempelmeningar
+ * 2. Globala variabler & Initiering
+ * 3. Rendering & UI-bygge
+ * 4. Dropdown-logik (Interaktion)
+ * 5. Rättning & Poänglogik
+ * 6. Modaler & App-inställningar
+ */
+
+// --- 1. DATA: EXEMPELMENINGAR ---
 
 const sentences = [
     { "question": "Kan de förstå detta?", "translation": "Can they understand this?", "correctVerb": "kan", "correctSubjekt": "de" },
@@ -333,28 +776,28 @@ const sentences = [
     { "question": "Har de tid?", "translation": "Do they have time?", "correctVerb": "har", "correctSubjekt": "de" },
     { "question": "Reser de ofta?", "translation": "Do they travel often?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Säljer de huset?", "translation": "Do they sell the house?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Sjunger hon bra?", "translation": "Does she sing well?", "correctVerb": "gör", "correctSubjekt": "hon" },
-    { "question": "Tränar du mycket?", "translation": "Do you exercise a lot?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Lagar hon middag?", "translation": "Does she cook dinner?", "correctVerb": "gör", "correctSubjekt": "hon" },
-    { "question": "Packar du väskan?", "translation": "Do you pack your bag?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Bokar du biljetter?", "translation": "Do you book tickets?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Bygger han huset?", "translation": "Does he build the house?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Trycker du boken?", "translation": "Do you print the book?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
+    { "question": "Sjunger Maria bra?", "translation": "Does she sing well?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Tränar du mycket?", "translation": "Do you exercise a lot?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Lagar mamma middag?", "translation": "Does she cook dinner?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Packar du väskan?", "translation": "Do you pack your bag?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Bokar du biljetter?", "translation": "Do you book tickets?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Bygger pappa huset?", "translation": "Does he build the house?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Trycker du boken?", "translation": "Do you print the book?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Spelar laget bra?", "translation": "Does the team play well?", "correctVerb": "gör", "correctSubjekt": "det" },
     { "question": "Startar planet i tid?", "translation": "Does the plane leave on time?", "correctVerb": "gör", "correctSubjekt": "det" },
-    { "question": "Dyker du djupt?", "translation": "Do you dive deep?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Plockar ni bär?", "translation": "Do you pick berries?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Vattnar hon växterna?", "translation": "Does she water the plants?", "correctVerb": "gör", "correctSubjekt": "hon" },
-    { "question": "Klickar du på länken?", "translation": "Do you click the link?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Öppnar du filen?", "translation": "Do you open the file?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Delar du bilden?", "translation": "Do you share the image?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Söker du jobbet?", "translation": "Do you apply for the job?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
+    { "question": "Dyker du djupt?", "translation": "Do you dive deep?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Plockar ni bär?", "translation": "Do you pick berries?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Vattnar Sofia växterna?", "translation": "Does she water the plants?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Klickar du på länken?", "translation": "Do you click the link?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Öppnar du filen?", "translation": "Do you open the file?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Delar du bilden?", "translation": "Do you share the image?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Söker du jobbet?", "translation": "Do you apply for the job?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Anställer de personal?", "translation": "Do they hire staff?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Samarbetar ni bra?", "translation": "Do you cooperate well?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Korrigerar hon felet?", "translation": "Does she correct the error?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Samarbetar ni bra?", "translation": "Do you cooperate well?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Korrigerar Elsa felet?", "translation": "Does she correct the error?", "correctVerb": "gör", "correctSubjekt": "hon" },
     { "question": "Utvecklar de produkten?", "translation": "Do they develop the product?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Tolkar du resultatet?", "translation": "Do you interpret the result?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Kan han förklara igen?", "translation": "Can he explain again?", "correctVerb": "kan", "correctSubjekt": "han" },
+    { "question": "Tolkar du resultatet?", "translation": "Do you interpret the result?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Kan Tommy förklara detta igen?", "translation": "Can Tommy explain this again?", "correctVerb": "kan", "correctSubjekt": "han" },
     { "question": "Måste du rätta detta?", "translation": "Must you correct this?", "correctVerb": "måste", "correctSubjekt": "jag" },
     { "question": "Får jag ändra planen?", "translation": "May we change the plan?", "correctVerb": "får", "correctSubjekt": "du" },
     { "question": "Vill ni fortsätta?", "translation": "Do you want to continue?", "correctVerb": "vill", "correctSubjekt": "vi" },
@@ -368,36 +811,36 @@ const sentences = [
     { "question": "Slutar lektionen klockan tre?", "translation": "Does the lesson end at three?", "correctVerb": "gör", "correctSubjekt": "den" },
     { "question": "Går bussen i tid?", "translation": "Does the bus run on time?", "correctVerb": "gör", "correctSubjekt": "den" },
     { "question": "Ringer telefonen ofta?", "translation": "Does the phone ring often?", "correctVerb": "gör", "correctSubjekt": "den" },
-    { "question": "Förklarar han uppgiften?", "translation": "Does he explain the task?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Upprepar du frågan?", "translation": "Do you repeat the question?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
+    { "question": "Förklarar Anders uppgiften?", "translation": "Does Anders explain the task?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Upprepar du frågan?", "translation": "Do you repeat the question?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Vinner de matchen?", "translation": "Do they win the match?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Kör han bilen?", "translation": "Does he drive the car?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Flyger planet lågt?", "translation": "Does the plane fly low?", "correctVerb": "gör", "correctSubjekt": "den" },
+    { "question": "Flyger planet lågt?", "translation": "Does the plane fly low?", "correctVerb": "gör", "correctSubjekt": "det" },
     { "question": "Landar det snart?", "translation": "Does it land soon?", "correctVerb": "gör", "correctSubjekt": "det" },
     { "question": "Odlar de grönsaker?", "translation": "Do they grow vegetables?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Skördar han nu?", "translation": "Does he harvest now?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Planterar du blommor?", "translation": "Do you plant flowers?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Sparar du pengar?", "translation": "Do you save money?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Lånar du pengar?", "translation": "Do you borrow money?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Sparar du dokumentet?", "translation": "Do you save the document?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Kan barnet skriva sitt namn?", "translation": "Can the child write their name?", "correctVerb": "kan", "correctSubjekt": "det" },
+    { "question": "Planterar du blommor?", "translation": "Do you plant flowers?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Sparar du pengar?", "translation": "Do you save money?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Lånar du pengar?", "translation": "Do you borrow money?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Sparar du dokumentet?", "translation": "Do you save the document?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Kan flickan skriva sitt namn?", "translation": "Can the child write their name?", "correctVerb": "kan", "correctSubjekt": "hon" },
     { "question": "Kan tåget stanna här?", "translation": "Can the train stop here?", "correctVerb": "kan", "correctSubjekt": "det" },
-    { "question": "Ska barnet sova snart?", "translation": "Will the child sleep soon?", "correctVerb": "ska", "correctSubjekt": "det" },
+    { "question": "Ska pojken sova snart?", "translation": "Will the child sleep soon?", "correctVerb": "ska", "correctSubjekt": "han" },
     { "question": "Ska tåget gå i tid?", "translation": "Will the train run on time?", "correctVerb": "ska", "correctSubjekt": "det" },
-    { "question": "Bör barnet vila?", "translation": "Should the child rest?", "correctVerb": "bör", "correctSubjekt": "det" },
-    { "question": "Bör tåget stanna här?", "translation": "Should the train stop here?", "correctVerb": "bör", "correctSubjekt": "det" },
-    { "question": "Måste barnet sova nu?", "translation": "Must the child sleep now?", "correctVerb": "måste", "correctSubjekt": "det" },
+    { "question": "Bör mannen vila?", "translation": "Should the child rest?", "correctVerb": "bör", "correctSubjekt": "han" },
+    { "question": "Bör jag stanna här?", "translation": "Should I stop here?", "correctVerb": "bör", "correctSubjekt": "du" },
+    { "question": "Måste Sarah sova nu?", "translation": "Must the child sleep now?", "correctVerb": "måste", "correctSubjekt": "hon" },
     { "question": "Måste tåget avgå nu?", "translation": "Must the train depart now?", "correctVerb": "måste", "correctSubjekt": "det" },
-    { "question": "Får barnet leka ute?", "translation": "May the child play outside?", "correctVerb": "får", "correctSubjekt": "det" },
+    { "question": "Får barnen leka ute?", "translation": "May the child play outside?", "correctVerb": "får", "correctSubjekt": "de" },
     { "question": "Får tåget stanna här?", "translation": "May the train stop here?", "correctVerb": "får", "correctSubjekt": "det" },
-    { "question": "Vill barnet leka?", "translation": "Does the child want to play?", "correctVerb": "vill", "correctSubjekt": "det" },
-    { "question": "Vill tåget stanna här?", "translation": "Does the train want to stop here?", "correctVerb": "vill", "correctSubjekt": "det" },
+    { "question": "Vill barnen leka?", "translation": "Does the child want to play?", "correctVerb": "vill", "correctSubjekt": "de" },
+    { "question": "Stannar tåget här?", "translation": "Does the train stop here?", "correctVerb": "gör", "correctSubjekt": "det" },
     { "question": "Sover hunden?", "translation": "Does the dog sleep?", "correctVerb": "gör", "correctSubjekt": "den" },
-    { "question": "Har du ätit idag?", "translation": "Does the train run on time?", "correctVerb": "gör", "correctSubjekt": "det" },
-    { "question": "Har barnet ätit?", "translation": "Has the child eaten?", "correctVerb": "har", "correctSubjekt": "det" },
+{ "question": "Går tåget i tid?", "translation": "Does the train run on time?", "correctVerb": "gör", "correctSubjekt": "det" },
+    { "question": "Har tjejerna ätit?", "translation": "Have the girls eaten?", "correctVerb": "har", "correctSubjekt": "de" },
     { "question": "Har tåget gått?", "translation": "Has the train left?", "correctVerb": "har", "correctSubjekt": "det" },
-    { "question": "Går tåget i tid?", "translation": "Have you eaten today?", "correctVerb": "har", "correctSubjekt": "jag" },
-    { "question": "Leker barnen ute?", "translation": "Do the children play outside?", "correctVerb": "gör", "correctSubjekt": "de" },
+    { "question": "Har du ätit idag?", "translation": "Have you eaten today?", "correctVerb": "har", "correctSubjekt": "jag" },
+    { "question": "Leker barnen ute?", "translation": "Are the children playing outside?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Kan jag öppna dörren?", "translation": "Can I open the door?", "correctVerb": "kan", "correctSubjekt": "du" },
     { "question": "Ska jag ringa dig?", "translation": "Shall I call you?", "correctVerb": "ska", "correctSubjekt": "du" },
     { "question": "Bör jag träna mer?", "translation": "Should I exercise more?", "correctVerb": "bör", "correctSubjekt": "du" },
@@ -416,156 +859,189 @@ const sentences = [
     { "question": "Är han trött?", "translation": "Is he tired?", "correctVerb": "är", "correctSubjekt": "han" },
     { "question": "Har han pengar?", "translation": "Does he have money?", "correctVerb": "har", "correctSubjekt": "han" },
     { "question": "Studerar han medicin?", "translation": "Does he study medicine?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Springer han varje dag?", "translation": "Does he run every day?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Äter du frukost?", "translation": "Do you eat breakfast?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Pendlar ni varje dag?", "translation": "Do you commute every day?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Beställer ni mat?", "translation": "Do you order food?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Handlar ni ofta?", "translation": "Do you shop often?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Frågar du igen?", "translation": "Do you ask again?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Glömmer du ofta?", "translation": "Do you forget often?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Reparerar du cykeln?", "translation": "Do you repair the bicycle?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Programmerar ni detta?", "translation": "Do you programme this?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Tävlar du idag?", "translation": "Do you compete today?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Cyklar ni till jobbet?", "translation": "Do you cycle to work?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Vandrar ni i skogen?", "translation": "Do you walk in the forest?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
+    { "question": "Springer Jonatan varje dag?", "translation": "Does Jonatan run every day?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Äter du frukost?", "translation": "Do you eat breakfast?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Pendlar ni varje dag?", "translation": "Do you commute every day?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Beställer ni mat?", "translation": "Are you ordering food?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Handlar ni ofta?", "translation": "Do you shop often?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Frågar du igen?", "translation": "Are you asking again?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Glömmer du ofta?", "translation": "Do you forget often?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Reparerar du cykeln?", "translation": "Are you repairing the bicycle?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Programmerar ni detta?", "translation": "Are you programming this?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Tävlar du idag?", "translation": "Are you competing today?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Cyklar ni till jobbet?", "translation": "Do you cycle to work?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Vandrar ni i skogen?", "translation": "Do you hike in the forest?", "correctVerb": "gör", "correctSubjekt": "vi" },
     { "question": "Fiskar de här?", "translation": "Do they fish here?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Hänger du kläderna?", "translation": "Do you hang the clothes?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Betalar du räkningen?", "translation": "Do you pay the bill?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Tar du emot paketet?", "translation": "Do you receive the package?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Testar du funktionen?", "translation": "Do you test the function?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Loggar du in?", "translation": "Do you log in?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Laddar du ner appen?", "translation": "Do you download the app?", "correctVerb": "gör", "correctSubjekt": "jag" }, // Korrigerad: du -> jag
-    { "question": "Intervjuar de kandidaten?", "translation": "Do they interview the candidate?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Argumenterar han för saken?", "translation": "Does he argue for the case?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Godkänner de planen?", "translation": "Do they approve the plan?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Fortsätter du försöket?", "translation": "Do you continue the attempt?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Sammanfattar du texten?", "translation": "Do you summarise the text?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Väljer du lösningen?", "translation": "Do you choose the solution?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Hänger du kläderna?", "translation": "Are you hanging the clothes?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Betalar du räkningen?", "translation": "Are you paying the bill?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Tar du emot paketet?", "translation": "Are you receiving the parcel?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Testar du funktionen?", "translation": "Are you testing the function?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Loggar du in?", "translation": "Are you logging in?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Laddar du ner appen?", "translation": "Are you downloading the app?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Intervjuar de kandidaten?", "translation": "Are they interviewing the candidate?", "correctVerb": "gör", "correctSubjekt": "de" },
+    { "question": "Argumenterar han för saken?", "translation": "Is he arguing for the case?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Godkänner de planen?", "translation": "Are they approving the plan?", "correctVerb": "gör", "correctSubjekt": "de" },
+    { "question": "Fortsätter du försöket?", "translation": "Are you continuing the attempt?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Sammanfattar du texten?", "translation": "Are you summarising the text?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Väljer du lösningen?", "translation": "Are you choosing the solution?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Misslyckas de ofta?", "translation": "Do they fail often?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Försöker han igen?", "translation": "Does he try again?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Fokuserar han på uppgiften?", "translation": "Does he focus on the task?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Kan hon läsa snabbt?", "translation": "Can she read quickly?", "correctVerb": "kan", "correctSubjekt": "hon" },
-    { "question": "Ska hon läsa boken?", "translation": "Will she read the book?", "correctVerb": "ska", "correctSubjekt": "hon" },
+    { "question": "Försöker han igen?", "translation": "Is he trying again?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Fokuserar Niklas på uppgiften?", "translation": "Is Niklas focusing on the task?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Kan Sarah läsa snabbt?", "translation": "Can Sarah read quickly?", "correctVerb": "kan", "correctSubjekt": "hon" },
+    { "question": "Ska Helena läsa boken?", "translation": "Is Helena going to read the book?", "correctVerb": "ska", "correctSubjekt": "hon" },
     { "question": "Bör hon svara direkt?", "translation": "Should she answer immediately?", "correctVerb": "bör", "correctSubjekt": "hon" },
-    { "question": "Måste hon ringa honom?", "translation": "Must she call him?", "correctVerb": "måste", "correctSubjekt": "hon" },
-    { "question": "Får hon stanna här?", "translation": "May she stay here?", "correctVerb": "får", "correctSubjekt": "hon" },
+    { "question": "Måste mormor ringa till honom?", "translation": "Must Grandmother call him?", "correctVerb": "måste", "correctSubjekt": "hon" },
+    { "question": "Får farmor stanna här?", "translation": "May Grandmother stay here?", "correctVerb": "får", "correctSubjekt": "hon" },
     { "question": "Vill hon följa med?", "translation": "Does she want to come along?", "correctVerb": "vill", "correctSubjekt": "hon" },
     { "question": "Är hon lärare?", "translation": "Is she a teacher?", "correctVerb": "är", "correctSubjekt": "hon" },
     { "question": "Har hon ringt?", "translation": "Has she called?", "correctVerb": "har", "correctSubjekt": "hon" },
-    { "question": "Läser hon boken?", "translation": "Does she read the book?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Läser hon boken?", "translation": "Is she reading the book?", "correctVerb": "gör", "correctSubjekt": "hon" },
     { "question": "Dansar de ofta?", "translation": "Do they dance often?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Köper du kaffe här?", "translation": "Do you buy coffee here?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Tvättar du bilen?", "translation": "Do you wash the car?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Tvättar du bilen?", "translation": "Are you washing the car?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Visar guiden vägen?", "translation": "Does the guide show the way?", "correctVerb": "gör", "correctSubjekt": "den" },
     { "question": "Lär du dig snabbt?", "translation": "Do you learn quickly?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Ritar du ofta?", "translation": "Do you draw often?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Stänger du datorn?", "translation": "Do you shut down the computer?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Leder hon projektet?", "translation": "Does she lead the project?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Stänger du datorn?", "translation": "Are you shutting down the computer?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Leder hon projektet?", "translation": "Is she leading the project?", "correctVerb": "gör", "correctSubjekt": "hon" },
     { "question": "Kan du simma?", "translation": "Can you swim?", "correctVerb": "kan", "correctSubjekt": "jag" },
-    { "question": "Ska du resa imorgon?", "translation": "Will you travel tomorrow?", "correctVerb": "ska", "correctSubjekt": "jag" },
+    { "question": "Ska du resa imorgon?", "translation": "Are you travelling tomorrow?", "correctVerb": "ska", "correctSubjekt": "jag" },
     { "question": "Bör du säga något?", "translation": "Should you say something?", "correctVerb": "bör", "correctSubjekt": "jag" },
     { "question": "Måste du arbeta idag?", "translation": "Must you work today?", "correctVerb": "måste", "correctSubjekt": "jag" },
-    { "question": "Får du gå nu?", "translation": "May you go now?", "correctVerb": "får", "correctSubjekt": "jag" },
+    { "question": "Får du gå nu?", "translation": "Are you allowed to go now?", "correctVerb": "får", "correctSubjekt": "jag" },
     { "question": "Vill du ha kaffe?", "translation": "Do you want coffee?", "correctVerb": "vill", "correctSubjekt": "jag" },
     { "question": "Är du hemma?", "translation": "Are you at home?", "correctVerb": "är", "correctSubjekt": "jag" },
-    { "question": "Har du en bil?", "translation": "Do you have a car?", "correctVerb": "har", "correctSubjekt": "jag" },
+    { "question": "Har du en bil?", "translation": "Have you got a car?", "correctVerb": "har", "correctSubjekt": "jag" },
     { "question": "Talar du svenska?", "translation": "Do you speak Swedish?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Förstår du frågan?", "translation": "Do you understand the question?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Jobbar du idag?", "translation": "Do you work today?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Lagar du mat?", "translation": "Do you cook?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Jobbar du idag?", "translation": "Are you working today?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Lagar du mat?", "translation": "Are you cooking?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Spelar du piano?", "translation": "Do you play the piano?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Skriver du brev?", "translation": "Do you write letters?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Läser ni tidningen?", "translation": "Do you read the newspaper?", "correctVerb": "gör", "correctSubjekt": "vi" },
-    { "question": "Sover barnet?", "translation": "Does the child sleep?", "correctVerb": "gör", "correctSubjekt": "det" },
+    { "question": "Läser ni tidningen?", "translation": "Are you reading the newspaper?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Sover barnet?", "translation": "Is the child sleeping?", "correctVerb": "gör", "correctSubjekt": "det" },
     { "question": "Arbetar han hemma?", "translation": "Does he work from home?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Betalar han kontant?", "translation": "Does he pay in cash?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Städar hon rummet?", "translation": "Does she clean the room?", "correctVerb": "gör", "correctSubjekt": "hon" },
-    { "question": "Diskar han nu?", "translation": "Does he wash the dishes now?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Besöker hon museet?", "translation": "Does she visit the museum?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Betalar han kontant?", "translation": "Is he paying in cash?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Städar hon rummet?", "translation": "Is she cleaning the room?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Diskar pappa nu?", "translation": "Is Dad washing the dishes now?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Besöker hon museet?", "translation": "Is she visiting the museum?", "correctVerb": "gör", "correctSubjekt": "hon" },
     { "question": "Svarar han snabbt?", "translation": "Does he answer quickly?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Tänker han på saken?", "translation": "Does he think about it?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Tänker morfar på det?", "translation": "Is Grandfather thinking about it?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Minns hon allt?", "translation": "Does she remember everything?", "correctVerb": "gör", "correctSubjekt": "hon" },
     { "question": "Övar ni mycket?", "translation": "Do you practise a lot?", "correctVerb": "gör", "correctSubjekt": "vi" },
-    { "question": "Målar hon tavlan?", "translation": "Does she paint the picture?", "correctVerb": "gör", "correctSubjekt": "hon" },
-    { "question": "Designar han sidan?", "translation": "Does he design the page?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Målar hon tavlan?", "translation": "Is she painting the picture?", "correctVerb": "gör", "correctSubjekt": "hon" },
+    { "question": "Designar han sidan?", "translation": "Is he designing the page?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Distribuerar de tidningen?", "translation": "Do they distribute the newspaper?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Förlorar laget ofta?", "translation": "Does the team lose often?", "correctVerb": "gör", "correctSubjekt": "det" },
-    { "question": "Hoppar han högt?", "translation": "Does he jump high?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Hoppar farfar högt?", "translation": "Does Grandfather jump high?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Seglar de ofta?", "translation": "Do they sail often?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Klättrar han upp?", "translation": "Does he climb up?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Klättrar han upp?", "translation": "Is he climbing up?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Jagar han älg?", "translation": "Does he hunt elk?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Torkar tvätten ute?", "translation": "Does the laundry dry outside?", "correctVerb": "gör", "correctSubjekt": "den" },
     { "question": "Sorterar ni sopor?", "translation": "Do you sort rubbish?", "correctVerb": "gör", "correctSubjekt": "vi" },
     { "question": "Återvinner de plast?", "translation": "Do they recycle plastic?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Investerar han klokt?", "translation": "Does he invest wisely?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Levererar de paketet idag?", "translation": "Do they deliver the package today?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Hämtar du barnen?", "translation": "Do you pick up the children?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Lämnar han skolan?", "translation": "Does he leave the school?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Levererar de paketet idag?", "translation": "Are they delivering the parcel today?", "correctVerb": "gör", "correctSubjekt": "de" },
+    { "question": "Hämtar du barnen?", "translation": "Are you picking up the children?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Lämnar han skolan?", "translation": "Is he leaving school?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Börjar kursen den här veckan?", "translation": "Does the course start this week?", "correctVerb": "gör", "correctSubjekt": "den" },
-    { "question": "Slutar mötet nu?", "translation": "Does the meeting end now?", "correctVerb": "gör", "correctSubjekt": "det" },
-    { "question": "Fortsätter ni arbetet?", "translation": "Do you continue the work?", "correctVerb": "gör", "correctSubjekt": "vi" },
-    { "question": "Avslutar han projektet?", "translation": "Does he finish the project?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Startar ni om datorn?", "translation": "Do you restart the computer?", "correctVerb": "gör", "correctSubjekt": "vi" },
-    { "question": "Uppdaterar du systemet?", "translation": "Do you update the system?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Installerar han programmet?", "translation": "Does he install the programme?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Ansöker han idag?", "translation": "Does he apply today?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Slutar mötet nu?", "translation": "Is the meeting ending now?", "correctVerb": "gör", "correctSubjekt": "det" },
+    { "question": "Fortsätter ni arbetet?", "translation": "Are you continuing the work?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Avslutar han projektet?", "translation": "Is he finishing the project?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Startar ni om datorn?", "translation": "Are you restarting the computer?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Uppdaterar du systemet?", "translation": "Are you updating the system?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Installerar han programmet?", "translation": "Is he installing the programme?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Ansöker han idag?", "translation": "Is he applying today?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Utbildar företaget ny personal?", "translation": "Does the company train new staff?", "correctVerb": "gör", "correctSubjekt": "det" },
     { "question": "Styr han gruppen?", "translation": "Does he manage the group?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Kommunicerar de tydligt?", "translation": "Do they communicate clearly?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Diskuterar ni frågan?", "translation": "Do you discuss the issue?", "correctVerb": "gör", "correctSubjekt": "vi" },
-    { "question": "Avslår han förslaget?", "translation": "Does he reject the proposal?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Ändrar du texten?", "translation": "Do you change the text?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Förbättrar du resultatet?", "translation": "Do you improve the result?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Testar du igen?", "translation": "Do you try again?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Avbryter han mötet?", "translation": "Does he interrupt the meeting?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Pausar ni arbetet?", "translation": "Do you pause the work?", "correctVerb": "gör", "correctSubjekt": "vi" },
-    { "question": "Återupptar ni diskussionen?", "translation": "Do you resume the discussion?", "correctVerb": "gör", "correctSubjekt": "vi" },
-    { "question": "Analyserar han materialet?", "translation": "Does he analyse the material?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Jämför ni alternativen?", "translation": "Do you compare the alternatives?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Diskuterar ni frågan?", "translation": "Are you discussing the issue?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Avslår han förslaget?", "translation": "Is he rejecting the proposal?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Ändrar du texten?", "translation": "Are you changing the text?", "correctVerb": "gör", "correctSubjekt": "jag" },
+{ "question": "Förbättrar du resultatet?", "translation": "Are you improving the result?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Testar du igen?", "translation": "Are you trying again?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Avbryter han mötet?", "translation": "Is he cancelling the meeting?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Pausar ni arbetet?", "translation": "Are you pausing the work?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Återupptar ni diskussionen?", "translation": "Are you resuming the discussion?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Analyserar han materialet?", "translation": "Is he analysing the material?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Jämför ni alternativen?", "translation": "Are you comparing the alternatives?", "correctVerb": "gör", "correctSubjekt": "vi" },
     { "question": "Föredrar du detta?", "translation": "Do you prefer this?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Löser du uppgiften?", "translation": "Do you solve the task?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Lyckas du denna gång?", "translation": "Do you succeed this time?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Planerar du nästa steg?", "translation": "Do you plan the next step?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Prioriterar du rätt saker?", "translation": "Do you prioritise the right things?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Avslutar du arbetet idag?", "translation": "Do you finish the work today?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Löser du uppgiften?", "translation": "Are you solving the task?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Lyckas du denna gång?", "translation": "Will you succeed this time?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Planerar du nästa steg?", "translation": "Are you planning the next step?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Prioriterar du rätt saker?", "translation": "Are you prioritising the right things?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Avslutar du arbetet idag?", "translation": "Are you finishing the work today?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Kan ni komma imorgon?", "translation": "Can you come tomorrow?", "correctVerb": "kan", "correctSubjekt": "vi" },
-    { "question": "Kan vi börja nu?", "translation": "Can we start now?", "correctVerb": "kan", "correctSubjekt": "vi" }, // Korrigerad typo: "we" -> "vi"
-    { "question": "Ska vi börja nu?", "translation": "Shall we start now?", "correctVerb": "ska", "correctSubjekt": "vi" },
-    { "question": "Ska ni arbeta ikväll?", "translation": "Will you work this evening?", "correctVerb": "ska", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Ska vi äta nu?", "translation": "Shall we eat now?", "correctVerb": "ska", "correctSubjekt": "vi" },
-    { "question": "Bör vi gå nu?", "translation": "Should we go now?", "correctVerb": "bör", "correctSubjekt": "vi" },
-    { "question": "Bör ni läsa mer?", "translation": "Should you read more?", "correctVerb": "bör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Måste vi börja nu?", "translation": "Must we start now?", "correctVerb": "måste", "correctSubjekt": "vi" },
-    { "question": "Måste ni stanna kvar?", "translation": "Must you stay?", "correctVerb": "måste", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Får vi börja?", "translation": "May we start?", "correctVerb": "får", "correctSubjekt": "vi" },
-    { "question": "Får ni komma in?", "translation": "May you come in?", "correctVerb": "får", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Vill ni äta nu?", "translation": "Do you want to eat now?", "correctVerb": "vill", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Vill vi börja nu?", "translation": "Do we want to start now?", "correctVerb": "vill", "correctSubjekt": "vi" },
-    { "question": "Är ni redo?", "translation": "Are you ready?", "correctVerb": "är", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Är vi klara?", "translation": "Are we ready?", "correctVerb": "är", "correctSubjekt": "vi" },
-    { "question": "Har ni sett filmen?", "translation": "Have you seen the film?", "correctVerb": "har", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Har vi börjat?", "translation": "Have we started?", "correctVerb": "har", "correctSubjekt": "vi" },
-    { "question": "Bor ni i Malmö?", "translation": "Do you live in Malmö?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
-    { "question": "Köper ni bröd?", "translation": "Do you buy bread?", "correctVerb": "gör", "correctSubjekt": "vi" }, // Korrigerad: ni -> vi
+    { "question": "Kan ni börja nu?", "translation": "Can you start now?", "correctVerb": "kan", "correctSubjekt": "vi" },
+    { "question": "Ska ni börja nu?", "translation": "Are you going to start now?", "correctVerb": "ska", "correctSubjekt": "vi" },
+    { "question": "Ska ni arbeta ikväll?", "translation": "Are you working this evening?", "correctVerb": "ska", "correctSubjekt": "vi" },
+    { "question": "Ska ni äta nu?", "translation": "Are you going to eat now?", "correctVerb": "ska", "correctSubjekt": "vi" },
+    { "question": "Måste ni gå nu?", "translation": "Must you go now?", "correctVerb": "måste", "correctSubjekt": "vi" },
+    { "question": "Bör ni läsa mer?", "translation": "Should you read more?", "correctVerb": "bör", "correctSubjekt": "vi" },
+    { "question": "Måste ni börja nu?", "translation": "Must you start now?", "correctVerb": "måste", "correctSubjekt": "vi" },
+    { "question": "Måste ni stanna kvar?", "translation": "Must you stay?", "correctVerb": "måste", "correctSubjekt": "vi" },
+    { "question": "Får han börja?", "translation": "May he start?", "correctVerb": "får", "correctSubjekt": "han" },
+    { "question": "Får ni komma in?", "translation": "May you come in?", "correctVerb": "får", "correctSubjekt": "vi" },
+    { "question": "Vill ni äta nu?", "translation": "Do you want to eat now?", "correctVerb": "vill", "correctSubjekt": "vi" },
+    { "question": "Vill du börja nu?", "translation": "Do you want to start now?", "correctVerb": "vill", "correctSubjekt": "jag" },
+    { "question": "Är ni redo?", "translation": "Are you ready?", "correctVerb": "är", "correctSubjekt": "vi" },
+    { "question": "Är hon redo?", "translation": "Is she ready?", "correctVerb": "är", "correctSubjekt": "hon" },
+    { "question": "Har ni sett filmen?", "translation": "Have you seen the film?", "correctVerb": "har", "correctSubjekt": "vi" },
+    { "question": "Har ni börjat?", "translation": "Have you started?", "correctVerb": "har", "correctSubjekt": "vi" },
+    { "question": "Bor ni i Malmö?", "translation": "Do you live in Malmö?", "correctVerb": "gör", "correctSubjekt": "vi" },
+    { "question": "Köper ni bröd?", "translation": "Are you buying bread?", "correctVerb": "gör", "correctSubjekt": "vi" },
     { "question": "Dricker han kaffe?", "translation": "Does he drink coffee?", "correctVerb": "gör", "correctSubjekt": "han" },
     { "question": "Studerar de tillsammans?", "translation": "Do they study together?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Levererar de paketet?", "translation": "Do they deliver the package?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Planerar de resan?", "translation": "Do they plan the trip?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Testar de programmet?", "translation": "Do they test the programme?", "correctVerb": "gör", "correctSubjekt": "de" },
-    { "question": "Publicerar de artikeln?", "translation": "Do they publish the article?", "correctVerb": "gör", "correctSubjekt": "de" },
+    { "question": "Får du parkera här?", "translation": "Are you allowed to park here?", "correctVerb": "får", "correctSubjekt": "jag" },
+    { "question": "Planerar de resan?", "translation": "Are they planning the trip?", "correctVerb": "gör", "correctSubjekt": "de" },
+    { "question": "Testar de programmet?", "translation": "Are they testing the programme?", "correctVerb": "gör", "correctSubjekt": "de" },
+    { "question": "Publicerar de artikeln?", "translation": "Are they publishing the article?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Springer du snabbt?", "translation": "Do you run quickly?", "correctVerb": "gör", "correctSubjekt": "jag" },
     { "question": "Badar du i havet?", "translation": "Do you swim in the sea?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Samlar du svamp?", "translation": "Do you pick mushrooms?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Skickar du brevet?", "translation": "Do you send the letter?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Loggar du ut?", "translation": "Do you log out?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Laddar du upp filen?", "translation": "Do you upload the file?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Förhandlar de om priset?", "translation": "Do they negotiate the price?", "correctVerb": "gör", "correctSubjekt": "de" },
+    { "question": "Samlar du svamp?", "translation": "Are you picking mushrooms?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Skickar du brevet?", "translation": "Are you sending the letter?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Loggar du ut?", "translation": "Are you logging out?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Laddar du upp filen?", "translation": "Are you uploading the file?", "correctVerb": "gör", "correctSubjekt": "jag" },
+    { "question": "Förhandlar de om priset?", "translation": "Are they negotiating the price?", "correctVerb": "gör", "correctSubjekt": "de" },
     { "question": "Accepterar du villkoren?", "translation": "Do you accept the terms?", "correctVerb": "gör", "correctSubjekt": "jag" },
-    { "question": "Undviker han problemet?", "translation": "Does he avoid the problem?", "correctVerb": "gör", "correctSubjekt": "han" },
-    { "question": "Organiserar ni arbetet?", "translation": "Do you organise the work?", "correctVerb": "gör", "correctSubjekt": "vi" }
+    { "question": "Undviker han problemet?", "translation": "Is he avoiding the problem?", "correctVerb": "gör", "correctSubjekt": "han" },
+    { "question": "Organiserar ni arbetet?", "translation": "Are you organising the work?", "correctVerb": "gör", "correctSubjekt": "vi" }
 ];
 
+// --- 2. GLOBALA VARIABLER & INITIERING ---
 let score = 0;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Spärra mobilanvändare
+    if (window.matchMedia('(max-width: 700px)').matches) return;
+
+    // Starta applikationen
+    renderSentences();
+    resetScore();
+
+    // Initiera Dark Mode
+    const darkSwitch = document.getElementById('darkModeSwitch');
+    const isDark = localStorage.getItem('darkMode') === 'enabled';
+    document.body.classList.toggle('dark-mode', isDark);
+    darkSwitch.checked = isDark;
+    darkSwitch.addEventListener('change', toggleDarkMode);
+
+    // Initiera Översättning
+    const transSwitch = document.getElementById('translationSwitch');
+    const isTrans = localStorage.getItem('translationMode') === 'enabled';
+    document.body.classList.toggle('show-translation', isTrans);
+    transSwitch.checked = isTrans;
+    transSwitch.addEventListener('change', toggleTranslation);
+});
+
+// --- 3. RENDERING & UI-BYGGE ---
+
+function updateProgressBar() {
+    const total = parseInt(document.querySelector('.score-max').textContent) || 30;
+    const currentCorrect = document.querySelectorAll('.sentence.correct').length;
+    const percentage = (currentCorrect / total) * 100;
+    document.getElementById('progressBar').style.width = percentage + "%";
+}
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -575,171 +1051,245 @@ function shuffleArray(array) {
     return array;
 }
 
-function toggleTranslation() {
-    document.body.classList.toggle('show-translation'); // Denna rad styr nu om hovring är möjlig
-    const enabled = document.body.classList.contains('show-translation');
-    localStorage.setItem('translationMode', enabled ? 'enabled' : 'disabled');
-}
-
-function generateSentenceHTML(sentence) {
-    const sentenceHTML = sentence.words.map((item, i) => {
-        let part = item.sentencePart;
-        if (i === 0 && part.includes('<select')) {
-            part = part.replace('<select', '<select class="first-dropdown"');
-        }
-        return part;
-    }).join(' ');
-
-    const tooltipSpan = sentence.translation
-        ? `<span class="tooltip-text">${sentence.translation}</span>`
-        : '';
-
-    const questionLabel = sentence.question
-        ? `<div class="question-label">${sentence.question}</div>`
-        : '';
-
-    return `<div class="sentence">
-        ${questionLabel}
-        <p>Ja, det ${sentenceHTML}
-            ${tooltipSpan}
-        </p>
-    </div>`;
-}
-
 function renderSentences() {
     const container = document.getElementById('sentences');
-    container.innerHTML = '';
-
-    // 1. Blanda hela banken (den stora listan med 240 stycken)
     const shuffledBank = shuffleArray([...sentences]);
-
-    // 2. Skapa ett urval på exakt 50 stycken
-    const selectedSentences = shuffledBank.slice(0, 50);
-
-    // 3. Uppdatera Max Score direkt baserat på hur många vi valde (alltså 50)
+    const selectedSentences = shuffledBank.slice(0, 30);
+    
     document.querySelectorAll('.score-max').forEach(el => el.textContent = selectedSentences.length);
 
-    // 4. Loopa nu bara igenom "selectedSentences" när du skapar HTML-koden
-    selectedSentences.forEach((s, index) => {
-        const div = document.createElement('div');
-        div.className = 'sentence';
+    // Vi bygger en stor sträng för att undvika "lagg" vid rendering
+    let allHtml = '';
 
-        let verbOptions = `<option value="">Verb</option>` + 
-            verbBank.map(v => `<option value="${v}">${v}</option>`).join('');
+    selectedSentences.forEach((s) => {
+        const questionVerb = s.question.split(' ')[0].toLowerCase().replace('?', '');
+        const questionSubjekt = s.question.split(' ')[1].toLowerCase().replace('?', '');
 
-        let subjektOptions = `<option value="">Subject</option>` + 
-            subjektBank.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+        allHtml += `
+            <div class="sentence">
+                <div class="question-container"><strong>Q:</strong> ${s.question}</div>
+                <div class="answer-container">
+                    <span><em>Short answer:</em>&nbsp;&nbsp;Ja, det</span>
+                    <div class="two-col-dropdown" 
+                         data-verb="${s.correctVerb}" 
+                         data-subjekt="${s.correctSubjekt}"
+                         data-question-verb="${questionVerb}" 
+                         data-question-subjekt="${questionSubjekt}">
+                        
+                        <button type="button" class="two-col-btn" onclick="toggleTwoCol(this)">
+                            <span class="tc-label">Select verb and subject</span>
+                            <span class="tc-arrow">▼</span>
+                        </button>
 
-div.innerHTML = `
-    <div class="question-container">
-        ${s.question}
-    </div>
-    <div class="answer-container">
-        <span><em>Short answer:</em>&nbsp;&nbsp;Ja, det</span>
-        <select data-correct="${s.correctVerb}" onchange="evaluateAnswer(this)">${verbOptions}</select>
-        <select data-correct="${s.correctSubjekt}" onchange="evaluateAnswer(this)">${subjektOptions}</select>
-        <span class="period">.</span>
-        <span class="tooltip-text">${s.translation}</span>
-    </div>
-`;
-        container.appendChild(div);
+                        <div class="two-col-panel">
+                            <div class="two-col-cols">
+                                <div class="two-col-col">
+                                    <div class="two-col-col-header">Verb</div>
+                                    <div class="two-col-opt" data-type="verb" data-value="echo" onclick="pickTwoCol(this)">same as Q</div>
+                                    <div class="two-col-opt-wrapper">
+                                        <div class="two-col-opt" data-type="verb" data-value="gör" onclick="pickTwoCol(this)" 
+                                             style="padding: 11px 12px 10px 13px; width: 100%; display: block; line-height: 1.2; position: relative; top: 4px;">gör</div>
+                                    </div>
+                                </div>
+
+                                <div class="two-col-col">
+                                    <div class="two-col-col-header">Subject</div>
+                                    <div class="two-col-opt" data-type="subjekt" data-value="echo" onclick="pickTwoCol(this)">same as Q</div>
+                                    <div class="two-col-opt-wrapper subjekt-input-container">
+                                        <input type="text" placeholder="Write..." class="custom-subjekt-input" 
+                                               onclick="event.stopPropagation()" 
+                                               onkeyup="handleCustomSubjekt(this, event)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="period" style="margin-left:-5px;">.</span>
+                    <span class="tooltip-text">${s.translation}</span>
+                </div>
+            </div>`;
     });
+
+    container.innerHTML = allHtml;
 }
 
-// A sentence is correct only when ALL its selects are answered correctly
-function evaluateAnswer(selectElement) {
-    const parent = selectElement.closest('.sentence');
-    const container = document.getElementById('sentences');
-    const allSelects = Array.from(parent.querySelectorAll('select'));
-    const wasCorrect = parent.classList.contains('correct');
+// --- 4. DROPDOWN-LOGIK (INTERAKTION) ---
 
-    // Markera denna rad som aktiv och lås containern
-    container.classList.add('is-working');
-    // Ta bort focus från eventuella tidigare rader, ge focus till denna
-    document.querySelectorAll('.sentence').forEach(s => s.classList.remove('active-focus'));
-    parent.classList.add('active-focus');
+function toggleTwoCol(btn) {
+    const panel = btn.nextElementSibling;
+    const isOpen = panel.classList.contains('open');
+    // Stäng alla andra öppna paneler
+    document.querySelectorAll('.two-col-panel.open').forEach(p => p.classList.remove('open'));
+    if (!isOpen) panel.classList.add('open');
+}
 
-    const allAnswered = allSelects.every(s => s.value !== '');
-    const allCorrect = allSelects.every(s => s.value === s.getAttribute('data-correct'));
-    const anyWrong = allSelects.some(s => s.value !== '' && s.value !== s.getAttribute('data-correct'));
+function handleCustomSubjekt(input, event) {
+    // Om användaren trycker Enter i textfältet
+    if (event.key === 'Enter' && input.value.trim() !== '') {
+        const panel = input.closest('.two-col-panel');
+        // Avmarkera fasta alternativ i subjekt-kolumnen
+        panel.querySelectorAll('.two-col-opt[data-type="subjekt"]').forEach(o => o.classList.remove('selected'));
+        input.dataset.selected = "true";
+        pickTwoCol(input);
+    }
+}
 
-    parent.classList.remove('correct', 'incorrect');
+function pickTwoCol(optEl) {
+    const wrapper = optEl.closest('.two-col-dropdown');
+    const panel = wrapper.querySelector('.two-col-panel');
+    const customInput = panel.querySelector('.custom-subjekt-input');
+    
+    // Hantera visuella val (klick på knappar)
+    if (!optEl.classList.contains('custom-subjekt-input')) {
+        const type = optEl.dataset.type;
+        panel.querySelectorAll(`.two-col-opt[data-type="${type}"]`).forEach(o => o.classList.remove('selected'));
+        optEl.classList.add('selected');
+        
+        if (type === 'subjekt') {
+            customInput.dataset.selected = "false";
+            customInput.value = ""; 
+        }
+    }
 
-    if (allCorrect) {
-        parent.classList.add('correct');
-        if (!wasCorrect) updateScore(1);
-    } else if (anyWrong || allAnswered) {
-        parent.classList.add('incorrect');
-        if (wasCorrect) updateScore(-1);
+    // Uppdatera knappens text baserat på val
+    const selVerbRaw = panel.querySelector('.two-col-opt[data-type="verb"].selected')?.dataset.value || '';
+    let selSubjektRaw = (customInput.dataset.selected === "true") 
+        ? customInput.value.toLowerCase().trim() 
+        : (panel.querySelector('.two-col-opt[data-type="subjekt"].selected')?.dataset.value || '');
+
+    const displayVerb = (selVerbRaw === 'echo') ? wrapper.dataset.questionVerb : selVerbRaw;
+    const displaySubjekt = (selSubjektRaw === 'echo') ? wrapper.dataset.questionSubjekt : selSubjektRaw;
+
+    const label = wrapper.querySelector('.tc-label');
+    
+    if (displayVerb && displaySubjekt) {
+        label.textContent = `${displayVerb} ${displaySubjekt}`;
+        setTimeout(() => {
+            panel.classList.remove('open');
+            evaluateTwoCol(wrapper, false); 
+        }, 150);
     } else {
+        label.textContent = (displayVerb || displaySubjekt) || 'Select verb and subject';
+        evaluateTwoCol(wrapper, false); 
+    }
+}
+
+// --- 5. RÄTTNING & POÄNGLOGIK ---
+
+function evaluateTwoCol(wrapper, isClosing = false) {
+    const panel = wrapper.querySelector('.two-col-panel');
+    const sentence = wrapper.closest('.sentence');
+    const container = document.getElementById('sentences');
+    const wasCorrect = sentence.classList.contains('correct');
+
+    // Hämta valda värden
+    const verbOpt = panel.querySelector('.two-col-opt[data-type="verb"].selected');
+    const selVerb = (verbOpt?.dataset.value === 'echo') ? wrapper.dataset.questionVerb : verbOpt?.dataset.value;
+
+    const customInput = panel.querySelector('.custom-subjekt-input');
+    const subOpt = panel.querySelector('.two-col-opt[data-type="subjekt"].selected');
+    let selSubjekt = (customInput.dataset.selected === "true") 
+        ? customInput.value.toLowerCase().trim() 
+        : (subOpt?.dataset.value === 'echo' ? wrapper.dataset.questionSubjekt : subOpt?.dataset.value);
+
+    // Markera aktiv rad
+    container.classList.add('is-working');
+    document.querySelectorAll('.sentence').forEach(s => s.classList.remove('active-focus'));
+    sentence.classList.add('active-focus');
+
+    const bothSelected = (verbOpt && (subOpt || customInput.dataset.selected === "true"));
+
+    if (bothSelected) {
+        if (selVerb === wrapper.dataset.verb && selSubjekt === wrapper.dataset.subjekt) {
+            sentence.classList.replace('incorrect', 'correct') || sentence.classList.add('correct');
+            if (!wasCorrect) updateScore(1);
+            container.classList.remove('is-working');
+            sentence.classList.remove('active-focus');
+        } else {
+            sentence.classList.replace('correct', 'incorrect') || sentence.classList.add('incorrect');
+            if (wasCorrect) updateScore(-1);
+        }
+    } else if (isClosing && (verbOpt || subOpt)) {
+        sentence.classList.add('incorrect');
         if (wasCorrect) updateScore(-1);
     }
-
-    // OM meningen är helt klar (korrekt), lås upp containern igen
-    if (allCorrect) {
-        container.classList.remove('is-working');
-        parent.classList.remove('active-focus');
-    }
-
-// Om användaren väljer "Välj" (tomt värde) igen, återställ hovringen för alla
-    if (selectElement.value === "" && !anyWrong && !allAnswered) {
-        container.classList.remove('is-working');
-        parent.classList.remove('active-focus');
-    }	
 
     checkAllCorrect();
 }
 
 function updateScore(value) {
     score += value;
-    
-    // Hämta vad som står i score-max (vilket är 50)
-    const currentMax = parseInt(document.querySelector('.score-max').textContent) || 50;
-    
-    if (score > currentMax) score = currentMax;
-    if (score < 0) score = 0;
-    
+    const currentMax = parseInt(document.querySelector('.score-max').textContent) || 30;
+    score = Math.max(0, Math.min(score, currentMax));
     document.querySelectorAll('.score-display').forEach(el => el.textContent = score);
+    
+    updateProgressBar();
 }
 
 function checkAllCorrect() {
-    // Vi hämtar det aktuella maxvärdet från displayen (som nu är 50)
-    const maxPossible = parseInt(document.querySelector('.score-max').textContent);
-    
-    if (score === maxPossible) {
+    if (score === parseInt(document.querySelector('.score-max').textContent)) {
         openModal('congratulationsModal');
     }
 }
 
+// --- 6. MODALER & APP-INSTÄLLNINGAR ---
+
 function openModal(id) {
     const m = document.getElementById(id);
-    if (m) { m.style.display = 'flex'; m.classList.add('show'); }
+    if (!m) return;
+    
+    m.style.display = 'flex';
+    requestAnimationFrame(() => {
+        m.classList.add('show');
+    });
 }
 
 function closeModal(id) {
     const m = document.getElementById(id);
-    if (m) { m.style.display = 'none'; m.classList.remove('show'); }
+    if (!m) return;
+    
+    m.classList.remove('show');
+    
+    setTimeout(() => {
+        if (!m.classList.contains('show')) {
+            m.style.display = 'none';
+        }
+    }, 400); 
 }
 
 window.addEventListener('click', e => {
-    ['infoModal', 'congratulationsModal'].forEach(id => {
-        const m = document.getElementById(id);
-        if (e.target === m) closeModal(id);
-    });
+    // Stäng modaler vid klick utanför
+    if (e.target.classList.contains('modal')) closeModal(e.target.id);
+
+    // Hantera klick utanför dropdown
+    if (!e.target.closest('.two-col-dropdown')) {
+        const openPanels = document.querySelectorAll('.two-col-panel.open');
+        openPanels.forEach(panel => {
+            evaluateTwoCol(panel.closest('.two-col-dropdown'), true); 
+            panel.classList.remove('open');
+        });
+    }
 });
 
 function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    const on = document.body.classList.contains('dark-mode');
+    const on = document.body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', on ? 'enabled' : 'disabled');
+}
+
+function toggleTranslation() {
+    const enabled = document.body.classList.toggle('show-translation');
+    localStorage.setItem('translationMode', enabled ? 'enabled' : 'disabled');
 }
 
 function resetScore() {
     score = 0;
     document.querySelectorAll('.score-display').forEach(el => el.textContent = 0);
-    document.querySelectorAll('.sentence').forEach(s => s.classList.remove('correct', 'incorrect'));
-	document.getElementById('sentences').classList.remove('is-working');
-    document.querySelectorAll('.sentence').forEach(s => s.classList.remove('active-focus'));
+    document.querySelectorAll('.sentence').forEach(s => {
+        s.classList.remove('correct', 'incorrect', 'active-focus');
+    });
+    document.getElementById('sentences').classList.remove('is-working');
+    
+    updateProgressBar();
 }
 
 function startOver() {
@@ -747,26 +1297,6 @@ function startOver() {
     resetScore();
     closeModal('congratulationsModal');
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.matchMedia('(max-width: 700px)').matches) return;
-
-    renderSentences();
-    resetScore();
-
-    const darkSwitch = document.getElementById('darkModeSwitch');
-    const transSwitch = document.getElementById('translationSwitch');
-
-    const isDark = localStorage.getItem('darkMode') === 'enabled';
-    document.body.classList.toggle('dark-mode', isDark);
-    darkSwitch.checked = isDark;
-    darkSwitch.addEventListener('change', toggleDarkMode);
-
-    const isTrans = localStorage.getItem('translationMode') === 'enabled';
-    document.body.classList.toggle('show-translation', isTrans);
-    transSwitch.checked = isTrans;
-    transSwitch.addEventListener('change', toggleTranslation);
-});
 </script>
 </body>
 </html>
