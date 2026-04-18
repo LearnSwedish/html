@@ -16,6 +16,13 @@
             --shadow: rgba(26,26,46,0.08); --shadow-lg: rgba(26,26,46,0.16);
             --radius: 14px; --card-bg: #ffffff; --input-bg: var(--warm);
             --schedule-bg: #ffffff; --schedule-date-bg: var(--warm);
+			--btn-dark-bg: #1a1a2e;
+			--btn-dark-bg-2: #2a2a4a;
+			--btn-dark-text: #ffffff;		
+			--btn-accent-text: #1a1a2e;
+			--btn-accent-bg: #d9c27a;
+			--btn-accent-bg-2: #c9a84c;
+			
         }
 
         [data-theme="dark"] {
@@ -25,7 +32,46 @@
             --shadow: rgba(0,0,0,0.35); --shadow-lg: rgba(0,0,0,0.55);
             --card-bg: #1c1c2e; --input-bg: #13131f;
             --schedule-bg: #1c1c2e; --schedule-date-bg: #161625;
+			--btn-dark-bg: #d9dde8;
+			--btn-dark-bg-2: #bfc7d8;
+			--btn-dark-text: #13131f;
+			--btn-accent-text: #13131f;
+			--btn-accent-bg: #e5c97b;
+			--btn-accent-bg-2: #d4b86a;			
         }
+		
+[data-theme="dark"] .lang-btn {
+    color: #d7dbea;
+    background: #181826;
+}
+
+[data-theme="dark"] .lang-btn.active {
+    background: #3a3218;
+    color: #f3df9a;
+    border-color: #d4b86a;
+}
+
+[data-theme="dark"] .lang-btn:hover {
+    color: #f3df9a;
+    border-color: #d4b86a;
+}
+
+[data-theme="dark"] .slot-btn label {
+    color: #d7dbea;
+    background: #161622;
+}
+
+[data-theme="dark"] .slot-btn label:hover {
+    background: #2a2412;
+    color: #f3df9a;
+    border-color: #d4b86a;
+}
+
+[data-theme="dark"] .slot-btn input:checked + label {
+    background: #143126;
+    color: #7be0b8;
+    border-color: #4db38f;
+}		
 
         html { scroll-behavior: smooth; }
 
@@ -62,8 +108,8 @@
         .modal-icon { font-size: 42px; margin-bottom: 12px; }
         .modal p { color: var(--ink-light); font-size: 15px; line-height: 1.5; margin-bottom: 24px; }
         .modal-btn {
-            background: var(--ink); color: white; border: none;
-            padding: 11px 32px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--btn-dark-bg), var(--btn-dark-bg-2)); color: var(--btn-dark-text); border: none; 
+			padding: 11px 32px; border-radius: 10px;
             font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
             cursor: pointer; transition: opacity 0.2s;
         }
@@ -99,14 +145,22 @@
     border-color: var(--accent); 
     transform: scale(1.05);
 }
-        .btn-sticky-send {
-            background: linear-gradient(135deg, var(--green), #1f5c45);
-            color: white; border: none; padding: 10px 20px; border-radius: 50px;
-            font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; gap: 7px;
-            transition: transform 0.15s, box-shadow 0.15s;
-            box-shadow: 0 4px 14px rgba(45,122,95,0.35);
-        }
+.btn-sticky-send {
+    background: linear-gradient(135deg, var(--btn-accent-bg), var(--btn-accent-bg-2));
+    color: var(--btn-accent-text);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 14px rgba(45,122,95,0.35);
+}
         .btn-sticky-send:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(45,122,95,0.45); }
 
         /* LOGIN */
@@ -165,14 +219,24 @@
             font-size: 16px; pointer-events: none;
         }
         #error-msg { color: #e05252; font-size: 13px; margin-bottom: 12px; display: none; }
-        .btn-login {
-            width: 100%; background: linear-gradient(135deg, var(--ink), #2a2a4a);
-            color: white; border: none; padding: 14px; border-radius: 10px;
-            font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: transform 0.15s, box-shadow 0.15s;
-            box-shadow: 0 4px 16px var(--shadow-lg);
-        }
+.btn-login {
+    width: 100%;
+    background: linear-gradient(135deg, var(--btn-dark-bg), var(--btn-dark-bg-2));
+    color: var(--btn-dark-text);
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    box-shadow: 0 4px 16px var(--shadow-lg);
+}
         .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 22px var(--shadow-lg); }
 
         /* MAIN */
@@ -313,15 +377,25 @@
         .selected-chip button:hover { opacity: 1; }
 
         /* SUBMIT */
-        .btn-submit {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; background: linear-gradient(135deg, var(--ink), #2a2a4a);
-            color: white; border: none; padding: 17px; border-radius: var(--radius);
-            font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
-            cursor: pointer; margin-bottom: 16px;
-            box-shadow: 0 4px 20px var(--shadow-lg);
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
+.btn-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    background: linear-gradient(135deg, var(--btn-dark-bg), var(--btn-dark-bg-2));
+    color: var(--btn-dark-text);
+    border: none;
+    padding: 17px;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px var(--shadow-lg);
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--shadow-lg); }
         .btn-submit .arrow { transition: transform 0.2s; }
         .btn-submit:hover .arrow { transform: translateX(4px); }
