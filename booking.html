@@ -476,8 +476,10 @@
 
         <div class="login-input-wrap">
             <span class="icon">🔒</span>
-            <input type="password" id="_u_key" placeholder="••••••••"
-                onkeydown="if(event.key==='Enter')_v_auth()" autocomplete="off">
+<input type="password" id="_u_key" placeholder="••••••••"
+    onkeydown="if(event.key==='Enter')_v_auth()"
+    oninput="if(!cachedData)fetchScheduleData()"
+    autocomplete="off">
         </div>
 
         <p id="error-msg">Ogiltig kod – försök igen</p>
@@ -518,7 +520,7 @@
     <div class="card">
         <div class="card-label"><span class="dot"></span> <span id="label-name">Ditt namn</span></div>
         <div class="name-input-wrap">
-            <input type="text" id="student-name" placeholder="Förnamn Efternamn"
+            <input type="text" id="student-name" placeholder="Ditt namn"
                 oninput="updateSummary()" autocomplete="off">
         </div>
     </div>
@@ -681,12 +683,18 @@ function setLang(l) {
         const el = document.getElementById(id);
         if (el) el.innerText = val;
     }
-	document.getElementById('theme-btn').title = t.themeTitle;
+    document.getElementById('theme-btn').title = t.themeTitle;
     document.getElementById('student-name').placeholder = t.placeholder;
-document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.lang === l);
-});
-    renderSchedule(false);
+    document.querySelectorAll('.lang-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.lang === l);
+    });
+
+    if (document.getElementById('main-content').style.display !== 'none') {
+        renderSchedule(false);
+    } else if (!cachedData) {
+        fetchScheduleData();
+    }
+
     updateSummary();
 }
 
