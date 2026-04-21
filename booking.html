@@ -6,479 +6,699 @@
     <title>Booking</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<style>
+    /* ==========================================================================
+       1. RESET & BASICS
+       ========================================================================== */
+    *, *::before, *::after { 
+        box-sizing: border-box; 
+        margin: 0; 
+        padding: 0; 
+    }
 
-        :root {
-            --ink: #1a1a2e; --ink-light: #4a4a6a; --cream: #faf8f4; --warm: #f5f0e8;
-            --accent: #c9a84c; --accent-dark: #a8893a; --accent-light: #f0e4c4;
-            --green: #2d7a5f; --green-light: #e8f4ef; --border: #e8e2d8;
-            --shadow: rgba(26,26,46,0.08); --shadow-lg: rgba(26,26,46,0.16);
-            --radius: 14px; --card-bg: #ffffff; --input-bg: var(--warm);
-            --schedule-bg: #ffffff; --schedule-date-bg: var(--warm);
-			--btn-dark-bg: #1a1a2e;
-			--btn-dark-bg-2: #2a2a4a;
-			--btn-dark-text: #ffffff;		
-			--btn-accent-text: #1a1a2e;
-			--btn-accent-bg: #d9c27a;
-			--btn-accent-bg-2: #c9a84c;
-			
-        }
+    html { 
+        scroll-behavior: smooth; 
+    }
 
-        [data-theme="dark"] {
-            --ink: #e8e8f0; --ink-light: #9090b0; --cream: #13131f; --warm: #1c1c2e;
-            --accent: #d4b86a; --accent-dark: #e5c97b; --accent-light: #25220f;
-            --green: #4db38f; --green-light: #0f2219; --border: #2e2e45;
-            --shadow: rgba(0,0,0,0.35); --shadow-lg: rgba(0,0,0,0.55);
-            --card-bg: #1c1c2e; --input-bg: #13131f;
-            --schedule-bg: #1c1c2e; --schedule-date-bg: #161625;
-			--btn-dark-bg: #d9dde8;
-			--btn-dark-bg-2: #bfc7d8;
-			--btn-dark-text: #13131f;
-			--btn-accent-text: #13131f;
-			--btn-accent-bg: #e5c97b;
-			--btn-accent-bg-2: #d4b86a;			
-        }
-		
-[data-theme="dark"] .lang-btn {
-    color: #d7dbea;
-    background: #181826;
-}
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--cream); 
+        color: var(--ink);
+        min-height: 100vh; 
+        display: flex;
+        justify-content: center; 
+        align-items: flex-start;
+        padding: 20px 16px 110px;
+        transition: background 0.3s, color 0.3s;
+        position: relative;
+    }
 
-[data-theme="dark"] .lang-btn.active {
-    background: #3a3218;
-    color: #f3df9a;
-    border-color: #d4b86a;
-}
+    /* Subtil gradient-bakgrund */
+    body::before {
+        content: ''; 
+        position: fixed; 
+        inset: 0;
+        background:
+            radial-gradient(ellipse 55% 45% at 85% 15%, rgba(201,168,76,0.07) 0%, transparent 60%),
+            radial-gradient(ellipse 45% 40% at 5% 85%, rgba(45,122,95,0.06) 0%, transparent 55%);
+        pointer-events: none; 
+        z-index: 0;
+    }
 
-[data-theme="dark"] .lang-btn:hover {
-    color: #f3df9a;
-    border-color: #d4b86a;
-}
+    /* ==========================================================================
+       2. DESIGN TOKENS (VARIABLES)
+       ========================================================================== */
+    :root {
+        /* Colors - Light Mode */
+        --ink: #1a1a2e; 
+        --ink-light: #4a4a6a; 
+        --cream: #faf8f4; 
+        --warm: #f5f0e8;
+        --accent: #c9a84c; 
+        --accent-dark: #a8893a; 
+        --accent-light: #f0e4c4;
+        --green: #2d7a5f; 
+        --green-light: #e8f4ef; 
+        --border: #e8e2d8;
+        
+        /* UI Elements */
+        --shadow: rgba(26,26,46,0.08); 
+        --shadow-lg: rgba(26,26,46,0.16);
+        --radius: 14px; 
+        --card-bg: #ffffff; 
+        --input-bg: var(--warm);
+        --schedule-bg: #ffffff; 
+        --schedule-date-bg: var(--warm);
 
-[data-theme="dark"] .slot-btn label {
-    color: #d7dbea;
-    background: #161622;
-}
+        /* Buttons */
+        --btn-dark-bg: #1a1a2e;
+        --btn-dark-bg-2: #2a2a4a;
+        --btn-dark-text: #ffffff;		
+        --btn-accent-text: #1a1a2e;
+        --btn-accent-bg: #d9c27a;
+        --btn-accent-bg-2: #c9a84c;
+    }
 
-[data-theme="dark"] .slot-btn label:hover {
-    background: #2a2412;
-    color: #f3df9a;
-    border-color: #d4b86a;
-}
+    [data-theme="dark"] {
+        /* Colors - Dark Mode */
+        --ink: #e8e8f0; 
+        --ink-light: #9090b0; 
+        --cream: #13131f; 
+        --warm: #1c1c2e;
+        --accent: #d4b86a; 
+        --accent-dark: #e5c97b; 
+        --accent-light: #25220f;
+        --green: #4db38f; 
+        --green-light: #0f2219; 
+        --border: #2e2e45;
+        
+        /* UI Elements Dark */
+        --shadow: rgba(0,0,0,0.35); 
+        --shadow-lg: rgba(0,0,0,0.55);
+        --card-bg: #1c1c2e; 
+        --input-bg: #13131f;
+        --schedule-bg: #1c1c2e; 
+        --schedule-date-bg: #161625;
 
-[data-theme="dark"] .slot-btn input:checked + label {
-    background: #143126;
-    color: #7be0b8;
-    border-color: #4db38f;
-}		
+        /* Buttons Dark */
+        --btn-dark-bg: #d9dde8;
+        --btn-dark-bg-2: #bfc7d8;
+        --btn-dark-text: #13131f;
+        --btn-accent-text: #13131f;
+        --btn-accent-bg: #e5c97b;
+        --btn-accent-bg-2: #d4b86a;			
+    }
 
-[data-theme="dark"] .theme-toggle {
-    color: #f3df9a; /* Detta ger solen en guldgul/ljus färg */
-    border-color: var(--border);
-    background: var(--card-bg);
-}
+    /* ==========================================================================
+       3. COMPONENTS (MODALS, CARDS, TOGGLES)
+       ========================================================================== */
+    
+    /* Modals */
+    .modal-overlay {
+        position: fixed; 
+        inset: 0; 
+        background: rgba(0,0,0,0.5);
+        display: none; 
+        justify-content: center; 
+        align-items: center;
+        z-index: 3000; 
+        backdrop-filter: blur(6px);
+    }
+    .modal-overlay.open { 
+        display: flex; 
+        animation: fadeIn 0.2s ease; 
+    }
+    .modal {
+        position: relative;
+		background: var(--card-bg); 
+        padding: 36px 32px; 
+        border-radius: 20px;
+        max-width: 340px; 
+        width: 90%; 
+        text-align: center;
+        border: 1px solid var(--border); 
+        box-shadow: 0 24px 60px var(--shadow-lg);
+        animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .modal-icon { font-size: 42px; margin-bottom: 12px; }
+    .modal p { 
+        color: var(--ink-light); 
+        font-size: 15px; 
+        line-height: 1.5; 
+        margin-bottom: 24px; 
+    }
+	
+	/* Container för krysset */
+	.close-x {
+		position: absolute;
+		top: 12px;
+		right: 12px;
+		width: 36px;
+		height: 36px;
+		background: var(--warm); /* En subtil bakgrundscirkel */
+		border: none;
+		border-radius: 50%;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 10;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	
+	/* Själva linjerna */
+	.close-x .line {
+		position: absolute;
+		width: 16px;
+		height: 2px;
+		background-color: var(--ink-light);
+		border-radius: 2px;
+		transition: all 0.3s ease;
+	}
+	
+	.close-x .line:nth-child(1) { transform: rotate(45deg); }
+	.close-x .line:nth-child(2) { transform: rotate(-45deg); }
+	
+	/* Animationer vid hovring */
+	.close-x:hover {
+		transform: rotate(90deg);
+		background: var(--accent-light);
+	}
+	
+	.close-x:hover .line {
+		background-color: var(--accent-dark);
+		width: 18px;
+	}
+	
+	/* För mörkt läge */
+	[data-theme="dark"] .close-x {
+		background: var(--warm);
+	}
+	[data-theme="dark"] .close-x .line {
+		background-color: var(--ink);
+	}
+	
+    /* Theme Toggle Button */
+    .theme-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--card-bg);
+        border: 1.5px solid var(--border);
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        z-index: 2000;
+        box-shadow: 0 4px 12px var(--shadow);
+    }
+    .theme-toggle:hover { 
+        border-color: var(--accent); 
+        transform: scale(1.05);
+    }
+    .theme-toggle:active #theme-icon { transform: scale(0.9); }
+    #theme-icon { display: flex; line-height: 1; }
+    #theme-icon svg { stroke: currentColor; display: block; }
+    [data-theme="dark"] .theme-toggle {
+        color: #f3df9a;
+        background: var(--card-bg);
+    }
 
-/* Lägg även till denna för att säkerställa att SVG:n alltid syns bra */
-#theme-icon svg {
-    stroke: currentColor;
-    display: block;
-}
+    /* Cards - General Layout */
+    .card {
+        background: var(--card-bg); 
+        border: 1px solid var(--border);
+        border-radius: var(--radius); 
+        padding: 24px 28px; 
+        margin-bottom: 14px;
+        box-shadow: 0 2px 12px var(--shadow); 
+        transition: background 0.3s, border-color 0.3s;
+    }
+    .card-label {
+        display: flex; 
+        align-items: center; 
+        gap: 8px;
+        font-size: 11px; 
+        font-weight: 600; 
+        letter-spacing: 0.09em;
+        text-transform: uppercase; 
+        color: var(--ink-light); 
+        margin-bottom: 12px;
+    }
+    .card-label .dot { 
+        width: 6px; 
+        height: 6px; 
+        border-radius: 50%; 
+        background: var(--accent); 
+    }
 
-        html { scroll-behavior: smooth; }
+    /* ==========================================================================
+       4. LOGIN SECTION
+       ========================================================================== */
+    #login-overlay {
+        position: fixed; 
+        inset: 0; 
+        background: var(--cream);
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+        z-index: 1000; 
+        animation: fadeIn 0.4s ease;
+    }
+    .login-card {
+        background: var(--card-bg); 
+        border: 1px solid var(--border);
+        border-radius: 24px; 
+        padding: 52px 52px; 
+        max-width: 500px; 
+        width: 90%;
+        text-align: center; 
+        box-shadow: 0 12px 48px var(--shadow-lg);
+        position: relative; 
+        overflow: hidden;
+    }
+    .login-card::before {
+        content: ''; 
+        position: absolute; 
+        top: 0; left: 0; right: 0; 
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--green), var(--accent));
+        background-size: 200%; 
+        animation: shimmer 3s linear infinite;
+    }
+    .login-icon {
+        width: 68px; 
+        height: 68px;
+        background: #f0e4c4;
+        border-radius: 50%;
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        margin: 0 auto 24px;
+        font-size: 30px;
+    }
+    [data-theme="dark"] .login-icon { background: #f0e4c4; color: #a8893a; }
+    .login-card h2 { 
+        font-family: 'Playfair Display', serif; 
+        font-size: 26px; 
+        font-weight: 700; 
+        margin-bottom: 8px; 
+    }
+    .login-card > p { 
+        color: var(--ink-light); 
+        font-size: 14px; 
+        margin-bottom: 28px; 
+        line-height: 1.5; 
+    }
+    .login-input-wrap { position: relative; margin-bottom: 14px; }
+    .login-input-wrap input {
+        width: 100%; 
+        padding: 13px 16px 13px 44px; 
+        border: 1.5px solid var(--border);
+        border-radius: 10px; 
+        font-size: 15px; 
+        font-family: 'DM Sans', sans-serif;
+        background: var(--input-bg); 
+        color: var(--ink); 
+        outline: none;
+        transition: border-color 0.2s, background 0.2s; 
+        letter-spacing: 0.08em;
+    }
+    .login-input-wrap .icon {
+        position: absolute; 
+        left: 14px; 
+        top: 50%; 
+        transform: translateY(-50%);
+        font-size: 16px; 
+        pointer-events: none;
+    }
+    #error-msg { 
+        color: #e05252; 
+        font-size: 13px; 
+        margin-bottom: 12px; 
+        display: none; 
+    }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--cream); color: var(--ink);
-            min-height: 100vh; display: flex;
-            justify-content: center; align-items: flex-start;
-            padding: 20px 16px 110px;
-            transition: background 0.3s, color 0.3s;
-        }
+    /* ==========================================================================
+       5. MAIN CONTENT & HEADER
+       ========================================================================== */
+    #main-content {
+        display: none; 
+        max-width: 660px; 
+        width: 100%;
+        margin: 0 auto; 
+        position: relative; 
+        z-index: 1;
+        animation: slideUp 0.5s ease;
+    }
+    .page-header { text-align: center; padding: 44px 0 28px; }
+    .header-badge {
+        display: inline-flex; 
+        align-items: center; 
+        gap: 6px;
+        background: var(--accent-light); 
+        color: var(--accent-dark);
+        font-size: 11px; 
+        font-weight: 600; 
+        letter-spacing: 0.1em;
+        text-transform: uppercase; 
+        padding: 6px 14px; 
+        border-radius: 20px; 
+        margin-bottom: 18px;
+    }
+    .page-header h1 {
+        font-family: 'Playfair Display', serif; 
+        font-size: clamp(26px,5vw,38px);
+        font-weight: 700; 
+        line-height: 1.15; 
+        margin-bottom: 10px;
+    }
+    .page-header p { color: var(--ink-light); font-size: 15px; font-weight: 300; }
 
-        body::before {
-            content: ''; position: fixed; inset: 0;
-            background:
-                radial-gradient(ellipse 55% 45% at 85% 15%, rgba(201,168,76,0.07) 0%, transparent 60%),
-                radial-gradient(ellipse 45% 40% at 5% 85%, rgba(45,122,95,0.06) 0%, transparent 55%);
-            pointer-events: none; z-index: 0;
-        }
+    /* Language Switchers */
+    .lang-switcher { 
+        display: flex; 
+        justify-content: center; 
+        gap: 8px; 
+        margin-bottom: 28px; 
+        flex-wrap: wrap; 
+    }
+    .login-lang-switcher { margin-bottom: 20px; flex-wrap: nowrap; gap: 4px; }
+    .lang-btn {
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        padding: 8px 15px;
+        border: 1.5px solid var(--border); 
+        border-radius: 8px; 
+        background: var(--card-bg);
+        cursor: pointer; 
+        font-size: 13px; 
+        font-weight: 500; 
+        color: var(--ink-light);
+        font-family: 'DM Sans', sans-serif; 
+        transition: all 0.2s;
+    }
+    .lang-btn svg { width: 20px; height: auto; border-radius: 2px; flex-shrink: 0; }
+    .login-lang-switcher .lang-btn { padding: 5px 8px; font-size: 12px; gap: 4px; white-space: nowrap; }
+    .login-lang-switcher .lang-btn svg { width: 16px; }
 
-        /* MODAL */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-            display: none; justify-content: center; align-items: center;
-            z-index: 3000; backdrop-filter: blur(6px);
-        }
-        .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
-        .modal {
-            background: var(--card-bg); padding: 36px 32px; border-radius: 20px;
-            max-width: 340px; width: 90%; text-align: center;
-            border: 1px solid var(--border); box-shadow: 0 24px 60px var(--shadow-lg);
-            animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        .modal-icon { font-size: 42px; margin-bottom: 12px; }
-        .modal p { color: var(--ink-light); font-size: 15px; line-height: 1.5; margin-bottom: 24px; }
-        .modal-btn {
-            background: linear-gradient(135deg, var(--btn-dark-bg), var(--btn-dark-bg-2)); color: var(--btn-dark-text); border: none; 
-			padding: 11px 32px; border-radius: 10px;
-            font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
-            cursor: pointer; transition: opacity 0.2s;
-        }
-        .modal-btn:hover { opacity: 0.82; }
+    /* Lang Button States */
+    .lang-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .lang-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent-dark); }
+    
+    [data-theme="dark"] .lang-btn { color: #d7dbea; background: #181826; }
+    [data-theme="dark"] .lang-btn.active { background: #3a3218; color: #f3df9a; border-color: #d4b86a; }
+    [data-theme="dark"] .lang-btn:hover { color: #f3df9a; border-color: #d4b86a; }
 
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--card-bg);
-    border: 1.5px solid var(--border);
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    z-index: 2000;
-    box-shadow: 0 4px 12px var(--shadow);
-}
-.theme-toggle:hover { 
-    border-color: var(--accent); 
-    transform: scale(1.05);
-}
-#theme-icon {
-    display: flex;
-    line-height: 1;
-}
-.btn-sticky-send {
-    background: linear-gradient(135deg, var(--btn-accent-bg), var(--btn-accent-bg-2));
-    color: var(--btn-accent-text);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    transition: transform 0.15s, box-shadow 0.15s;
-    box-shadow: 0 4px 14px rgba(45,122,95,0.35);
-}
-        .btn-sticky-send:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(45,122,95,0.45); }
+    /* Inputs */
+    .name-input-wrap input {
+        width: 100%; 
+        padding: 13px 16px; 
+        border: 1.5px solid var(--border);
+        border-radius: 10px; 
+        font-size: 16px; 
+        font-family: 'DM Sans', sans-serif;
+        background: var(--input-bg); 
+        color: var(--ink); 
+        outline: none;
+        transition: border-color 0.2s, background 0.2s;
+    }
+    .name-input-wrap input:focus { border-color: var(--accent); background: var(--card-bg); }
+    .name-input-wrap input::placeholder { color: var(--ink-light); opacity: 0.6; }
 
-        /* LOGIN */
-        #login-overlay {
-            position: fixed; inset: 0; background: var(--cream);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 1000; animation: fadeIn 0.4s ease;
-        }
+    /* ==========================================================================
+       6. SCHEDULE & SLOTS
+       ========================================================================== */
+    .tz-notice {
+        display: flex; 
+        align-items: center; 
+        gap: 9px;
+        background: var(--green-light); 
+        color: var(--green);
+        border: 1px solid rgba(45,122,95,0.15); 
+        border-radius: 10px;
+        padding: 10px 16px; 
+        font-size: 13px; 
+        font-weight: 500; 
+        margin-bottom: 14px;
+    }
+    .schedule-card {
+        background: var(--schedule-bg); 
+        border: 1px solid var(--border);
+        border-radius: var(--radius); 
+        overflow: hidden;
+        margin-bottom: 14px; 
+        box-shadow: 0 2px 12px var(--shadow);
+        transition: background 0.3s;
+    }
+    .schedule-header { padding: 18px 28px 14px; border-bottom: 1px solid var(--border); }
+    .date-group { border-bottom: 1px solid var(--border); }
+    .date-group:last-child { border-bottom: none; }
+    .date-row { display: flex; align-items: stretch; }
+    .date-label {
+        padding: 16px 22px; 
+        min-width: 140px; 
+        font-weight: 600; 
+        font-size: 14px;
+        background: var(--schedule-date-bg); 
+        border-right: 1px solid var(--border);
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center;
+        transition: background 0.3s; 
+        flex-shrink: 0;
+    }
+    .date-label .weekday {
+        font-size: 10px; 
+        font-weight: 500; 
+        color: var(--ink-light);
+        text-transform: uppercase; 
+        letter-spacing: 0.08em; 
+        display: block; 
+        margin-bottom: 3px;
+    }
+    .slots-row {
+        display: flex; 
+        flex-wrap: wrap; 
+        gap: 8px;
+        padding: 14px 20px; 
+        flex: 1; 
+        align-items: center;
+    }
 
-.login-lang-switcher {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-bottom: 20px;
-    flex-wrap: nowrap;
-}
+    /* Slot Buttons */
+    .slot-btn { position: relative; }
+    .slot-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .slot-btn label {
+        display: flex; 
+        align-items: center; 
+        gap: 7px; 
+        padding: 8px 14px;
+        border: 1.5px solid var(--border); 
+        border-radius: 8px; 
+        cursor: pointer;
+        font-size: 14px; 
+        font-weight: 500; 
+        color: var(--ink-light); 
+        background: var(--input-bg);
+        transition: all 0.18s; 
+        user-select: none; 
+        white-space: nowrap;
+    }
+    .slot-btn label:hover { border-color: var(--accent); color: var(--accent-dark); background: var(--accent-light); }
+    .slot-btn input:checked + label { border-color: var(--green); background: var(--green-light); color: var(--green); }
+    
+    [data-theme="dark"] .slot-btn label { color: #d7dbea; background: #161622; }
+    [data-theme="dark"] .slot-btn label:hover { background: #2a2412; color: #f3df9a; border-color: #d4b86a; }
+    [data-theme="dark"] .slot-btn input:checked + label { background: #143126; color: #7be0b8; border-color: #4db38f; }		
 
-.login-lang-switcher .lang-btn {
-    padding: 5px 8px;
-    font-size: 12px;
-    gap: 4px;
-    white-space: nowrap;
-}
-.login-lang-switcher .lang-btn svg {
-    width: 16px;
-}		
-.login-card {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: 24px; padding: 52px 52px; max-width: 500px; width: 90%;
-    text-align: center; box-shadow: 0 12px 48px var(--shadow-lg);
-    position: relative; overflow: hidden;
-}
-        .login-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--green), var(--accent));
-            background-size: 200%; animation: shimmer 3s linear infinite;
-        }
-[data-theme="dark"] .login-icon {
-    background: #f0e4c4;
-    color: #a8893a;
-}		
-        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-.login-icon {
-    width: 68px;
-    height: 68px;
-    background: #f0e4c4;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 24px;
-    font-size: 30px;
-}
-        .login-card h2 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-        .login-card > p { color: var(--ink-light); font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
-        .login-input-wrap { position: relative; margin-bottom: 14px; }
-        .login-input-wrap input {
-            width: 100%; padding: 13px 16px 13px 44px; border: 1.5px solid var(--border);
-            border-radius: 10px; font-size: 15px; font-family: 'DM Sans', sans-serif;
-            background: var(--input-bg); color: var(--ink); outline: none;
-            transition: border-color 0.2s, background 0.2s; letter-spacing: 0.08em;
-        }
-        .login-input-wrap input:focus { border-color: var(--accent); background: var(--card-bg); }
-        .login-input-wrap .icon {
-            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-            font-size: 16px; pointer-events: none;
-        }
-        #error-msg { color: #e05252; font-size: 13px; margin-bottom: 12px; display: none; }
-.btn-login {
-    width: 100%;
-    background: linear-gradient(135deg, var(--btn-dark-bg), var(--btn-dark-bg-2));
-    color: var(--btn-dark-text);
-    border: none;
-    padding: 14px;
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-    box-shadow: 0 4px 16px var(--shadow-lg);
-}
-        .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 22px var(--shadow-lg); }
+    .check-icon {
+        width: 16px; 
+        height: 16px; 
+        border: 1.5px solid currentColor; 
+        border-radius: 4px;
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        background: transparent; 
+        flex-shrink: 0; 
+        transition: all 0.18s; 
+        opacity: 0.35;
+    }
+    .check-icon svg { opacity: 0; transition: opacity 0.15s; }
+    .slot-btn input:checked + label .check-icon { background: var(--green); border-color: var(--green); opacity: 1; }
+    .slot-btn input:checked + label .check-icon svg { opacity: 1; }
 
-        /* MAIN */
-        #main-content {
-            display: none; max-width: 660px; width: 100%;
-            margin: 0 auto; position: relative; z-index: 1;
-            animation: slideUp 0.5s ease;
-        }
-        .page-header { text-align: center; padding: 44px 0 28px; }
-        .header-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: var(--accent-light); color: var(--accent-dark);
-            font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-            text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 18px;
-        }
-        .page-header h1 {
-            font-family: 'Playfair Display', serif; font-size: clamp(26px,5vw,38px);
-            font-weight: 700; line-height: 1.15; margin-bottom: 10px;
-        }
-        .page-header p { color: var(--ink-light); font-size: 15px; font-weight: 300; }
+    /* ==========================================================================
+       7. SUMMARY & FOOTER BUTTONS
+       ========================================================================== */
+    .selection-summary {
+        margin-bottom: 14px; 
+        padding: 16px 20px;
+        background: var(--green-light); 
+        border: 1px solid rgba(45,122,95,0.2);
+        border-radius: var(--radius); 
+        display: none; 
+        animation: fadeIn 0.3s ease;
+    }
+    .selection-summary.visible { display: block; }
+    .summary-label {
+        font-size: 11px; 
+        font-weight: 600; 
+        letter-spacing: 0.09em;
+        text-transform: uppercase; 
+        color: var(--green); 
+        margin-bottom: 10px;
+    }
+    .selected-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .selected-chip {
+        display: flex; 
+        align-items: center; 
+        gap: 6px;
+        background: var(--card-bg); 
+        border: 1px solid rgba(45,122,95,0.25);
+        color: var(--green); 
+        border-radius: 6px; 
+        padding: 5px 8px 5px 11px;
+        font-size: 13px; 
+        font-weight: 500;
+    }
+    .selected-chip button {
+        background: none; border: none; cursor: pointer; color: var(--green);
+        font-size: 17px; line-height: 1; padding: 0; opacity: 0.45;
+        transition: opacity 0.15s; display: flex; align-items: center;
+    }
+    .selected-chip button:hover { opacity: 1; }
 
-        /* LANG SWITCHER */
-        .lang-switcher { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
-        .lang-btn {
-            display: flex; align-items: center; gap: 6px; padding: 8px 15px;
-            border: 1.5px solid var(--border); border-radius: 8px; background: var(--card-bg);
-            cursor: pointer; font-size: 13px; font-weight: 500; color: var(--ink-light);
-            font-family: 'DM Sans', sans-serif; transition: all 0.2s;
-        }
-        .lang-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
-        .lang-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent-dark); }
-		.lang-btn svg {
-    width: 20px;
-    height: auto;
-    border-radius: 2px; /* Ger flaggorna lite mjukare hörn */
-    flex-shrink: 0;
-}
+    /* Action Buttons */
+    .btn-login, .btn-submit, .btn-modal {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    }
 
-#theme-icon svg {
-    /* Gör att SVG:n ärver färgen från föräldra-elementet/temat */
-    stroke: currentColor;
-    display: block;
-}
+    .btn-submit {
+        gap: 10px;
+        width: 100%;
+        background: linear-gradient(135deg, var(--btn-dark-bg), var(--btn-dark-bg-2));
+        color: var(--btn-dark-text);
+        border: none;
+        padding: 17px;
+        border-radius: var(--radius);
+        font-size: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 20px var(--shadow-lg);
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--shadow-lg); }
+    .btn-submit .arrow { transition: transform 0.2s; }
+    .btn-submit:hover .arrow { transform: translateX(4px); }
 
-/* Du kan också lägga till en mjuk rotation när man byter */
-.theme-toggle:active #theme-icon {
-    transform: scale(0.9);
-}
+    .btn-login {
+        width: 100%;
+        background: linear-gradient(135deg, var(--btn-dark-bg), var(--btn-dark-bg-2));
+        color: var(--btn-dark-text);
+        border: none;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 15px;
+        gap: 8px;
+        box-shadow: 0 4px 16px var(--shadow-lg);
+    }
+    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 22px var(--shadow-lg); }
 
-        /* CARD */
-        .card {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 24px 28px; margin-bottom: 14px;
-            box-shadow: 0 2px 12px var(--shadow); transition: background 0.3s, border-color 0.3s;
-        }
-        .card-label {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 11px; font-weight: 600; letter-spacing: 0.09em;
-            text-transform: uppercase; color: var(--ink-light); margin-bottom: 12px;
-        }
-        .card-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-        .name-input-wrap input {
-            width: 100%; padding: 13px 16px; border: 1.5px solid var(--border);
-            border-radius: 10px; font-size: 16px; font-family: 'DM Sans', sans-serif;
-            background: var(--input-bg); color: var(--ink); outline: none;
-            transition: border-color 0.2s, background 0.2s;
-        }
-        .name-input-wrap input:focus { border-color: var(--accent); background: var(--card-bg); }
-        .name-input-wrap input::placeholder { color: var(--ink-light); opacity: 0.6; }
+    .btn-sticky-send {
+        background: linear-gradient(135deg, var(--btn-accent-bg), var(--btn-accent-bg-2));
+        color: var(--btn-accent-text);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        transition: transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 4px 14px rgba(45,122,95,0.35);
+    }
+    .btn-sticky-send:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(45,122,95,0.45); }
 
-        /* TZ NOTICE */
-        .tz-notice {
-            display: flex; align-items: center; gap: 9px;
-            background: var(--green-light); color: var(--green);
-            border: 1px solid rgba(45,122,95,0.15); border-radius: 10px;
-            padding: 10px 16px; font-size: 13px; font-weight: 500; margin-bottom: 14px;
-        }
+    /* ==========================================================================
+       8. ANIMATIONS
+       ========================================================================== */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.88); } to { opacity: 1; transform: scale(1); } }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        20% { transform: translateX(-8px); }
+        60% { transform: translateX(6px); }
+        80% { transform: translateX(-4px); }
+    }
 
-        /* SCHEDULE */
-        .schedule-card {
-            background: var(--schedule-bg); border: 1px solid var(--border);
-            border-radius: var(--radius); overflow: hidden;
-            margin-bottom: 14px; box-shadow: 0 2px 12px var(--shadow);
-            transition: background 0.3s;
-        }
-        .schedule-header { padding: 18px 28px 14px; border-bottom: 1px solid var(--border); }
-        .date-group { border-bottom: 1px solid var(--border); }
-        .date-group:last-child { border-bottom: none; }
-        .date-row { display: flex; align-items: stretch; }
+    /* ==========================================================================
+       9. RESPONSIVE DESIGN
+       ========================================================================== */
+    @media (max-width: 520px) {
+        body { padding: 60px 12px 40px; }
+        .login-card { padding: 36px 24px; }
+        .page-header { padding: 28px 0 20px; }
+        .card { padding: 20px; }
+        .schedule-header { padding: 14px 20px 12px; }
+        
+        .date-row { flex-direction: column; }
         .date-label {
-            padding: 16px 22px; min-width: 140px; font-weight: 600; font-size: 14px;
-            background: var(--schedule-date-bg); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; justify-content: center;
-            transition: background 0.3s; flex-shrink: 0;
+            border-right: none; 
+            border-bottom: 1px solid var(--border);
+            flex-direction: row; 
+            align-items: center; 
+            gap: 8px;
+            min-width: unset; 
+            padding: 10px 16px;
         }
-        .date-label .weekday {
-            font-size: 10px; font-weight: 500; color: var(--ink-light);
-            text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 3px;
+        .date-label .weekday { margin-bottom: 0; }
+        .slots-row { padding: 10px 16px 14px; }
+        
+        .sticky-controls { 
+            width: calc(100% - 32px); 
+            justify-content: space-between; 
+            border-radius: 50px; 
+            padding: 8px 8px 8px 16px; 
         }
-        .slots-row {
-            display: flex; flex-wrap: wrap; gap: 8px;
-            padding: 14px 20px; flex: 1; align-items: center;
-        }
-
-        /* SLOT BUTTONS */
-        .slot-btn { position: relative; }
-        .slot-btn input { position: absolute; opacity: 0; width: 0; height: 0; }
-        .slot-btn label {
-            display: flex; align-items: center; gap: 7px; padding: 8px 14px;
-            border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer;
-            font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif;
-            color: var(--ink-light); background: var(--input-bg);
-            transition: all 0.18s; user-select: none; white-space: nowrap;
-        }
-        .slot-btn label:hover { border-color: var(--accent); color: var(--accent-dark); background: var(--accent-light); }
-        .slot-btn input:checked + label { border-color: var(--green); background: var(--green-light); color: var(--green); }
-        .check-icon {
-            width: 16px; height: 16px; border: 1.5px solid currentColor; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            background: transparent; flex-shrink: 0; transition: all 0.18s; opacity: 0.35;
-        }
-        .slot-btn input:checked + label .check-icon { background: var(--green); border-color: var(--green); opacity: 1; }
-        .check-icon svg { opacity: 0; transition: opacity 0.15s; }
-        .slot-btn input:checked + label .check-icon svg { opacity: 1; }
-
-        /* SUMMARY */
-        .selection-summary {
-            margin-bottom: 14px; padding: 16px 20px;
-            background: var(--green-light); border: 1px solid rgba(45,122,95,0.2);
-            border-radius: var(--radius); display: none; animation: fadeIn 0.3s ease;
-        }
-        .selection-summary.visible { display: block; }
-        .summary-label {
-            font-size: 11px; font-weight: 600; letter-spacing: 0.09em;
-            text-transform: uppercase; color: var(--green); margin-bottom: 10px;
-        }
-        .selected-list { display: flex; flex-wrap: wrap; gap: 6px; }
-        .selected-chip {
-            display: flex; align-items: center; gap: 6px;
-            background: var(--card-bg); border: 1px solid rgba(45,122,95,0.25);
-            color: var(--green); border-radius: 6px; padding: 5px 8px 5px 11px;
-            font-size: 13px; font-weight: 500;
-        }
-        .selected-chip button {
-            background: none; border: none; cursor: pointer; color: var(--green);
-            font-size: 17px; line-height: 1; padding: 0; opacity: 0.45;
-            transition: opacity 0.15s; display: flex; align-items: center;
-        }
-        .selected-chip button:hover { opacity: 1; }
-
-        /* SUBMIT */
-.btn-submit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    background: linear-gradient(135deg, var(--btn-dark-bg), var(--btn-dark-bg-2));
-    color: var(--btn-dark-text);
-    border: none;
-    padding: 17px;
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 20px var(--shadow-lg);
-    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-}
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--shadow-lg); }
-        .btn-submit .arrow { transition: transform 0.2s; }
-        .btn-submit:hover .arrow { transform: translateX(4px); }
-
-        /* ANIMATIONS */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.88); } to { opacity: 1; transform: scale(1); } }
-        @keyframes shake {
-            0%,100% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            60% { transform: translateX(6px); }
-            80% { transform: translateX(-4px); }
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 520px) {
-            body { padding: 60px 12px 40px; }
-            .login-card { padding: 36px 24px; }
-            .page-header { padding: 28px 0 20px; }
-            .card { padding: 20px; }
-            .schedule-header { padding: 14px 20px 12px; }
-            .date-row { flex-direction: column; }
-            .date-label {
-                border-right: none; border-bottom: 1px solid var(--border);
-                flex-direction: row; align-items: center; gap: 8px;
-                min-width: unset; padding: 10px 16px;
-            }
-            .date-label .weekday { margin-bottom: 0; }
-            .slots-row { padding: 10px 16px 14px; }
-            .sticky-controls { width: calc(100% - 32px); justify-content: space-between; border-radius: 50px; padding: 8px 8px 8px 16px; }
-			.theme-toggle { top: 15px; right: 15px; width: 38px; height: 38px; }
-        }
-    </style>
+        .theme-toggle { top: 15px; right: 15px; width: 38px; height: 38px; }
+    }
+</style>
 </head>
 <body>
 
-<!-- MODAL -->
 <div id="modal-overlay" class="modal-overlay" onclick="if(event.target===this)closeModal()">
     <div class="modal">
+        <button class="close-x" onclick="closeModal()" aria-label="Stäng">
+            <span class="line"></span>
+            <span class="line"></span>
+        </button>
+        
         <div class="modal-icon" id="modal-icon">⚠️</div>
-        <p id="modal-text"></p>
-        <button class="modal-btn" onclick="closeModal()" id="modal-btn">OK</button>
-    </div>
+        <p id="modal-text" style="margin-bottom: 0;"></p> </div>
 </div>
 
-<!-- STICKY BAR -->
 <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Byt tema">
     <span id="theme-icon"></span>
 </button>
 
-<!-- LOGIN -->
 <div id="login-overlay">
     <div class="login-card">
-
         <div class="lang-switcher login-lang-switcher">
             <button class="lang-btn active" data-lang="sv" onclick="setLang('sv')">
                 <svg viewBox="0 0 640 480"><path fill="#006aa7" d="M0 0h640v480H0z"/><path fill="#fecc00" d="M0 192h640v96H0z"/><path fill="#fecc00" d="M176 0h96v480h-96z"/></svg>
@@ -504,10 +724,10 @@
 
         <div class="login-input-wrap">
             <span class="icon">🔒</span>
-<input type="password" id="_u_key" placeholder="••••••••"
-    onkeydown="if(event.key==='Enter')_v_auth()"
-    oninput="if(!cachedData)fetchScheduleData()"
-    autocomplete="off">
+            <input type="password" id="_u_key" placeholder="••••••••"
+                onkeydown="if(event.key==='Enter')_v_auth()"
+                oninput="if(!cachedData)fetchScheduleData()"
+                autocomplete="off">
         </div>
 
         <p id="error-msg">Ogiltig kod – försök igen</p>
@@ -518,46 +738,52 @@
     </div>
 </div>
 
-<!-- MAIN -->
 <div id="main-content">
+    
     <div class="page-header">
         <div class="header-badge">✦ <span id="badge-text">Lektionsbokning</span></div>
         <h1 id="main-title">Boka din lektionstid</h1>
         <p id="main-sub">Välj de tider som passar dig bäst</p>
     </div>
 
-<div class="lang-switcher">
-    <button class="lang-btn active" data-lang="sv" onclick="setLang('sv')">
-        <svg viewBox="0 0 640 480"><path fill="#006aa7" d="M0 0h640v480H0z"/><path fill="#fecc00" d="M0 192h640v96H0z"/><path fill="#fecc00" d="M176 0h96v480h-96z"/></svg>
-        Svenska
-    </button>
-    <button class="lang-btn" data-lang="en" onclick="setLang('en')">
-        <svg viewBox="0 0 640 480"><path fill="#012169" d="M0 0h640v480H0z"/><path fill="#FFF" d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z"/><path fill="#C8102E" d="m424 281 216 159v40L369 281h55zM226 195 0 32V0l282 208h-56zm351 0L640 44v-44L347 217h230zM0 440l209-159h58L0 480v-40z"/><path fill="#FFF" d="M241 0v480h160V0H241zM0 160v160h640V160H0z"/><path fill="#C8102E" d="M281 0v480h80V0h-80zM0 200v80h640v-80H0z"/></svg>
-        English
-    </button>
-    <button class="lang-btn" data-lang="de" onclick="setLang('de')">
-        <svg viewBox="0 0 640 480"><path fill="#000" d="M0 0h640v160H0z"/><path fill="#D00" d="M0 160h640v160H0z"/><path fill="#FFCE00" d="M0 320h640v160H0z"/></svg>
-        Deutsch
-    </button>
-    <button class="lang-btn" data-lang="nl" onclick="setLang('nl')">
-        <svg viewBox="0 0 640 480"><path fill="#21468B" d="M0 0h640v480H0z"/><path fill="#FFF" d="M0 0h640v320H0z"/><path fill="#AE1C28" d="M0 0h640v160H0z"/></svg>
-        Nederlands
-    </button>
-</div>
+    <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="sv" onclick="setLang('sv')">
+            <svg viewBox="0 0 640 480"><path fill="#006aa7" d="M0 0h640v480H0z"/><path fill="#fecc00" d="M0 192h640v96H0z"/><path fill="#fecc00" d="M176 0h96v480h-96z"/></svg>
+            Svenska
+        </button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">
+            <svg viewBox="0 0 640 480"><path fill="#012169" d="M0 0h640v480H0z"/><path fill="#FFF" d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z"/><path fill="#C8102E" d="m424 281 216 159v40L369 281h55zM226 195 0 32V0l282 208h-56zm351 0L640 44v-44L347 217h230zM0 440l209-159h58L0 480v-40z"/><path fill="#FFF" d="M241 0v480h160V0H241zM0 160v160h640V160H0z"/><path fill="#C8102E" d="M281 0v480h80V0h-80zM0 200v80h640v-80H0z"/></svg>
+            English
+        </button>
+        <button class="lang-btn" data-lang="de" onclick="setLang('de')">
+            <svg viewBox="0 0 640 480"><path fill="#000" d="M0 0h640v160H0z"/><path fill="#D00" d="M0 160h640v160H0z"/><path fill="#FFCE00" d="M0 320h640v160H0z"/></svg>
+            Deutsch
+        </button>
+        <button class="lang-btn" data-lang="nl" onclick="setLang('nl')">
+            <svg viewBox="0 0 640 480"><path fill="#21468B" d="M0 0h640v480H0z"/><path fill="#FFF" d="M0 0h640v320H0z"/><path fill="#AE1C28" d="M0 0h640v160H0z"/></svg>
+            Nederlands
+        </button>
+    </div>
 
     <div class="card">
-        <div class="card-label"><span class="dot"></span> <span id="label-name">Ditt namn</span></div>
+        <div class="card-label">
+            <span class="dot"></span> <span id="label-name">Ditt namn</span>
+        </div>
         <div class="name-input-wrap">
             <input type="text" id="student-name" placeholder="Ditt namn"
                 oninput="updateSummary()" autocomplete="off">
         </div>
     </div>
 
-    <div class="tz-notice">🕐 <span id="tz-text">Alla tider är angivna i svensk tid (CET/CEST)</span></div>
+    <div class="tz-notice">
+        🕐 <span id="tz-text">Alla tider är angivna i svensk tid (CET/CEST)</span>
+    </div>
 
     <div class="schedule-card">
         <div class="schedule-header">
-            <div class="card-label" style="margin:0"><span class="dot"></span> <span id="label-schedule">Tillgängliga tider</span></div>
+            <div class="card-label" style="margin:0">
+                <span class="dot"></span> <span id="label-schedule">Tillgängliga tider</span>
+            </div>
         </div>
         <div id="schedule"></div>
     </div>
@@ -571,6 +797,7 @@
         <span id="btn-send-text">Boka</span>
         <span class="arrow">→</span>
     </button>
+
 </div>
 
 <script>
@@ -711,12 +938,20 @@ function toggleTheme() {
     }
 }
 
-function openModal(icon, text, btnText) {
-    document.getElementById('modal-icon').innerText = icon;
-    document.getElementById('modal-text').innerText = text;
-    document.getElementById('modal-btn').innerText = btnText || 'OK';
-    document.getElementById('modal-overlay').classList.add('open');
+function openModal(icon, text) {
+    // Uppdaterar ikonen (t.ex. ⚠️, ✅ eller 📝)
+    const iconEl = document.getElementById('modal-icon');
+    if (iconEl) iconEl.innerText = icon;
+
+    // Uppdaterar meddelandetexten
+    const textEl = document.getElementById('modal-text');
+    if (textEl) textEl.innerText = text;
+
+    // Visar modalen genom att lägga till klassen "open"
+    const overlay = document.getElementById('modal-overlay');
+    if (overlay) overlay.classList.add('open');
 }
+
 function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
 
 function setLang(l) {
@@ -726,7 +961,7 @@ function setLang(l) {
         'login-title': t.loginTitle, 'login-subtitle': t.loginSub, 'login-btn-text': t.loginBtn,
         'error-msg': t.errorMsg, 'badge-text': t.badge, 'main-title': t.title,
         'main-sub': t.titleSub, 'label-name': t.labelName, 'label-schedule': t.labelSchedule,
-        'summary-title': t.summaryTitle, 'tz-text': t.tzText
+        'summary-title': t.summaryTitle, 'tz-text': t.tzText, 'btn-send-text': t.send
     };
     for (const [id, val] of Object.entries(ids)) {
         const el = document.getElementById(id);
