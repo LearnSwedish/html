@@ -73,6 +73,18 @@
     border-color: #4db38f;
 }		
 
+[data-theme="dark"] .theme-toggle {
+    color: #f3df9a; /* Detta ger solen en guldgul/ljus färg */
+    border-color: var(--border);
+    background: var(--card-bg);
+}
+
+/* Lägg även till denna för att säkerställa att SVG:n alltid syns bra */
+#theme-icon svg {
+    stroke: currentColor;
+    display: block;
+}
+
         html { scroll-behavior: smooth; }
 
         body {
@@ -115,14 +127,6 @@
         }
         .modal-btn:hover { opacity: 0.82; }
 
-        /* STICKY BOTTOM BAR */
-.sticky-controls {
-    display: none !important; 
-}
-        .sticky-counter {
-            font-size: 13px; font-weight: 500; color: var(--ink-light); min-width: 90px;
-        }
-        .sticky-counter strong { color: var(--green); font-weight: 700; }
 .theme-toggle {
     position: fixed;
     top: 20px;
@@ -133,7 +137,6 @@
     height: 42px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,6 +147,10 @@
 .theme-toggle:hover { 
     border-color: var(--accent); 
     transform: scale(1.05);
+}
+#theme-icon {
+    display: flex;
+    line-height: 1;
 }
 .btn-sticky-send {
     background: linear-gradient(135deg, var(--btn-accent-bg), var(--btn-accent-bg-2));
@@ -198,12 +205,22 @@
             background: linear-gradient(90deg, var(--accent), var(--green), var(--accent));
             background-size: 200%; animation: shimmer 3s linear infinite;
         }
+[data-theme="dark"] .login-icon {
+    background: #f0e4c4;
+    color: #a8893a;
+}		
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .login-icon {
-            width: 68px; height: 68px; background: var(--accent-light); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px; font-size: 30px;
-        }
+.login-icon {
+    width: 68px;
+    height: 68px;
+    background: #f0e4c4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 30px;
+}
         .login-card h2 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; }
         .login-card > p { color: var(--ink-light); font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
         .login-input-wrap { position: relative; margin-bottom: 14px; }
@@ -273,6 +290,17 @@
     height: auto;
     border-radius: 2px; /* Ger flaggorna lite mjukare hörn */
     flex-shrink: 0;
+}
+
+#theme-icon svg {
+    /* Gör att SVG:n ärver färgen från föräldra-elementet/temat */
+    stroke: currentColor;
+    display: block;
+}
+
+/* Du kan också lägga till en mjuk rotation när man byter */
+.theme-toggle:active #theme-icon {
+    transform: scale(0.9);
 }
 
         /* CARD */
@@ -444,7 +472,7 @@
 
 <!-- STICKY BAR -->
 <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Byt tema">
-    <span id="theme-icon">🌙</span>
+    <span id="theme-icon"></span>
 </button>
 
 <!-- LOGIN -->
@@ -658,7 +686,29 @@ function localizeDate(d) {
 function toggleTheme() {
     darkMode = !darkMode;
     document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
-    document.getElementById('theme-icon').innerText = darkMode ? '☀️' : '🌙';
+    
+    const icon = document.getElementById('theme-icon');
+    if (darkMode) {
+        // Sol-ikon för att byta tillbaka till ljust läge
+        icon.innerHTML = `
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>`;
+    } else {
+        // Mån-ikon för att byta till mörkt läge
+        icon.innerHTML = `
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>`;
+    }
 }
 
 function openModal(icon, text, btnText) {
@@ -676,7 +726,6 @@ function setLang(l) {
         'login-title': t.loginTitle, 'login-subtitle': t.loginSub, 'login-btn-text': t.loginBtn,
         'error-msg': t.errorMsg, 'badge-text': t.badge, 'main-title': t.title,
         'main-sub': t.titleSub, 'label-name': t.labelName, 'label-schedule': t.labelSchedule,
-        'btn-send-text': t.send, 'btn-sticky-text': t.stickySend,
         'summary-title': t.summaryTitle, 'tz-text': t.tzText
     };
     for (const [id, val] of Object.entries(ids)) {
@@ -829,11 +878,6 @@ function updateSummary() {
     const list = document.getElementById('selected-list');
     const t = T[lang];
 
-    const stickyCounter = document.getElementById('sticky-counter');
-    if (stickyCounter) {
-        stickyCounter.innerHTML = t.counter(selected.length);
-    }
-
     if (!selected.length) {
         summary.classList.remove('visible');
         list.innerHTML = '';
@@ -846,6 +890,50 @@ function updateSummary() {
         <button onclick="uncheck('${cb.id}')" title="${t.removeSelection}">×</button></div>`
     ).join('');
 }
+
+// Funktion för att uppdatera bara ikonen baserat på aktuellt läge
+function updateThemeIcon() {
+    const icon = document.getElementById('theme-icon');
+if (darkMode) {
+    icon.innerHTML = `
+        <svg width="20" height="20" fill="#f3df9a" stroke="#f3df9a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>`;
+} else {
+        // Mån-ikon (visas när vi ÄR i light mode)
+        icon.innerHTML = `
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>`;
+    }
+}
+
+// Uppdaterad toggle-funktion
+function toggleTheme() {
+    darkMode = !darkMode;
+    document.body.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    updateThemeIcon();
+}
+
+// Körs när sidan laddas
+function initTheme() {
+    // Valfritt: Kolla om användaren har mörkt läge i systemet
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // darkMode = true; // Avkommentera om du vill att den ska följa systeminställning
+    }
+    updateThemeIcon();
+}
+
+// Starta temat direkt
+initTheme();
 
 function uncheck(id) {
     const cb = document.getElementById(id);
