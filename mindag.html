@@ -575,6 +575,8 @@
 // ── DATA & KONFIGURATION ───────────────────────────────────────────────────
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyG933X2XH3NPNRofkzJk24ggugma9uIJpIh-slvsw0K8XlZuFqcY-BFQtDSbqUt8FZ/exec";
 
+let cloudHistory = [];
+
 const INTERVALS = [
   '06:00–08:00','08:00–10:00','10:00–12:00','12:00–14:00',
   '14:00–16:00','16:00–18:00','18:00–20:00','20:00–22:00','22:00–00:00'
@@ -618,6 +620,7 @@ let moodValue = 5;
 
 // ── INIT ────────────────────────────────────────────────────────────────────
 async function init() {
+  localStorage.clear();
   const now = new Date();
   document.getElementById('today-date').textContent =
     now.toLocaleDateString('sv-SE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
@@ -928,67 +931,62 @@ async function syncFromCloud() {
     
     const cloudData = await response.json();
     let newHistory = [];
-    
-    // Skapa dagens datum i formatet YYYY-MM-DD (t.ex. 2026-04-22)
     const todayKey = new Date().toLocaleDateString('sv-SE'); 
     
-    // 1. VIKTIGT: Nollställ lokala val innan vi fyller på från molnet
+    // Nollställ dagens aktiva val innan synk
     INTERVALS.forEach((_, i) => selections[i] = []);
     
-    // Hjälpfunktion för att tvinga alla datumformat till YYYY-MM-DD
     const formatDate = (d) => {
       if (!d) return "";
-      const dateObj = new Date(d);
-      return dateObj.toLocaleDateString('sv-SE');
+      return new Date(d).toLocaleDateString('sv-SE');
     };
 
-    // 2. Bearbeta dagsbetyg (mood)
+    // Bearbeta dagsbetyg
     if (cloudData.moods) {
       cloudData.moods.forEach(row => {
         const d = formatDate(row[0]);
         const val = parseInt(row[1]);
         newHistory.push({ date: d, mood: val, selections: {} });
-        
-        // Om vi hittar ett dagsbetyg för IDAG, uppdatera den globala variabeln
-        if (d === todayKey) {
-          moodValue = val;
-          console.log("Hittade dagsbetyg för idag:", moodValue);
-        }
+        if (d === todayKey) moodValue = val;
       });
     }
     
-    // 3. Bearbeta tidsintervallen (logs)
+    // Bearbeta tidsintervallen
     if (cloudData.logs) {
       cloudData.logs.forEach(row => {
         const d = formatDate(row[0]);
         let entry = newHistory.find(e => e.date === d);
-        
         if (!entry) {
           entry = { date: d, selections: {} };
           newHistory.push(entry);
         }
-        
         const intervalIdx = parseInt(row[1]);
         const activeKeys = row[2] ? row[2].split(', ') : [];
         entry.selections[intervalIdx] = activeKeys;
 
-        // Om detta är dagens datum, populera vårt aktiva selections-objekt
         if (d === todayKey) {
           selections[intervalIdx] = [...activeKeys];
-          console.log("Synkar dagens data för intervall:", intervalIdx, activeKeys);
         }
       });
     }
 
-    // 4. Sortera historiken (senaste först) och spara till localStorage
+    // SORTERING & ERSÄTTNING
     newHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // HÄR ÄR NYCKELN: Vi sparar bara i den globala variabeln. 
+    // Vi skiter i localStorage för historiken.
+    cloudHistory = newHistory;
+    
+    // Vi kan spara EN kopia i localStorage bara för att appen ska funka offline, 
+    // men den kommer nu ALLTID skrivas över helt av molnet vid varje start/synk.
     localStorage.setItem('mindag_history', JSON.stringify(newHistory));
     
-    console.log("✅ Synk klar. Idag är:", todayKey);
+    console.log("✅ Synk klar. Historiken är nu identisk med molnet.");
     
   } catch (e) {
     console.error("❌ Synk-fel:", e);
-    showToast("Kunde inte hämta senaste datan från molnet.");
+    // Om synk skiter sig, försök ladda det senaste raderade från minnet som backup
+    cloudHistory = JSON.parse(localStorage.getItem('mindag_history') || '[]');
   }
 }
 
@@ -1020,7 +1018,7 @@ async function manualRefresh() {
 
 // ── HISTORY & CHART ─────────────────────────────────────────────────────────
 function getHistory() {
-  return JSON.parse(localStorage.getItem('mindag_history') || '[]');
+  return cloudHistory;
 }
 
 function loadHistory() {
