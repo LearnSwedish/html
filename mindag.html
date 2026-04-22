@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Min dag 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf6f0;
+    --card: #ffffff;
+    --primary: #f4a7b9;
+    --primary-dark: #e8839b;
+    --accent4: #c9b8e8;
+    --text: #3d3250;
+    --text-soft: #7b6f8a;
+    --text-light: #b0a8bf;
+    --border: #eee5f5;
+    --shadow: 0 4px 24px rgba(180,140,200,0.10);
+    --shadow-lg: 0 8px 40px rgba(180,140,200,0.18);
+    --radius: 20px;
+    --radius-sm: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; top: -120px; right: -120px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #f9d0dc 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; bottom: -100px; left: -80px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, #c9e8f5 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrapper {
+    position: relative; z-index: 1;
+    max-width: 680px; margin: 0 auto; padding: 0 16px;
+  }
+
+  header { padding: 36px 0 20px; text-align: center; }
+  .logo {
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 2rem; color: var(--text); letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--primary-dark); }
+  .date-pill {
+    display: inline-block; background: var(--card);
+    border: 2px solid var(--border); border-radius: 50px;
+    padding: 6px 20px; font-size: 0.9rem;
+    color: var(--text-soft); font-weight: 600; margin-top: 10px;
+  }
+
+  .nav-tabs {
+    display: flex; gap: 8px; background: var(--card);
+    border-radius: 50px; padding: 6px; margin: 20px 0; box-shadow: var(--shadow);
+  }
+  .nav-tab {
+    flex: 1; padding: 10px; border: none; background: transparent;
+    border-radius: 50px; font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 0.9rem; color: var(--text-soft);
+    cursor: pointer; transition: all 0.25s ease;
+  }
+  .nav-tab.active {
+    background: var(--primary); color: white;
+    box-shadow: 0 2px 12px rgba(244,167,185,0.4);
+  }
+
+  section { display: none; }
+  section.visible { display: block; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    box-shadow: var(--shadow); border: 1.5px solid var(--border);
+  }
+  .card-title {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1.05rem; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-sub { font-size: 0.82rem; color: var(--text-soft); margin-bottom: 18px; }
+
+  /* ─── MOOD SLIDER ─── */
+  .mood-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    box-shadow: var(--shadow); border: 1.5px solid var(--border);
+  }
+  .mood-layout {
+    display: flex; gap: 28px; align-items: stretch; margin-top: 16px;
+  }
+  .mood-track-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .mood-track-label { font-size: 0.7rem; color: var(--text-light); font-weight: 800; letter-spacing: 0.5px; }
+  .mood-track {
+    position: relative; width: 48px; flex: 1; min-height: 260px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mood-bar-bg {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 10px; top: 16px; bottom: 16px; border-radius: 10px; background: var(--border);
+  }
+  .mood-bar-fill {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 10px; bottom: 16px; border-radius: 10px;
+    transition: height 0.1s ease, background 0.3s ease;
+    max-height: calc(100% - 32px);
+  }
+  .mood-knob {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 34px; height: 34px; border-radius: 50%;
+    background: white; border: 3px solid var(--primary);
+    box-shadow: 0 3px 14px rgba(244,167,185,0.5);
+    pointer-events: none;
+    transition: bottom 0.1s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem; z-index: 2;
+  }
+  .mood-range {
+    position: absolute; opacity: 0; cursor: pointer;
+    transform: rotate(-90deg);
+    appearance: none; -webkit-appearance: none; z-index: 3; height: 44px;
+  }
+  .mood-ticks {
+    position: absolute; right: -16px; top: 16px; bottom: 16px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    pointer-events: none;
+  }
+  .mood-tick { font-size: 0.6rem; color: var(--text-light); font-weight: 700; line-height: 1; }
+
+  .mood-info { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 8px 0; }
+  .mood-score-big {
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 5rem; line-height: 1;
+    transition: color 0.3s ease;
+  }
+  .mood-score-label { font-weight: 800; font-size: 1.15rem; transition: color 0.3s ease; }
+  .mood-score-desc { font-size: 0.84rem; color: var(--text-soft); line-height: 1.5; max-width: 180px; }
+
+  /* ─── INTERVALS ─── */
+  .interval-block { margin-bottom: 16px; animation: fadeUp 0.4s ease both; }
+
+.interval-block.completed {
+  display: none; /* Eller en snygg utfasnings-animation */
+}
+
+.save-interval-btn {
+  margin-top: 12px;
+  padding: 8px;
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.save-interval-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: transparent;
+}
+
+/* Animation för att krympa ihop kortet */
+.interval-block.collapsing {
+  opacity: 0;
+  max-height: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+  border-width: 0;
+  transform: scale(0.95);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* En extra touch för knappen när man klickat */
+.save-interval-btn.saving {
+  background: #6dcba5;
+  color: white;
+  border-color: transparent;
+}
+  
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(12px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .interval-label {
+    font-weight: 700; font-size: 0.82rem; color: var(--text-soft);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .interval-label::after { content:''; flex:1; height:1px; background: var(--border); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 8px 14px; border-radius: 50px;
+    border: 2px solid var(--border); background: var(--bg);
+    font-family: 'Quicksand', sans-serif; font-weight: 600;
+    font-size: 0.82rem; color: var(--text-soft);
+    cursor: pointer; transition: all 0.2s ease;
+    user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .chip:hover { border-color: var(--primary); color: var(--primary-dark); transform: translateY(-1px); }
+  .chip.selected {
+    border-color: transparent; color: white;
+    transform: translateY(-1px); box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+  }
+  .chip-icon { font-size: 1rem; }
+  .chip[data-status="sov"].selected       { background: #8ec3e6; }
+  .chip[data-status="måltid"].selected    { background: #f4a261; }
+  .chip[data-status="skola"].selected     { background: #a8d8ea; }
+  .chip[data-status="umgicks"].selected   { background: #f4a7b9; }
+  .chip[data-status="pos-skärm"].selected { background: #b5ead7; }
+  .chip[data-status="neg-skärm"].selected { background: #c9b8e8; }
+  .chip[data-status="aktivitet"].selected { background: #ffd166; color: #5a4500 !important; }
+  .chip[data-status="träning"].selected   { background: #6dcba5; }
+  .chip[data-status="grubblande"].selected{ background: #c4a7d8; }
+
+  .btn-primary {
+    width: 100%; padding: 16px; border: none; border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1.05rem; cursor: pointer; transition: all 0.25s ease;
+    box-shadow: 0 4px 18px rgba(244,167,185,0.45); margin-top: 8px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(244,167,185,0.55); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .progress-bar { height: 6px; background: var(--border); border-radius: 10px; margin-top: 16px; overflow: hidden; }
+  .progress-fill {
+    height: 100%; border-radius: 10px;
+    background: linear-gradient(90deg, var(--primary), var(--accent4));
+    transition: width 0.5s ease;
+  }
+  .progress-label { font-size: 0.78rem; color: var(--text-light); margin-top: 6px; font-weight: 600; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #3d3250; color: white;
+    padding: 14px 28px; border-radius: 50px;
+    font-weight: 700; font-size: 0.9rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 100; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── HISTORY ─── */
+  .history-empty {
+    text-align: center; padding: 48px 0;
+    color: var(--text-light); font-size: 0.95rem;
+  }
+  .history-empty .big { font-size: 3rem; margin-bottom: 12px; }
+
+  .chart-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    box-shadow: var(--shadow); border: 1.5px solid var(--border);
+  }
+  .chart-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; margin-bottom: 4px; }
+  .chart-sub { font-size: 0.82rem; color: var(--text-soft); margin-bottom: 18px; }
+.chart-wrap {
+  width: 100%;
+  overflow-x: auto; /* Tillåt skrollning i sidled */
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+#moodChart {
+  display: block;
+  height: 170px;
+  min-width: 100%; /* Tar minst upp hela skärmen */
+}
+.chart-wrap::-webkit-scrollbar { height: 4px; }
+.chart-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; } 
+#mood-summary-card.collapsing {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border-width: 0;
+    transform: scale(0.95);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}  
+
+  .day-entry {
+    background: var(--card); border-radius: var(--radius);
+    padding: 20px; margin-bottom: 14px;
+    box-shadow: var(--shadow); border: 1.5px solid var(--border);
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  .day-entry:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .day-entry-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+  }
+  .day-entry-date { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; }
+  .day-entry-right { display: flex; align-items: center; gap: 8px; }
+  .day-entry-count {
+    font-size: 0.8rem; color: var(--text-soft);
+    background: var(--bg); padding: 4px 12px; border-radius: 50px; font-weight: 600;
+  }
+  .mood-badge {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 0.9rem; color: white; flex-shrink: 0;
+  }
+
+  .mini-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
+  .mini-cell {
+    aspect-ratio: 1; border-radius: 6px; background: var(--bg);
+    display: flex; align-items: center; justify-content: center; font-size: 0.65rem;
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(61,50,80,0.45); backdrop-filter: blur(4px);
+    z-index: 50; display: none; align-items: flex-end;
+    justify-content: center; padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: var(--radius) var(--radius) var(--radius-sm) var(--radius-sm);
+    padding: 28px 24px; width: 100%; max-width: 680px;
+    max-height: 85vh; overflow-y: auto;
+    animation: slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(60px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+  }
+  .modal-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.15rem; }
+  .modal-mood-row {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--bg); border-radius: var(--radius-sm);
+    padding: 14px 18px; margin-bottom: 18px;
+  }
+  .modal-mood-score { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.8rem; }
+  .btn-close {
+    width: 36px; height: 36px; border-radius: 50%; border: none;
+    background: var(--bg); font-size: 1.1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-soft); transition: background 0.2s; flex-shrink: 0;
+  }
+  .btn-close:hover { background: var(--border); }
+  
+#refresh-btn {
+  position: absolute;
+  top: 32px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--card);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1.5px solid var(--border);
+  z-index: 10;
+}
+
+#refresh-btn:hover {
+  color: var(--primary-dark);
+  border-color: var(--primary);
+  transform: scale(1.05);
+}
+
+#refresh-btn:active {
+  transform: scale(0.95);
+}
+
+/* Animationen när knappen snurrar */
+.spinning {
+  animation: spin 0.8s linear infinite;
+  color: var(--primary-dark) !important;
+  border-color: var(--primary) !important;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}  
+  
+.stats-block { margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+.stats-block:last-child { border-bottom: none; }
+.stats-header { font-weight: 800; font-size: 0.9rem; margin-bottom: 12px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.stats-header::before { content: '🕒'; font-size: 1rem; }
+.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.bar-label { width: 120px; font-size: 0.75rem; color: var(--text-soft); font-weight: 600; white-space: nowrap; }
+.bar-container { flex: 1; height: 10px; background: var(--bg); border-radius: 10px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 10px; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.bar-value { width: 35px; font-size: 0.7rem; font-weight: 800; color: var(--text-light); text-align: right; }  
+
+  .detail-table { width: 100%; border-collapse: collapse; }
+  .detail-table tr { border-bottom: 1px solid var(--border); }
+  .detail-table tr:last-child { border-bottom: none; }
+  .detail-table td { padding: 11px 6px; font-size: 0.88rem; }
+  .detail-table td:first-child { color: var(--text-soft); font-weight: 600; width: 110px; }
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--bg); border-radius: 50px;
+    padding: 4px 12px; font-weight: 600; font-size: 0.82rem; margin: 2px;
+  }  
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<div id="app-loader" style="position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease;">
+  <div style="font-size: 4rem; animation: rotate 2s infinite linear;">⏳</div>
+  <div style="margin-top: 20px; font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--text-soft); text-align: center; padding: 0 20px;">
+    Kontrollerar vad du har kvar att göra idag...
+  </div>
+</div>
+
+<style>
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+<div class="wrapper">
+<header style="position: relative;">
+  <div class="logo">min<span>dag</span> 🌸</div>
+  <div class="date-pill" id="today-date"></div>
+  
+  <button onclick="manualRefresh()" id="refresh-btn" title="Synka med molnet">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 4v6h-6"></path>
+      <path d="M1 20v-6h6"></path>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+    </svg>
+  </button>
+</header>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('log',this)">✏️ Logga dagen</button>
+    <button class="nav-tab"        onclick="showTab('history',this)">📅 Historik</button>
+  </div>
+
+  <!-- LOG -->
+<section id="tab-log" class="visible">
+<div id="finished-message-container"></div>
+  <div class="card">
+    <div class="card-title">🌤️ Vad gjorde du under dagen?</div>
+    <div class="card-sub">Välj vad du gjorde under varje tidsperiod.</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-label" id="progress-label">0 av 9 perioder ifyllda</div>
+  </div>
+
+  <div id="intervals-container"></div>
+
+  <div class="mood-card" id="mood-summary-card">
+    <div class="card-title">💜 Hur mådde du idag?</div>
+    <div class="card-sub">Sätt ett betyg på hela dagen när du känner dig klar.</div>
+    
+    <div class="mood-layout">
+      <div class="mood-track-wrap">
+        <div class="mood-track-label">BRA</div>
+        <div class="mood-track" id="mood-track">
+          <div class="mood-bar-bg"></div>
+          <div class="mood-bar-fill" id="mood-bar-fill"></div>
+          <div class="mood-ticks" id="mood-ticks"></div>
+          <div class="mood-knob" id="mood-knob">😐</div>
+          <input type="range" class="mood-range" id="mood-range" min="0" max="10" step="1" value="5">
+        </div>
+        <div class="mood-track-label">DÅLIGT</div>
+      </div>
+      <div class="mood-info">
+        <div class="mood-score-big" id="mood-score-big">5</div>
+        <div class="mood-score-label" id="mood-score-label">Neutralt</div>
+        <div class="mood-score-desc" id="mood-score-desc">Varken bra eller dåligt – en helt ok dag.</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveDayMood()" style="margin-top: 24px;">💾 Registrera dagsbetyg</button>
+  </div>
+</section>
+
+  <!-- HISTORY -->
+<section id="tab-history">
+  <div class="chart-card" id="chart-card" style="display:none">
+    <div class="chart-title">📈 Mående över tid</div>
+    <div class="chart-sub">Ditt dagsbetyg för det valda urvalet</div>
+    <div class="chart-wrap"><canvas id="moodChart"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 Mönster & Analys</div>
+    <div class="card-sub">Se hur du mår och vad du gör under olika delar av dygnet.</div>
+    
+    <select id="history-filter" class="save-interval-btn" style="margin-top:0; margin-bottom: 20px; flex:1;" onchange="loadHistory()">
+        <option value="all">All historik</option>
+        <option value="3">Senaste 3 dagarna</option>
+        <option value="5">Senaste 5 dagarna</option>
+        <option value="7">Senaste 7 dagarna</option>
+        <option value="14">Senaste 14 dagarna</option>
+        <option value="weekday">Mån–Fre (Vardagar)</option>
+        <option value="weekend">Lör–Sön (Helg)</option>
+    </select>
+
+    <div id="mood-stats-summary" style="margin-bottom: 24px;"></div>
+
+    <div id="accumulation-container"></div>
+  </div>
+
+  <div class="card" style="padding:16px 20px; margin-bottom:16px;">
+    <div class="card-title" style="margin-bottom:0">📚 Enskilda loggar</div>
+  </div>
+  <div id="history-list"></div>
+</section>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="btn-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-mood-row" id="modal-mood-row" style="display:none"></div>
+    <table class="detail-table" id="modal-table"></table>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA & KONFIGURATION ───────────────────────────────────────────────────
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyG933X2XH3NPNRofkzJk24ggugma9uIJpIh-slvsw0K8XlZuFqcY-BFQtDSbqUt8FZ/exec";
+
+const INTERVALS = [
+  '06:00–08:00','08:00–10:00','10:00–12:00','12:00–14:00',
+  '14:00–16:00','16:00–18:00','18:00–20:00','20:00–22:00','22:00–00:00'
+];
+
+const STATUSES = [
+  { key:'sov',        label:'Sov',               icon:'😴' },
+  { key:'måltid',     label:'Måltid',            icon:'🍽️' },
+  { key:'skola',      label:'Skola / plugg',      icon:'📚' },
+  { key:'umgicks',    label:'Umgicks',            icon:'👥' },
+  { key:'pos-skärm',  label:'Aktiv skärmtid',     icon:'✨' },
+  { key:'neg-skärm',  label:'Passiv skärmtid',    icon:'📱' },
+  { key:'aktivitet',  label:'Aktivitet',          icon:'🎨' },
+  { key:'träning',    label:'Träning',            icon:'🏃' },
+  { key:'grubblande', label:'Grubblande',         icon:'💭' },
+];
+
+const COLORS = {
+  'sov':'#8ec3e6','måltid':'#f4a261','skola':'#a8d8ea',
+  'umgicks':'#f4a7b9','pos-skärm':'#b5ead7','neg-skärm':'#c9b8e8',
+  'aktivitet':'#ffd166','träning':'#6dcba5','grubblande':'#c4a7d8'
+};
+
+const MOOD_DATA = [
+  { label:'Riktigt dåligt',  desc:'En väldigt tung dag.',                     emoji:'😣', color:'#d94f4f' },
+  { label:'Mycket dåligt',   desc:'En dag som kändes riktigt jobbig.',          emoji:'😢', color:'#d9714f' },
+  { label:'Ganska dåligt',   desc:'Mer dåligt än bra.',                        emoji:'😔', color:'#d99a4f' },
+  { label:'Dåligt',          desc:'En svår dag på det hela taget.',             emoji:'😕', color:'#d9b84f' },
+  { label:'Något dåligt',    desc:'Lite mer negativt än positivt.',             emoji:'🙁', color:'#c4c454' },
+  { label:'Neutralt',        desc:'Varken bra eller dåligt – en helt ok dag.', emoji:'😐', color:'#9ac46e' },
+  { label:'Något bra',       desc:'Mer positivt än negativt.',                 emoji:'🙂', color:'#6ec48a' },
+  { label:'Bra',             desc:'En ganska bra dag.',                        emoji:'😊', color:'#4ebfaa' },
+  { label:'Ganska bra',      desc:'En riktigt bra dag!',                       emoji:'😄', color:'#4eaad4' },
+  { label:'Mycket bra',      desc:'En dag som kändes riktigt bra.',             emoji:'😁', color:'#6a90e0' },
+  { label:'Väldigt bra',     desc:'En fantastisk dag!',                       emoji:'🤩', color:'#b87ce8' },
+];
+
+let selections = {};
+INTERVALS.forEach((_, i) => selections[i] = []);
+let moodValue = 5;
+
+// ── INIT ────────────────────────────────────────────────────────────────────
+async function init() {
+  const now = new Date();
+  document.getElementById('today-date').textContent =
+    now.toLocaleDateString('sv-SE', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  
+  try {
+    // 1. Vänta på att molnet svarar
+    await syncFromCloud(); 
+  } catch (err) {
+    console.error("Synk-fel:", err);
+    showToast("⚠️ Kunde inte hämta data från molnet.");
+  } finally {
+    // 2. Oavsett om det gick bra eller inte, bygg gränssnittet
+    buildIntervals();
+    initMoodSlider();
+    
+    // 3. Dölj laddningsskärmen snyggt
+    const loader = document.getElementById('app-loader');
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 500);
+  }
+}
+
+// ── MOOD SLIDER ─────────────────────────────────────────────────────────────
+function initMoodSlider() {
+  const track = document.getElementById('mood-track');
+  const range = document.getElementById('mood-range');
+  const ticks = document.getElementById('mood-ticks');
+  ticks.innerHTML = ''; // Rensa gamla ticks om de finns
+
+  // Skapa siffrorna 10 ner till 0 längs sidan
+  for (let i = 10; i >= 0; i--) {
+    const t = document.createElement('div');
+    t.className = 'mood-tick';
+    t.textContent = i;
+    ticks.appendChild(t);
+  }
+
+  // Funktion för att rotera och storleksanpassa det dolda range-inputet
+  function sizeRange() {
+    const h = track.offsetHeight;
+    range.style.width = h + 'px';
+    range.style.left  = `calc(50% - ${h/2}px)`;
+    range.style.top   = `calc(50% - 22px)`;
+  }
+  
+  sizeRange();
+  window.addEventListener('resize', () => { 
+    sizeRange(); 
+    updateMoodUI(moodValue); 
+  });
+
+  // Lyssna på när användaren drar i reglaget
+  range.addEventListener('input', () => {
+    moodValue = parseInt(range.value);
+    updateMoodUI(moodValue);
+  });
+
+  // --- NY LOGIK FÖR ATT HÄMTA DAGENS BEFINTLIGA VÄRDE ---
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const history = getHistory();
+  const todaysEntry = history.find(e => e.date === todayKey);
+
+  if (todaysEntry && todaysEntry.mood !== undefined && todaysEntry.mood !== null) {
+    // Om vi redan sparat ett humör idag, använd det
+    moodValue = todaysEntry.mood;
+    range.value = moodValue;
+    updateMoodUI(moodValue);
+  } else {
+    // Annars starta på neutral (5)
+    moodValue = 5;
+    range.value = 5;
+    updateMoodUI(5);
+  }
+}
+
+function updateMoodUI(v) {
+  const track = document.getElementById('mood-track');
+  const knob  = document.getElementById('mood-knob');
+  const fill  = document.getElementById('mood-bar-fill');
+  const big   = document.getElementById('mood-score-big');
+  const lbl   = document.getElementById('mood-score-label');
+  const desc  = document.getElementById('mood-score-desc');
+
+  const m   = MOOD_DATA[v];
+  const pct = v / 10;
+  const trackH = track.offsetHeight;
+  const usable  = trackH - 32;
+  const knobBot = 16 + pct * usable - 17;
+
+  knob.style.bottom       = knobBot + 'px';
+  knob.style.borderColor  = m.color;
+  knob.style.boxShadow    = `0 3px 14px ${m.color}66`;
+  knob.textContent        = m.emoji;
+
+  fill.style.height     = (pct * usable) + 'px';
+  fill.style.background = `linear-gradient(to top, ${m.color}80, ${m.color})`;
+
+  big.textContent  = v;
+  big.style.color  = m.color;
+  lbl.textContent  = m.label;
+  lbl.style.color  = m.color;
+  desc.textContent = m.desc;
+}
+
+// ── INTERVALS & LOGGING ─────────────────────────────────────────────────────
+function buildIntervals() {
+  const container = document.getElementById('intervals-container');
+  const finishedContainer = document.getElementById('finished-message-container');
+  const progressCard = document.querySelector('#tab-log > .card');
+  
+  container.innerHTML = '';
+  if (finishedContainer) finishedContainer.innerHTML = '';
+
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const history = getHistory();
+  const todaysEntry = history.find(e => e.date === todayKey) || { selections: {} };
+
+  let remainingCount = 0;
+  INTERVALS.forEach((interval, i) => {
+    if (todaysEntry.selections[i] && todaysEntry.selections[i].length > 0) return;
+    remainingCount++;
+
+    const block = document.createElement('div');
+    block.className = 'interval-block card';
+    block.id = `block-${i}`;
+
+    const label = document.createElement('div');
+    label.className = 'interval-label';
+    label.textContent = interval;
+
+    const chips = document.createElement('div');
+    chips.className = 'chips';
+    STATUSES.forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.dataset.status = s.key;
+      chip.innerHTML = `<span class="chip-icon">${s.icon}</span>${s.label}`;
+      chip.onclick = () => toggleChip(chip, i, s.key);
+      chips.appendChild(chip);
+    });
+
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'save-interval-btn';
+    saveBtn.textContent = 'Färdig med denna period';
+    saveBtn.onclick = () => saveSingleInterval(i);
+
+    block.appendChild(label);
+    block.appendChild(chips);
+    block.appendChild(saveBtn);
+    container.appendChild(block);
+  });
+
+  const moodCard = document.getElementById('mood-summary-card');
+  const isMoodSet = todaysEntry && todaysEntry.mood !== undefined && todaysEntry.mood !== null;
+  const noIntervalsLeft = remainingCount === 0;
+
+  moodCard.style.display = isMoodSet ? 'none' : 'block';
+
+  if (isMoodSet && noIntervalsLeft) {
+    if (progressCard) progressCard.style.display = 'none';
+    showFinishedMessage();
+  } else {
+    if (progressCard) progressCard.style.display = 'block';
+  }
+
+  updateProgress();
+}
+
+function toggleChip(chip, idx, key) {
+  const sel = selections[idx];
+  const i = sel.indexOf(key);
+  if (i === -1) { sel.push(key); chip.classList.add('selected'); }
+  else          { sel.splice(i,1); chip.classList.remove('selected'); }
+  updateProgress();
+}
+
+function updateProgress() {
+  const todayKey = new Date().toISOString().slice(0,10);
+  const history = getHistory();
+  const entry = history.find(e => e.date === todayKey);
+  const filled = entry ? Object.values(entry.selections).length : 0;
+  const pct = Math.round((filled / INTERVALS.length) * 100);
+  
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${filled} av ${INTERVALS.length} perioder ifyllda`;
+}
+
+async function saveSingleInterval(idx) {
+  const sel = selections[idx];
+  if (sel.length === 0) {
+    showToast('⚠️ Välj minst en sak!');
+    return;
+  }
+
+  const block = document.getElementById(`block-${idx}`);
+  const btn = block.querySelector('.save-interval-btn');
+  btn.textContent = 'Sparar...';
+  btn.classList.add('saving');
+
+  const dateKey = new Date().toISOString().slice(0, 10);
+  let history = getHistory();
+  let entry = history.find(e => e.date === dateKey);
+
+  if (!entry) {
+    entry = { date: dateKey, selections: {} };
+    history.unshift(entry);
+  }
+
+  entry.selections[idx] = [...sel];
+  localStorage.setItem('mindag_history', JSON.stringify(history));
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    cache: 'no-cache',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'saveInterval',
+      date: dateKey,
+      idx: idx,
+      activities: sel.join(', ')
+    })
+  }).catch(err => console.log("Cloud save fail:", err));
+
+  setTimeout(() => {
+    block.classList.add('collapsing');
+    setTimeout(() => {
+      block.remove();
+      updateProgress(); 
+      checkIfFinished(); 
+    }, 600);
+  }, 300);
+
+  showToast('✅ Period sparad!');
+}
+
+async function saveDayMood() {
+    const dateKey = new Date().toISOString().slice(0,10);
+    let history = getHistory();
+    let entry = history.find(e => e.date === dateKey);
+
+    if (!entry) {
+        entry = { date: dateKey, selections: {} };
+        history.unshift(entry);
+    }
+
+    entry.mood = moodValue;
+    localStorage.setItem('mindag_history', JSON.stringify(history));
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      cache: 'no-cache',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'saveMood',
+        date: dateKey,
+        mood: moodValue
+      })
+    }).catch(err => console.log("Cloud save fail:", err));
+
+    const moodCard = document.getElementById('mood-summary-card');
+    moodCard.classList.add('collapsing');
+    
+    setTimeout(() => {
+        moodCard.style.display = 'none';
+        checkIfFinished();
+    }, 600);
+
+    showToast('🌸 Dagsbetyg sparat!');
+}
+
+function checkIfFinished() {
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const history = getHistory();
+    const entry = history.find(e => e.date === todayKey);
+    const isMoodSet = entry && entry.mood !== undefined && entry.mood !== null;
+    const noIntervalsLeft = document.querySelectorAll('.interval-block').length === 0;
+    const progressCard = document.querySelector('#tab-log > .card');
+
+    if (isMoodSet && noIntervalsLeft) {
+        if (progressCard) progressCard.style.display = 'none';
+        showFinishedMessage();
+    }
+}
+
+function showFinishedMessage() {
+  const container = document.getElementById('finished-message-container');
+  if (!container) return;
+  container.innerHTML = `
+    <div class="card" style="text-align:center; padding:48px 24px; animation: fadeUp 0.6s ease both;">
+      <div style="font-size:3.5rem; margin-bottom:20px;">🌸</div>
+      <div class="card-title" style="justify-content:center; font-size:1.4rem;">Du är klar för idag!</div>
+      <p style="color:var(--text-soft); font-size:1rem;">Vi ses imorgon igen!</p>
+    </div>
+  `;
+}
+
+// ── CLOUD SYNC ──────────────────────────────────────────────────────────────
+async function syncFromCloud() {
+  try {
+    const response = await fetch(SCRIPT_URL);
+    if (!response.ok) throw new Error("Kunde inte nå Google Sheets");
+    
+    const cloudData = await response.json();
+    let newHistory = [];
+    
+    // Skapa dagens datum i formatet YYYY-MM-DD (t.ex. 2026-04-22)
+    const todayKey = new Date().toLocaleDateString('sv-SE'); 
+    
+    // 1. VIKTIGT: Nollställ lokala val innan vi fyller på från molnet
+    INTERVALS.forEach((_, i) => selections[i] = []);
+    
+    // Hjälpfunktion för att tvinga alla datumformat till YYYY-MM-DD
+    const formatDate = (d) => {
+      if (!d) return "";
+      const dateObj = new Date(d);
+      return dateObj.toLocaleDateString('sv-SE');
+    };
+
+    // 2. Bearbeta dagsbetyg (mood)
+    if (cloudData.moods) {
+      cloudData.moods.forEach(row => {
+        const d = formatDate(row[0]);
+        const val = parseInt(row[1]);
+        newHistory.push({ date: d, mood: val, selections: {} });
+        
+        // Om vi hittar ett dagsbetyg för IDAG, uppdatera den globala variabeln
+        if (d === todayKey) {
+          moodValue = val;
+          console.log("Hittade dagsbetyg för idag:", moodValue);
+        }
+      });
+    }
+    
+    // 3. Bearbeta tidsintervallen (logs)
+    if (cloudData.logs) {
+      cloudData.logs.forEach(row => {
+        const d = formatDate(row[0]);
+        let entry = newHistory.find(e => e.date === d);
+        
+        if (!entry) {
+          entry = { date: d, selections: {} };
+          newHistory.push(entry);
+        }
+        
+        const intervalIdx = parseInt(row[1]);
+        const activeKeys = row[2] ? row[2].split(', ') : [];
+        entry.selections[intervalIdx] = activeKeys;
+
+        // Om detta är dagens datum, populera vårt aktiva selections-objekt
+        if (d === todayKey) {
+          selections[intervalIdx] = [...activeKeys];
+          console.log("Synkar dagens data för intervall:", intervalIdx, activeKeys);
+        }
+      });
+    }
+
+    // 4. Sortera historiken (senaste först) och spara till localStorage
+    newHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+    localStorage.setItem('mindag_history', JSON.stringify(newHistory));
+    
+    console.log("✅ Synk klar. Idag är:", todayKey);
+    
+  } catch (e) {
+    console.error("❌ Synk-fel:", e);
+    showToast("Kunde inte hämta senaste datan från molnet.");
+  }
+}
+
+async function manualRefresh() {
+  const btn = document.getElementById('refresh-btn');
+  btn.style.transition = "transform 0.6s ease";
+  btn.style.transform = "rotate(360deg)";
+  
+  showToast("Synkar med molnet...");
+  
+  await syncFromCloud();
+  buildIntervals();
+  if (document.getElementById('tab-history').classList.contains('visible')) {
+    loadHistory();
+  }
+  
+  setTimeout(() => { btn.style.transform = "rotate(0deg)"; }, 600);
+  showToast("✅ Uppdaterad!");
+}
+
+// ── HISTORY & CHART ─────────────────────────────────────────────────────────
+function getHistory() {
+  return JSON.parse(localStorage.getItem('mindag_history') || '[]');
+}
+
+function loadHistory() {
+  const history = getHistory();
+  const filterVal = document.getElementById('history-filter').value;
+  const container = document.getElementById('history-list');
+  const statsContainer = document.getElementById('accumulation-container');
+  const moodStatsContainer = document.getElementById('mood-stats-summary');
+  const chartCard = document.getElementById('chart-card');
+  
+  container.innerHTML = '';
+  statsContainer.innerHTML = '';
+  moodStatsContainer.innerHTML = '';
+
+  if (history.length === 0) {
+    chartCard.style.display = 'none';
+    container.innerHTML = `<div class="history-empty">Ingen historik ännu.</div>`;
+    return;
+  }
+
+  // 1. Filtrering
+  let filtered = [...history];
+  if (filterVal === 'weekday') {
+    filtered = history.filter(e => { const d = new Date(e.date).getDay(); return d >= 1 && d <= 5; });
+  } else if (filterVal === 'weekend') {
+    filtered = history.filter(e => { const d = new Date(e.date).getDay(); return d === 0 || d === 6; });
+  } else if (filterVal !== 'all') {
+    filtered = history.slice(0, parseInt(filterVal));
+  }
+
+  chartCard.style.display = 'block';
+  requestAnimationFrame(() => drawChart(filtered));
+
+  // 2. Mood Analys
+  const moodsInSample = filtered.filter(e => e.mood !== undefined && e.mood !== null).map(e => e.mood);
+  if (moodsInSample.length > 0) {
+    const avgMood = Math.round(moodsInSample.reduce((a, b) => a + b, 0) / moodsInSample.length);
+    const mInfo = MOOD_DATA[avgMood];
+    moodStatsContainer.innerHTML = `
+      <div style="background: var(--bg); border-radius: var(--radius-sm); padding: 16px; display: flex; align-items: center; gap: 16px; border: 1.5px solid var(--border);">
+        <div style="font-size: 2.5rem;">${mInfo.emoji}</div>
+        <div>
+          <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Snittmående</div>
+          <div style="font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.4rem; color: ${mInfo.color};">${avgMood} – ${mInfo.label}</div>
+        </div>
+      </div>`;
+  }
+
+  // 3. Aktivitets-analys (Relativ fördelning)
+  const stats = {}; 
+  INTERVALS.forEach((_, i) => stats[i] = {});
+
+  // Räkna totalt antal förekomster per nyckel i varje intervall
+  filtered.forEach(entry => {
+    Object.entries(entry.selections).forEach(([idx, keys]) => {
+      if (keys && keys.length > 0) {
+        keys.forEach(key => {
+          stats[idx][key] = (stats[idx][key] || 0) + 1;
+        });
+      }
+    });
+  });
+
+  INTERVALS.forEach((interval, i) => {
+    const data = stats[i];
+    const activityCounts = Object.values(data);
+    
+    if (activityCounts.length === 0) return;
+
+    // Räkna ut summan av ALLA aktivitets-registreringar i detta intervall
+    const totalOccurrencesInInterval = activityCounts.reduce((a, b) => a + b, 0);
+
+    const block = document.createElement('div');
+    block.className = 'stats-block';
+    block.innerHTML = `
+      <div class="stats-header">${interval}</div>
+      <div style="font-size: 0.7rem; color: var(--text-light); margin: -8px 0 15px 24px; font-weight: 600;">
+        Relativ fördelning av aktiviteter
+      </div>`;
+
+    Object.entries(data)
+      .sort((a, b) => b[1] - a[1]) // Sortera vanligaste överst
+      .forEach(([key, count]) => {
+        const sInfo = STATUSES.find(s => s.key === key);
+        
+        // Räkna ut andelen (procent) baserat på TOTALA antalet loggade aktiviteter i blocket
+        const distributionPct = Math.round((count / totalOccurrencesInInterval) * 100);
+        
+        const row = document.createElement('div');
+        row.className = 'bar-row';
+        row.innerHTML = `
+          <div class="bar-label">${sInfo?.icon || ''} ${sInfo?.label || key}</div>
+          <div class="bar-container">
+            <div class="bar-fill" style="width:0%; background:${COLORS[key] || '#ccc'}"></div>
+          </div>
+          <div class="bar-value">${distributionPct}%</div>`;
+        block.appendChild(row);
+        
+        // Animera stapeln
+        setTimeout(() => { 
+          const fill = row.querySelector('.bar-fill');
+          if (fill) fill.style.width = distributionPct + '%'; 
+        }, 100);
+      });
+    statsContainer.appendChild(block);
+  });
+
+  // 4. Enskilda loggar (Listan)
+  filtered.forEach(entry => {
+    const div = document.createElement('div');
+    div.className = 'day-entry';
+    div.onclick = () => showDayDetail(entry);
+    const d = new Date(entry.date);
+    const ds = d.toLocaleDateString('sv-SE', { weekday:'long', month:'long', day:'numeric' });
+    const mood = entry.mood ?? null;
+    const badge = mood !== null ? `<div class="mood-badge" style="background:${MOOD_DATA[mood].color}">${mood}</div>` : '';
+    div.innerHTML = `
+      <div class="day-entry-header">
+        <div>${ds.charAt(0).toUpperCase() + ds.slice(1)}</div>
+        ${badge}
+      </div>
+      ${buildMiniPreview(entry.selections)}`;
+    container.appendChild(div);
+  });
+}
+
+function buildMiniPreview(sels) {
+  const cells = INTERVALS.map((_, i) => {
+    const s = sels[i] || [];
+    if (!s.length) return `<div class="mini-cell"></div>`;
+    const c = COLORS[s[0]] || '#ddd';
+    const e = (STATUSES.find(x => x.key === s[0]) || {}).icon || '';
+    return `<div class="mini-cell" style="background:${c}22;border:2px solid ${c}66">${e}</div>`;
+  }).join('');
+  return `<div class="mini-grid">${cells}</div>`;
+}
+
+function drawChart(history) {
+  const canvas = document.getElementById('moodChart');
+  const wrap = canvas.parentElement;
+  const n = history.length;
+  
+  // Inställningar för skroll-bredd
+  const minPointDistance = 50; // Minsta avstånd i pixlar mellan varje punkt
+  const chartHeight = 170;
+  const paddingL = 32, paddingR = 20;
+  
+  // Beräkna önskad bredd: antingen förälderns bredd eller (antal punkter * avstånd)
+  const calculatedWidth = Math.max(wrap.offsetWidth, (n * minPointDistance) + paddingL + paddingR);
+  
+  // Sätt canvas storlek (med hänsyn till Retina-skärmar)
+  canvas.width = calculatedWidth * devicePixelRatio;
+  canvas.height = chartHeight * devicePixelRatio;
+  canvas.style.width = calculatedWidth + 'px';
+  canvas.style.height = chartHeight + 'px';
+  
+  const ctx = canvas.getContext('2d');
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+
+  const slice = [...history].reverse();
+  const padT = 12, padB = 32;
+  const cH = chartHeight - padT - padB;
+  const cW = calculatedWidth - paddingL - paddingR;
+
+  // 1. Rita horisontella stödlinjer (Grid)
+  ctx.strokeStyle = '#eee5f5'; ctx.lineWidth = 1;
+  [0, 2, 4, 6, 8, 10].forEach(v => {
+    const y = padT + cH - (v / 10) * cH;
+    ctx.beginPath(); ctx.moveTo(paddingL, y); ctx.lineTo(calculatedWidth, y); ctx.stroke();
+    
+    // Rita siffrorna (fixerade vid vänsterkanten visuellt genom paddingL)
+    ctx.fillStyle = '#b0a8bf'; ctx.font = `600 9px Quicksand,sans-serif`; ctx.textAlign = 'right';
+    ctx.fillText(v, paddingL - 5, y + 3.5);
+  });
+
+  if (n === 0) return;
+
+  const xOf = i => paddingL + (n === 1 ? cW / 2 : i * (cW / (n - 1)));
+  const yOf = v => padT + cH - (v / 10) * cH;
+  
+  const pts = slice.map((e, i) => ({ 
+    x: xOf(i), 
+    y: yOf(e.mood ?? 5), 
+    color: MOOD_DATA[e.mood ?? 5].color,
+    label: new Date(e.date).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' }) 
+  }));
+
+  // 2. Rita gradientfyllning
+  const grad = ctx.createLinearGradient(0, padT, 0, padT + cH);
+  grad.addColorStop(0, 'rgba(244,167,185,0.25)');
+  grad.addColorStop(1, 'rgba(244,167,185,0)');
+  ctx.beginPath();
+  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[n - 1].x, padT + cH); ctx.lineTo(pts[0].x, padT + cH); ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
+
+  // 3. Rita linjen
+  ctx.beginPath();
+  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+  ctx.strokeStyle = '#e8839b'; ctx.lineWidth = 3; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.stroke();
+
+  // 4. Rita punkter och datum
+  pts.forEach(p => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = p.color; ctx.fill();
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+    
+    // Nu kan vi alltid visa datum eftersom vi skrollar!
+    ctx.fillStyle = '#b0a8bf'; ctx.font = `700 9px Quicksand,sans-serif`; ctx.textAlign = 'center';
+    ctx.fillText(p.label, p.x, chartHeight - 12);
+  });
+
+  // Skrolla automatiskt till slutet (nutid) när diagrammet laddas
+  wrap.scrollLeft = calculatedWidth;
+}
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
+function showDayDetail(entry) {
+  const d = new Date(entry.date);
+  const ds = d.toLocaleDateString('sv-SE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('modal-title').textContent = ds.charAt(0).toUpperCase()+ds.slice(1);
+  const moodRow = document.getElementById('modal-mood-row');
+  const mood = entry.mood ?? null;
+  if (mood !== null) {
+    const m = MOOD_DATA[mood];
+    moodRow.style.display = 'flex';
+    moodRow.innerHTML = `<div style="font-size:2rem">${m.emoji}</div>
+      <div><div class="modal-mood-score" style="color:${m.color}">${mood} – ${m.label}</div>
+      <div style="font-size:0.82rem;color:var(--text-soft);margin-top:2px">${m.desc}</div></div>`;
+  } else { moodRow.style.display = 'none'; }
+
+  const table = document.getElementById('modal-table');
+  table.innerHTML = '';
+  INTERVALS.forEach((interval,i) => {
+    const statuses = entry.selections[i] || [];
+    const row = document.createElement('tr');
+    const html = statuses.length ? statuses.map(k => `<span class="status-badge" style="color:${COLORS[k]||'#666'}">${STATUSES.find(x=>x.key===k)?.icon||''} ${STATUSES.find(x=>x.key===k)?.label||k}</span>`).join('') : `<span style="color:var(--text-light)">–</span>`;
+    row.innerHTML = `<td>${interval}</td><td>${html}</td>`;
+    table.appendChild(row);
+  });
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) document.getElementById('modal').classList.remove('open');
+}
+
+function showTab(tab, btn) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('visible');
+  btn.classList.add('active');
+  if (tab === 'history') loadHistory();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Uppdatera data automatiskt när man växlar tillbaka till fliken
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    console.log("Sidan blev synlig – kollar efter ny data...");
+    syncFromCloud().then(() => {
+      buildIntervals();
+      if (document.getElementById('tab-history').classList.contains('visible')) {
+        loadHistory();
+      }
+    });
+  }
+});
+
+init();
+</script>
+</body>
+</html>
