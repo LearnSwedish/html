@@ -738,7 +738,7 @@ function buildIntervals() {
   container.innerHTML = '';
   if (finishedContainer) finishedContainer.innerHTML = '';
 
-  const todayKey = new Date().toISOString().slice(0, 10);
+  const todayKey = new Date().toISOString().split('T')[0];
   const history = getHistory();
   const todaysEntry = history.find(e => e.date === todayKey) || { selections: {} };
 
@@ -931,14 +931,17 @@ async function syncFromCloud() {
     
     const cloudData = await response.json();
     let newHistory = [];
-    const todayKey = new Date().toLocaleDateString('sv-SE'); 
     
-    // Nollställ dagens aktiva val innan synk
+    // Konsekvent datumformat: YYYY-MM-DD
+    const todayKey = new Date().toISOString().split('T')[0];
+    
+    // Nollställ dagens val i minnet innan vi fyller på
     INTERVALS.forEach((_, i) => selections[i] = []);
     
     const formatDate = (d) => {
       if (!d) return "";
-      return new Date(d).toLocaleDateString('sv-SE');
+      // Tvinga fram formatet YYYY-MM-DD oavsett vad molnet skickar
+      return new Date(d).toISOString().split('T')[0];
     };
 
     // Bearbeta dagsbetyg
@@ -947,7 +950,11 @@ async function syncFromCloud() {
         const d = formatDate(row[0]);
         const val = parseInt(row[1]);
         newHistory.push({ date: d, mood: val, selections: {} });
-        if (d === todayKey) moodValue = val;
+        
+        // Om vi hittar ett betyg för EXAKT idag
+        if (d === todayKey) {
+          moodValue = val;
+        }
       });
     }
     
@@ -964,28 +971,21 @@ async function syncFromCloud() {
         const activeKeys = row[2] ? row[2].split(', ') : [];
         entry.selections[intervalIdx] = activeKeys;
 
+        // Om loggen är för idag, fyll i de aktiva valen så de försvinner från vyn
         if (d === todayKey) {
           selections[intervalIdx] = [...activeKeys];
         }
       });
     }
 
-    // SORTERING & ERSÄTTNING
     newHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    // HÄR ÄR NYCKELN: Vi sparar bara i den globala variabeln. 
-    // Vi skiter i localStorage för historiken.
     cloudHistory = newHistory;
-    
-    // Vi kan spara EN kopia i localStorage bara för att appen ska funka offline, 
-    // men den kommer nu ALLTID skrivas över helt av molnet vid varje start/synk.
     localStorage.setItem('mindag_history', JSON.stringify(newHistory));
     
-    console.log("✅ Synk klar. Historiken är nu identisk med molnet.");
+    console.log("✅ Synk klar för datum:", todayKey);
     
   } catch (e) {
     console.error("❌ Synk-fel:", e);
-    // Om synk skiter sig, försök ladda det senaste raderade från minnet som backup
     cloudHistory = JSON.parse(localStorage.getItem('mindag_history') || '[]');
   }
 }
