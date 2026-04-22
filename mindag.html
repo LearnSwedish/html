@@ -141,7 +141,7 @@
   appearance: none; -webkit-appearance: none; z-index: 3; height: 60px; /* Lite bredare träffyta för fingret */
   width: 100%;
   /* Viktigt: none här gör att vi kan lita helt på vår JS-fix ovan */
-  touch-action: none; 
+  touch-action: auto; 
 }
   .mood-ticks {
     position: absolute; right: -16px; top: 16px; bottom: 16px;
@@ -668,11 +668,13 @@ function initMoodSlider() {
   });
 
   // --- FIX FÖR SLIDING ---
-  // Vi förhindrar skrollning på behållaren istället för på själva inputen
-  track.addEventListener('touchmove', (e) => {
-    // Stoppar sidan från att skrolla när vi pillar på mätaren
-    if (e.cancelable) e.preventDefault();
-  }, { passive: false });
+range.addEventListener('touchstart', () => {
+  document.body.style.overflow = 'hidden';
+});
+
+range.addEventListener('touchend', () => {
+  document.body.style.overflow = '';
+});
 
   // Lyssna på rörelse - 'input' triggar kontinuerligt medan du drar
   range.addEventListener('input', () => {
