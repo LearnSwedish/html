@@ -112,7 +112,8 @@
 .mood-track {
   position: relative; width: 48px; flex: 1; min-height: 260px;
   display: flex; align-items: center; justify-content: center;
-  touch-action: none; /* NYTT: Förhindrar sidoskroll/skärmskroll vid beröring */
+  /* Vi låter JS sköta blockeringen av skroll via preventDefault istället */
+  touch-action: none; 
 }
   .mood-bar-bg {
     position: absolute; left: 50%; transform: translateX(-50%);
@@ -137,8 +138,10 @@
 .mood-range {
   position: absolute; opacity: 0; cursor: pointer;
   transform: rotate(-90deg);
-  appearance: none; -webkit-appearance: none; z-index: 3; height: 44px;
-  touch-action: none; /* NYTT: Säkerställer att reglaget äger touchen */
+  appearance: none; -webkit-appearance: none; z-index: 3; height: 60px; /* Lite bredare träffyta för fingret */
+  width: 100%;
+  /* Viktigt: none här gör att vi kan lita helt på vår JS-fix ovan */
+  touch-action: none; 
 }
   .mood-ticks {
     position: absolute; right: -16px; top: 16px; bottom: 16px;
@@ -642,9 +645,8 @@ function initMoodSlider() {
   const track = document.getElementById('mood-track');
   const range = document.getElementById('mood-range');
   const ticks = document.getElementById('mood-ticks');
-  ticks.innerHTML = ''; // Rensa gamla ticks om de finns
+  ticks.innerHTML = ''; 
 
-  // 1. Skapa siffrorna 10 ner till 0 längs sidan
   for (let i = 10; i >= 0; i--) {
     const t = document.createElement('div');
     t.className = 'mood-tick';
@@ -652,7 +654,6 @@ function initMoodSlider() {
     ticks.appendChild(t);
   }
 
-  // 2. Funktion för att rotera och storleksanpassa det dolda range-inputet
   function sizeRange() {
     const h = track.offsetHeight;
     range.style.width = h + 'px';
@@ -666,26 +667,19 @@ function initMoodSlider() {
     updateMoodUI(moodValue); 
   });
 
-  // 3. FIX: Förhindra att sidan skrollar när man drar i reglaget på mobilen
-  // Vi lyssnar på touch-händelser direkt på reglaget
-  range.addEventListener('touchstart', (e) => {
-    // Hindrar inte händelsen helt (vi vill ju kunna dra), 
-    // men förbereder webbläsaren på att vi tar kontroll.
-  }, { passive: true });
-
-  range.addEventListener('touchmove', (e) => {
-    // Detta stoppar själva skärm-skrollningen (parent scroll) 
-    // så länge fingret rör reglaget.
+  // --- FIX FÖR SLIDING ---
+  // Vi förhindrar skrollning på behållaren istället för på själva inputen
+  track.addEventListener('touchmove', (e) => {
+    // Stoppar sidan från att skrolla när vi pillar på mätaren
     if (e.cancelable) e.preventDefault();
   }, { passive: false });
 
-  // 4. Lyssna på när användaren drar i reglaget
+  // Lyssna på rörelse - 'input' triggar kontinuerligt medan du drar
   range.addEventListener('input', () => {
     moodValue = parseInt(range.value);
     updateMoodUI(moodValue);
   });
 
-  // 5. Hämta dagens befintliga värde
   const todayKey = new Date().toISOString().slice(0, 10);
   const history = getHistory();
   const todaysEntry = history.find(e => e.date === todayKey);
