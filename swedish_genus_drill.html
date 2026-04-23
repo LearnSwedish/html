@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender & Definiteness</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0e0e12;
+    --surface: #17171e;
+    --surface2: #1f1f2a;
+    --border: #2a2a38;
+
+    --en-color: #f5a623;
+    --ett-color: #4ecdc4;
+    --def-color: #a78bfa;
+
+    --text: #e8e8f0;
+    --muted: #7a7a95;
+
+    --correct: #4ade80;
+    --wrong: #f87171;
+	
+    --indef-article: #f5a623;   /* a / en / ett */
+    --en-word: #ff6b6b;   /* röd/korall – utrum */
+    --ett-word: #3da5ff;  /* klar blå – neutrum */
+    --def-article: #a78bfa;     /* the + suffix */	
+
+    --row-height-practice: 50px;
+    --row-height-demo: 30px; 
+}
+
+/* RESET */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* BASE */
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 48px 20px 64px;
+    font-size: 17px;
+}
+
+/* GRID BACKGROUND */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.column-head,
+.section {
+    transform: translateX(120px);
+}
+
+/* CONTAINER */
+.container {
+    padding-top: 240px;
+    max-width: 1040px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+header h1 em {
+    font-style: italic;
+    color: var(--ett-color);
+}
+
+.subtitle {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 1.3rem;
+}
+
+/* LEGEND */
+.legend {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 6px 80px;
+    justify-content: center;
+    text-align: left;
+}
+
+.legend-header {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.legend-header:nth-child(1) { grid-column: 1; }
+.legend-header:nth-child(2) { grid-column: 2; }
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    color: var(--muted);
+}
+
+.legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+/* SECTIONS */
+.section {
+    margin-bottom: 70px;
+}
+
+.panel-label {
+    font-size: 1.2rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 26px;
+}
+
+/* GRID: WORD BLOCK */
+.word-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0px;
+    margin-bottom: 20px;
+    align-items: center;
+    border-bottom: 2px solid rgba(122,122,149,0.15);
+}
+
+.demo-block {
+    grid-template-rows: var(--row-height-demo) var(--row-height-demo);
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+.practice-block {
+    grid-template-rows: var(--row-height-practice) var(--row-height-practice);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.word-block:last-child {
+    border-bottom: none;
+}
+
+/* COLUMN 1 (label) */
+.eng {
+    grid-column: 1;
+    grid-row: 1;
+    font-weight: 600;
+    font-size: 1.3rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+/* COLUMN 2–3 (interactive) */
+.eng2 {
+    grid-row: 1;
+    font-weight: 600;
+    font-size: 1.3rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.eng2:nth-of-type(2) { grid-column: 2; }
+.eng2:nth-of-type(3) { grid-column: 3; }
+
+/* ROW 2 */
+.sv-lbl {
+    grid-column: 1;
+    grid-row: 2;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.3rem;
+    color: var(--muted);
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.sv-cell {
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+}
+
+/* BUBBLE / EXPLANATION */
+.explain-bubble {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--muted);
+    background: var(--surface);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-5px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.explain-bubble.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ANSWERS */
+.answer-slot,
+.fixed-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.3rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.answer-slot.hidden {
+    visibility: hidden;
+}
+
+/* INPUT */
+input[type="text"] {
+    width: 60%;
+    max-width: 220px;
+    height: 44px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0 26px 0 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.3rem;
+}
+
+input.ok {
+    border-color: var(--correct) !important;
+    background: rgba(74,222,128,.06);
+}
+
+input.bad {
+    border-color: var(--wrong) !important;
+    background: rgba(248,113,113,.06);
+}
+
+/* FEEDBACK */
+.inp-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: var(--row-height-practice);
+}
+
+.tick {
+    position: absolute;
+    left: calc(60% + 10px);
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+/* CLICKABLE */
+.clickable {
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.12s;
+}
+
+.clickable:hover {
+    opacity: 0.65;
+}
+
+.reset-top {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+
+    background: rgba(31, 31, 42, 0.6);
+    border: 1px solid var(--border);
+    color: var(--text);
+    
+    padding: 8px 18px;
+    border-radius: 10px;
+    
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+    z-index: 1001;
+}
+
+.reset-top:hover {
+    background: var(--surface2);
+    border-color: var(--muted);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.reset-top:active {
+    transform: translateY(0);
+    background: var(--border);
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 290px;
+    z-index: 1000;
+
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
+}
+
+.top-bar-inner {
+    position: relative;
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.section,
+.column-head {
+    max-width: 1040px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.section:first-of-type {
+    margin-top: 40px;
+}
+
+.column-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 1040px;
+    margin: 35px auto 0;
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.column-head div {
+    text-align: left;
+}
+
+/* Overlay med fade-in */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex; /* Alltid flex, men kontrolleras med opacity */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+    
+    /* Mjuk övergång */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+/* Visningsläge för overlay */
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Själva rutan med skalningseffekt */
+.modal-content {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    padding: 40px;
+    border-radius: 16px;
+    max-width: 400px;
+    position: relative;
+    text-align: center;
+    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+
+    /* Startar lite mindre för att "poppa" fram */
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Skalning när modalen är aktiv */
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+/* Det animerade krysset */
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.2s;
+}
+
+.modal-close:hover {
+    transform: rotate(90deg); /* Animeringen */
+    color: var(--wrong);
+}
+
+/* Den blinkande pilen */
+.vowel-arrow {
+    display: inline-block;
+    color: #ff4444;
+    font-size: 2rem; /* Justerad storlek för att passa texten */
+    font-weight: bold;
+    pointer-events: none;
+    margin-left: 10px;
+    
+    position: relative;
+    top:5px;
+    
+    transform: rotate(180deg); /* Pekar åt vänster */
+
+    /* Animationen blinkar och stannar sedan på 100% (opacity 1) */
+    animation: arrow-blink-stay 2s ease-in-out 1 forwards; 
+    opacity: 0;
+}
+
+@keyframes arrow-blink-stay {
+    0%, 20%, 50%, 80% { opacity: 0; }
+    10%, 40%, 70%, 100% { opacity: 1; }
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+    .word-block {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        gap: 8px;
+    }
+
+    .eng,
+    .eng2,
+    .sv-lbl,
+    .sv-cell {
+        grid-column: auto !important;
+        grid-row: auto !important;
+        min-height: 35px;
+        text-align: left;
+        justify-content: flex-start;
+    }
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="top-bar-inner">
+
+    <header>
+      <h1>Swedish <em>Gender</em> &amp; <em>Definiteness</em></h1>
+      <p class="subtitle">
+        Click on the English words, and find out the correct form in the Practice section
+      </p>
+    </header>
+
+    <div class="legend">
+      <div class="legend-header">Article / Suffix</div>
+      <div class="legend-header">Gender</div>
+
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--indef-article)"></div>
+        Indefinite
+      </div>
+
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--en-word)"></div>
+        en-word
+      </div>
+
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--def-article)"></div>
+        Definite
+      </div>
+
+      <div class="legend-item">
+        <div class="legend-dot" style="background:var(--ett-word)"></div>
+        ett-word
+      </div>
+    </div>
+
+    <div class="column-head">
+      <div>Basic word</div>
+      <div>Indefinite</div>
+      <div>Definite</div>
+    </div>
+
+    <button class="reset-top" onclick="resetAll()">Reset</button>
+
+  </div>
+</div>
+
+
+<div class="container">
+
+  <div class="section">
+    <div class="panel-label">Click</div>
+    <div id="demo-area"></div>
+  </div>
+
+  <div class="section">
+    <div class="panel-label">Practice section</div>
+    <div id="practice-area"></div>
+  </div>
+
+</div>
+
+<div id="modal-overlay" class="modal-overlay">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close">&times;</button>
+    <p id="modal-text"></p>
+  </div>
+</div>
+
+<script>
+const examples = [
+    { en:"tree",   sv:"träd",    genus:"ett", indef:"ett träd",   def:"trädet",    suffix:"et" },
+    { en:"house",  sv:"hus",     genus:"ett", indef:"ett house",  def:"huset",     suffix:"et" },
+    { en:"apple",  sv:"äpple",   genus:"ett", indef:"ett äpple",  def:"äpplet",    suffix:"t",   article:"an" },
+    { en:"car",    sv:"bil",     genus:"en",  indef:"en bil",     def:"bilen",     suffix:"en" },
+    { en:"woman",  sv:"kvinna",  genus:"en",  indef:"en kvinna",  def:"kvinnan",   suffix:"n"  },
+    { en:"boy",    sv:"pojke",   genus:"en",  indef:"en pojke",   def:"pojken",    suffix:"n"  },
+    { en:"book",   sv:"bok",     genus:"en",  indef:"en bok",     def:"boken",     suffix:"en" },
+];
+
+const exercises = [
+  { en: "pair",     cols: [{ type: "input", answer: "par" }, { type: "fixed", text: "ett par" }, { type: "input", answer: "paret" }] },
+  { en: "necklace", cols: [{ type: "input", answer: "halsband" }, { type: "input", answer: "ett halsband" }, { type: "fixed", text: "halsbandet" }] },
+  { en: "knife",    cols: [{ type: "input", answer: "kniv" }, { type: "fixed", text: "en kniv" }, { type: "input", answer: "kniven" }] },
+  { en: "girl",     cols: [{ type: "input", answer: "flicka" }, { type: "input", answer: "en flicka" }, { type: "fixed", text: "flickan" }] },
+  { en: "glass",    cols: [{ type: "input", answer: "glas" }, { type: "fixed", text: "ett glas" }, { type: "input", answer: "glaset" }] },
+  { en: "arrow",    cols: [{ type: "input", answer: "pil" }, { type: "fixed", text: "en pil" }, { type: "input", answer: "pilen" }] },
+  { en: "stone",    cols: [{ type: "fixed", text: "sten" }, { type: "input", answer: "en sten" }, { type: "input", answer: "stenen" }] }
+];
+
+function getArticle(word, override) {
+    if (override) return override;
+    return /^[aeiou]/i.test(word) ? 'an' : 'a';
+}
+
+function indefHTML(item) {
+    const wordColor = item.genus === 'en'
+        ? 'var(--en-word)'
+        : 'var(--ett-word)';
+
+    return `
+        <span style="color:var(--indef-article);font-weight:600">
+            ${item.genus}
+        </span>
+        &nbsp;
+        <span style="color:${wordColor};font-weight:600">
+            ${item.sv}
+        </span>
+    `;
+}
+function defHTML(item) {
+    const stem = item.def.slice(0, item.def.length - item.suffix.length);
+
+    return `
+        ${stem}
+        <span style="color:var(--def-article);font-weight:600">
+            ${item.suffix}
+        </span>
+    `;
+}
+
+/* ── examples ── */
+const demoArea = document.getElementById('demo-area');
+examples.forEach((item, i) => {
+    demoArea.innerHTML += `
+    <div class="word-block demo-block">
+      <div class="eng">${item.en}</div>
+      <div class="eng2 clickable" data-type="indef" data-i="${i}">
+        <span class="article">${getArticle(item.en, item.article)}</span>&nbsp;${item.en}
+      </div>
+
+<div class="eng2 clickable" data-type="def" data-i="${i}">
+  <span class="article">the</span>&nbsp;${item.en}
+</div>
+      <div class="sv-lbl">${item.sv}</div>
+      <div class="sv-cell">
+        <div class="answer-slot hidden" id="da${i}"></div>
+        <div class="explain-bubble" id="ea${i}"></div>
+      </div>
+      <div class="sv-cell">
+        <div class="answer-slot hidden" id="db${i}"></div>
+        <div class="explain-bubble" id="eb${i}"></div>
+      </div>
+    </div>`;
+});
+
+demoArea.addEventListener('click', e => {
+    const el = e.target.closest('.clickable');
+    if (!el) return;
+
+    const i = el.dataset.i;
+    const item = examples[i];
+    const art = el.querySelector('.article');
+
+    if (el.dataset.type === 'indef') {
+        document.getElementById(`da${i}`).innerHTML = indefHTML(item);
+        document.getElementById(`da${i}`).classList.remove('hidden');
+        
+        const bubble = document.getElementById(`ea${i}`);
+        bubble.textContent = `${item.genus}-gender`;
+        bubble.classList.add('show');
+
+        art.style.color = 'var(--indef-article)';
+    }
+
+if (el.dataset.type === 'def') {
+        document.getElementById(`db${i}`).innerHTML = defHTML(item);
+        document.getElementById(`db${i}`).classList.remove('hidden');
+
+        const bubble = document.getElementById(`eb${i}`);
+        const isVowelEnd = /^[aeiouyåäö]$/i.test(item.sv.slice(-1));
+        
+        bubble.textContent = `add -${item.suffix}${isVowelEnd ? ' (vowel end)' : ''}`;
+        bubble.classList.add('show');
+        art.style.color = 'var(--def-article)';
+
+        // Om det är vokaländelse, skapa pilen
+        if (isVowelEnd) {
+            // Hitta .sv-lbl i samma word-block
+            const row = el.closest('.word-block');
+            const targetLabel = row.querySelector('.sv-lbl');
+            
+            // Ta bort eventuell gammal pil först
+            const oldArrow = targetLabel.querySelector('.vowel-arrow');
+            if (oldArrow) oldArrow.remove();
+
+            // Skapa och lägg till pilen EFTER ordet
+            const arrow = document.createElement('span');
+            arrow.className = 'vowel-arrow';
+            arrow.innerHTML = '→'; // En högerpil som CSS vänder till vänster
+            targetLabel.appendChild(arrow); // Lägg till sist i .sv-lbl
+        }
+    }
+});
+
+/* ── practice ── */
+const practiceArea = document.getElementById('practice-area');
+let timers = {};
+
+exercises.forEach((item, i) => {
+    function render(col, j) {
+        if (col.type === "fixed") {
+            return `<div class="sv-cell fixed-text">${col.text}</div>`;
+        }
+
+        const tickId = `tick-${i}-${j}`;
+
+        return `
+        <div class="sv-cell inp-wrap">
+          <input type="text" data-correct="${col.answer}" data-tick="${tickId}" autocomplete="off">
+          <span class="tick" id="${tickId}"></span>
+        </div>`;
+    }
+
+    practiceArea.innerHTML += `
+    <div class="word-block practice-block">
+      <div class="eng">${item.en}</div>
+      <div class="eng2">a ${item.en}</div>
+      <div class="eng2">the ${item.en}</div>
+      ${render(item.cols[0], 0)}
+      ${render(item.cols[1], 1)}
+      ${render(item.cols[2], 2)}
+    </div>`;
+});
+
+function validate(inp, showErrors) {
+    const v = inp.value.trim().toLowerCase();
+    const ok = inp.dataset.correct.toLowerCase();
+    const tk = document.getElementById(inp.dataset.tick);
+
+    if (!v) {
+        inp.className = '';
+        tk.textContent = '';
+        return;
+    }
+
+    if (v === ok) {
+        inp.className = 'ok';
+        tk.textContent = '✓';
+        tk.style.color = 'var(--correct)';
+
+        if (timers[inp.dataset.tick]) clearTimeout(timers[inp.dataset.tick]);
+    } else if (showErrors) {
+        inp.className = 'bad';
+        tk.textContent = '✗';
+        tk.style.color = 'var(--wrong)';
+    }
+}
+
+practiceArea.addEventListener('input', e => {
+    const inp = e.target;
+    if (inp.tagName !== 'INPUT') return;
+
+    validate(inp, false);
+
+    if (timers[inp.dataset.tick]) clearTimeout(timers[inp.dataset.tick]);
+
+    timers[inp.dataset.tick] = setTimeout(() => {
+        validate(inp, true);
+    }, 2000);
+});
+
+practiceArea.addEventListener('change', e => {
+    if (e.target.tagName === 'INPUT') validate(e.target, true);
+});
+
+// Variabel för att hålla koll på om modalen visats
+let stenModalShown = false;
+
+const modal = document.getElementById('modal-overlay');
+const modalText = document.getElementById('modal-text');
+const modalClose = document.getElementById('modal-close');
+
+// Hitta de två sista fälten (en sten / stenen)
+const stenInputs = document.querySelectorAll('input[data-correct*="sten"]');
+
+// Öppna modalen mjukt
+stenInputs.forEach(input => {
+    input.addEventListener('focus', () => {
+        if (!stenModalShown) {
+            modalText.textContent = "Wait a moment! In order to answer this, you must know the gender of the word 'sten'. There is only one way to learn this – you simply have to memorise it!";
+            
+            // Lägg till klassen istället för style.display
+            modal.classList.add('active');
+            
+            stenModalShown = true;
+            input.blur();
+        }
+    });
+});
+
+// Stäng mjukt
+const closeModal = () => modal.classList.remove('active');
+
+modalClose.addEventListener('click', closeModal);
+window.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+});
+
+// Stäng genom att klicka utanför (på overlayen)
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
+function resetAll() {
+    document.querySelectorAll('#practice-area input')
+        .forEach(i => {
+            i.value = '';
+            i.className = '';
+        });
+
+    document.querySelectorAll('.tick')
+        .forEach(t => t.textContent = '');
+
+    document.querySelectorAll('#demo-area .answer-slot')
+        .forEach(s => {
+            s.classList.add('hidden');
+            s.innerHTML = '';
+        });
+
+    document.querySelectorAll('.explain-bubble')
+        .forEach(b => {
+            b.classList.remove('show');
+            b.textContent = '';
+        });
+
+    // RADEN DU SKA LÄGGA TILL:
+    document.querySelectorAll('.vowel-arrow').forEach(a => a.remove());
+
+    document.querySelectorAll('.article')
+        .forEach(a => a.style.color = '');
+    
+    // Om du vill att modalen för "sten" ska kunna dyka upp igen efter reset:
+    stenModalShown = false; 
+}
+</script>
+</body>
+</html>
