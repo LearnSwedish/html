@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fönster | fönstret</title>
+
+<style>
+  :root {
+    --bg: #f6f4f0;
+    --text: #1a1714;
+    --muted: #8a8078;
+    --button-bg: #ffffff;
+    --button-hover: #ece9e4;
+    --border: #bbb;
+
+    --fall-time: 0.55s;
+    --slide-time: 0.40s;
+    --suffix-time: 0.40s;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    font-family: Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .page-title {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    margin: 0;
+    font-size: 44px;
+    font-weight: normal;
+    line-height: 1.05;
+    text-align: center;
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+
+    opacity: 1;
+    transition:
+      opacity 0.65s ease 0.05s,
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+  }
+
+  body.page-loading .page-title {
+    opacity: 0;
+    transform: translateX(-50%) translateY(14px);
+  }
+
+.title-sub {
+  display: block;
+  margin-top: 12px;
+  font-family: "Trebuchet MS", system-ui, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6f665f;
+}
+
+.mode-singular {
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  color: #2563eb;
+}
+
+  .top-actions {
+    position: fixed;
+    top: 24px;
+    right: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.65s ease 0.30s,
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.30s;
+  }
+
+  body.page-loading .top-actions {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  .top-button {
+    width: 110px;
+    margin: 0;
+    padding: 9px 18px;
+  }
+
+main {
+  display: grid;
+  grid-template-columns: 170px 260px 205px;
+  column-gap: 0;
+  row-gap: 0;
+  align-items: end;
+
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.65s ease 0.18s,
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
+}
+
+  body.page-loading main {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  .row {
+    display: contents;
+  }
+
+  .english {
+    width: 170px;
+    margin-bottom: 14px;
+    font-size: 20px;
+    color: var(--muted);
+    white-space: nowrap;
+
+    display: grid;
+    grid-template-columns: 1.8em auto;
+    align-items: baseline;
+    text-align: left;
+  }
+
+  .article {
+    display: inline-block;
+    color: #b23a3a;
+    opacity: 0;
+    transform: translateX(-0.6em);
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s ease;
+  }
+
+  .english.is-definite .article {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .english-word {
+    display: inline-block;
+  }
+
+.word-stage {
+  position: relative;
+  width: 260px;
+  height: 105px;
+  font-size: clamp(36px, 7vw, 56px);
+  line-height: 1;
+}
+
+  .ghost {
+    visibility: hidden;
+    white-space: nowrap;
+  }
+
+  .word-wrap {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    align-items: flex-end;
+    white-space: nowrap;
+  }
+
+  .stem,
+  .drop-slot,
+  .letter {
+    display: inline-block;
+  }
+
+  .stem {
+    flex: 0 0 auto;
+  }
+
+  .moving-part {
+    display: flex;
+    align-items: flex-end;
+    flex: 0 0 auto;
+  }
+
+  .drop-slot {
+    position: relative;
+    overflow: visible;
+    flex: 0 0 auto;
+    transition: width var(--slide-time) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .drop-slot.close {
+    width: 0 !important;
+  }
+
+  .drop-letter {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transition:
+      transform var(--fall-time) cubic-bezier(0.4, 0, 1, 1),
+      opacity var(--fall-time) ease;
+  }
+
+  .drop-letter.fall {
+    transform: translateY(1.35em);
+    opacity: 0;
+  }
+
+  .keeper-letter {
+    display: inline-block;
+  }
+
+  .suffix {
+    display: inline-block;
+    overflow: visible;
+    max-width: 0;
+    opacity: 0;
+    white-space: nowrap;
+    transform: translateY(-0.75em);
+
+    transition:
+      max-width 0s,
+      opacity 0.45s ease,
+      transform var(--suffix-time) cubic-bezier(0.34, 1.3, 0.64, 1);
+  }
+
+  .suffix.above {
+    max-width: 3em;
+    opacity: 1;
+    transform: translateY(-0.75em);
+  }
+
+  .suffix.down {
+    max-width: 3em;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  button {
+    width: 155px;
+    margin-left: 50px;
+    margin-bottom: 8px;
+    padding: 9px 16px;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--button-bg);
+    color: var(--text);
+    border-radius: 8px;
+    letter-spacing: 0.3px;
+    opacity: 1;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease,
+      opacity 0.35s ease;
+  }
+
+  button.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  button:hover {
+    background: var(--button-hover);
+    border-color: #999;
+  }
+
+  button:disabled {
+    cursor: default;
+  }
+
+  button.is-indefinite {
+    background: #2563eb;
+    border-color: #1d4ed8;
+    color: #ffffff;
+  }
+
+  button.is-indefinite:hover {
+    background: #1d4ed8;
+    border-color: #1e40af;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(26, 23, 20, 0.32);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 100;
+  }
+
+  .modal-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal {
+    position: relative;
+    width: min(560px, calc(100vw - 40px));
+    padding: 34px 38px 32px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    transform: translateY(14px) scale(0.97);
+    opacity: 0;
+    transition:
+      transform 0.25s ease,
+      opacity 0.25s ease;
+  }
+
+  .modal-overlay.is-open .modal {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .modal h2 {
+    margin: 0 0 18px;
+    font-size: 26px;
+    font-weight: normal;
+  }
+
+  .modal p {
+    margin: 0 0 14px;
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  .modal p:last-child {
+    margin-bottom: 0;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .modal-close::before,
+  .modal-close::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 16px;
+    width: 18px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition:
+      transform 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .modal-close::before {
+    transform: rotate(45deg);
+  }
+
+  .modal-close::after {
+    transform: rotate(-45deg);
+  }
+
+  .modal-close:hover::before {
+    transform: rotate(135deg);
+    background: #b23a3a;
+  }
+
+  .modal-close:hover::after {
+    transform: rotate(45deg);
+    background: #b23a3a;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+    }
+
+    body.page-loading .page-title,
+    body.page-loading .top-actions,
+    body.page-loading main {
+      opacity: 1;
+      transform: none;
+    }
+
+    body.page-loading .page-title {
+      transform: translateX(-50%);
+    }
+  }
+</style>
+</head>
+
+<body class="page-loading">
+
+<h1 class="page-title">
+  <span>Ett-gender nouns ending in -en, -el, -er</span>
+  <span class="title-sub">How to make them definite in the <span class="mode-singular">singular</span></span>
+</h1>
+
+<div class="top-actions">
+  <button class="top-button" id="aboutBtn" type="button">About</button>
+  <button class="top-button" id="resetBtn" type="button">Reset</button>
+  <button class="top-button" id="pluralBtn" type="button">Plural</button>
+</div>
+
+<main>
+
+  <!-- example → the example / exempel → exemplet -->
+  <div class="row word-row">
+    <div class="english">
+      <span class="article">the</span>
+      <span class="english-word">example</span>
+    </div>
+
+    <div class="word-stage">
+      <div class="ghost">exemplet</div>
+
+      <div class="word-wrap" aria-label="exempel">
+        <span class="stem">exemp</span>
+        <span class="moving-part">
+          <span class="drop-slot">
+            <span class="letter drop-letter">e</span>
+          </span>
+          <span class="letter keeper-letter">l</span>
+          <span class="suffix">et</span>
+        </span>
+      </div>
+    </div>
+
+    <button type="button">Make definite</button>
+  </div>
+
+  <!-- chapter → the chapter / kapitel → kapitlet -->
+  <div class="row word-row">
+    <div class="english">
+      <span class="article">the</span>
+      <span class="english-word">chapter</span>
+    </div>
+
+    <div class="word-stage">
+      <div class="ghost">kapitlet</div>
+
+      <div class="word-wrap" aria-label="kapitel">
+        <span class="stem">kapit</span>
+        <span class="moving-part">
+          <span class="drop-slot">
+            <span class="letter drop-letter">e</span>
+          </span>
+          <span class="letter keeper-letter">l</span>
+          <span class="suffix">et</span>
+        </span>
+      </div>
+    </div>
+
+    <button type="button">Make definite</button>
+  </div>
+
+  <!-- weapon → the weapon / vapen → vapnet -->
+  <div class="row word-row">
+    <div class="english">
+      <span class="article">the</span>
+      <span class="english-word">weapon</span>
+    </div>
+
+    <div class="word-stage">
+      <div class="ghost">vapnet</div>
+
+      <div class="word-wrap" aria-label="vapen">
+        <span class="stem">vap</span>
+        <span class="moving-part">
+          <span class="drop-slot">
+            <span class="letter drop-letter">e</span>
+          </span>
+          <span class="letter keeper-letter">n</span>
+          <span class="suffix">et</span>
+        </span>
+      </div>
+    </div>
+
+    <button type="button">Make definite</button>
+  </div>
+
+  <!-- sign → the sign / tecken → tecknet -->
+  <div class="row word-row">
+    <div class="english">
+      <span class="article">the</span>
+      <span class="english-word">sign</span>
+    </div>
+
+    <div class="word-stage">
+      <div class="ghost">tecknet</div>
+
+      <div class="word-wrap" aria-label="tecken">
+        <span class="stem">teck</span>
+        <span class="moving-part">
+          <span class="drop-slot">
+            <span class="letter drop-letter">e</span>
+          </span>
+          <span class="letter keeper-letter">n</span>
+          <span class="suffix">et</span>
+        </span>
+      </div>
+    </div>
+
+    <button type="button">Make definite</button>
+  </div>
+
+  <!-- window → the window / fönster → fönstret -->
+  <div class="row word-row">
+    <div class="english">
+      <span class="article">the</span>
+      <span class="english-word">window</span>
+    </div>
+
+    <div class="word-stage">
+      <div class="ghost">fönstret</div>
+
+      <div class="word-wrap" aria-label="fönster">
+        <span class="stem">fönst</span>
+        <span class="moving-part">
+          <span class="drop-slot">
+            <span class="letter drop-letter">e</span>
+          </span>
+          <span class="letter keeper-letter">r</span>
+          <span class="suffix">et</span>
+        </span>
+      </div>
+    </div>
+
+    <button type="button">Make definite</button>
+  </div>
+
+  <!-- layer → the layer / lager → lagret -->
+  <div class="row word-row">
+    <div class="english">
+      <span class="article">the</span>
+      <span class="english-word">layer</span>
+    </div>
+
+    <div class="word-stage">
+      <div class="ghost">lagret</div>
+
+      <div class="word-wrap" aria-label="lager">
+        <span class="stem">lag</span>
+        <span class="moving-part">
+          <span class="drop-slot">
+            <span class="letter drop-letter">e</span>
+          </span>
+          <span class="letter keeper-letter">r</span>
+          <span class="suffix">et</span>
+        </span>
+      </div>
+    </div>
+
+    <button type="button">Make definite</button>
+  </div>
+
+</main>
+
+<div class="modal-overlay" id="modalOverlay" aria-hidden="true">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" type="button" aria-label="Close"></button>
+
+    <h2 id="modalTitle">About</h2>
+
+    <p>This page shows a group of Swedish <strong>ett</strong>-gender nouns ending in <strong>-el</strong>, <strong>-en</strong> or <strong>-er</strong>.</p>
+
+    <p>Like other ett-gender nouns, they take the definite singular suffix <strong>-et</strong> (träd &rarr; träd<strong><u>et</u></strong>, hus &rarr; hus<strong><u>et</u></strong>, barn &rarr; barn<strong><u>et</u></strong>).</p>
+	<p>However, because these words already contain an unstressed <strong>e</strong> near the end (vap<strong><u>e</u></strong>n), this <strong>e</strong> is dropped before the suffix is added.</p>
+
+    <p>So the definite form is not <strong>vapenet</strong>, but <strong>vapnet</strong>.</p>
+  </section>
+</div>
+
+<script>
+  document.querySelectorAll('.word-row').forEach(setupWord);
+
+  function setupWord(row) {
+    const english = row.querySelector('.english');
+    const word = row.querySelector('.word-wrap');
+    const dropSlot = row.querySelector('.drop-slot');
+    const dropLetter = row.querySelector('.drop-letter');
+    const suffix = row.querySelector('.suffix');
+    const button = row.querySelector('button');
+
+    const baseLabel = word.getAttribute('aria-label');
+    const finalLabel = row.querySelector('.ghost').textContent;
+
+    let transformed = false;
+
+    lockDropSlotWidth();
+
+    window.addEventListener('resize', () => {
+      if (!transformed) lockDropSlotWidth();
+    });
+
+    button.addEventListener('click', () => {
+      transformed ? resetWord() : transformWord();
+    });
+
+    function lockDropSlotWidth() {
+      const rect = dropLetter.getBoundingClientRect();
+      dropSlot.style.width = `${rect.width}px`;
+      dropSlot.style.height = `${rect.height}px`;
+    }
+
+    function transformWord() {
+      button.disabled = true;
+      button.classList.add('is-hidden');
+      lockDropSlotWidth();
+
+      english.classList.add('is-definite');
+
+      window.setTimeout(() => {
+        dropLetter.classList.add('fall');
+
+        window.setTimeout(() => {
+          dropSlot.classList.add('close');
+
+          window.setTimeout(() => {
+            suffix.classList.add('above');
+
+            window.setTimeout(() => {
+              suffix.classList.remove('above');
+              suffix.classList.add('down');
+
+              window.setTimeout(() => {
+                transformed = true;
+                word.setAttribute('aria-label', finalLabel);
+
+                button.textContent = 'Make indefinite';
+                button.classList.add('is-indefinite');
+                button.disabled = false;
+
+                requestAnimationFrame(() => {
+                  button.classList.remove('is-hidden');
+                });
+              }, 300);
+
+            }, 200);
+
+          }, 300);
+
+        }, 500);
+
+      }, 750);
+    }
+
+    function resetWord() {
+      button.disabled = true;
+      button.classList.add('is-hidden');
+
+      english.classList.remove('is-definite');
+      suffix.classList.remove('above', 'down');
+      dropSlot.classList.remove('close');
+      dropLetter.classList.remove('fall');
+
+      word.setAttribute('aria-label', baseLabel);
+
+      window.setTimeout(() => {
+        lockDropSlotWidth();
+
+        transformed = false;
+
+        button.textContent = 'Make definite';
+        button.classList.remove('is-indefinite');
+        button.disabled = false;
+
+        requestAnimationFrame(() => {
+          button.classList.remove('is-hidden');
+        });
+      }, 800);
+    }
+  }
+
+  const aboutBtn = document.getElementById('aboutBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const pluralBtn = document.getElementById('pluralBtn');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalClose = document.getElementById('modalClose');
+
+  function resetAll() {
+    window.location.reload();
+  }
+
+  aboutBtn.addEventListener('click', openModal);
+  resetBtn.addEventListener('click', resetAll);
+
+  pluralBtn.addEventListener('click', () => {
+    window.open('https://learnswedish.github.io/html/fonstren.html', '_blank');
+  });
+
+  modalClose.addEventListener('click', closeModal);
+
+  modalOverlay.addEventListener('click', (event) => {
+    if (event.target === modalOverlay) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modalOverlay.classList.contains('is-open')) {
+      closeModal();
+    }
+  });
+
+  function openModal() {
+    modalOverlay.classList.add('is-open');
+    modalOverlay.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove('is-open');
+    modalOverlay.setAttribute('aria-hidden', 'true');
+  }
+
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => {
+      document.body.classList.remove('page-loading');
+    });
+  });
+</script>
+
+</body>
+</html>
