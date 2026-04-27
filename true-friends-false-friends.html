@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>False and True Friends Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f3ee;
+  --surface: #ffffff;
+  --surface2: #f0ede6;
+  --border: #e2ddd5;
+  --text: #1a1814;
+  --text-muted: #7a7268;
+  --text-faint: #b0aa9f;
+  --accent: #2d5a3d;
+  --accent-light: #e8f0eb;
+  --accent-text: #1e3f2b;
+  --danger: #8b2020;
+  --danger-light: #f5e8e8;
+  --danger-text: #6b1818;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --trans: 0.18s ease;
+}
+.dark {
+  --bg: #141210;
+  --surface: #1e1c19;
+  --surface2: #252220;
+  --border: #302d28;
+  --text: #f0ece4;
+  --text-muted: #8a8278;
+  --text-faint: #504c46;
+  --accent: #5a9e72;
+  --accent-light: #1a2e20;
+  --accent-text: #8ed4a8;
+  --danger: #c45050;
+  --danger-light: #2a1515;
+  --danger-text: #f09090;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background var(--trans), color var(--trans);
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.25rem 3rem;
+  gap: 1.25rem;
+}
+
+/* ── Header ── */
+.main-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  text-align: center;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 580px;
+  gap: 8px;
+}
+.topbar-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--trans);
+}
+.topbar-btn:hover { border-color: var(--text-faint); color: var(--text); background: var(--surface2); }
+.spacer { flex: 1; }
+.toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.toggle-label { font-size: 13px; color: var(--text-muted); }
+.toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 99px; cursor: pointer; transition: background var(--trans); }
+.toggle input:checked ~ .toggle-track { background: var(--accent); }
+.toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: transform var(--trans); pointer-events: none; }
+.toggle input:checked ~ .toggle-thumb { transform: translateX(20px); }
+
+.progress-wrap { width: 100%; max-width: 580px; }
+.progress-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-faint); margin-bottom: 6px; letter-spacing: 0.02em; }
+.progress-track { height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.4s ease; }
+
+.q-card {
+  width: 100%;
+  max-width: 580px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 2rem 2.5rem;
+  text-align: center;
+  transition: background var(--trans);
+}
+
+.lang-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 1.25rem;
+}
+.flag { width: 28px; height: 18px; border-radius: 3px; overflow: hidden; flex-shrink: 0; display: flex; }
+.flag svg { width: 100%; height: 100%; }
+.lang-label { font-size: 11px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-faint); }
+
+.q-prompt { font-size: 14px; color: var(--text-muted); margin-bottom: 0.6rem; min-height: 1.5em; }
+.noun { font-family: 'DM Serif Display', serif; font-size: 46px; color: var(--text); line-height: 1.05; display: inline-block; }
+
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 580px; }
+.ans {
+  font-family: 'DM Serif Display', serif;
+  font-size: 19px;
+  padding: 15px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--trans);
+  text-align: center;
+  line-height: 1.2;
+}
+.ans:hover:not(:disabled) { border-color: var(--text-muted); background: var(--surface2); transform: translateY(-1px); }
+.ans:disabled { cursor: default; }
+.ans.correct { background: var(--accent-light); border-color: var(--accent); color: var(--accent-text); }
+.ans.wrong   { background: var(--danger-light); border-color: var(--danger); color: var(--danger-text); }
+
+.feedback { height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-muted); }
+.feedback .ok  { color: var(--accent-text); font-weight: 500; }
+.feedback .no  { color: var(--danger-text); }
+.feedback .no strong { font-weight: 500; }
+
+.fade-out { opacity: 0; transition: opacity 0.22s ease; }
+.fade-in  { opacity: 1; transition: opacity 0.22s ease; }
+
+.final-wrap { width: 100%; max-width: 580px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+.final-title { font-family: 'DM Serif Display', serif; font-size: 38px; font-weight: 400; color: var(--text); }
+.final-sub { font-size: 14px; color: var(--text-muted); }
+.score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.score-card { padding: 1.5rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: center; }
+.score-card .val { font-family: 'DM Serif Display', serif; font-size: 48px; display: block; line-height: 1; margin-bottom: 4px; }
+.score-card .lbl { font-size: 13px; color: var(--text-muted); }
+.score-card.good { background: var(--accent-light); border-color: var(--accent); color: var(--accent-text); }
+.score-card.bad  { background: var(--danger-light); border-color: var(--danger); color: var(--danger-text); }
+.restart-btn { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 11px 30px; border-radius: 99px; border: 1px solid var(--border); background: var(--text); color: var(--bg); cursor: pointer; transition: opacity var(--trans); }
+
+@media (max-width: 480px) { .answers { grid-template-columns: 1fr; } .noun { font-size: 36px; } .q-card { padding: 1.5rem 1.25rem; } .main-title { font-size: 26px; } }
+</style>
+</head>
+<body>
+
+<div class="page" id="page">
+  <h1 class="main-title">False and True Friends</h1>
+
+  <div class="topbar">
+    <button class="topbar-btn" onclick="location.reload()">Restart</button>
+    <div class="spacer"></div>
+    <div class="toggle-wrap">
+      <span class="toggle-label">Dark</span>
+      <label class="toggle">
+        <input type="checkbox" id="theme-toggle">
+        <span class="toggle-track"></span>
+        <span class="toggle-thumb"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="prog-label">0 / 0</span>
+      <span id="score-tally"></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <div class="q-card" id="q-card">
+    <div class="lang-row">
+      <div class="flag" id="flag-el"></div>
+      <span class="lang-label" id="lang-label">Swedish</span>
+    </div>
+    <p class="q-prompt" id="q-prompt">Loading…</p>
+    <div class="noun" id="noun-el">–</div>
+  </div>
+
+  <div class="answers" id="ans-grid"></div>
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+const FLAGS = {
+  sw: `
+    <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" style="display:block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));">
+      <defs>
+        <clipPath id="sw-clip">
+          <rect x="0" y="0" width="160" height="100" rx="6" ry="6"/>
+        </clipPath>
+      </defs>
+      <g clip-path="url(#sw-clip)">
+        <rect width="160" height="100" fill="#006AA7"/>
+        <rect x="50" y="0" width="20" height="100" fill="#FECC00"/>
+        <rect x="0" y="40" width="160" height="20" fill="#FECC00"/>
+      </g>
+    </svg>
+  `,
+  uk: `
+    <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" style="display:block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));">
+      <defs>
+        <clipPath id="uk-clip">
+          <rect x="0" y="0" width="60" height="30" rx="3" ry="3"/>
+        </clipPath>
+      </defs>
+      <g clip-path="url(#uk-clip)">
+        <rect width="60" height="30" fill="#012169"/>
+
+        <!-- vita diagonaler -->
+        <path d="M0,0 L60,30 M60,0 L0,30" stroke="#FFFFFF" stroke-width="6"/>
+
+        <!-- röda diagonaler -->
+        <path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="3"/>
+
+        <!-- vitt kors -->
+        <rect x="24" y="0" width="12" height="30" fill="#FFFFFF"/>
+        <rect x="0" y="9" width="60" height="12" fill="#FFFFFF"/>
+
+        <!-- rött kors -->
+        <rect x="26" y="0" width="8" height="30" fill="#C8102E"/>
+        <rect x="0" y="11" width="60" height="8" fill="#C8102E"/>
+      </g>
+    </svg>
+  `
+};
+
+const data = [
+  { sw: "aktuell", en: "contemporary", ff: "actual", ff_sw: "faktisk" },
+  { sw: "annonsera", en: "advertise", ff: "announce", ff_sw: "meddela" },
+  { sw: "bra", en: "good", ff: "bra", ff_sw: "behå" },
+  { sw: "chef", en: "boss", ff: "chef", ff_sw: "kock" },
+  { sw: "genial", en: "brilliant", ff: "genial", ff_sw: "vänlig" },
+  { sw: "gift", en: "poison", ff: "gift", ff_sw: "gåva" },
+  { sw: "gymnasium", en: "upper secondary school", ff: "gymnasium", ff_sw: "idrottshall" },
+  { sw: "harm", en: "indignation", ff: "harm", ff_sw: "skada" },
+  { sw: "koka", en: "boil", ff: "cook", ff_sw: "laga mat" },
+  { sw: "konsekvent", en: "consistent", ff: "consequently", ff_sw: "följaktligen" },
+  { sw: "mening", en: "sentence", ff: "meaning", ff_sw: "betydelse" },
+  { sw: "offer", en: "victim", ff: "offer", ff_sw: "erbjudande" },
+  { sw: "pensel", en: "paintbrush", ff: "pencil", ff_sw: "blyertspenna" },
+  { sw: "publik", en: "audience", ff: "public", ff_sw: "allmänhet" },
+  { sw: "recept", en: "recipe", ff: "receipt", ff_sw: "kvitto" },
+  { sw: "rektor", en: "headmaster", ff: "rector", ff_sw: "kyrkoherde" },
+  { sw: "ränta", en: "interest", ff: "rent", ff_sw: "hyra" },
+  { sw: "semester", en: "holiday", ff: "semester", ff_sw: "termin" },
+  { sw: "simpel", en: "inferior", ff: "simple", ff_sw: "enkel" },
+  { sw: "stol", en: "chair", ff: "stool", ff_sw: "pall" },
+  { sw: "svimma", en: "faint", ff: "swim", ff_sw: "simma" },
+  { sw: "vill", en: "want", ff: "will", ff_sw: "testamente" },
+  { sw: "timme", en: "hour", ff: "time", ff_sw: "tid" },
+  { sw: "uppror", en: "revolt", ff: "uproar", ff_sw: "oväsen" },
+  { sw: "varuhus", en: "department store", ff: "warehouse", ff_sw: "lager" },
+  { sw: "vikarie", en: "substitute", ff: "vicar", ff_sw: "kyrkoherde" },
+  { sw: "vinka", en: "wave", ff: "wink", ff_sw: "blinka" },
+  { sw: "vrist", en: "ankle", ff: "wrist", ff_sw: "handled" },
+  { sw: "barn", en: "child", ff: "barn", ff_sw: "lada" },
+  { sw: "konkurs", en: "bankruptcy", ff: "concourse", ff_sw: "samlingshall" },
+  { sw: "ordinarie", en: "regular", ff: "ordinary", ff_sw: "vanlig" },
+  { sw: "art", en: "species", ff: "art", ff_sw: "konst" },
+  { sw: "bad", en: "bath", ff: "bad", ff_sw: "dålig" },
+  { sw: "bal", en: "ball", ff: "ball", ff_sw: "boll" },
+  { sw: "bas", en: "base", ff: "bass", ff_sw: "basgång" },
+  { sw: "ben", en: "leg", ff: "bean", ff_sw: "böna" },
+  { sw: "bord", en: "table", ff: "board", ff_sw: "bräda" },
+  { sw: "brist", en: "shortage", ff: "bristle", ff_sw: "borst" },
+  { sw: "burk", en: "can", ff: "bark", ff_sw: "skälla" },
+  { sw: "bål", en: "bonfire", ff: "bowl", ff_sw: "skål" },
+  { sw: "dig", en: "you", ff: "dig", ff_sw: "gräva" },
+  { sw: "drag", en: "feature", ff: "drag", ff_sw: "släpa" },
+  { sw: "damm", en: "dust", ff: "dam", ff_sw: "fördämning" },
+  { sw: "fabrik", en: "factory", ff: "fabric", ff_sw: "tyg" },
+  { sw: "fart", en: "speed", ff: "fart", ff_sw: "fis" },
+  { sw: "fläkt", en: "fan", ff: "fleck", ff_sw: "fläck" },
+  { sw: "fort", en: "quickly", ff: "fort", ff_sw: "befästning" },
+  { sw: "full", en: "drunk", ff: "full", ff_sw: "mätt" },
+  { sw: "gran", en: "spruce", ff: "gran", ff_sw: "mormor" },
+  { sw: "grind", en: "gate", ff: "grind", ff_sw: "mala" },
+  { sw: "gris", en: "pig", ff: "grease", ff_sw: "fett" },
+  { sw: "hall", en: "hallway", ff: "hall", ff_sw: "sal" },
+  { sw: "hamn", en: "harbour", ff: "ham", ff_sw: "skinka" },
+  { sw: "hugg", en: "blow", ff: "hug", ff_sw: "kram" },
+  { sw: "kind", en: "cheek", ff: "kind", ff_sw: "snäll" },
+  { sw: "kissa", en: "pee", ff: "kiss", ff_sw: "kyssa" },
+  { sw: "kost", en: "diet", ff: "cost", ff_sw: "kostnad" },
+  { sw: "lack", en: "varnish", ff: "lack", ff_sw: "brist" },
+  { sw: "lag", en: "team", ff: "lag", ff_sw: "eftersläpning" },
+  { sw: "led", en: "joint", ff: "lead", ff_sw: "bly" },
+  { sw: "list", en: "cunning", ff: "list", ff_sw: "lista" },
+  { sw: "lokal", en: "premises", ff: "local", ff_sw: "lokalinvånare" },
+  { sw: "matt", en: "dull", ff: "mat", ff_sw: "matta" },
+  { sw: "not", en: "note", ff: "not", ff_sw: "inte" },
+  { sw: "part", en: "side", ff: "part", ff_sw: "del" },
+  { sw: "rast", en: "break", ff: "rest", ff_sw: "vila" },
+  { sw: "rock", en: "coat", ff: "rock", ff_sw: "sten" },
+  { sw: "rolig", en: "funny", ff: "rolling", ff_sw: "rullande" },
+  { sw: "sal", en: "room", ff: "sale", ff_sw: "försäljning" },
+  { sw: "spik", en: "nail", ff: "spike", ff_sw: "spets" },
+  { sw: "springa", en: "run", ff: "spring", ff_sw: "vår" },
+  { sw: "tunna", en: "barrel", ff: "tuna", ff_sw: "tonfisk" },
+  { sw: "val", en: "election", ff: "vale", ff_sw: "dal" },
+  { sw: "van", en: "used to", ff: "van", ff_sw: "skåpbil" },
+  { sw: "vass", en: "sharp", ff: "vase", ff_sw: "vas" }
+];
+
+const trueFriends = [
+  { sw: "adress", en: "address", ff: "address", ff_sw: "adress" },
+  { sw: "arm", en: "arm", ff: "arm", ff_sw: "arm" },
+  { sw: "blod", en: "blood", ff: "blood", ff_sw: "blod" },
+  { sw: "båt", en: "boat", ff: "boat", ff_sw: "båt" },
+  { sw: "dans", en: "dance", ff: "dance", ff_sw: "dans" },
+  { sw: "dricka", en: "drink", ff: "drink", ff_sw: "dricka" },
+  { sw: "elefant", en: "elephant", ff: "elephant", ff_sw: "elefant" },
+  { sw: "film", en: "film", ff: "film", ff_sw: "film" },
+  { sw: "finger", en: "finger", ff: "finger", ff_sw: "finger" },
+  { sw: "fot", en: "foot", ff: "foot", ff_sw: "fot" },
+  { sw: "glas", en: "glass", ff: "glass", ff_sw: "glas" },
+  { sw: "hand", en: "hand", ff: "hand", ff_sw: "hand" },
+  { sw: "hotell", en: "hotel", ff: "hotel", ff_sw: "hotell" },
+  { sw: "information", en: "information", ff: "information", ff_sw: "information" },
+  { sw: "kamera", en: "camera", ff: "camera", ff_sw: "kamera" },
+  { sw: "lampa", en: "lamp", ff: "lamp", ff_sw: "lampa" },
+  { sw: "maskin", en: "machine", ff: "machine", ff_sw: "maskin" },
+  { sw: "namn", en: "name", ff: "name", ff_sw: "namn" },
+  { sw: "papper", en: "paper", ff: "paper", ff_sw: "papper" },
+  { sw: "park", en: "park", ff: "park", ff_sw: "park" },
+  { sw: "radio", en: "radio", ff: "radio", ff_sw: "radio" },
+  { sw: "salt", en: "salt", ff: "salt", ff_sw: "salt" },
+  { sw: "skola", en: "school", ff: "school", ff_sw: "skola" },
+  { sw: "tomat", en: "tomato", ff: "tomato", ff_sw: "tomat" },
+  { sw: "vin", en: "wine", ff: "wine", ff_sw: "vin" }
+];
+
+let pool = [], used = [], correctCount = 0, wrongCount = 0, current = null, answered = false, direction = 'sv-en';
+
+function shuffle(a) {
+  const b = [...a];
+  for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; }
+  return b;
+}
+
+const themeToggle = document.getElementById('theme-toggle');
+if (localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark'); themeToggle.checked = true; }
+themeToggle.onchange = () => {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+};
+
+function init() {
+  window.allWords = [...data, ...trueFriends]; 
+  pool = shuffle([...Array(window.allWords.length).keys()]);
+  used = []; correctCount = 0; wrongCount = 0;
+  updateProgress();
+  loadQuestion(false);
+}
+
+function loadQuestion(fade = false) {
+  if (used.length === window.allWords.length) { showFinal(); return; }
+  answered = false;
+  current = window.allWords[pool[used.length]];
+  used.push(pool[used.length]);
+  direction = Math.random() > 0.5 ? 'sv-en' : 'en-sv';
+
+  const els = ['q-card','ans-grid','feedback'].map(id => document.getElementById(id));
+  if (fade) {
+    els.forEach(e => e.classList.add('fade-out'));
+    setTimeout(() => {
+      render();
+      els.forEach(e => { e.classList.remove('fade-out'); e.classList.add('fade-in'); });
+      setTimeout(() => els.forEach(e => e.classList.remove('fade-in')), 220);
+    }, 220);
+  } else { render(); }
+}
+
+function render() {
+  const isSv = direction === 'sv-en';
+  document.getElementById('flag-el').innerHTML = isSv ? FLAGS.sw : FLAGS.uk;
+  document.getElementById('lang-label').textContent = isSv ? 'Swedish' : 'English';
+  document.getElementById('q-prompt').textContent = isSv
+    ? 'What does this Swedish word mean in English?'
+    : 'What is the Swedish equivalent?';
+  document.getElementById('noun-el').textContent = isSv ? current.sw : current.ff;
+  document.getElementById('feedback').innerHTML = '';
+
+  const correctVal = isSv ? current.en : current.ff_sw;
+  const baitVal    = isSv ? current.ff : current.sw;
+
+  const pool2 = isSv ? window.allWords.map(d => d.en) : window.allWords.map(d => d.ff_sw);
+  
+  let optionsSet = new Set([correctVal, baitVal]);
+  
+  const shuffledDistractors = shuffle(pool2);
+  for (const r of shuffledDistractors) {
+    if (!optionsSet.has(r)) { 
+      optionsSet.add(r); 
+      if (optionsSet.size === 4) break; 
+    }
+  }
+  
+  const finalOpts = shuffle(Array.from(optionsSet));
+
+  const grid = document.getElementById('ans-grid');
+  grid.innerHTML = '';
+  finalOpts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'ans';
+    btn.textContent = opt;
+    btn.onclick = () => pick(btn, opt, correctVal);
+    grid.appendChild(btn);
+  });
+  updateProgress();
+}
+
+function pick(btn, chosen, correct) {
+  if (answered) return;
+  answered = true;
+  const ok = chosen === correct;
+  if (ok) correctCount++; else wrongCount++;
+
+  document.querySelectorAll('.ans').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === correct) b.classList.add('correct');
+    else if (b === btn && !ok) b.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.innerHTML = ok
+    ? '<span class="ok">Correct!</span>'
+    : `<span class="no">Wrong – the answer is <strong>${correct}</strong></span>`;
+
+  updateProgress();
+  setTimeout(() => loadQuestion(true), 1200);
+}
+
+function updateProgress() {
+  const total = window.allWords.length;
+  document.getElementById('prog-fill').style.width = (used.length / total * 100) + '%';
+  document.getElementById('prog-label').textContent = used.length + ' / ' + total;
+  if (used.length > 0) {
+    document.getElementById('score-tally').textContent = correctCount + ' correct · ' + wrongCount + ' wrong';
+  }
+}
+
+function showFinal() {
+  document.getElementById('page').innerHTML = `
+    <div class="topbar" style="max-width:580px;width:100%"><div class="spacer"></div></div>
+    <div class="final-wrap">
+      <div>
+        <div class="final-title">All done!</div>
+        <div class="final-sub">You answered all ${window.allWords.length} questions.</div>
+      </div>
+      <div class="score-grid">
+        <div class="score-card good"><span class="val">${correctCount}</span><span class="lbl">Correct</span></div>
+        <div class="score-card bad"><span class="val">${wrongCount}</span><span class="lbl">Wrong</span></div>
+      </div>
+      <button class="restart-btn" onclick="location.reload()">Try again</button>
+    </div>`;
+}
+
+init();
+</script>
+</body>
+</html>
