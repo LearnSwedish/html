@@ -997,38 +997,52 @@ function renderScheduleFromData(data) {
     const t = T[lang];
 
     if (!data || data.length === 0) {
-        container.innerHTML = `
-            <div style="padding:40px; text-align:center; color:var(--ink-light);">
-                ${t.noSlots}
-            </div>`;
+        container.innerHTML = `<div style="padding:40px; text-align:center; color:var(--ink-light);">${t.noSlots}</div>`;
         return;
     }
 
+    // 1. Skapa ett datum-objekt för "idag" (nollställt till midnatt för ren datumjämförelse)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const grouped = {};
+    
     data.forEach(item => {
         if (!item.date) return;
 
-        let cleanDate = item.date.toString();
+        let cleanDateStr = item.date.toString().trim();
+        
+        // 2. Kontrollera om datumet har passerat
+        const itemDate = new Date(cleanDateStr);
+        if (itemDate < today) {
+            return; // Hoppa över detta datum om det är i det förflutna
+        }
 
-        cleanDate = cleanDate.trim();
-
-        if (!grouped[cleanDate]) {
-            grouped[cleanDate] = {
-                date: cleanDate,
+        if (!grouped[cleanDateStr]) {
+            grouped[cleanDateStr] = {
+                date: cleanDateStr,
                 day: item.day,
                 slots: []
             };
         }
 
-        grouped[cleanDate].slots.push({
+        grouped[cleanDateStr].slots.push({
             time: item.time,
             id: item.id
         });
     });
 
+    // Rensa containern
     container.innerHTML = '';
 
-    Object.values(grouped).forEach((dateGroup, idx) => {
+    const sortedDates = Object.values(grouped);
+    
+    if (sortedDates.length === 0) {
+        container.innerHTML = `<div style="padding:40px; text-align:center; color:var(--ink-light);">${t.noSlots}</div>`;
+        return;
+    }
+
+    sortedDates.forEach((dateGroup, idx) => {
         const weekday = t.weekdays[dateGroup.day] || dateGroup.day;
         const locDate = localizeDate(dateGroup.date);
 
@@ -1040,28 +1054,22 @@ function renderScheduleFromData(data) {
 
             return `
                 <div class="slot-btn">
-                    <input type="checkbox"
-                        id="${inputId}"
-                        data-id="${slot.id}"
-                        data-raw="${raw}"
-                        data-display="${display}"
-                        ${checked.has(raw) ? 'checked' : ''}
+                    <input type="checkbox" 
+                        id="${inputId}" 
+                        data-id="${slot.id}" 
+                        data-raw="${raw}" 
+                        data-display="${display}" 
+                        ${checked.has(raw) ? 'checked' : ''} 
                         onchange="updateSummary()">
-
                     <label for="${inputId}">
                         <span class="check-icon">
                             <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                                <path d="M1 4L3.5 6.5L9 1"
-                                    stroke="white"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"/>
+                                <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </span>
                         ${displayTime}
                     </label>
-                </div>
-            `;
+                </div>`;
         }).join('');
 
         container.innerHTML += `
@@ -1075,8 +1083,7 @@ function renderScheduleFromData(data) {
                         ${slotsHtml}
                     </div>
                 </div>
-            </div>
-        `;
+            </div>`;
     });
 }
 
