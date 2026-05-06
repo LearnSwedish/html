@@ -377,11 +377,11 @@
 </style>
 </head>
 <body>
-<audio id="bg-music" loop>
+<audio id="bg-music" loop preload="auto" playsinline>
   <source src="https://learnswedish.github.io/html/happybirthday.mp3" type="audio/mpeg">
 </audio>
 
-<div id="music-control" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: none;">
+<div id="music-control" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
   <button onclick="toggleMusic()" id="music-btn" style="background: var(--pink); border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 20px;">🔊</button>
 </div>
 
@@ -685,32 +685,22 @@ function restart() {
 
 // --- MUSIKLOGIK ---
 const audio = document.getElementById('bg-music');
-const musicControl = document.getElementById('music-control');
 const musicBtn = document.getElementById('music-btn');
 
-function toggleMusic() {
-  if (audio.paused) {
-    audio.play();
-    musicBtn.textContent = '🔊';
-  } else {
-    audio.pause();
+async function toggleMusic() {
+  try {
+    if (audio.paused) {
+      await audio.play();
+      musicBtn.textContent = '🔊';
+    } else {
+      audio.pause();
+      musicBtn.textContent = '🔈';
+    }
+  } catch (err) {
+    console.warn("Ljudet kunde inte spelas:", err);
     musicBtn.textContent = '🔈';
   }
 }
-
-function ensureMusicPlays() {
-  if (audio.paused) {
-    audio.play().then(() => {
-      musicControl.style.display = 'block';
-    }).catch(e => console.log("Musiken väntar på mer interaktion..."));
-  }
-}
-
-// Startar musiken vid första klicket på sidan
-document.addEventListener('click', function startMusicOnce() {
-  ensureMusicPlays();
-  document.removeEventListener('click', startMusicOnce);
-}, { once: true });
 
 // Starta allt
 initFloaters();
