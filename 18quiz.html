@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heddas 18-årsquiz 🎂</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #E8547A;
+    --pink-light: #FDEEF3;
+    --pink-dark: #B53A5E;
+    --gold: #F5C842;
+    --gold-light: #FEF9E7;
+    --purple: #8B5CF6;
+    --mint: #34D399;
+    --bg: #FFF8FC;
+    --card: #ffffff;
+    --text: #1a0a12;
+    --muted: #7a4d60;
+    --border: rgba(232,84,122,0.18);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem 1rem 4rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 0%, rgba(232,84,122,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 10%, rgba(139,92,246,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 50% 100%, rgba(245,200,66,0.12) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .floating-emojis {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .float-em {
+    position: absolute;
+    font-size: 28px;
+    opacity: 0.15;
+    animation: floatUp linear infinite;
+    user-select: none;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.15; }
+    90% { opacity: 0.15; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+  }
+
+  .container {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    animation: dropIn 0.8s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  @keyframes dropIn {
+    0% { transform: translateY(-60px) scale(0.7); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  .cake-wrap {
+    font-size: 72px;
+    display: block;
+    margin-bottom: 12px;
+    animation: cakeBounce 2.5s ease-in-out infinite;
+    filter: drop-shadow(0 8px 16px rgba(232,84,122,0.3));
+  }
+
+  @keyframes cakeBounce {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .progress-wrap {
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .progress-track {
+    height: 8px;
+    background: rgba(232,84,122,0.12);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pink), var(--purple));
+    border-radius: 99px;
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    padding: 2rem;
+    box-shadow: 0 4px 40px rgba(232,84,122,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  @keyframes cardIn {
+    0% { transform: scale(0.92) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .q-emoji {
+    font-size: 36px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 3vw, 1.35rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.45;
+    margin-bottom: 1.5rem;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .opt-btn {
+    width: 100%;
+    text-align: left;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(232,84,122,0.18);
+    background: #FFF8FC;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .opt-btn::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--pink);
+    transform: scaleY(0);
+    transition: transform 0.2s;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--pink);
+    background: var(--pink-light);
+    transform: translateX(6px);
+  }
+
+  .opt-btn:hover:not(:disabled)::before { transform: scaleY(1); }
+
+  .opt-btn:disabled { cursor: default; transform: none !important; }
+
+  .opt-btn.correct {
+    background: #ECFDF5;
+    border-color: var(--mint);
+    color: #065F46;
+    font-weight: 600;
+  }
+
+  .opt-btn.correct::before { background: var(--mint); transform: scaleY(1); }
+
+  .opt-btn.wrong {
+    background: #FFF1F2;
+    border-color: #FDA4AF;
+    color: #9F1239;
+    animation: shake 0.4s ease;
+  }
+
+  .opt-btn.reveal {
+    background: #EFF6FF;
+    border-color: #93C5FD;
+    color: #1E3A8A;
+  }
+
+  .opt-icon {
+    font-size: 18px;
+    min-width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    75%{transform:translateX(6px)}
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.6;
+    font-weight: 500;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    0%{transform:translateY(10px);opacity:0}
+    100%{transform:translateY(0);opacity:1}
+  }
+
+  .feedback.good { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+  .feedback.bad  { background: #FEF9C3; color: #713F12; border: 1px solid #FDE68A; }
+
+  .next-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-dark) 100%);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 20px rgba(232,84,122,0.35);
+    animation: fadeUp 0.5s 0.2s ease both;
+  }
+
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,84,122,0.45); }
+  .next-btn:active { transform: translateY(0); }
+
+  .result {
+    text-align: center;
+    padding: 1rem 0;
+    animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  .result-emoji { font-size: 80px; display: block; margin-bottom: 16px; animation: cakeBounce 2s ease-in-out infinite; }
+
+  .result h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .score-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold), #F59E0B);
+    color: #1a0a12;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 10px 28px;
+    border-radius: 99px;
+    margin: 16px 0;
+    box-shadow: 0 4px 20px rgba(245,200,66,0.4);
+  }
+
+  .result-msg {
+    background: var(--pink-light);
+    border: 1px solid rgba(232,84,122,0.2);
+    border-radius: 16px;
+    padding: 18px 22px;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.7;
+    margin: 16px 0 24px;
+    font-weight: 500;
+  }
+
+  .restart-btn {
+    padding: 14px 36px;
+    border-radius: 14px;
+    border: 2px solid var(--pink);
+    background: transparent;
+    color: var(--pink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover { background: var(--pink); color: #fff; transform: scale(1.04); }
+
+  .confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    top: -20px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<audio id="bg-music" loop>
+  <source src="https://learnswedish.github.io/html/happybirthday.mp3" type="audio/mpeg">
+</audio>
+
+<div id="music-control" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: none;">
+  <button onclick="toggleMusic()" id="music-btn" style="background: var(--pink); border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 20px;">🔊</button>
+</div>
+
+<div class="floating-emojis" id="floaters"></div>
+<div class="confetti-container" id="confetti"></div>
+
+<div class="container">
+  <div class="header">
+    <span class="cake-wrap">🎂</span>
+    <h1>Grattis Hedda!</h1>
+    <p>Hur väl känner du dig själv som 18-åring?</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span id="q-label">Fråga 1 av 10</span>
+      <span id="score-label">0 rätt</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:10%"></div>
+    </div>
+  </div>
+
+  <div class="card" id="quiz-card"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Vilken veckodag är du född?",
+    emoji: "📅",
+    opts: [
+      {text:"En onsdag", correct:true},
+      {text:"En måndag", correct:false},
+      {text:"En lördag", correct:false},
+      {text:"En söndag", correct:false},
+    ],
+    feedback: "Stämmer! Den 7 maj var en onsdag – mitt i veckan, precis där allting händer! 🗓️"
+  },
+  {
+    q: "Enligt svensk lag är du myndig nu. Vad är det absolut första du bör göra (enligt dig själv)?",
+    emoji: "⚖️",
+    opts: [
+      {text:"Gå till Systembolaget (och inse att du måste vänta två år till)", correct:false},
+      {text:"Teckna ett eget mobilabonnemang bara för att du kan", correct:false},
+      {text:"Boka en tatueringstid utan att fråga om lov", correct:true},
+      {text:"Sova till klockan 14:00 utan dåligt samvete", correct:false},
+    ],
+    feedback: "Ingen kan stoppa dig nu – nålarna väntar! 🖊️"
+  },
+  {
+    q: "Vilken typisk \"vuxengrej\" kommer bli din största utmaning som 18-åring?",
+    emoji: "🍓",
+    opts: [
+      {text:"Att förstå vad ett pensionssparande är", correct:false},
+      {text:"Att inte spendera hela lönen på jordgubbar i juni", correct:true},
+      {text:"Att tacka nej till en fest för att \"man är lite trött\"", correct:false},
+      {text:"Att faktiskt svara i telefon när ett okänt nummer ringer", correct:false},
+    ],
+    feedback: "Jordgubbar slår allt – speciellt när de kostar en förmögenhet! 🍓"
+  },
+  {
+    q: "Nu när du är vuxen får du rösta! Vilket fiktivt parti skulle du mest sannolikt grunda?",
+    emoji: "🗳️",
+    opts: [
+      {text:"Gratis-körkort-till-alla-partiet", correct:false},
+      {text:"Jordgubbar-som-valuta-partiet", correct:false},
+      {text:"Sova-ut-på-måndagar-partiet", correct:true},
+      {text:"TikTok-skatt-för-vuxna-partiet", correct:false},
+    ],
+    feedback: "Måndagsvila är en mänsklig rättighet. Du har min röst! 😴"
+  },
+  {
+    q: "Enligt rykten har du nu rätt att ta körkort. Vad kommer vara det största hotet i trafiken?",
+    emoji: "🚗",
+    opts: [
+      {text:"Att du glömmer vilken sida av bilen tanklocket sitter på", correct:false},
+      {text:"Att du sjunger så högt till din spellista att du missar en ambulans", correct:false},
+      {text:"Fickparkering", correct:false},
+      {text:"Att du försöker använda Siri för att styra ratten", correct:true},
+    ],
+    feedback: "\"Siri, sväng höger\" – innovation på nästa nivå! 🤖"
+  },
+  {
+    q: "Vad kommer du sakna mest med att vara 17 år och \"barn\"?",
+    emoji: "🥺",
+    opts: [
+      {text:"Att kunna skylla alla mina misstag på \"hormoner\"", correct:true},
+      {text:"Att få barnmeny-priset på vissa restauranger", correct:false},
+      {text:"Att slippa veta vad \"ränta\" är för något", correct:false},
+      {text:"Inget – ge mig friheten (och de dyra räkningarna)!", correct:false},
+    ],
+    feedback: "Hormonerna har alltid varit ett pålitligt alibi. Vila i frid, ursäkten. 🫶"
+  },
+  {
+    q: "Du har nu rätt att sitta i en jury i domstolen. Om din bästa kompis stod anklagad för att ha \"snott din sista energidryck\", vad blir din dom?",
+    emoji: "⚖️",
+    opts: [
+      {text:"Livstids fängelse (utan tillgång till mobilladdare)", correct:true},
+      {text:"Samhällstjänst i form av att städa ditt rum i en månad", correct:false},
+      {text:"Villkorlig dom mot att hon swishar en ny direkt", correct:false},
+      {text:"Du lägger ner målet mot att du får låna hennes snyggaste tröja på lördag", correct:false},
+    ],
+    feedback: "Maximalt straff, minimalt förbarmande. Rättvisan skipas! ⚡"
+  },
+  {
+    q: "Du får nu byta ditt förnamn till precis vad som helst utan föräldrarnas godkännande. Vad väljer du om du får feeling?",
+    emoji: "✨",
+    opts: [
+      {text:"Hedda-Guld-Diamant (för att visa din sanna status)", correct:false},
+      {text:"Drottning Hedda av Sverige", correct:false},
+      {text:"Du byter till \"Anonym\" för att slippa få fakturor i brevlådan", correct:false},
+      {text:"Du behåller Hedda, men lägger till ett \"The Great\" på slutet", correct:true},
+    ],
+    feedback: "Hedda the Great – det hade klingat utmärkt på ett visitkort! 👑"
+  },
+  {
+    q: "Du är på din första officiella \"vuxenmiddag\". Vilket beteende avslöjar att du egentligen fortfarande är en tonåring?",
+    emoji: "🍽️",
+    opts: [
+      {text:"Du bygger ett torn av dina använda servetter", correct:false},
+      {text:"Du frågar värden om Wi-fi-lösenordet innan du ens har hälsat", correct:false},
+      {text:"Du försöker \"scrolla\" på en vanlig papperstidning som ligger på bordet", correct:true},
+      {text:"Du tackar nej till kaffet för att det \"smakar smuts\"", correct:false},
+    ],
+    feedback: "Tummen upp för innovativt läsande! Tidningen svarade inte, tyvärr. 📰"
+  },
+  {
+    q: "Du spiller röd saft på din vita matta i din framtida lägenhet. Vad är din instinktiva reaktion?",
+    emoji: "😱",
+    opts: [
+      {text:"Du stirrar på fläcken, fotar den och frågar familjechatten: \"Hur gör man nu??\"", correct:false},
+      {text:"Du klipper ut en bit från en vit handduk och limmar fast över fläcken", correct:true},
+      {text:"Du rullar över soffan så att den täcker fläcken för evigt", correct:false},
+      {text:"Du hävdar att det var ett meteoritnedslag för att få ut en ny matta", correct:false},
+    ],
+    feedback: "Kreativ problemlösning! MacGyver hade varit stolt över handduks-tricket. 🛠️"
+  }
+];
+
+let current = 0, score = 0, answered = false;
+
+// Hjälpfunktion för att blanda alternativen
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Konfetti-effekt
+function spawnConfetti() {
+  const colors = ['#E8547A','#F5C842','#8B5CF6','#34D399','#F0997B','#93C5FD','#FCA5A5','#A7F3D0'];
+  const container = document.getElementById('confetti');
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (7 + Math.random() * 7) + 'px';
+    el.style.height = (7 + Math.random() * 7) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+    el.style.animationDelay = (Math.random() * 0.5) + 's';
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 2500);
+  }
+}
+
+// Svävande bakgrunds-emojis
+function initFloaters() {
+  const emojis = ['🎂','🎉','🎈','🌸','✨','🎊','💖','🍓','👑','🥂'];
+  const container = document.getElementById('floaters');
+  emojis.forEach((em, i) => {
+    const el = document.createElement('div');
+    el.className = 'float-em';
+    el.textContent = em;
+    el.style.left = (5 + i * 10) + '%';
+    el.style.animationDuration = (12 + Math.random() * 8) + 's';
+    el.style.animationDelay = -(Math.random() * 15) + 's';
+    container.appendChild(el);
+  });
+}
+
+// Rendera aktuell fråga
+function render() {
+  const card = document.getElementById('quiz-card');
+  const q = questions[current];
+  const shuffled = shuffle(q.opts);
+  const pct = Math.round(((current + 1) / questions.length) * 100);
+
+  document.getElementById('q-label').textContent = `Fråga ${current + 1} av ${questions.length}`;
+  document.getElementById('score-label').textContent = `${score} rätt`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = '';
+
+  card.innerHTML = `
+    <span class="q-emoji">${q.emoji}</span>
+    <p class="q-text">${q.q}</p>
+    <div class="options" id="opts"></div>
+  `;
+
+  const opts = document.getElementById('opts');
+  shuffled.forEach((opt) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-icon">○</span><span>${opt.text}</span>`;
+    btn.addEventListener('click', () => handleAnswer(opt, shuffled, btn));
+    opts.appendChild(btn);
+  });
+  answered = false;
+}
+
+// Hantera klick på svar
+function handleAnswer(opt, allOpts, clickedBtn) {
+  if (answered) return;
+  answered = true;
+
+  const buttons = document.querySelectorAll('.opt-btn');
+  const q = questions[current];
+
+  if (opt.correct) {
+    score++;
+    clickedBtn.classList.add('correct');
+    clickedBtn.querySelector('.opt-icon').textContent = '✓';
+    spawnConfetti();
+  } else {
+    clickedBtn.classList.add('wrong');
+    clickedBtn.querySelector('.opt-icon').textContent = '✗';
+    buttons.forEach((btn, i) => {
+      if (allOpts[i].correct) {
+        btn.classList.add('reveal');
+        btn.querySelector('.opt-icon').textContent = '✓';
+      }
+    });
+  }
+
+  buttons.forEach(btn => btn.disabled = true);
+  document.getElementById('score-label').textContent = `${score} rätt`;
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback ' + (opt.correct ? 'good' : 'bad');
+
+  let feedbackText = q.feedback;
+  if (!opt.correct) {
+    feedbackText = feedbackText.replace("Stämmer! ", "").replace("Absolut rätt! ", "").replace("Exakt! ", "");
+  }
+
+  fb.innerHTML = `<strong>${opt.correct ? '🎉 Rätt!' : '😅 Nästan!'}</strong> ${feedbackText}`;
+  document.getElementById('quiz-card').appendChild(fb);
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'next-btn';
+  nextBtn.textContent = current < questions.length - 1 ? 'Nästa fråga →' : 'Visa resultat 🎊';
+  nextBtn.addEventListener('click', () => {
+    current++;
+    if (current < questions.length) render();
+    else showResult();
+  });
+  document.getElementById('quiz-card').appendChild(nextBtn);
+}
+
+// Visa slutresultat
+function showResult() {
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('q-label').textContent = 'Quiz klart!';
+  document.getElementById('score-label').textContent = `${score} av ${questions.length}`;
+
+  spawnConfetti();
+  setTimeout(spawnConfetti, 600);
+  setTimeout(spawnConfetti, 1200);
+
+  let msg, emoji;
+  if (score === 10) { msg = "Perfekt poäng! Du känner dig själv lika väl som du känner jordgubbar i juni. Legendarisk."; emoji = "👑"; }
+  else if (score >= 7) { msg = "Starkt jobbat! Du är redo för vuxenlivet – i alla fall de roliga delarna av det."; emoji = "🎉"; }
+  else if (score >= 4) { msg = "Hyfsat! Du är fortfarande du, men med lite mer papper att skriva under på."; emoji = "😄"; }
+  else { msg = "Hmm... kanske var du lite distraherad av jordgubbs-tankar? Inga problem – 18 år räcker länge!"; emoji = "🍓"; }
+
+  const card = document.getElementById('quiz-card');
+  card.innerHTML = `
+    <div class="result">
+      <span class="result-emoji">${emoji}</span>
+      <h2>Grattis på 18-årsdagen, Hedda!</h2>
+      <div class="score-badge">${score} av ${questions.length} rätt</div>
+      <div class="result-msg">${msg}</div>
+      <button class="restart-btn" onclick="restart()">Spela igen 🔄</button>
+    </div>
+  `;
+}
+
+function restart() {
+  current = 0;
+  score = 0;
+  render();
+}
+
+// --- MUSIKLOGIK ---
+const audio = document.getElementById('bg-music');
+const musicControl = document.getElementById('music-control');
+const musicBtn = document.getElementById('music-btn');
+
+function toggleMusic() {
+  if (audio.paused) {
+    audio.play();
+    musicBtn.textContent = '🔊';
+  } else {
+    audio.pause();
+    musicBtn.textContent = '🔈';
+  }
+}
+
+function ensureMusicPlays() {
+  if (audio.paused) {
+    audio.play().then(() => {
+      musicControl.style.display = 'block';
+    }).catch(e => console.log("Musiken väntar på mer interaktion..."));
+  }
+}
+
+// Startar musiken vid första klicket på sidan
+document.addEventListener('click', function startMusicOnce() {
+  ensureMusicPlays();
+  document.removeEventListener('click', startMusicOnce);
+}, { once: true });
+
+// Starta allt
+initFloaters();
+render();
+</script>
+</body>
+</html>
