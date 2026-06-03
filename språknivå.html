@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+
+<html lang="sv">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stil- och registerövning i svenskan</title>
+<style>
+        /* =========================================================
+           1. GLOBAL RESET OCH SIDGRUND (Luftig & Skandinavisk)
+           ========================================================= */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.8;
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding: 40px 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1220px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+        }
+        h1 {
+            color: #0f172a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: clamp(28px, 4vw, 38px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+        .description {
+            color: #64748b;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        /* =========================================================
+           2. VÄLJ UTMANING (Övre panelen)
+           ========================================================= */
+        .setup-section {
+            background-color: #f1f5f9;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .setup-section label {
+            font-weight: 700;
+            color: #334155;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        select.style-picker {
+            padding: 10px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background-color: #fff;
+            color: #0f172a;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        select.style-picker:focus {
+            border-color: #0f172a;
+        }
+
+        /* =========================================================
+           3. TEXTYTA MED INTEGRERADE CUSTOM SELECTS
+           ========================================================= */
+        .text-area {
+            font-size: 21px;
+            line-height: 2.3; /* Ger rejält luftiga rader i löptexten */
+            color: #334155;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* =========================================================
+           4. CUSTOM SELECT-MÖNSTRET (Inbäddat i texten)
+           ========================================================= */
+        .custom-select-wrapper {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 6px;
+            user-select: none;
+            line-height: 1;
+        }
+        .custom-select-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 6px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #0f172a;
+            min-width: 140px;
+            height: 38px;
+            transition: all 0.2s ease;
+        }
+        .custom-select-trigger:hover, 
+        .custom-select-wrapper.open .custom-select-trigger {
+            border-color: #0f172a;
+            background: #f8fafc;
+        }
+        .chevron {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: #64748b;
+            stroke-width: 2.5;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .custom-select-wrapper.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown-menyn med två kolumner */
+        .custom-select-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(780px, calc(100vw - 40px)); /* Bredare så att hela alternativen syns */
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            z-index: 1000;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
+            padding: 10px;
+        }
+        .custom-select-wrapper.open .custom-select-dropdown {
+            display: block;
+        }
+        .dropdown-cols {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .custom-select-dropdown.wide {
+            width: min(1080px, calc(100vw - 40px));
+        }
+        .dropdown-cols.three-cols {
+            grid-template-columns: repeat(3, minmax(300px, 1fr));
+        }
+        .dropdown-option {
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #334155;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.35;
+            transition: all 0.15s ease;
+        }
+        .dropdown-option:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .dropdown-option.selected {
+            background: #0f172a;
+            color: #fff;
+            font-weight: 600;
+        }
+        @media (max-width: 820px) {
+            .custom-select-dropdown {
+                left: 0;
+                transform: none;
+                width: min(94vw, 520px);
+            }
+            .dropdown-cols {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =========================================================
+           5. FEEDBACK-STILAR (Rättning)
+           ========================================================= */
+        .custom-select-wrapper.correct .custom-select-trigger {
+            border-color: #10b981 !important;
+            background-color: #ecfdf5 !important;
+            color: #065f46 !important;
+            font-weight: 600;
+        }
+        .custom-select-wrapper.incorrect .custom-select-trigger {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+            color: #991b1b !important;
+        }
+
+        /* =========================================================
+           6. KNAPPAR OCH PANELER
+           ========================================================= */
+        .actions {
+            display: flex;
+            gap: 16px;
+        }
+        .btn {
+            background-color: #0f172a;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.15s;
+        }
+        .btn:hover {
+            background-color: #1e293b;
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-secondary:hover {
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+        .result-panel {
+            margin-top: 25px;
+            padding: 20px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            display: none;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+<h1>Stil- och registerövning</h1>
+<div class="description">Välj målmiljö nedan och anpassa uttrycken i texten. Flera alternativ kan vara rätt i mer än en stilnivå.</div>
+<div class="setup-section">
+<label for="challenge">Välj utmaning:</label>
+<select class="style-picker" id="challenge" onchange="resetExercise()">
+<option value="unga">Unga personer</option>
+<option value="vuxna">Vuxna vänner</option>
+<option value="jobb">På jobbet (Möte)</option>
+<option value="formellt">Formellt (Ceremoniellt)</option>
+</select>
+</div>
+<div class="text-area">
+        Igår 
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="formellt">avlade jag ett besök</div><div class="dropdown-option" data-styles="jobb,formellt">befann jag mig</div><div class="dropdown-option" data-styles="vuxna,jobb">gick jag omkring</div><div class="dropdown-option" data-styles="unga">gled jag runt</div><div class="dropdown-option" data-styles="vuxna,jobb">hade jag ett ärende</div><div class="dropdown-option" data-styles="vuxna,jobb">hade jag ett par ärenden</div><div class="dropdown-option" data-styles="jobb,formellt">passade jag på att uträtta några ärenden</div><div class="dropdown-option" data-styles="unga,vuxna">snurrade jag runt</div><div class="dropdown-option" data-styles="unga,vuxna">tog jag en sväng</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">var jag</div><div class="dropdown-option" data-styles="unga,vuxna">var jag nere en sväng</div><div class="dropdown-option" data-styles="jobb,formellt">vistades jag</div></div>
+</div>
+</div>
+<div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="unga,vuxna,jobb">i city</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">i centrum</div><div class="dropdown-option" data-styles="jobb,formellt">i den centrala delen av staden</div><div class="dropdown-option" data-styles="jobb,formellt">i stadens centrala delar</div><div class="dropdown-option" data-styles="vuxna,formellt">i stadens hjärta</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">i stadskärnan</div><div class="dropdown-option" data-styles="unga,vuxna">inne i stan</div><div class="dropdown-option" data-styles="unga,vuxna">mitt i smeten</div><div class="dropdown-option" data-styles="unga,vuxna">nere på stan</div><div class="dropdown-option" data-styles="vuxna">nere vid affärerna</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">på stan</div><div class="dropdown-option" data-styles="jobb,formellt">vid de centrala handelsstråken</div></div>
+</div>
+</div>
+        och där 
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="unga,vuxna">fick jag syn på</div><div class="dropdown-option" data-styles="jobb,formellt">fick jag tillfälle att sammanträffa med</div><div class="dropdown-option" data-styles="unga,vuxna">krockade jag med</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">mötte jag</div><div class="dropdown-option" data-styles="unga,vuxna">råkade springa på</div><div class="dropdown-option" data-styles="jobb,formellt">sammanträffade jag med</div><div class="dropdown-option" data-styles="unga,vuxna">sprang jag på</div><div class="dropdown-option" data-styles="unga,vuxna">stötte jag ihop med</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">stötte jag på</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">träffade jag</div><div class="dropdown-option" data-styles="vuxna,jobb">träffade jag av en händelse</div><div class="dropdown-option" data-styles="jobb,formellt">växlade några ord med</div></div>
+</div>
+</div>
+        en 
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="vuxna,jobb">bekant till mig</div><div class="dropdown-option" data-styles="unga">brorsa</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">en bekant</div><div class="dropdown-option" data-styles="unga">en från mitt crew</div><div class="dropdown-option" data-styles="vuxna,jobb">gammal bekant</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">god vän</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">kamrat</div><div class="dropdown-option" data-styles="unga,vuxna">kompis</div><div class="dropdown-option" data-styles="unga,vuxna">kompis från förr</div><div class="dropdown-option" data-styles="jobb,formellt">nära bekant</div><div class="dropdown-option" data-styles="jobb,formellt">person i min bekantskapskrets</div><div class="dropdown-option" data-styles="formellt">person i min omedelbara umgängeskrets</div><div class="dropdown-option" data-styles="unga,vuxna">polare</div><div class="dropdown-option" data-styles="unga">snubbe jag känner</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">vän</div></div>
+</div>
+</div>. 
+        Vi stod där 
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="unga,vuxna,jobb">en kort stund</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">en kortare stund</div><div class="dropdown-option" data-styles="jobb,formellt">en kortare tidsperiod</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">en stund</div><div class="dropdown-option" data-styles="unga,vuxna">ett litet tag</div><div class="dropdown-option" data-styles="vuxna,jobb">ett slag</div><div class="dropdown-option" data-styles="unga,vuxna">ett tag</div><div class="dropdown-option" data-styles="unga">ett tag bara</div><div class="dropdown-option" data-styles="vuxna,jobb">ett tjugotal minuter eller så</div><div class="dropdown-option" data-styles="jobb,formellt">under en kortare stund</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">under en längre stund</div><div class="dropdown-option" data-styles="vuxna,jobb">under några minuter</div><div class="dropdown-option" data-styles="jobb,formellt">under några minuters tid</div></div>
+</div>
+</div>
+        och 
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="formellt">avhandlade diverse angelägenheter</div><div class="dropdown-option" data-styles="vuxna,jobb">diskuterade lite</div><div class="dropdown-option" data-styles="jobb,formellt">förde ett samtal</div><div class="dropdown-option" data-styles="unga">hängde och snackade</div><div class="dropdown-option" data-styles="vuxna,formellt">konverserade</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">pratade</div><div class="dropdown-option" data-styles="vuxna,jobb">resonerade en stund</div><div class="dropdown-option" data-styles="vuxna,jobb">sa några ord till varandra</div><div class="dropdown-option" data-styles="unga,vuxna">snackade</div><div class="dropdown-option" data-styles="vuxna">språkade</div><div class="dropdown-option" data-styles="vuxna,jobb">stämde av läget lite</div><div class="dropdown-option" data-styles="unga,vuxna">surrade</div><div class="dropdown-option" data-styles="unga">tuggade</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">utbytte några ord</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">växlade några ord</div></div>
+</div>
+</div>. 
+        Plötsligt 
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="unga">bara släppte han</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">berättade han</div><div class="dropdown-option" data-styles="vuxna,jobb">berättade han för mig</div><div class="dropdown-option" data-styles="vuxna,jobb">delade han med sig av</div><div class="dropdown-option" data-styles="vuxna,jobb">förklarade han</div><div class="dropdown-option" data-styles="jobb,formellt">informerade han mig om</div><div class="dropdown-option" data-styles="unga,vuxna">kläckte han ur sig</div><div class="dropdown-option" data-styles="formellt">lät han meddela</div><div class="dropdown-option" data-styles="jobb,formellt">meddelade han</div><div class="dropdown-option" data-styles="vuxna,jobb">nämnde han i förbigående</div><div class="dropdown-option" data-styles="jobb,formellt">redogjorde han för</div><div class="dropdown-option" data-styles="unga,vuxna">sa han</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">sa han till mig</div><div class="dropdown-option" data-styles="vuxna,jobb">talade han om</div></div>
+</div>
+</div>
+        att hans 
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="vuxna">bättre hälft</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">flickvän</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">fru</div><div class="dropdown-option" data-styles="unga,vuxna">frugan</div><div class="dropdown-option" data-styles="vuxna,formellt">livskamrat</div><div class="dropdown-option" data-styles="jobb,formellt">maka</div><div class="dropdown-option" data-styles="unga,vuxna,jobb,formellt">partner</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">respektive</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">sambo</div><div class="dropdown-option" data-styles="unga,vuxna">tjej</div><div class="dropdown-option" data-styles="vuxna,formellt">älskade</div></div>
+</div>
+</div>
+        hade 
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="jobb,formellt">avlidit</div><div class="dropdown-option" data-styles="unga">bitit i gräset</div><div class="dropdown-option" data-styles="unga">checkat ut</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">dött</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">fallit ifrån</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">gått bort</div><div class="dropdown-option" data-styles="formellt">gått ur tiden</div><div class="dropdown-option" data-styles="unga,vuxna">inte fanns längre</div><div class="dropdown-option" data-styles="unga">kolat vippen</div><div class="dropdown-option" data-styles="formellt">lämnat det jordiska</div><div class="dropdown-option" data-styles="formellt">lämnat jordelivet</div><div class="dropdown-option" data-styles="jobb,formellt">mist livet</div><div class="dropdown-option" data-styles="jobb,formellt">ryckts bort</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">ryckts bort alldeles för tidigt</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">somnat in</div></div>
+</div>
+</div>.
+        Jag
+        <div class="custom-select-wrapper">
+<div class="custom-select-trigger"><span>-- välj --</span><svg class="chevron" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div>
+<div class="custom-select-dropdown">
+<div class="dropdown-cols"><div class="dropdown-option" data-styles="unga">bara sa "VA?!"</div><div class="dropdown-option" data-styles="vuxna,formellt">blev alldeles förfärad</div><div class="dropdown-option" data-styles="jobb,formellt">blev bestört över beskedet</div><div class="dropdown-option" data-styles="jobb,formellt">blev djupt berörd</div><div class="dropdown-option" data-styles="unga,vuxna">blev helt chockad</div><div class="dropdown-option" data-styles="unga,vuxna">blev helt paff</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">blev helt ställd</div><div class="dropdown-option" data-styles="vuxna,jobb,formellt">blev mycket tagen av beskedet</div><div class="dropdown-option" data-styles="unga,vuxna">fick inte fram ett ord</div><div class="dropdown-option" data-styles="formellt">mottog beskedet med stor sorg</div><div class="dropdown-option" data-styles="unga,vuxna">tappade orden helt</div><div class="dropdown-option" data-styles="unga,vuxna,jobb">visste inte vad jag skulle säga</div><div class="dropdown-option" data-styles="vuxna,jobb">visste inte riktigt hur jag skulle reagera</div></div>
+</div>
+</div>.
+    </div>
+<div class="actions">
+<button class="btn" onclick="checkAnswers()">Rätta mina svar</button>
+<button class="btn btn-secondary" onclick="resetExercise()">Nollställ</button>
+</div>
+<div class="result-panel" id="result"></div>
+</div>
+<script>
+    // Global stängning av alla öppna menyer vid klick utanför
+    document.addEventListener("click", () => {
+        document.querySelectorAll(".custom-select-wrapper").forEach(w => w.classList.remove("open"));
+    });
+
+    // Initiera dropdowns funktionalitet
+    function initCustomSelects() {
+        const wrappers = document.querySelectorAll(".custom-select-wrapper");
+
+        wrappers.forEach(wrapper => {
+            const trigger = wrapper.querySelector(".custom-select-trigger");
+            const label = trigger.querySelector("span");
+            const options = wrapper.querySelectorAll(".dropdown-option");
+
+            // Öppna/stäng dropdown
+            trigger.onclick = (e) => {
+                e.stopPropagation();
+                const isOpen = wrapper.classList.contains("open");
+                // Stäng alla först
+                document.querySelectorAll(".custom-select-wrapper").forEach(w => w.classList.remove("open"));
+                if (!isOpen) wrapper.classList.add("open");
+            };
+
+            // Hantera val av alternativ
+            options.forEach(opt => {
+                opt.onclick = (e) => {
+                    e.stopPropagation();
+                    
+                    // Ta bort tidigare val i just denna dropdown
+                    options.forEach(o => o.classList.remove("selected"));
+                    
+                    // Sätt valt element
+                    opt.classList.add("selected");
+                    label.textContent = opt.textContent;
+                    
+                    // Stäng menyn
+                    wrapper.classList.remove("open");
+                    wrapper.classList.remove("correct", "incorrect");
+                };
+            });
+        });
+    }
+
+    // Slumpa ordningen i tvåkolumns-gridarna (Fisher-Yates) men behåll den alfabetiska sorteringen som grund vid nollställning
+    function shuffleDropdowns() {
+        const grids = document.querySelectorAll(".dropdown-cols");
+        
+        grids.forEach(grid => {
+            const items = Array.from(grid.children);
+            
+            for (let i = items.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                grid.appendChild(items[j]);
+            }
+        });
+    }
+
+    // Sortera alternativen strikt alfabetiskt
+    function sortDropdownsAlphabetically() {
+        const grids = document.querySelectorAll(".dropdown-cols");
+        
+        grids.forEach(grid => {
+            const items = Array.from(grid.children);
+            
+            items.sort((a, b) => a.textContent.localeCompare(b.textContent, "sv-SE"));
+            
+            grid.innerHTML = "";
+            items.forEach(item => grid.appendChild(item));
+        });
+    }
+
+    // Kontrollera svar utifrån målstil
+    function checkAnswers() {
+        const currentChallenge = document.getElementById('challenge').value;
+        const wrappers = document.querySelectorAll('.custom-select-wrapper');
+        
+        let correctCount = 0;
+        let total = wrappers.length;
+
+        wrappers.forEach(wrapper => {
+            const selectedOpt = wrapper.querySelector(".dropdown-option.selected");
+            wrapper.classList.remove('correct', 'incorrect');
+
+            if (!selectedOpt) {
+                wrapper.classList.add('incorrect');
+                return;
+            }
+
+            const allowedStyles = selectedOpt.getAttribute('data-styles') ? selectedOpt.getAttribute('data-styles').split(',') : [];
+
+            if (allowedStyles.includes(currentChallenge)) {
+                wrapper.classList.add('correct');
+                correctCount++;
+            } else {
+                wrapper.classList.add('incorrect');
+            }
+        });
+
+        const resultPanel = document.getElementById('result');
+        resultPanel.style.display = 'block';
+        
+        if (correctCount === total) {
+            resultPanel.style.backgroundColor = '#ecfdf5';
+            resultPanel.style.color = '#065f46';
+            resultPanel.style.border = '1px solid #10b981';
+            resultPanel.innerHTML = `Snyggt! Alla rätt (${correctCount}/${total}). Studenten har full koll på det här registret!`;
+        } else {
+            resultPanel.style.backgroundColor = '#fef2f2';
+            resultPanel.style.color = '#991b1b';
+            resultPanel.style.border = '1px solid #ef4444';
+            resultPanel.innerHTML = `Hittade ${correctCount} av ${total} korrekta stilval. Granska de rödmarkerade rutorna och se om ni hittar mer passande empiriska uttryck.`;
+        }
+    }
+
+    // Återställ övningen och slumpa om ordningen
+    function resetExercise() {
+        const wrappers = document.querySelectorAll('.custom-select-wrapper');
+        wrappers.forEach(wrapper => {
+            wrapper.querySelector(".custom-select-trigger span").textContent = "-- välj --";
+            wrapper.classList.remove('correct', 'incorrect');
+            wrapper.querySelectorAll(".dropdown-option").forEach(o => o.classList.remove("selected"));
+        });
+        document.getElementById('result').style.display = 'none';
+        
+        // Sortera först alfabetiskt för att rensa slump-strukturer, slumpa sedan om önskas
+        sortDropdownsAlphabetically();
+        shuffleDropdowns();
+    }
+
+    // Initiera vid start
+    window.onload = () => {
+        initCustomSelects();
+        sortDropdownsAlphabetically();
+        shuffleDropdowns();
+    };
+</script>
+</body>
+</html>
