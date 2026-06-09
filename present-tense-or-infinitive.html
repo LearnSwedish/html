@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Present tense or infinitive?</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --surface-soft: #eef3f7;
+      --text: #17212b;
+      --muted: #5f6f7d;
+      --border: #d7e0e8;
+      --accent: #2166a8;
+      --accent-strong: #174e82;
+      --correct: #1f7a4d;
+      --correct-bg: #e7f5ee;
+      --wrong: #b42318;
+      --wrong-bg: #fff0ed;
+      --focus: 0 0 0 3px rgba(33, 102, 168, 0.22);
+      --shadow: 0 18px 42px rgba(23, 33, 43, 0.08);
+    }
+
+    body.dark {
+      color-scheme: dark;
+      --bg: #11161c;
+      --surface: #1b232d;
+      --surface-soft: #25303c;
+      --text: #f0f4f7;
+      --muted: #aab8c4;
+      --border: #344252;
+      --accent: #79b8ff;
+      --accent-strong: #a9d2ff;
+      --correct: #6fe2a4;
+      --correct-bg: #183529;
+      --wrong: #ff9b8f;
+      --wrong-bg: #3c201f;
+      --focus: 0 0 0 3px rgba(121, 184, 255, 0.25);
+      --shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .page {
+      width: min(980px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    header {
+      display: block;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.18rem;
+    }
+
+    .controls {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .controls button {
+      width: 138px;
+    }
+
+    button {
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 650;
+      padding: 8px 12px;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    button:focus-visible,
+    select:focus-visible {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .scorebar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .score {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 1.24rem;
+      font-weight: 750;
+    }
+
+    .score span {
+      color: var(--accent);
+      font-size: 1.7rem;
+    }
+
+    .progress {
+      width: 100%;
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--surface-soft);
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+      transition: width 180ms ease;
+    }
+
+    .exercise {
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      counter-reset: question;
+    }
+
+    .item {
+      counter-increment: question;
+      display: grid;
+      grid-template-columns: 30px minmax(430px, 1fr) minmax(150px, 190px) minmax(110px, auto);
+      gap: 12px;
+      align-items: center;
+      min-height: 68px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .item::before {
+      content: counter(question);
+      grid-column: 1;
+      grid-row: 1;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 1rem;
+    }
+
+    .sentence {
+      grid-column: 2;
+      grid-row: 1;
+      font-size: 1.32rem;
+    }
+
+    .base {
+      grid-column: 3;
+      grid-row: 1;
+      color: var(--muted);
+      font-size: 1.08rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .answer {
+      grid-column: 4;
+      grid-row: 1;
+      width: 180px;
+    }
+
+    select {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      padding: 7px 36px 7px 10px;
+    }
+
+    .feedback {
+      grid-column: 2 / -1;
+      grid-row: 2;
+      min-height: 28px;
+      border-radius: 6px;
+      padding: 5px 8px;
+      color: var(--muted);
+      font-size: 1.08rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .item.correct {
+      border-color: color-mix(in srgb, var(--correct) 55%, var(--border));
+      background: var(--correct-bg);
+    }
+
+    .item.wrong {
+      border-color: color-mix(in srgb, var(--wrong) 55%, var(--border));
+      background: var(--wrong-bg);
+    }
+
+    .item.correct .feedback {
+      color: var(--correct);
+    }
+
+    .item.wrong .feedback {
+      color: var(--wrong);
+    }
+
+    @media (max-width: 820px) {
+      .scorebar {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+
+      .controls button {
+        width: auto;
+        min-width: 122px;
+      }
+
+      .item {
+        grid-template-columns: 30px 1fr;
+      }
+
+      .base,
+      .answer,
+      .feedback {
+        grid-column: 2;
+      }
+
+      .sentence,
+      .base,
+      .answer,
+      .feedback {
+        grid-row: auto;
+      }
+
+      .feedback {
+        white-space: normal;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        width: min(100% - 20px, 980px);
+        padding-top: 20px;
+      }
+
+      .item {
+        gap: 9px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <h1>Present tense or infinitive?</h1>
+        <p class="intro">Choose the correct Swedish verb form. Use the present tense when the verb stands alone, and the infinitive after an auxiliary verb such as <strong>ska</strong>, <strong>vill</strong>, <strong>måste</strong>, <strong>kan</strong>, or <strong>brukar</strong>.</p>
+      </div>
+      <div class="controls" aria-label="Exercise controls">
+        <button type="button" id="themeButton" aria-pressed="false">Dark theme</button>
+        <button type="button" id="shuffleButton">Shuffle</button>
+        <button type="button" id="resetButton">Reset</button>
+      </div>
+    </header>
+
+    <section class="scorebar" aria-label="Score">
+      <div>
+        <div class="score"><span id="score">0</span> / 30 correct</div>
+        <div id="answered">0 answered</div>
+      </div>
+      <div class="progress" aria-hidden="true">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </section>
+
+    <ol class="exercise" id="exercise"></ol>
+  </main>
+
+  <script>
+    const questions = [
+      { base: "bo", text: "Sara _____ i Göteborg.", answer: "bor", choices: ["bor", "bo", "bott", "bodde"] },
+      { base: "studera", text: "Hon ska _____ svenska på universitetet.", answer: "studera", choices: ["studera", "studerar", "studerade", "studerat"] },
+      { base: "läsa", text: "Varje kväll _____ Leo en bok.", answer: "läser", choices: ["läser", "läsa", "läste", "läst"] },
+      { base: "skriva", text: "I morgon måste de _____ ett prov.", answer: "skriva", choices: ["skriva", "skriver", "skrev", "skrivit"] },
+      { base: "äta", text: "Till lunch _____ vi ofta soppa.", answer: "äter", choices: ["äter", "äta", "åt", "ätit"] },
+      { base: "träffa", text: "Efter jobbet vill Mina _____ sin vän.", answer: "träffa", choices: ["träffa", "träffar", "träffade", "träffat"] },
+      { base: "komma", text: "Bussen _____ klockan åtta.", answer: "kommer", choices: ["kommer", "komma", "kom", "kommit"] },
+      { base: "gå", text: "Du kan _____ hem nu.", answer: "gå", choices: ["gå", "går", "gick", "gått"] },
+      { base: "arbeta", text: "Min bror _____ på ett bibliotek.", answer: "arbetar", choices: ["arbetar", "arbeta", "arbetade", "arbetat"] },
+      { base: "köpa", text: "Vi ska _____ biljetter i dag.", answer: "köpa", choices: ["köpa", "köper", "köpte", "köpt"] },
+      { base: "titta", text: "Barnen _____ på film efter middagen.", answer: "tittar", choices: ["tittar", "titta", "tittade", "tittat"] },
+      { base: "ringa", text: "Jag måste _____ min lärare.", answer: "ringa", choices: ["ringa", "ringer", "ringde", "ringt"] },
+      { base: "dricka", text: "På morgonen _____ han kaffe.", answer: "dricker", choices: ["dricker", "dricka", "drack", "druckit"] },
+      { base: "sova", text: "Hon brukar _____ länge på söndagar.", answer: "sova", choices: ["sova", "sover", "sov", "sovit"] },
+      { base: "resa", text: "Familjen _____ till Malmö varje sommar.", answer: "reser", choices: ["reser", "resa", "reste", "rest"] },
+      { base: "lägga", text: "Kan du _____ boken på bordet?", answer: "lägga", choices: ["lägga", "lägger", "lade", "lagt"] },
+      { base: "lyssna", text: "Eleverna _____ på poddar i skolan.", answer: "lyssnar", choices: ["lyssnar", "lyssna", "lyssnade", "lyssnat"] },
+      { base: "hjälpa", text: "Oskar vill _____ sin granne.", answer: "hjälpa", choices: ["hjälpa", "hjälper", "hjälpte", "hjälpt"] },
+      { base: "städa", text: "Vi _____ köket varje fredag.", answer: "städar", choices: ["städar", "städa", "städade", "städat"] },
+      { base: "börja", text: "Lektionen ska _____ klockan nio.", answer: "börja", choices: ["börja", "börjar", "började", "börjat"] },
+      { base: "sluta", text: "Mötet _____ klockan tre.", answer: "slutar", choices: ["slutar", "sluta", "slutade", "slutat"] },
+      { base: "laga", text: "I kväll vill jag _____ middag hemma.", answer: "laga", choices: ["laga", "lagar", "lagade", "lagat"] },
+      { base: "prata", text: "De _____ svenska med varandra.", answer: "pratar", choices: ["pratar", "prata", "pratade", "pratat"] },
+      { base: "lära", text: "Vi måste _____ oss nya ord.", answer: "lära", choices: ["lära", "lär", "lärde", "lärt"] },
+      { base: "spela", text: "Amir _____ fotboll på lördagar.", answer: "spelar", choices: ["spelar", "spela", "spelade", "spelat"] },
+      { base: "betala", text: "Du ska _____ hyran före fredag.", answer: "betala", choices: ["betala", "betalar", "betalade", "betalat"] },
+      { base: "förstå", text: "Maria _____ instruktionerna.", answer: "förstår", choices: ["förstår", "förstå", "förstod", "förstått"] },
+      { base: "vänta", text: "Ni kan _____ här en stund.", answer: "vänta", choices: ["vänta", "väntar", "väntade", "väntat"] },
+      { base: "öppna", text: "Butiken _____ klockan tio.", answer: "öppnar", choices: ["öppnar", "öppna", "öppnade", "öppnat"] },
+      { base: "ta", text: "Hon brukar _____ tåget till jobbet.", answer: "ta", choices: ["ta", "tar", "tog", "tagit"] }
+    ];
+
+    const exercise = document.querySelector("#exercise");
+    const scoreEl = document.querySelector("#score");
+    const answeredEl = document.querySelector("#answered");
+    const progressFill = document.querySelector("#progressFill");
+    const themeButton = document.querySelector("#themeButton");
+    const shuffleButton = document.querySelector("#shuffleButton");
+    const resetButton = document.querySelector("#resetButton");
+
+    let state = new Map();
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function render() {
+      exercise.innerHTML = "";
+      state = new Map();
+
+      shuffle(questions).forEach((question, index) => {
+        const item = document.createElement("li");
+        item.className = "item";
+
+        const sentence = document.createElement("div");
+        sentence.className = "sentence";
+        sentence.textContent = question.text;
+
+        const base = document.createElement("div");
+        base.className = "base";
+        base.textContent = `Verb: ${question.base}`;
+
+        const answerWrap = document.createElement("div");
+        answerWrap.className = "answer";
+
+        const select = document.createElement("select");
+        select.setAttribute("aria-label", `Question ${index + 1}: ${question.base}`);
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Choose...";
+        select.appendChild(placeholder);
+
+        shuffle(question.choices).forEach((choice) => {
+          const option = document.createElement("option");
+          option.value = choice;
+          option.textContent = choice;
+          select.appendChild(option);
+        });
+
+        const feedback = document.createElement("div");
+        feedback.className = "feedback";
+        feedback.setAttribute("aria-live", "polite");
+        feedback.textContent = "Not answered";
+
+        select.addEventListener("change", () => {
+          const selected = select.value;
+          item.classList.remove("correct", "wrong");
+
+          if (!selected) {
+            state.delete(index);
+            feedback.textContent = "Not answered";
+          } else if (selected === question.answer) {
+            state.set(index, true);
+            item.classList.add("correct");
+            feedback.textContent = "Correct";
+          } else {
+            state.set(index, false);
+            item.classList.add("wrong");
+            feedback.textContent = `Incorrect: ${question.answer}`;
+          }
+
+          updateScore();
+        });
+
+        answerWrap.appendChild(select);
+        item.append(sentence, base, answerWrap, feedback);
+        exercise.appendChild(item);
+      });
+
+      updateScore();
+    }
+
+    function updateScore() {
+      const answered = state.size;
+      const correct = [...state.values()].filter(Boolean).length;
+      scoreEl.textContent = correct;
+      answeredEl.textContent = `${answered} answered`;
+      progressFill.style.width = `${(answered / questions.length) * 100}%`;
+    }
+
+    themeButton.addEventListener("click", () => {
+      const isDark = document.body.classList.toggle("dark");
+      themeButton.textContent = isDark ? "Light theme" : "Dark theme";
+      themeButton.setAttribute("aria-pressed", String(isDark));
+    });
+
+    shuffleButton.addEventListener("click", render);
+    resetButton.addEventListener("click", render);
+
+    render();
+  </script>
+</body>
+</html>
