@@ -1,0 +1,1950 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Idiomatisk svenska - dropdownövning</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f4ef;
+      --surface: #ffffff;
+      --surface-2: #f0eee8;
+      --text: #1d2420;
+      --muted: #667069;
+      --border: #d9d5cb;
+      --accent: #1f7a68;
+      --ok: #1f7a42;
+      --bad: #b13f2f;
+      --shadow: 0 16px 40px rgba(31, 42, 35, .10);
+    }
+
+    body.dark {
+      color-scheme: dark;
+      --bg: #171b1f;
+      --surface: #22272d;
+      --surface-2: #2b3239;
+      --text: #f3f0e8;
+      --muted: #b9c0bd;
+      --border: #414a53;
+      --accent: #7bc7b4;
+      --ok: #75d595;
+      --bad: #ff9a86;
+      --shadow: 0 18px 44px rgba(0, 0, 0, .28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+      transition: background-color .2s ease, color .2s ease;
+    }
+
+    .app {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      max-width: 68ch;
+      font-size: 1rem;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      min-height: 42px;
+      padding: 0 14px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 1px 0 rgba(0,0,0,.04);
+    }
+
+    button:hover { border-color: var(--accent); }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 18px 0 22px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-width: 140px;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .stat strong { font-size: 1.2rem; }
+
+    .exercise-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .exercise {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .exercise.correct { border-color: color-mix(in srgb, var(--ok) 55%, var(--border)); }
+    .exercise.wrong { border-color: color-mix(in srgb, var(--bad) 55%, var(--border)); }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .dialogue {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .prompt {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px 14px;
+      min-height: 96px;
+    }
+
+    .label {
+      display: block;
+      color: var(--muted);
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .prompt p { margin: 0; }
+
+    .completion {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px 14px;
+      margin-top: 14px;
+    }
+
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0 12px;
+      font: inherit;
+    }
+
+    .completion-text {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .blank {
+      display: inline-block;
+      min-width: 2.4em;
+      color: var(--accent);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .select-row {
+      display: grid;
+      grid-template-columns: minmax(220px, 420px) 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    select:focus, button:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 34%, transparent);
+      outline-offset: 2px;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      min-height: 28px;
+      font-weight: 700;
+    }
+
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: var(--bad); }
+
+    @media (max-width: 760px) {
+      .app { width: min(100% - 20px, 1120px); padding-top: 18px; }
+      header { grid-template-columns: 1fr; align-items: start; }
+      .toolbar { justify-content: flex-start; }
+      .dialogue { grid-template-columns: 1fr; }
+      .select-row { grid-template-columns: 1fr; }
+      .exercise { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>Idiomatisk svenska</h1>
+        <p class="lead">Välj det uttryck som passar bäst. Övningarna och svarsalternativen blandas automatiskt varje gång sidan laddas.</p>
+      </div>
+      <div class="toolbar" aria-label="Verktyg">
+        <button id="themeButton" type="button" aria-pressed="false">Mörkt tema</button>
+        <button id="shuffleButton" type="button">Blanda om</button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Resultat">
+      <div class="stat"><span>Rätt</span><strong id="correctCount">0</strong></div>
+      <div class="stat"><span>Besvarade</span><strong id="answeredCount">0 av 100</strong></div>
+      <div class="stat"><span>Träffsäkerhet</span><strong id="accuracy">0 %</strong></div>
+    </section>
+
+    <section id="exerciseList" class="exercise-list" aria-live="polite"></section>
+  </main>
+
+  <script id="exercise-data" type="application/json">
+[
+  {
+    "id": 1,
+    "expression": "ana ugglor i mossen",
+    "a": "Han sa att mötet var inställt, men alla andra verkar ha gått dit ändå.",
+    "wants": "något inte verkar stämma",
+    "answerSentence": "Då anar jag faktiskt ugglor i mossen.",
+    "options": [
+      "ana ugglor i mossen",
+      "ana sparvar i busken",
+      "misstänka kråkor i diket",
+      "föreställa sig duvor i skogsdungen"
+    ]
+  },
+  {
+    "id": 2,
+    "expression": "nu blir det andra bullar",
+    "a": "Chefen upptäckte att flera fuskat med tidsrapporteringen.",
+    "wants": "det nu kommer att bli hårdare regler eller konsekvenser",
+    "answerSentence": "Oj, nu blir det andra bullar.",
+    "options": [
+      "nu blir det andra bullar",
+      "nu bakas det nya kakor",
+      "nu kommer det hårdare bröd",
+      "nu blir det andra limpor"
+    ]
+  },
+  {
+    "id": 3,
+    "expression": "få något om bakfoten",
+    "a": "Jag trodde att du skulle betala hela notan själv.",
+    "wants": "A har missförstått situationen",
+    "answerSentence": "Nej, där har du fått något om bakfoten.",
+    "options": [
+      "få något om bakfoten",
+      "få något på snedskon",
+      "få något under hälen",
+      "få något vid fel tå"
+    ]
+  },
+  {
+    "id": 4,
+    "expression": "lägga benen på ryggen",
+    "a": "Hunden kom springande rakt mot mig.",
+    "wants": "hon hade sprungit därifrån snabbt",
+    "answerSentence": "Då hade jag lagt benen på ryggen.",
+    "options": [
+      "lägga benen på ryggen",
+      "lägga fötterna på axlarna",
+      "sätta knäna i nacken",
+      "kasta vaderna bakom sig"
+    ]
+  },
+  {
+    "id": 5,
+    "expression": "i bara mässingen",
+    "a": "Han öppnade dörren utan att tänka på att han inte hade klätt på sig.",
+    "wants": "han var helt naken",
+    "answerSentence": "Stod han där i bara mässingen?",
+    "options": [
+      "i bara mässingen",
+      "i rena kopparen",
+      "i bara stålet",
+      "i blanka plåten"
+    ]
+  },
+  {
+    "id": 6,
+    "expression": "bita i det sura äpplet",
+    "a": "Jag måste ringa och erkänna att jag gjorde fel.",
+    "wants": "A måste göra något obehagligt men nödvändigt",
+    "answerSentence": "Ja, du får nog bita i det sura äpplet.",
+    "options": [
+      "bita i det sura äpplet",
+      "tugga på den bittra päronen",
+      "svälja den salta citronen",
+      "bita i den gamla bananen"
+    ]
+  },
+  {
+    "id": 7,
+    "expression": "få blodad tand",
+    "a": "Hon testade padel en gång och har redan bokat tre nya pass.",
+    "wants": "hon blev inspirerad och vill fortsätta",
+    "answerSentence": "Hon verkar ha fått blodad tand.",
+    "options": [
+      "få blodad tand",
+      "få röd kindtand",
+      "få smakad framtand",
+      "få biten hörntand"
+    ]
+  },
+  {
+    "id": 8,
+    "expression": "bollen är rund",
+    "a": "Det andra laget är mycket bättre, så vi har ingen chans.",
+    "wants": "resultatet ändå är osäkert",
+    "answerSentence": "Man vet aldrig – bollen är rund.",
+    "options": [
+      "bollen är rund",
+      "klotet är osäkert",
+      "bollen är krokig",
+      "planen är oval"
+    ]
+  },
+  {
+    "id": 9,
+    "expression": "gå bärsärkagång",
+    "a": "Han slog sönder två stolar när han blev arg.",
+    "wants": "han blev okontrollerat arg och våldsam",
+    "answerSentence": "Men herregud, han gick ju bärsärkagång.",
+    "options": [
+      "gå bärsärkagång",
+      "gå varggalopp",
+      "springa stormtokigt",
+      "gå raseriutflykt"
+    ]
+  },
+  {
+    "id": 10,
+    "expression": "dansa efter någons pipa",
+    "a": "Jag ändrade hela schemat bara för att hon krävde det.",
+    "wants": "A inte bör göra allt som någon annan bestämmer",
+    "answerSentence": "Du kan inte alltid dansa efter hennes pipa.",
+    "options": [
+      "dansa efter någons pipa",
+      "hoppa efter någons trumma",
+      "gå efter någons flöjt",
+      "vicka efter någons visselpipa"
+    ]
+  },
+  {
+    "id": 11,
+    "expression": "bära hundhuvudet",
+    "a": "Alla skyller på mig, fast beslutet togs av hela gruppen.",
+    "wants": "A orättvist får skulden",
+    "answerSentence": "Det är orimligt att du ska bära hundhuvudet.",
+    "options": [
+      "bära hundhuvudet",
+      "bära kattansiktet",
+      "ha rävens nacke",
+      "bära hästhuvudet"
+    ]
+  },
+  {
+    "id": 12,
+    "expression": "dra sitt strå till stacken",
+    "a": "Jag tycker att någon annan kan städa efter mötet.",
+    "wants": "alla måste hjälpa till",
+    "answerSentence": "Nej, alla får dra sitt strå till stacken.",
+    "options": [
+      "dra sitt strå till stacken",
+      "lägga sitt gräs till högen",
+      "bära sin pinne till kullen",
+      "dra sitt löv till boet"
+    ]
+  },
+  {
+    "id": 13,
+    "expression": "droppe i havet",
+    "a": "Vi sparade 500 kronor på projektet.",
+    "wants": "summan är obetydlig i sammanhanget",
+    "answerSentence": "Det är tyvärr bara en droppe i havet.",
+    "options": [
+      "droppe i havet",
+      "smula i sjön",
+      "korn i älven",
+      "stänk i badkaret"
+    ]
+  },
+  {
+    "id": 14,
+    "expression": "ingen duvunge",
+    "a": "Han låtsas vara nybörjare, men han har jobbat med detta i tjugo år.",
+    "wants": "han är erfaren och kunnig",
+    "answerSentence": "Ja, han är verkligen ingen duvunge.",
+    "options": [
+      "ingen duvunge",
+      "ingen kråkunge",
+      "ingen liten sparv",
+      "ingen nykläckt mås"
+    ]
+  },
+  {
+    "id": 15,
+    "expression": "få eld i baken",
+    "a": "När hon hörde att deadline var i morgon började hon jobba direkt.",
+    "wants": "hon plötsligt fick väldigt bråttom",
+    "answerSentence": "Då fick hon eld i baken.",
+    "options": [
+      "få eld i baken",
+      "få låga i ryggen",
+      "få gnista i hälen",
+      "få brand i fickan"
+    ]
+  },
+  {
+    "id": 16,
+    "expression": "elefanten i rummet",
+    "a": "Alla pratade om kaffet, men ingen nämnde att budgeten var spräckt.",
+    "wants": "det fanns ett stort problem som ingen ville tala om",
+    "answerSentence": "Ja, det var elefanten i rummet.",
+    "options": [
+      "elefanten i rummet",
+      "giraffen i hallen",
+      "noshörningen vid bordet",
+      "flodhästen i köket"
+    ]
+  },
+  {
+    "id": 17,
+    "expression": "falla i god jord",
+    "a": "Jag funderar på att föreslå kortare möten.",
+    "wants": "förslaget nog kommer att tas emot positivt",
+    "answerSentence": "Det tror jag kommer att falla i god jord.",
+    "options": [
+      "falla i god jord",
+      "landa i fin sand",
+      "trilla i mjuk lera",
+      "sjunka i varm mylla"
+    ]
+  },
+  {
+    "id": 18,
+    "expression": "falla till föga",
+    "a": "Först vägrade han, men till slut gick han med på det.",
+    "wants": "han gav upp sitt motstånd",
+    "answerSentence": "Så han föll till föga ändå.",
+    "options": [
+      "falla till föga",
+      "ramla till eftergift",
+      "sjunka till ja",
+      "vika ner i slutet"
+    ]
+  },
+  {
+    "id": 19,
+    "expression": "fan och hans moster",
+    "a": "De hade bjudit in konsulter, politiker, journalister och gamla sponsorer.",
+    "wants": "väldigt många olika personer var där",
+    "answerSentence": "Ja, fan och hans moster var där.",
+    "options": [
+      "fan och hans moster",
+      "djävulen och hans granne",
+      "troll och deras kusiner",
+      "spöket och hela släkten"
+    ]
+  },
+  {
+    "id": 20,
+    "expression": "ingen fara på taket",
+    "a": "Jag råkade skicka filen fem minuter sent.",
+    "wants": "det inte är något allvarligt problem",
+    "answerSentence": "Det är ingen fara på taket.",
+    "options": [
+      "ingen fara på taket",
+      "ingen risk på vinden",
+      "ingen panik i skorstenen",
+      "ingen oro på balkongen"
+    ]
+  },
+  {
+    "id": 21,
+    "expression": "fatta galoppen",
+    "a": "Efter tredje exemplet förstod jag äntligen hur systemet fungerar.",
+    "wants": "A nu har förstått principen",
+    "answerSentence": "Bra, då har du fattat galoppen.",
+    "options": [
+      "fatta galoppen",
+      "förstå travet",
+      "greppa språnget",
+      "haja häststeget"
+    ]
+  },
+  {
+    "id": 22,
+    "expression": "fiska efter något",
+    "a": "Tycker du inte att jag gjorde presentationen väldigt bra?",
+    "wants": "A försöker få beröm",
+    "answerSentence": "Nu fiskar du efter beröm.",
+    "options": [
+      "fiska efter något",
+      "meta efter berömmet",
+      "kasta nät efter svaret",
+      "dra krok efter komplimanger"
+    ]
+  },
+  {
+    "id": 23,
+    "expression": "fjäder i hatten",
+    "a": "Hon fick uppdraget att leda hela konferensen.",
+    "wants": "uppdraget är något att vara stolt över",
+    "answerSentence": "Det är verkligen en fjäder i hatten.",
+    "options": [
+      "fjäder i hatten",
+      "plym i mössan",
+      "dun i kepsen",
+      "vinge på huvudet"
+    ]
+  },
+  {
+    "id": 24,
+    "expression": "ha fjärilar i magen",
+    "a": "Jag ska hålla tal inför 200 personer.",
+    "wants": "A nog är nervös och pirrig",
+    "answerSentence": "Jag förstår att du har fjärilar i magen.",
+    "options": [
+      "ha fjärilar i magen",
+      "ha humlor i bröstet",
+      "ha trollsländor i kroppen",
+      "ha myggor i hjärtat"
+    ]
+  },
+  {
+    "id": 25,
+    "expression": "vara en fluga på väggen",
+    "a": "Ledningen ska ha ett krismöte i eftermiddag.",
+    "wants": "det hade varit spännande att få höra utan att själv synas",
+    "answerSentence": "Där hade man velat vara en fluga på väggen.",
+    "options": [
+      "vara en fluga på väggen",
+      "vara en mygga i taket",
+      "vara en geting i hörnet",
+      "vara en skalbagge bakom tavlan"
+    ]
+  },
+  {
+    "id": 26,
+    "expression": "fnurra på tråden",
+    "a": "De har slutat prata med varandra efter semestern.",
+    "wants": "det verkar finnas problem i relationen",
+    "answerSentence": "De har fått en fnurra på tråden.",
+    "options": [
+      "fnurra på tråden",
+      "knut på snöret",
+      "trassel på repet",
+      "krull på linan"
+    ]
+  },
+  {
+    "id": 27,
+    "expression": "få fötter",
+    "a": "Min laddare låg här nyss, men nu är den borta.",
+    "wants": "laddaren verkar ha försvunnit",
+    "answerSentence": "Den verkar ha fått fötter.",
+    "options": [
+      "få fötter",
+      "få ben och vandra",
+      "få skor och gå",
+      "få tår och försvinna"
+    ]
+  },
+  {
+    "id": 28,
+    "expression": "se ut som en fågelholk",
+    "a": "När hon berättade priset bara stirrade jag på henne.",
+    "wants": "A måste ha sett mycket förvånad ut",
+    "answerSentence": "Du måste ha sett ut som en fågelholk.",
+    "options": [
+      "se ut som en fågelholk",
+      "se ut som en öppen brevlåda",
+      "se ut som ett tappat fönster",
+      "se ut som en tom bur"
+    ]
+  },
+  {
+    "id": 29,
+    "expression": "för många kockar",
+    "a": "Fem personer har ändrat i samma text, och nu är den helt rörig.",
+    "wants": "resultatet blev dåligt för att för många blandade sig i",
+    "answerSentence": "Ja, för många kockar förstör ofta soppan.",
+    "options": [
+      "för många kockar",
+      "för många slevar",
+      "för många kastruller",
+      "för många grytvakter"
+    ]
+  },
+  {
+    "id": 30,
+    "expression": "femte hjulet under vagnen",
+    "a": "Alla andra kom som par, och jag satt mest bredvid.",
+    "wants": "A kände sig överflödig",
+    "answerSentence": "Då kände du dig väl som femte hjulet under vagnen.",
+    "options": [
+      "femte hjulet under vagnen",
+      "sjätte benet på stolen",
+      "fjärde pedalen i bilen",
+      "extra handtaget på dörren"
+    ]
+  },
+  {
+    "id": 31,
+    "expression": "i grevens tid",
+    "a": "Vi hann lämna in ansökan två minuter före deadline.",
+    "wants": "de hann precis innan det var för sent",
+    "answerSentence": "Det var verkligen i grevens tid.",
+    "options": [
+      "i grevens tid",
+      "i baronens sekund",
+      "i hertigens minut",
+      "i kungens sista stund"
+    ]
+  },
+  {
+    "id": 32,
+    "expression": "hålla låda",
+    "a": "Han pratade i fyrtio minuter utan att någon annan sa något.",
+    "wants": "han pratade länge och oavbrutet",
+    "answerSentence": "Han kan verkligen hålla låda.",
+    "options": [
+      "hålla låda",
+      "hålla kartong",
+      "prata byrå",
+      "öppna skåp"
+    ]
+  },
+  {
+    "id": 33,
+    "expression": "ingen ko på isen",
+    "a": "Vi ligger lite efter, men har två veckor kvar.",
+    "wants": "situationen ännu inte är farlig",
+    "answerSentence": "Då är det ingen ko på isen.",
+    "options": [
+      "ingen ko på isen",
+      "ingen häst på sjön",
+      "ingen get på bron",
+      "ingen gris på bryggan"
+    ]
+  },
+  {
+    "id": 34,
+    "expression": "inte torr bakom öronen",
+    "a": "Han tror att han kan leda hela projektet efter två veckor på jobbet.",
+    "wants": "han är ung eller oerfaren",
+    "answerSentence": "Han är ju inte torr bakom öronen än.",
+    "options": [
+      "inte torr bakom öronen",
+      "inte varm bakom kinderna",
+      "inte ren bakom nacken",
+      "inte fast bakom håret"
+    ]
+  },
+  {
+    "id": 35,
+    "expression": "ha is i magen",
+    "a": "Jag vill sälja aktierna direkt när kursen går ner.",
+    "wants": "A bör behålla lugnet och vänta",
+    "answerSentence": "Ha lite is i magen.",
+    "options": [
+      "ha is i magen",
+      "ha snö i bröstet",
+      "ha frost i huvudet",
+      "ha kyla i knäna"
+    ]
+  },
+  {
+    "id": 36,
+    "expression": "få kalla fötter",
+    "a": "Hon skulle skriva på avtalet, men drog sig ur i sista stund.",
+    "wants": "hon blev osäker eller rädd och ångrade sig",
+    "answerSentence": "Hon fick kalla fötter.",
+    "options": [
+      "få kalla fötter",
+      "få frusna händer",
+      "få svala knän",
+      "få isiga armbågar"
+    ]
+  },
+  {
+    "id": 37,
+    "expression": "kasta in handduken",
+    "a": "Vi har försökt lösa felet i tre dagar.",
+    "wants": "de kanske ska ge upp",
+    "answerSentence": "Ska vi kasta in handduken?",
+    "options": [
+      "kasta in handduken",
+      "slänga in trasan",
+      "kasta in lakanet",
+      "ge upp med servetten"
+    ]
+  },
+  {
+    "id": 38,
+    "expression": "kasta vatten",
+    "a": "Varför gick han bakom huset?",
+    "wants": "han antagligen skulle kissa",
+    "answerSentence": "Han skulle nog kasta vatten.",
+    "options": [
+      "kasta vatten",
+      "hälla regn",
+      "släppa bäck",
+      "tömma vattenkannan"
+    ]
+  },
+  {
+    "id": 39,
+    "expression": "ha myror i byxorna",
+    "a": "Barnet kunde inte sitta still en enda minut.",
+    "wants": "barnet var rastlöst",
+    "answerSentence": "Han verkar ha myror i byxorna.",
+    "options": [
+      "ha myror i byxorna",
+      "ha bin i strumporna",
+      "ha larver i skorna",
+      "ha skalbaggar i fickorna"
+    ]
+  },
+  {
+    "id": 40,
+    "expression": "plocka russinen ur kakan",
+    "a": "Han vill bara ta de roliga uppgifterna och lämna resten till oss.",
+    "wants": "han bara väljer det bästa och lämnar det tråkiga",
+    "answerSentence": "Han kan inte bara plocka russinen ur kakan.",
+    "options": [
+      "plocka russinen ur kakan",
+      "ta nötterna ur bullen",
+      "välja sockret ur degen",
+      "pilla mandeln ur limpan"
+    ]
+  },
+  {
+    "id": 41,
+    "expression": "sila mygg och svälja kameler",
+    "a": "Hon klagar på ett kommatecken men accepterar att hela budgeten är fel.",
+    "wants": "hon fokuserar på småsaker och missar det viktiga",
+    "answerSentence": "Det är att sila mygg och svälja kameler.",
+    "options": [
+      "sila mygg och svälja kameler",
+      "sortera knott och äta elefanter",
+      "filtrera flugor och svälja hästar",
+      "plocka loppor och tugga noshörningar"
+    ]
+  },
+  {
+    "id": 42,
+    "expression": "sitta i klistret",
+    "a": "Jag har lovat två personer samma lokal samma kväll.",
+    "wants": "A har hamnat i en svår situation",
+    "answerSentence": "Då sitter du verkligen i klistret.",
+    "options": [
+      "sitta i klistret",
+      "sitta i sirapen",
+      "fastna i marmeladen",
+      "stå i limburken"
+    ]
+  },
+  {
+    "id": 43,
+    "expression": "bakom lås och bom",
+    "a": "Vad hände med mannen som rånade butiken?",
+    "wants": "mannen sitter i fängelse",
+    "answerSentence": "Han sitter bakom lås och bom.",
+    "options": [
+      "bakom lås och bom",
+      "bakom nyckel och planka",
+      "bakom regel och spik",
+      "bakom dörr och kedja"
+    ]
+  },
+  {
+    "id": 44,
+    "expression": "få blodad tand",
+    "a": "Efter första konserten ville kören genast boka en ny.",
+    "wants": "de blev inspirerade och ville göra mer",
+    "answerSentence": "De fick blodad tand.",
+    "options": [
+      "få blodad tand",
+      "få röd kindtand",
+      "få smakad framtand",
+      "få biten hörntand"
+    ]
+  },
+  {
+    "id": 45,
+    "expression": "brinner i knutarna",
+    "a": "Rapporten ska vara klar om en timme.",
+    "wants": "det är mycket bråttom",
+    "answerSentence": "Då brinner det i knutarna.",
+    "options": [
+      "brinner i knutarna",
+      "glöder i listerna",
+      "ryker i hörnen",
+      "gnistrar i dörrposterna"
+    ]
+  },
+  {
+    "id": 46,
+    "expression": "bygga broar",
+    "a": "Avdelningarna har knappt pratat med varandra på flera år.",
+    "wants": "de behöver skapa bättre kontakt och samarbete",
+    "answerSentence": "Då behöver ni bygga broar.",
+    "options": [
+      "bygga broar",
+      "snickra bryggor",
+      "mura gångar",
+      "lägga plankor mellan folk"
+    ]
+  },
+  {
+    "id": 47,
+    "expression": "släpa benen efter sig",
+    "a": "Han har fortfarande inte skickat in sin del av texten.",
+    "wants": "han är långsam och förhalar arbetet",
+    "answerSentence": "Han släpar verkligen benen efter sig.",
+    "options": [
+      "släpa benen efter sig",
+      "dra fötterna bakom ryggen",
+      "släpa knäna i marken",
+      "dra hälarna genom rummet"
+    ]
+  },
+  {
+    "id": 48,
+    "expression": "efter många om och men",
+    "a": "Till slut godkände de vår ansökan.",
+    "wants": "det hände först efter mycket krångel",
+    "answerSentence": "Ja, efter många om och men.",
+    "options": [
+      "efter många om och men",
+      "efter flera ja och nej",
+      "efter många kanske och varför",
+      "efter långa hit och dit"
+    ]
+  },
+  {
+    "id": 49,
+    "expression": "elda för kråkorna",
+    "a": "Vi värmer upp hela lokalen trots att ingen är där.",
+    "wants": "de slösar värme och energi i onödan",
+    "answerSentence": "Det är ju att elda för kråkorna.",
+    "options": [
+      "elda för kråkorna",
+      "värma åt måsarna",
+      "tända för sparvarna",
+      "bränna ved åt skatorna"
+    ]
+  },
+  {
+    "id": 50,
+    "expression": "en vacker dag",
+    "a": "Han skjuter alltid upp sina läkarbesök.",
+    "wants": "han någon gång måste ta tag i det",
+    "answerSentence": "En vacker dag får han faktiskt ta tag i det.",
+    "options": [
+      "en vacker dag",
+      "en blank tisdag",
+      "en fin stund senare",
+      "en solig gång"
+    ]
+  },
+  {
+    "id": 51,
+    "expression": "inte få en syl i vädret",
+    "a": "Jag försökte säga något på mötet, men alla pratade i munnen på varandra.",
+    "wants": "A inte fick möjlighet att säga något",
+    "answerSentence": "Du fick inte en syl i vädret.",
+    "options": [
+      "inte få en syl i vädret",
+      "inte få en spik i luften",
+      "inte få en nål i samtalet",
+      "inte få en skruv mellan orden"
+    ]
+  },
+  {
+    "id": 52,
+    "expression": "föra någon bakom ljuset",
+    "a": "Hon sa att pengarna gick till hyran, men köpte en resa.",
+    "wants": "hon lurade A",
+    "answerSentence": "Hon förde dig bakom ljuset.",
+    "options": [
+      "föra någon bakom ljuset",
+      "leda någon bakom lampan",
+      "styra någon bakom skenet",
+      "dra någon bakom lyktan"
+    ]
+  },
+  {
+    "id": 53,
+    "expression": "ta ner månen",
+    "a": "Kunden vill ha allt färdigt i morgon, utan extra kostnad.",
+    "wants": "kunden kräver något nästan omöjligt",
+    "answerSentence": "De begär ju att vi ska ta ner månen.",
+    "options": [
+      "ta ner månen",
+      "hämta ner stjärnorna",
+      "plocka ner solen",
+      "dra ner himlen"
+    ]
+  },
+  {
+    "id": 54,
+    "expression": "ge någon en känga",
+    "a": "Han sa att rapporten var bra, till skillnad från förra årets katastrof.",
+    "wants": "han gav en syrlig kommentar till den förra projektledaren",
+    "answerSentence": "Det där var ju en känga till den förra projektledaren.",
+    "options": [
+      "ge någon en känga",
+      "ge någon en stövel",
+      "slänga någon en sko",
+      "räcka någon en sula"
+    ]
+  },
+  {
+    "id": 55,
+    "expression": "god dag yxskaft",
+    "a": "Jag frågade när tåget gick, och han svarade att han gillar kaffe.",
+    "wants": "svaret inte passade frågan alls",
+    "answerSentence": "Det var verkligen god dag yxskaft.",
+    "options": [
+      "god dag yxskaft",
+      "god kväll hammarskaft",
+      "hej då skruvmejsel",
+      "god morgon sågblad"
+    ]
+  },
+  {
+    "id": 56,
+    "expression": "ha gröna fingrar",
+    "a": "Alla hennes växter blommar, även de som såg döda ut.",
+    "wants": "hon är bra på att sköta växter",
+    "answerSentence": "Hon har verkligen gröna fingrar.",
+    "options": [
+      "ha gröna fingrar",
+      "ha blommande tummar",
+      "ha jordiga händer",
+      "ha krukiga naglar"
+    ]
+  },
+  {
+    "id": 57,
+    "expression": "gå i graven",
+    "a": "Den gamla tidningen läggs ner efter 120 år.",
+    "wants": "tidningen slutar finnas",
+    "answerSentence": "Då går den alltså i graven.",
+    "options": [
+      "gå i graven",
+      "gå i kistan",
+      "försvinna i jorden",
+      "läggas i mullret"
+    ]
+  },
+  {
+    "id": 58,
+    "expression": "gå i taket",
+    "a": "När han såg fakturan blev han rasande.",
+    "wants": "han blev mycket arg",
+    "answerSentence": "Ja, han gick i taket.",
+    "options": [
+      "gå i taket",
+      "flyga i väggarna",
+      "studsa i golvet",
+      "rusa upp i lampan"
+    ]
+  },
+  {
+    "id": 59,
+    "expression": "gå in i väggen",
+    "a": "Hon jobbade kvällar och helger i flera månader och blev sjukskriven.",
+    "wants": "hon blev helt utmattad eller utbränd",
+    "answerSentence": "Hon gick in i väggen.",
+    "options": [
+      "gå in i väggen",
+      "gå in i dörren",
+      "springa in i planket",
+      "krascha i tapeten"
+    ]
+  },
+  {
+    "id": 60,
+    "expression": "hela vägen in i kaklet",
+    "a": "De kämpade ända till sista dagen av kampanjen.",
+    "wants": "de fortsatte kämpa ända till slutet",
+    "answerSentence": "De körde hela vägen in i kaklet.",
+    "options": [
+      "hela vägen in i kaklet",
+      "ända fram till fogarna",
+      "hela vägen till klinkern",
+      "rakt in i badrumsväggen"
+    ]
+  },
+  {
+    "id": 61,
+    "expression": "göra en höna av en fjäder",
+    "a": "Han blev upprörd för att en stol stod lite snett.",
+    "wants": "han överdriver ett litet problem",
+    "answerSentence": "Nu gör han en höna av en fjäder.",
+    "options": [
+      "göra en höna av en fjäder",
+      "göra en tupp av ett dun",
+      "göra en gås av ett hårstrå",
+      "göra en kalkon av ett barr"
+    ]
+  },
+  {
+    "id": 62,
+    "expression": "hålla masken",
+    "a": "Jag ville skratta, men chefen såg så allvarlig ut.",
+    "wants": "A inte fick visa vad hon egentligen kände",
+    "answerSentence": "Då fick du hålla masken.",
+    "options": [
+      "hålla masken",
+      "hålla ansiktet stilla",
+      "hålla minen i bur",
+      "hålla kinderna raka"
+    ]
+  },
+  {
+    "id": 63,
+    "expression": "här ligger en hund begraven",
+    "a": "De erbjuder oss allt gratis men vill inte visa avtalet.",
+    "wants": "något verkar misstänkt",
+    "answerSentence": "Här ligger en hund begraven.",
+    "options": [
+      "här ligger en hund begraven",
+      "här sover en katt gömd",
+      "här ligger en räv nedgrävd",
+      "här vilar en mus i jorden"
+    ]
+  },
+  {
+    "id": 64,
+    "expression": "vara i krokarna",
+    "a": "Är du nära stationen?",
+    "wants": "han är i närheten",
+    "answerSentence": "Ja, jag är i krokarna.",
+    "options": [
+      "vara i krokarna",
+      "vara vid hakarna",
+      "vara nära böjarna",
+      "vara runt hörnspikarna"
+    ]
+  },
+  {
+    "id": 65,
+    "expression": "kasta pengar i sjön",
+    "a": "Vi köpte ett dyrt system som ingen använder.",
+    "wants": "pengarna användes helt i onödan",
+    "answerSentence": "Det var att kasta pengar i sjön.",
+    "options": [
+      "kasta pengar i sjön",
+      "slänga sedlar i brunnen",
+      "hälla mynt i diket",
+      "stoppa pengar i bäcken"
+    ]
+  },
+  {
+    "id": 66,
+    "expression": "kavla upp ärmarna",
+    "a": "Det är mycket kvar att göra före öppningen.",
+    "wants": "de måste börja arbeta ordentligt",
+    "answerSentence": "Då får vi kavla upp ärmarna.",
+    "options": [
+      "kavla upp ärmarna",
+      "rulla upp kragarna",
+      "vika upp manschetterna",
+      "dra upp jacktyget"
+    ]
+  },
+  {
+    "id": 67,
+    "expression": "ha kött på benen",
+    "a": "Jag vill inte gå in i förhandlingen utan statistik och exempel.",
+    "wants": "A behöver vara bättre förberedd",
+    "answerSentence": "Nej, du behöver ha kött på benen.",
+    "options": [
+      "ha kött på benen",
+      "ha muskler på armarna",
+      "ha fakta i fickorna",
+      "ha märg i knäna"
+    ]
+  },
+  {
+    "id": 68,
+    "expression": "lacka ur",
+    "a": "När datorn kraschade för tredje gången blev han vansinnig.",
+    "wants": "han tappade tålamodet och blev arg",
+    "answerSentence": "Då lackade han ur.",
+    "options": [
+      "lacka ur",
+      "färga av",
+      "spricka loss",
+      "flagna ut"
+    ]
+  },
+  {
+    "id": 69,
+    "expression": "larva sig",
+    "a": "Han låtsades svimma bara för att slippa diska.",
+    "wants": "han beter sig löjligt",
+    "answerSentence": "Sluta larva dig.",
+    "options": [
+      "larva sig",
+      "maskera sig dumt",
+      "snigla sig löjligt",
+      "fjanta runt som en skalbagge"
+    ]
+  },
+  {
+    "id": 70,
+    "expression": "leka med elden",
+    "a": "Hon tänker säga upp sig utan att ha ett nytt jobb.",
+    "wants": "hon tar en stor risk",
+    "answerSentence": "Det där är att leka med elden.",
+    "options": [
+      "leka med elden",
+      "spela med gnistorna",
+      "dansa med tändstickorna",
+      "skämta med lågorna"
+    ]
+  },
+  {
+    "id": 71,
+    "expression": "ligga lågt",
+    "a": "Efter misstaget vill jag helst inte säga något på några dagar.",
+    "wants": "det är klokt att inte dra uppmärksamhet till sig",
+    "answerSentence": "Ja, det är klokt att ligga lågt.",
+    "options": [
+      "ligga lågt",
+      "sitta grunt",
+      "stå tyst nere",
+      "hålla sig under golvet"
+    ]
+  },
+  {
+    "id": 72,
+    "expression": "ligga på",
+    "a": "De svarar aldrig på mina mejl.",
+    "wants": "A måste fortsätta påminna och pressa dem lite",
+    "answerSentence": "Du får ligga på lite mer.",
+    "options": [
+      "ligga på",
+      "sitta efter",
+      "hänga ovanpå",
+      "trycka bredvid"
+    ]
+  },
+  {
+    "id": 73,
+    "expression": "ligga i",
+    "a": "Han har jobbat varje kväll för att hinna klart.",
+    "wants": "han arbetar intensivt",
+    "answerSentence": "Han ligger verkligen i.",
+    "options": [
+      "ligga i",
+      "sitta hårt",
+      "stå i farten",
+      "jobba i backen"
+    ]
+  },
+  {
+    "id": 74,
+    "expression": "ligga illa till",
+    "a": "Om rapporten inte är klar i dag får vi problem med styrelsen.",
+    "wants": "de riskerar att hamna i en svår situation",
+    "answerSentence": "Då ligger vi illa till.",
+    "options": [
+      "ligga illa till",
+      "sitta snett ute",
+      "stå dåligt nära",
+      "hamna krokigt till"
+    ]
+  },
+  {
+    "id": 75,
+    "expression": "lägga locket på",
+    "a": "Ingen får prata med pressen om det som hänt.",
+    "wants": "de försöker tysta ner saken",
+    "answerSentence": "De försöker lägga locket på.",
+    "options": [
+      "lägga locket på",
+      "sätta korken över",
+      "dra filten på saken",
+      "stänga kastrullen om allt"
+    ]
+  },
+  {
+    "id": 76,
+    "expression": "lägga näsan i blöt",
+    "a": "Hon kommenterar alltid hur andra uppfostrar sina barn.",
+    "wants": "hon lägger sig i saker som inte angår henne",
+    "answerSentence": "Hon måste sluta lägga näsan i blöt.",
+    "options": [
+      "lägga näsan i blöt",
+      "stoppa örat i soppan",
+      "sticka hakan i vattnet",
+      "lägga fingret i skålen"
+    ]
+  },
+  {
+    "id": 77,
+    "expression": "lägga ut texten",
+    "a": "Han berättade om sin semester i tjugo minuter fast jag bara frågade hur den var.",
+    "wants": "han pratade länge och utvecklade saken mycket",
+    "answerSentence": "Han gillar att lägga ut texten.",
+    "options": [
+      "lägga ut texten",
+      "bre ut orden",
+      "rulla ut meningarna",
+      "måla på pratet"
+    ]
+  },
+  {
+    "id": 78,
+    "expression": "medaljens baksida",
+    "a": "Det är roligt att bli chef, men man får också ta alla konflikter.",
+    "wants": "det finns en negativ sida av något som annars verkar positivt",
+    "answerSentence": "Ja, det är medaljens baksida.",
+    "options": [
+      "medaljens baksida",
+      "pokalens undersida",
+      "prisets skuggsida",
+      "brickans mörka kant"
+    ]
+  },
+  {
+    "id": 79,
+    "expression": "pest eller kolera",
+    "a": "Antingen måste vi höja priset eller minska personalen.",
+    "wants": "båda alternativen är dåliga",
+    "answerSentence": "Det är verkligen pest eller kolera.",
+    "options": [
+      "pest eller kolera",
+      "feber eller frossa",
+      "huvudvärk eller hicka",
+      "hosta eller snuva"
+    ]
+  },
+  {
+    "id": 80,
+    "expression": "bara toppen av isberget",
+    "a": "Vi hittade tre fel i bokföringen redan första timmen.",
+    "wants": "det troligen finns många fler problem",
+    "answerSentence": "Det är nog bara toppen av isberget.",
+    "options": [
+      "bara toppen av isberget",
+      "bara spetsen av snöhögen",
+      "bara kanten av glaciären",
+      "bara locket på frosten"
+    ]
+  },
+  {
+    "id": 81,
+    "expression": "bränna sina broar",
+    "a": "Han sa upp sig och skällde ut hela ledningen innan han gick.",
+    "wants": "han förstörde möjligheten att komma tillbaka",
+    "answerSentence": "Då brände han sina broar.",
+    "options": [
+      "bränna sina broar",
+      "tända eld på sina vägar",
+      "riva sina bryggor med eld",
+      "bränna sina gångbanor"
+    ]
+  },
+  {
+    "id": 82,
+    "expression": "börja på ny kula",
+    "a": "Det gamla samarbetet fungerade inte alls.",
+    "wants": "de bör börja om från början",
+    "answerSentence": "Då får vi börja på ny kula.",
+    "options": [
+      "börja på ny kula",
+      "starta med nytt klot",
+      "börja på färsk boll",
+      "rulla från första stenen"
+    ]
+  },
+  {
+    "id": 83,
+    "expression": "det blev pannkaka av alltihop",
+    "a": "Tekniken krånglade, talaren kom sent och publiken gick.",
+    "wants": "allt misslyckades",
+    "answerSentence": "Ja, det blev pannkaka av alltihop.",
+    "options": [
+      "det blev pannkaka av alltihop",
+      "det blev våffla av hela saken",
+      "det blev gröt av projektet",
+      "det blev smet av allting"
+    ]
+  },
+  {
+    "id": 84,
+    "expression": "dra alla över en kam",
+    "a": "Alla konsulter är opålitliga.",
+    "wants": "A gör en orättvis generalisering",
+    "answerSentence": "Nu drar du alla över en kam.",
+    "options": [
+      "dra alla över en kam",
+      "borsta alla med samma borste",
+      "kamma alla med samma tand",
+      "dra alla över samma hårborste"
+    ]
+  },
+  {
+    "id": 85,
+    "expression": "dra det tyngsta lasset",
+    "a": "Hon gjorde planeringen, bokningen och hela rapporten själv.",
+    "wants": "hon gjorde den största delen av arbetet",
+    "answerSentence": "Hon drog verkligen det tyngsta lasset.",
+    "options": [
+      "dra det tyngsta lasset",
+      "bära den största kärran",
+      "släpa den tyngsta väskan",
+      "dra den bredaste vagnen"
+    ]
+  },
+  {
+    "id": 86,
+    "expression": "dra åt svångremmen",
+    "a": "Intäkterna blir lägre nästa år.",
+    "wants": "de måste spara och minska utgifterna",
+    "answerSentence": "Då måste vi dra åt svångremmen.",
+    "options": [
+      "dra åt svångremmen",
+      "spänna in fickorna",
+      "knäppa budgetbältet hårt",
+      "dra åt pengasnodden"
+    ]
+  },
+  {
+    "id": 87,
+    "expression": "eld och lågor",
+    "a": "Han kunde inte sluta prata om den nya idén.",
+    "wants": "han var mycket entusiastisk",
+    "answerSentence": "Han var helt eld och lågor.",
+    "options": [
+      "eld och lågor",
+      "gnistor och rök",
+      "flamma och aska",
+      "brand och värme"
+    ]
+  },
+  {
+    "id": 88,
+    "expression": "falla mellan stolarna",
+    "a": "Ärendet låg mellan två avdelningar, så ingen tog ansvar.",
+    "wants": "ärendet inte hanterades eftersom ansvaret var oklart",
+    "answerSentence": "Det föll mellan stolarna.",
+    "options": [
+      "falla mellan stolarna",
+      "hamna mellan borden",
+      "glida mellan pallarna",
+      "trilla mellan fåtöljerna"
+    ]
+  },
+  {
+    "id": 89,
+    "expression": "full rulle",
+    "a": "Hur var det på museet under sportlovet?",
+    "wants": "det var mycket folk och hög aktivitet",
+    "answerSentence": "Det var full rulle hela veckan.",
+    "options": [
+      "full rulle",
+      "full snurr",
+      "mycket hjul",
+      "hög fart på rullen"
+    ]
+  },
+  {
+    "id": 90,
+    "expression": "få vatten på sin kvarn",
+    "a": "Han har länge sagt att systemet är osäkert, och nu kraschade det igen.",
+    "wants": "han fick mer stöd för det han redan tyckte",
+    "answerSentence": "Nu fick han vatten på sin kvarn.",
+    "options": [
+      "få vatten på sin kvarn",
+      "få regn på sitt hjul",
+      "få bäck på sin såg",
+      "få flod på sitt verk"
+    ]
+  },
+  {
+    "id": 91,
+    "expression": "få ändan ur vagnen",
+    "a": "Efter tre månader skickade han äntligen in ansökan.",
+    "wants": "han kom igång efter lång passivitet",
+    "answerSentence": "Han fick till slut ändan ur vagnen.",
+    "options": [
+      "få ändan ur vagnen",
+      "få baken ur kärran",
+      "få rumpan från släpet",
+      "få sätet ur bilen"
+    ]
+  },
+  {
+    "id": 92,
+    "expression": "ge järnet",
+    "a": "Vi har bara två dagar kvar före premiären.",
+    "wants": "de måste anstränga sig maximalt",
+    "answerSentence": "Då får vi ge järnet.",
+    "options": [
+      "ge järnet",
+      "ge metallen",
+      "köra stålet",
+      "satsa kopparen"
+    ]
+  },
+  {
+    "id": 93,
+    "expression": "gjuta olja på vågorna",
+    "a": "Stämningen blev väldigt spänd efter kritiken.",
+    "wants": "någon måste lugna situationen",
+    "answerSentence": "Någon måste gjuta olja på vågorna.",
+    "options": [
+      "gjuta olja på vågorna",
+      "hälla smör på sjön",
+      "droppa sirap på stormen",
+      "strö mjöl på vattnet"
+    ]
+  },
+  {
+    "id": 94,
+    "expression": "gå bakom ryggen på någon",
+    "a": "De ändrade beslutet utan att berätta det för projektledaren.",
+    "wants": "de agerade utan att projektledaren visste om det",
+    "answerSentence": "De gick bakom ryggen på henne.",
+    "options": [
+      "gå bakom ryggen på någon",
+      "gå bakom axeln på någon",
+      "smita bakom nacken på någon",
+      "gå runt någons skuldror"
+    ]
+  },
+  {
+    "id": 95,
+    "expression": "gå någon på nerverna",
+    "a": "Han klickar med pennan hela tiden när jag försöker jobba.",
+    "wants": "ljudet irriterar A kraftigt",
+    "answerSentence": "Jag förstår att det går dig på nerverna.",
+    "options": [
+      "gå någon på nerverna",
+      "gå någon på trådarna",
+      "trycka någon på senorna",
+      "skava någon på tålamodet"
+    ]
+  },
+  {
+    "id": 96,
+    "expression": "gå på knäna",
+    "a": "Personalen har jobbat övertid varje dag i två veckor.",
+    "wants": "personalen är mycket pressad och utmattad",
+    "answerSentence": "De går ju på knäna.",
+    "options": [
+      "gå på knäna",
+      "gå på armbågarna",
+      "stå på vaderna",
+      "krypa på hälarna"
+    ]
+  },
+  {
+    "id": 97,
+    "expression": "gå åt skogen",
+    "a": "Vi glömde boka lokalen till invigningen.",
+    "wants": "hela planeringen riskerar att misslyckas",
+    "answerSentence": "Då kan hela planeringen gå åt skogen.",
+    "options": [
+      "gå åt skogen",
+      "gå åt buskarna",
+      "gå mot granarna",
+      "hamna bland tallarna"
+    ]
+  },
+  {
+    "id": 98,
+    "expression": "gå över ån efter vatten",
+    "a": "Han köpte ett dyrt program för något Excel redan kan göra.",
+    "wants": "han gjorde något onödigt krångligt",
+    "answerSentence": "Det är att gå över ån efter vatten.",
+    "options": [
+      "gå över ån efter vatten",
+      "gå över bron efter regn",
+      "gå runt sjön efter bäcken",
+      "gå genom parken efter grus"
+    ]
+  },
+  {
+    "id": 99,
+    "expression": "ha något på tungan",
+    "a": "Vad heter skådespelaren i den där filmen?",
+    "wants": "han nästan minns namnet",
+    "answerSentence": "Jag har namnet på tungan.",
+    "options": [
+      "ha något på tungan",
+      "ha något på läppen",
+      "ha ordet på tanden",
+      "ha namnet vid gommen"
+    ]
+  },
+  {
+    "id": 100,
+    "expression": "hålla tummarna",
+    "a": "Jag får besked om jobbet i morgon.",
+    "wants": "hon hoppas att det går bra för A",
+    "answerSentence": "Jag håller tummarna.",
+    "options": [
+      "hålla tummarna",
+      "hålla pekfingrarna",
+      "knipa lillfingrarna",
+      "pressa händerna för tur"
+    ]
+  }
+]
+  </script>
+  <script>
+    const originalExercises = JSON.parse(document.getElementById('exercise-data').textContent);
+    const list = document.getElementById('exerciseList');
+    const correctCount = document.getElementById('correctCount');
+    const answeredCount = document.getElementById('answeredCount');
+    const accuracy = document.getElementById('accuracy');
+    const themeButton = document.getElementById('themeButton');
+    const shuffleButton = document.getElementById('shuffleButton');
+    const answers = new Map();
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function escapeText(text) {
+      return text.replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      }[char]));
+    }
+
+    function updateStats() {
+      const values = [...answers.values()];
+      const answered = values.length;
+      const correct = values.filter(Boolean).length;
+      correctCount.textContent = correct;
+      answeredCount.textContent = `${answered} av ${originalExercises.length}`;
+      accuracy.textContent = answered ? `${Math.round((correct / answered) * 100)} %` : '0 %';
+    }
+
+    const completionOverrides = {
+      1: {
+        prefix: 'Då ',
+        options: ['anar jag faktiskt ugglor i mossen', 'anar jag faktiskt sparvar i busken', 'misstänker jag faktiskt kråkor i diket', 'föreställer jag mig faktiskt duvor i skogsdungen'],
+        suffix: '.'
+      },
+      3: {
+        prefix: 'Nej, där har du ',
+        options: ['fått något om bakfoten', 'fått något på snedskon', 'fått något under hälen', 'fått något vid fel tå'],
+        suffix: '.'
+      },
+      4: {
+        prefix: 'Då hade jag ',
+        options: ['lagt benen på ryggen', 'lagt fötterna på axlarna', 'satt knäna i nacken', 'kastat vaderna bakom mig'],
+        suffix: '.'
+      },
+      7: {
+        prefix: 'Hon verkar ha ',
+        options: ['fått blodad tand', 'fått röd kindtand', 'fått smakad framtand', 'fått biten hörntand'],
+        suffix: '.'
+      },
+      9: {
+        prefix: 'Men herregud, han ',
+        options: ['gick ju bärsärkagång', 'gick ju varggalopp', 'sprang ju stormtokigt', 'gick ju på raseriutflykt'],
+        suffix: '.'
+      },
+      10: {
+        prefix: 'Du kan inte alltid ',
+        options: ['dansa efter hennes pipa', 'hoppa efter hennes trumma', 'gå efter hennes flöjt', 'vicka efter hennes visselpipa'],
+        suffix: '.'
+      },
+      15: {
+        prefix: 'Då ',
+        options: ['fick hon eld i baken', 'fick hon låga i ryggen', 'fick hon gnista i hälen', 'fick hon brand i fickan'],
+        suffix: '.'
+      },
+      18: {
+        prefix: 'Så han ',
+        options: ['föll till föga', 'ramlade till eftergift', 'sjönk till ja', 'vek ner sig i slutet'],
+        suffix: ' ändå.'
+      },
+      21: {
+        prefix: 'Bra, då har du ',
+        options: ['fattat galoppen', 'förstått travet', 'greppat språnget', 'hajat häststeget'],
+        suffix: '.'
+      },
+      22: {
+        prefix: 'Nu ',
+        options: ['fiskar du efter beröm', 'metar du efter berömmet', 'kastar du nät efter svaret', 'drar du krok efter komplimanger'],
+        suffix: '.'
+      },
+      24: {
+        prefix: 'Jag förstår att du ',
+        options: ['har fjärilar i magen', 'har humlor i bröstet', 'har trollsländor i kroppen', 'har myggor i hjärtat'],
+        suffix: '.'
+      },
+      26: {
+        prefix: 'De har fått ',
+        options: ['en fnurra på tråden', 'en knut på snöret', 'ett trassel på repet', 'ett krull på linan'],
+        suffix: '.'
+      },
+      27: {
+        prefix: 'Den verkar ha ',
+        options: ['fått fötter', 'fått ben och vandrat', 'fått skor och gått', 'fått tår och försvunnit'],
+        suffix: '.'
+      },
+      28: {
+        prefix: 'Du måste ha ',
+        options: ['sett ut som en fågelholk', 'sett ut som en öppen brevlåda', 'sett ut som ett tappat fönster', 'sett ut som en tom bur'],
+        suffix: '.'
+      },
+      35: {
+        prefix: '',
+        options: ['Ha lite is i magen', 'Ha lite snö i bröstet', 'Ha lite frost i huvudet', 'Ha lite kyla i knäna'],
+        suffix: '.'
+      },
+      36: {
+        prefix: 'Hon ',
+        options: ['fick kalla fötter', 'fick frusna händer', 'fick svala knän', 'fick isiga armbågar'],
+        suffix: '.'
+      },
+      42: {
+        prefix: 'Då ',
+        options: ['sitter du verkligen i klistret', 'sitter du verkligen i sirapen', 'fastnar du verkligen i marmeladen', 'står du verkligen i limburken'],
+        suffix: '.'
+      },
+      44: {
+        prefix: 'De ',
+        options: ['fick blodad tand', 'fick röd kindtand', 'fick smakad framtand', 'fick biten hörntand'],
+        suffix: '.'
+      },
+      45: {
+        prefix: 'Då ',
+        options: ['brinner det i knutarna', 'glöder det i listerna', 'ryker det i hörnen', 'gnistrar det i dörrposterna'],
+        suffix: '.'
+      },
+      47: {
+        prefix: 'Han ',
+        options: ['släpar verkligen benen efter sig', 'drar verkligen fötterna bakom sig', 'släpar verkligen knäna i marken', 'drar verkligen hälarna genom rummet'],
+        suffix: '.'
+      },
+      51: {
+        prefix: 'Du ',
+        options: ['fick inte en syl i vädret', 'fick inte en spik i luften', 'fick inte en nål i samtalet', 'fick inte en skruv mellan orden'],
+        suffix: '.'
+      },
+      52: {
+        prefix: 'Hon ',
+        options: ['förde dig bakom ljuset', 'ledde dig bakom lampan', 'styrde dig bakom skenet', 'drog dig bakom lyktan'],
+        suffix: '.'
+      },
+      54: {
+        prefix: 'Det där var ju ',
+        options: ['en känga till den förra projektledaren', 'en stövel till den förra projektledaren', 'en sko till den förra projektledaren', 'en sula till den förra projektledaren'],
+        suffix: '.'
+      },
+      56: {
+        prefix: 'Hon ',
+        options: ['har verkligen gröna fingrar', 'har verkligen blommande tummar', 'har verkligen jordiga händer', 'har verkligen krukiga naglar'],
+        suffix: '.'
+      },
+      57: {
+        prefix: 'Då ',
+        options: ['går den alltså i graven', 'går den alltså i kistan', 'försvinner den alltså i jorden', 'läggs den alltså i mullret'],
+        suffix: '.'
+      },
+      58: {
+        prefix: 'Ja, han ',
+        options: ['gick i taket', 'flög i väggarna', 'studsade i golvet', 'rusade upp i lampan'],
+        suffix: '.'
+      },
+      59: {
+        prefix: 'Hon ',
+        options: ['gick in i väggen', 'gick in i dörren', 'sprang in i planket', 'kraschade i tapeten'],
+        suffix: '.'
+      },
+      61: {
+        prefix: 'Nu ',
+        options: ['gör han en höna av en fjäder', 'gör han en tupp av ett dun', 'gör han en gås av ett hårstrå', 'gör han en kalkon av ett barr'],
+        suffix: '.'
+      },
+      64: {
+        prefix: 'Ja, jag ',
+        options: ['är i krokarna', 'är vid hakarna', 'är nära böjarna', 'är runt hörnspikarna'],
+        suffix: '.'
+      },
+      68: {
+        prefix: 'Då ',
+        options: ['lackade han ur', 'färgade han av', 'sprack han loss', 'flagnade han ut'],
+        suffix: '.'
+      },
+      69: {
+        prefix: 'Sluta ',
+        options: ['larva dig', 'maskera dig dumt', 'snigla dig löjligt', 'fjanta runt som en skalbagge'],
+        suffix: '.'
+      },
+      73: {
+        prefix: 'Han ',
+        options: ['ligger verkligen i', 'sitter verkligen hårt', 'står verkligen i farten', 'jobbar verkligen i backen'],
+        suffix: '.'
+      },
+      74: {
+        prefix: 'Då ',
+        options: ['ligger vi illa till', 'sitter vi snett ute', 'står vi dåligt nära', 'hamnar vi krokigt till'],
+        suffix: '.'
+      },
+      81: {
+        prefix: 'Då ',
+        options: ['brände han sina broar', 'tände han eld på sina vägar', 'rev han sina bryggor med eld', 'brände han sina gångbanor'],
+        suffix: '.'
+      },
+      84: {
+        prefix: 'Nu ',
+        options: ['drar du alla över en kam', 'borstar du alla med samma borste', 'kammar du alla med samma tand', 'drar du alla över samma hårborste'],
+        suffix: '.'
+      },
+      85: {
+        prefix: 'Hon ',
+        options: ['drog verkligen det tyngsta lasset', 'bar verkligen den största kärran', 'släpade verkligen den tyngsta väskan', 'drog verkligen den bredaste vagnen'],
+        suffix: '.'
+      },
+      88: {
+        prefix: 'Det ',
+        options: ['föll mellan stolarna', 'hamnade mellan borden', 'gled mellan pallarna', 'trillade mellan fåtöljerna'],
+        suffix: '.'
+      },
+      90: {
+        prefix: 'Nu ',
+        options: ['fick han vatten på sin kvarn', 'fick han regn på sitt hjul', 'fick han bäck på sin såg', 'fick han flod på sitt verk'],
+        suffix: '.'
+      },
+      91: {
+        prefix: 'Han ',
+        options: ['fick till slut ändan ur vagnen', 'fick till slut baken ur kärran', 'fick till slut rumpan från släpet', 'fick till slut sätet ur bilen'],
+        suffix: '.'
+      },
+      94: {
+        prefix: 'De ',
+        options: ['gick bakom ryggen på henne', 'gick bakom axeln på henne', 'smög bakom nacken på henne', 'gick runt hennes skuldror'],
+        suffix: '.'
+      },
+      95: {
+        prefix: 'Jag förstår att det ',
+        options: ['går dig på nerverna', 'går dig på trådarna', 'trycker dig på senorna', 'skaver på ditt tålamod'],
+        suffix: '.'
+      },
+      96: {
+        prefix: 'De ',
+        options: ['går ju på knäna', 'går ju på armbågarna', 'står ju på vaderna', 'kryper ju på hälarna'],
+        suffix: '.'
+      },
+      99: {
+        prefix: 'Jag ',
+        options: ['har namnet på tungan', 'har namnet på läppen', 'har ordet på tanden', 'har namnet vid gommen'],
+        suffix: '.'
+      },
+      100: {
+        prefix: 'Jag ',
+        options: ['håller tummarna', 'håller pekfingrarna', 'kniper lillfingrarna', 'pressar händerna för tur'],
+        suffix: '.'
+      }
+    };
+
+    function buildCompletion(exercise) {
+      const override = completionOverrides[exercise.id];
+
+      if (override) {
+        return {
+          prefix: override.prefix,
+          suffix: override.suffix,
+          correctLabel: override.options[0],
+          options: exercise.options.map((value, index) => ({
+            value,
+            label: override.options[index] || value
+          }))
+        };
+      }
+
+      const sentence = exercise.answerSentence;
+      const start = sentence.toLocaleLowerCase('sv-SE').indexOf(exercise.expression.toLocaleLowerCase('sv-SE'));
+      if (start === -1) {
+        return {
+          prefix: '',
+          suffix: '',
+          correctLabel: sentence,
+          options: exercise.options.map(value => ({ value, label: value }))
+        };
+      }
+
+      const end = start + exercise.expression.length;
+      const correctLabel = sentence.slice(start, end);
+      return {
+        prefix: sentence.slice(0, start),
+        suffix: sentence.slice(end),
+        correctLabel,
+        options: exercise.options.map(value => ({ value, label: value }))
+      };
+    }
+
+    function renderExercises() {
+      answers.clear();
+      list.innerHTML = '';
+
+      shuffle(originalExercises).forEach((exercise, index) => {
+        const card = document.createElement('article');
+        card.className = 'exercise';
+        card.dataset.id = exercise.id;
+        const completion = buildCompletion(exercise);
+        const blankSuffix = completion.suffix === '.' ? '' : completion.suffix;
+
+        const options = shuffle(completion.options)
+          .map(option => `<option value="${escapeText(option.value)}">${escapeText(option.label)}</option>`)
+          .join('');
+
+        card.innerHTML = `
+          <div class="meta">
+            <span>Övning ${index + 1}</span>
+            <span>Ursprungligt nummer ${exercise.id}</span>
+          </div>
+          <div class="dialogue">
+            <div class="prompt">
+              <span class="label">A säger</span>
+              <p>${escapeText(exercise.a)}</p>
+            </div>
+            <div class="prompt">
+              <span class="label">B vill svara att</span>
+              <p>${escapeText(exercise.wants)}.</p>
+            </div>
+          </div>
+          <div class="completion">
+            <span class="label">B svarar</span>
+            <p class="completion-text">
+              <span>${escapeText(completion.prefix)}</span>
+              <span class="blank" aria-label="Här ska ett idiomatiskt uttryck in">...</span>
+              <span>${escapeText(blankSuffix)}</span>
+            </p>
+            <div class="select-row">
+              <select aria-label="Välj korrekt uttryck för övning ${index + 1}">
+                <option value="">Välj idiomatiskt uttryck...</option>
+                ${options}
+              </select>
+              <div class="feedback" aria-live="polite"></div>
+            </div>
+          </div>
+        `;
+
+        const select = card.querySelector('select');
+        const feedback = card.querySelector('.feedback');
+
+        select.addEventListener('change', () => {
+          const isCorrect = select.value === exercise.expression;
+          card.classList.toggle('correct', Boolean(select.value) && isCorrect);
+          card.classList.toggle('wrong', Boolean(select.value) && !isCorrect);
+          feedback.className = `feedback ${select.value ? (isCorrect ? 'ok' : 'bad') : ''}`;
+
+          if (!select.value) {
+            feedback.textContent = '';
+            answers.delete(exercise.id);
+          } else if (isCorrect) {
+            feedback.textContent = 'Rätt.';
+            answers.set(exercise.id, true);
+          } else {
+            feedback.textContent = `Inte riktigt. Rätt svar är: ${completion.correctLabel}.`;
+            answers.set(exercise.id, false);
+          }
+          updateStats();
+        });
+
+        list.appendChild(card);
+      });
+
+      updateStats();
+    }
+
+    function applyTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.classList.toggle('dark', dark);
+      themeButton.textContent = dark ? 'Ljust tema' : 'Mörkt tema';
+      themeButton.setAttribute('aria-pressed', String(dark));
+      localStorage.setItem('idiom-theme', theme);
+    }
+
+    themeButton.addEventListener('click', () => {
+      applyTheme(document.body.classList.contains('dark') ? 'light' : 'dark');
+    });
+
+    shuffleButton.addEventListener('click', renderExercises);
+
+    applyTheme(localStorage.getItem('idiom-theme') || 'light');
+    renderExercises();
+  </script>
+</body>
+</html>
