@@ -1,0 +1,1362 @@
+
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verb Practice - Conjugations 1-3</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f7f4;
+      --panel: #ffffff;
+      --text: #202124;
+      --muted: #62645f;
+      --line: #d9dbd2;
+      --accent: #1b6f70;
+      --good: #1f7a3f;
+      --bad: #b13a2f;
+      --focus: #d8efef;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.4;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 32px auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 20px;
+      color: var(--muted);
+    }
+
+    .exercise-section {
+      margin-top: 0;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tab-button {
+      border: 1px solid transparent;
+      border-bottom: 0;
+      border-radius: 6px 6px 0 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      padding: 10px 14px;
+    }
+
+    .tab-button:hover {
+      background: #ecefe9;
+      color: var(--text);
+    }
+
+    .tab-button.active {
+      border-color: var(--line);
+      background: var(--panel);
+      color: var(--accent);
+      margin-bottom: -1px;
+    }
+
+    .tab-button:focus {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 880px;
+    }
+
+    col.infinitive-col {
+      width: 16%;
+    }
+
+    col.tense-col {
+      width: 17%;
+    }
+
+    col.english-col {
+      width: 33%;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #ecefe9;
+      color: #2c312c;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .word {
+      font-weight: 700;
+    }
+
+    .fixed {
+      color: #30332f;
+    }
+
+    select {
+      width: 100%;
+      min-width: 150px;
+      border: 1px solid #b9bdb2;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      padding: 8px 32px 8px 10px;
+    }
+
+    select:focus {
+      outline: 3px solid var(--focus);
+      border-color: var(--accent);
+    }
+
+    select.correct {
+      border-color: var(--good);
+      background: #effaf2;
+    }
+
+    select.incorrect {
+      border-color: var(--bad);
+      background: #fff1ef;
+    }
+
+    .translation-control {
+      position: fixed;
+      right: 24px;
+      top: 24px;
+      z-index: 5;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+      user-select: none;
+    }
+
+    .translation-control[hidden] {
+      display: none;
+    }
+
+    .translation-control input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .switch-track {
+      position: relative;
+      width: 46px;
+      height: 26px;
+      border: 1px solid #aeb4aa;
+      border-radius: 999px;
+      background: #dfe3da;
+      transition: background 140ms ease, border-color 140ms ease;
+    }
+
+    .switch-track::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+      transition: transform 140ms ease;
+    }
+
+    .translation-control input:checked + .switch-track {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .translation-control input:checked + .switch-track::after {
+      transform: translateX(20px);
+    }
+
+    .translation-control input:focus + .switch-track {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .mixed-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 0;
+    }
+
+    .mixed-list {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mixed-item {
+      display: grid;
+      grid-template-columns: 48px 112px minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mixed-item:last-child {
+      border-bottom: 0;
+    }
+
+    .mixed-number {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .tense-label {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .mixed-sentence {
+      position: relative;
+      min-width: 0;
+    }
+
+    .mixed-sentence select {
+      width: auto;
+      min-width: 150px;
+      margin: 0 4px;
+    }
+
+    .translation-tooltip {
+      display: none;
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      top: calc(100% + 8px);
+      max-width: min(520px, 90vw);
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #26302f;
+      color: #fff;
+      box-shadow: 0 6px 18px rgb(0 0 0 / 18%);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    body.translations-on .mixed-sentence:hover .translation-tooltip,
+    body.translations-on .mixed-sentence:focus-within .translation-tooltip {
+      display: block;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .actions button {
+      border: 0;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      padding: 10px 16px;
+    }
+
+    .actions button:hover {
+      background: #145b5c;
+    }
+
+    #result {
+      min-height: 24px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    @media (max-width: 680px) {
+      main {
+        width: min(100% - 20px, 1120px);
+        margin: 20px auto;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+      }
+
+      .mixed-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .translation-control {
+        right: 12px;
+        top: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Verb practice: present, past and supine</h1>
+    <p id="page-instruction">Choose the correct English translation and the missing Swedish verb form.</p>
+
+    <label class="translation-control" hidden>
+      <input type="checkbox" id="translation-toggle" autocomplete="off">
+      <span class="switch-track" aria-hidden="true"></span>
+      <span>Translation</span>
+    </label>
+
+    <div class="tabs" id="exercise-tabs" role="tablist" aria-label="Choose exercise"></div>
+    <div id="exercise-sections"></div>
+
+    <div class="actions">
+      <button type="button" id="reset">Start over</button>
+      <span id="result" aria-live="polite"></span>
+    </div>
+  </main>
+
+  <script>
+    const exercises = [
+      {
+        title: "Conjugation 1",
+        rows: [
+          {
+            infinitive: "börja",
+            present: "börjar",
+            past: "började",
+            supine: "börjat",
+            english: "begin, start",
+            missing: "past",
+            formOptions: ["började", "börjar", "börjat", "började sig"],
+            englishOptions: ["begin, start", "show, display", "pay, settle", "wait, expect"]
+          },
+          {
+            infinitive: "visa",
+            present: "visar",
+            past: "visade",
+            supine: "visat",
+            english: "show, display",
+            missing: "supine",
+            formOptions: ["visat", "visar", "visade", "vist"],
+            englishOptions: ["show, display", "increase, raise", "speak, talk", "lose, misplace"]
+          },
+          {
+            infinitive: "öva",
+            present: "övar",
+            past: "övade",
+            supine: "övat",
+            english: "practise, train",
+            missing: "present",
+            formOptions: ["övar", "övade", "övat", "över"],
+            englishOptions: ["practise, train", "explain, clarify", "open, unlock", "collect, gather"]
+          },
+          {
+            infinitive: "handla",
+            present: "handlar",
+            past: "handlade",
+            supine: "handlat",
+            english: "act, shop, deal",
+            missing: "past",
+            formOptions: ["handlade", "handlar", "handlat", "handlit"],
+            englishOptions: ["act, shop, deal", "answer, reply", "function, work", "throw, cast"]
+          },
+          {
+            infinitive: "skapa",
+            present: "skapar",
+            past: "skapade",
+            supine: "skapat",
+            english: "create, make",
+            missing: "supine",
+            formOptions: ["skapat", "skapar", "skapade", "skapt"],
+            englishOptions: ["create, make", "leave, depart", "vote, choose", "cost, amount to"]
+          },
+          {
+            infinitive: "tala",
+            present: "talar",
+            past: "talade",
+            supine: "talat",
+            english: "speak, talk",
+            missing: "present",
+            formOptions: ["talar", "talade", "talat", "täller"],
+            englishOptions: ["speak, talk", "send, dispatch", "like, enjoy", "rescue, save"]
+          },
+          {
+            infinitive: "spela",
+            present: "spelar",
+            past: "spelade",
+            supine: "spelat",
+            english: "play, perform",
+            missing: "past",
+            formOptions: ["spelade", "spelar", "spelat", "spelte"],
+            englishOptions: ["play, perform", "calculate, count", "fight, struggle", "publish, release"]
+          },
+          {
+            infinitive: "hitta",
+            present: "hittar",
+            past: "hittade",
+            supine: "hittat",
+            english: "find, discover",
+            missing: "supine",
+            formOptions: ["hittat", "hittar", "hittade", "hittit"],
+            englishOptions: ["find, discover", "force, compel", "treat, process", "protect, defend"]
+          },
+          {
+            infinitive: "lämna",
+            present: "lämnar",
+            past: "lämnade",
+            supine: "lämnat",
+            english: "leave, depart",
+            missing: "present",
+            formOptions: ["lämnar", "lämnade", "lämnat", "lämmer"],
+            englishOptions: ["leave, depart", "decide, resolve", "point, indicate", "earn, serve"]
+          },
+          {
+            infinitive: "svara",
+            present: "svarar",
+            past: "svarade",
+            supine: "svarat",
+            english: "answer, reply",
+            missing: "past",
+            formOptions: ["svarade", "svarar", "svarat", "svarte"],
+            englishOptions: ["answer, reply", "miss, lack", "change, alter", "love, adore"]
+          }
+        ]
+      },
+      {
+        title: "Conjugation 2a",
+        rows: [
+          {
+            infinitive: "anmäla",
+            present: "anmäler",
+            past: "anmälde",
+            supine: "anmält",
+            english: "report, register",
+            missing: "past",
+            formOptions: ["anmälde", "anmäler", "anmält", "anmällade"],
+            englishOptions: ["report, register", "build, construct", "forget, overlook", "survive, endure"]
+          },
+          {
+            infinitive: "använda",
+            present: "använder",
+            past: "använde",
+            supine: "använt",
+            english: "use, utilise",
+            missing: "supine",
+            formOptions: ["använt", "använder", "använde", "användat"],
+            englishOptions: ["use, utilise", "happen, occur", "judge, sentence", "support, back"]
+          },
+          {
+            infinitive: "bedöma",
+            present: "bedömer",
+            past: "bedömde",
+            supine: "bedömt",
+            english: "assess, judge, evaluate",
+            missing: "present",
+            formOptions: ["bedömer", "bedömde", "bedömt", "bedömar"],
+            englishOptions: ["assess, judge, evaluate", "order, book", "fill, complete", "turn, rotate"]
+          },
+          {
+            infinitive: "beställa",
+            present: "beställer",
+            past: "beställde",
+            supine: "beställt",
+            english: "order, book",
+            missing: "past",
+            formOptions: ["beställde", "beställer", "beställt", "beställade"],
+            englishOptions: ["order, book", "lead, guide", "mention, name", "weigh, measure"]
+          },
+          {
+            infinitive: "bestämma",
+            present: "bestämmer",
+            past: "bestämde",
+            supine: "bestämt",
+            english: "decide, determine",
+            missing: "supine",
+            formOptions: ["bestämt", "bestämmer", "bestämde", "bestämmit"],
+            englishOptions: ["decide, determine", "prepare, arrange", "obey, read", "return, come back"]
+          },
+          {
+            infinitive: "bygga",
+            present: "bygger",
+            past: "byggde",
+            supine: "byggt",
+            english: "build, construct",
+            missing: "present",
+            formOptions: ["bygger", "byggde", "byggt", "byggar"],
+            englishOptions: ["build, construct", "approve, accept, pass", "hang, suspend", "investigate, examine"]
+          },
+          {
+            infinitive: "känna",
+            present: "känner",
+            past: "kände",
+            supine: "känt",
+            english: "feel, know",
+            missing: "past",
+            formOptions: ["kände", "känner", "känt", "kännade"],
+            englishOptions: ["feel, know", "apply, be valid, concern", "raise, increase", "send, broadcast"]
+          },
+          {
+            infinitive: "kräva",
+            present: "kräver",
+            past: "krävde",
+            supine: "krävt",
+            english: "demand, require",
+            missing: "supine",
+            formOptions: ["krävt", "kräver", "krävde", "krävat"],
+            englishOptions: ["demand, require", "follow, accompany", "close, shut", "own, possess"]
+          },
+          {
+            infinitive: "leva",
+            present: "lever",
+            past: "levde",
+            supine: "levt",
+            english: "live, exist",
+            missing: "present",
+            formOptions: ["lever", "levde", "levt", "levar"],
+            englishOptions: ["live, exist", "remind, prompt", "separate, divorce", "establish, determine, fix"]
+          },
+          {
+            infinitive: "stänga",
+            present: "stänger",
+            past: "stängde",
+            supine: "stängt",
+            english: "close, shut",
+            missing: "past",
+            formOptions: ["stängde", "stänger", "stängt", "stängade"],
+            englishOptions: ["close, shut", "experience, undergo", "produce, manufacture, depict", "step, tread, thread"]
+          }
+        ]
+      },
+      {
+        title: "Conjugation 2b",
+        rows: [
+          {
+            infinitive: "tycka",
+            present: "tycker",
+            past: "tyckte",
+            supine: "tyckt",
+            english: "think, opine",
+            missing: "past",
+            formOptions: ["tyckte", "tycker", "tyckt", "tyckade"],
+            englishOptions: ["think, opine", "buy, purchase", "wake, awaken, arouse", "visit, call on"]
+          },
+          {
+            infinitive: "försöka",
+            present: "försöker",
+            past: "försökte",
+            supine: "försökt",
+            english: "try, attempt",
+            missing: "supine",
+            formOptions: ["försökt", "försöker", "försökte", "försökat"],
+            englishOptions: ["try, attempt", "read, study", "travel, raise", "cover, conceal"]
+          },
+          {
+            infinitive: "läsa",
+            present: "läser",
+            past: "läste",
+            supine: "läst",
+            english: "read, study",
+            missing: "present",
+            formOptions: ["läser", "läste", "läst", "läsar"],
+            englishOptions: ["read, study", "seek, search, apply for", "press, print", "measure, gauge"]
+          },
+          {
+            infinitive: "tänka",
+            present: "tänker",
+            past: "tänkte",
+            supine: "tänkt",
+            english: "think, reflect",
+            missing: "past",
+            formOptions: ["tänkte", "tänker", "tänkt", "tänkade"],
+            englishOptions: ["think, reflect", "help, assist", "notice, mark, label", "play, perform"]
+          },
+          {
+            infinitive: "söka",
+            present: "söker",
+            past: "sökte",
+            supine: "sökt",
+            english: "seek, search, apply for",
+            missing: "supine",
+            formOptions: ["sökt", "söker", "sökte", "sökat"],
+            englishOptions: ["seek, search, apply for", "meet, encounter", "lower, reduce, sink", "discover, find"]
+          },
+          {
+            infinitive: "köpa",
+            present: "köper",
+            past: "köpte",
+            supine: "köpt",
+            english: "buy, purchase",
+            missing: "present",
+            formOptions: ["köper", "köpte", "köpt", "köpar"],
+            englishOptions: ["buy, purchase", "go, travel, drive", "suffice, last, reach", "strengthen, reinforce"]
+          },
+          {
+            infinitive: "åka",
+            present: "åker",
+            past: "åkte",
+            supine: "åkt",
+            english: "go, travel, drive",
+            missing: "past",
+            formOptions: ["åkte", "åker", "åkt", "åkade"],
+            englishOptions: ["go, travel, drive", "be called, be named", "cover, conceal", "manage, look after, mind"]
+          },
+          {
+            infinitive: "hjälpa",
+            present: "hjälper",
+            past: "hjälpte",
+            supine: "hjälpt",
+            english: "help, assist",
+            missing: "supine",
+            formOptions: ["hjälpt", "hjälper", "hjälpte", "hjälpat"],
+            englishOptions: ["help, assist", "grow, increase", "pour, scoop", "suspect, mistrust"]
+          },
+          {
+            infinitive: "möta",
+            present: "möter",
+            past: "mötte",
+            supine: "mött",
+            english: "meet, encounter",
+            missing: "present",
+            formOptions: ["möter", "mötte", "mött", "möterade"],
+            englishOptions: ["meet, encounter", "jerk, pull, tug", "reinforce, strengthen", "examine, investigate, survey"]
+          },
+          {
+            infinitive: "besöka",
+            present: "besöker",
+            past: "besökte",
+            supine: "besökt",
+            english: "visit, call on",
+            missing: "past",
+            formOptions: ["besökte", "besöker", "besökt", "besökade"],
+            englishOptions: ["visit, call on", "think, opine", "bump, push, encounter", "wake, awaken, arouse"]
+          }
+        ]
+      },
+      {
+        title: "Conjugation 3",
+        rows: [
+          {
+            infinitive: "tro",
+            present: "tror",
+            past: "trodde",
+            supine: "trott",
+            english: "believe, think",
+            missing: "past",
+            formOptions: ["trodde", "tror", "trott", "trode"],
+            englishOptions: ["believe, think", "happen, occur, take place", "live, dwell", "sew, stitch"]
+          },
+          {
+            infinitive: "ske",
+            present: "sker",
+            past: "skedde",
+            supine: "skett",
+            english: "happen, occur, take place",
+            missing: "supine",
+            formOptions: ["skett", "sker", "skedde", "ske"],
+            englishOptions: ["happen, occur, take place", "reach, achieve", "feel, may", "row, paddle"]
+          },
+          {
+            infinitive: "nå",
+            present: "når",
+            past: "nådde",
+            supine: "nått",
+            english: "reach, achieve",
+            missing: "present",
+            formOptions: ["når", "nådde", "nått", "nå"],
+            englishOptions: ["reach, achieve", "depend, be due to", "care, mind", "detest, loathe, hate"]
+          },
+          {
+            infinitive: "bo",
+            present: "bor",
+            past: "bodde",
+            supine: "bott",
+            english: "live, dwell",
+            missing: "past",
+            formOptions: ["bodde", "bor", "bott", "bode"],
+            englishOptions: ["live, dwell", "achieve, attain, reach", "flee, escape", "get dressed"]
+          },
+          {
+            infinitive: "bero",
+            present: "beror",
+            past: "berodde",
+            supine: "berott",
+            english: "depend, be due to",
+            missing: "supine",
+            formOptions: ["berott", "beror", "berodde", "berot"],
+            englishOptions: ["depend, be due to", "believe, think", "be capable of, induce", "behave, act"]
+          },
+          {
+            infinitive: "må",
+            present: "mår",
+            past: "mådde",
+            supine: "mått",
+            english: "feel, may",
+            missing: "present",
+            formOptions: ["mår", "mådde", "mått", "må"],
+            englishOptions: ["feel, may", "happen, occur, take place", "sew, stitch", "care, mind"]
+          },
+          {
+            infinitive: "uppnå",
+            present: "uppnår",
+            past: "uppnådde",
+            supine: "uppnått",
+            english: "achieve, attain, reach",
+            missing: "past",
+            formOptions: ["uppnådde", "uppnår", "uppnått", "uppnåde"],
+            englishOptions: ["achieve, attain, reach", "live, dwell", "flee, escape", "row, paddle"]
+          },
+          {
+            infinitive: "bry sig",
+            present: "bryr sig",
+            past: "brydde sig",
+            supine: "brytt sig",
+            english: "care, mind",
+            missing: "supine",
+            formOptions: ["brytt sig", "bryr sig", "brydde sig", "bry sig"],
+            englishOptions: ["care, mind", "depend, be due to", "get dressed", "detest, loathe, hate"]
+          },
+          {
+            infinitive: "fly",
+            present: "flyr",
+            past: "flydde",
+            supine: "flytt",
+            english: "flee, escape",
+            missing: "present",
+            formOptions: ["flyr", "flydde", "flytt", "fly"],
+            englishOptions: ["flee, escape", "reach, achieve", "be capable of, induce", "sew, stitch"]
+          },
+          {
+            infinitive: "bete sig",
+            present: "beter sig",
+            past: "betedde sig",
+            supine: "betett sig",
+            english: "behave, act",
+            missing: "past",
+            formOptions: ["betedde sig", "beter sig", "betett sig", "bete sig"],
+            englishOptions: ["behave, act", "believe, think", "feel, may", "row, paddle"]
+          }
+        ]
+      }
+    ];
+
+    const formLabels = {
+      present: "present",
+      past: "past",
+      supine: "supine"
+    };
+
+    const mixedTenseLabels = {
+      present: "Present",
+      past: "Past",
+      supine: "Supine"
+    };
+
+    const defaultInstruction = "Choose the correct English translation and the missing Swedish verb form.";
+    const mixedInstruction = "Choose the correct Swedish verb form to complete each sentence.";
+
+    const verbsByInfinitive = new Map(
+      exercises.flatMap((exercise) => exercise.rows).map((row) => [row.infinitive, row])
+    );
+
+    const mixedPrompts = [
+      { infinitive: "börja", tense: "present", before: "Jag", after: "klockan åtta.", translation: "I start at eight o'clock." },
+      { infinitive: "börja", tense: "past", before: "Lektionen", after: "senare.", translation: "The lesson began later." },
+      { infinitive: "visa", tense: "supine", before: "Hon har", after: "bilderna.", translation: "She has shown the pictures." },
+      { infinitive: "visa", tense: "present", before: "Skärmen", after: "resultatet.", translation: "The screen displays the result." },
+      { infinitive: "öva", tense: "past", before: "Vi", after: "uttal igår.", translation: "We practised pronunciation yesterday." },
+      { infinitive: "öva", tense: "supine", before: "De har", after: "mycket.", translation: "They have practised a lot." },
+      { infinitive: "handla", tense: "present", before: "Jag", after: "mat på fredagar.", translation: "I shop for food on Fridays." },
+      { infinitive: "handla", tense: "past", before: "Hon", after: "snabbt.", translation: "She acted quickly." },
+      { infinitive: "skapa", tense: "supine", before: "Jag har", after: "ett monster.", translation: "I have created a monster." },
+      { infinitive: "skapa", tense: "present", before: "Teamet", after: "en plan.", translation: "The team creates a plan." },
+      { infinitive: "tala", tense: "past", before: "Rektorn", after: "länge.", translation: "The headteacher spoke for a long time." },
+      { infinitive: "tala", tense: "supine", before: "Vi har", after: "om saken.", translation: "We have talked about the matter." },
+      { infinitive: "spela", tense: "present", before: "Barnen", after: "fotboll.", translation: "The children play football." },
+      { infinitive: "spela", tense: "past", before: "Bandet", after: "högt.", translation: "The band played loudly." },
+      { infinitive: "hitta", tense: "supine", before: "Jag har", after: "nyckeln.", translation: "I have found the key." },
+      { infinitive: "hitta", tense: "present", before: "Hon", after: "alltid lösningar.", translation: "She always finds solutions." },
+      { infinitive: "lämna", tense: "past", before: "Han", after: "rummet.", translation: "He left the room." },
+      { infinitive: "lämna", tense: "supine", before: "Vi har", after: "rapporten.", translation: "We have submitted the report." },
+      { infinitive: "svara", tense: "present", before: "Eleven", after: "snabbt.", translation: "The pupil answers quickly." },
+      { infinitive: "svara", tense: "past", before: "Hon", after: "på mejlet.", translation: "She replied to the email." },
+      { infinitive: "anmäla", tense: "past", before: "Jag", after: "felet.", translation: "I reported the fault." },
+      { infinitive: "anmäla", tense: "supine", before: "De har", after: "sig till kursen.", translation: "They have registered for the course." },
+      { infinitive: "använda", tense: "present", before: "Vi", after: "datorn.", translation: "We use the computer." },
+      { infinitive: "använda", tense: "past", before: "Hon", after: "rätt metod.", translation: "She used the right method." },
+      { infinitive: "bedöma", tense: "supine", before: "Läraren har", after: "provet.", translation: "The teacher has assessed the test." },
+      { infinitive: "bedöma", tense: "present", before: "Juryn", after: "bidragen.", translation: "The jury evaluates the entries." },
+      { infinitive: "beställa", tense: "past", before: "Jag", after: "biljetter.", translation: "I booked tickets." },
+      { infinitive: "beställa", tense: "supine", before: "Vi har", after: "mat.", translation: "We have ordered food." },
+      { infinitive: "bestämma", tense: "present", before: "Chefen", after: "tiden.", translation: "The manager determines the time." },
+      { infinitive: "bestämma", tense: "past", before: "De", after: "platsen.", translation: "They decided the place." },
+      { infinitive: "bygga", tense: "supine", before: "De har", after: "ett hus.", translation: "They have built a house." },
+      { infinitive: "bygga", tense: "present", before: "Företaget", after: "en bro.", translation: "The company builds a bridge." },
+      { infinitive: "känna", tense: "past", before: "Jag", after: "oro.", translation: "I felt worried." },
+      { infinitive: "känna", tense: "supine", before: "Hon har", after: "honom länge.", translation: "She has known him for a long time." },
+      { infinitive: "kräva", tense: "present", before: "Jobbet", after: "tålamod.", translation: "The job requires patience." },
+      { infinitive: "kräva", tense: "past", before: "Kunden", after: "svar.", translation: "The customer demanded answers." },
+      { infinitive: "leva", tense: "supine", before: "De har", after: "här i tio år.", translation: "They have lived here for ten years." },
+      { infinitive: "leva", tense: "present", before: "Min farmor", after: "ensam.", translation: "My grandmother lives alone." },
+      { infinitive: "stänga", tense: "past", before: "Butiken", after: "tidigt.", translation: "The shop closed early." },
+      { infinitive: "stänga", tense: "supine", before: "Jag har", after: "dörren.", translation: "I have shut the door." },
+      { infinitive: "tycka", tense: "present", before: "Jag", after: "att det är svårt.", translation: "I think it is difficult." },
+      { infinitive: "tycka", tense: "past", before: "Hon", after: "att provet var lätt.", translation: "She thought the test was easy." },
+      { infinitive: "försöka", tense: "supine", before: "Vi har", after: "igen.", translation: "We have tried again." },
+      { infinitive: "försöka", tense: "present", before: "Han", after: "förstå texten.", translation: "He tries to understand the text." },
+      { infinitive: "läsa", tense: "past", before: "Barnet", after: "högt.", translation: "The child read aloud." },
+      { infinitive: "läsa", tense: "supine", before: "Jag har", after: "kapitlet.", translation: "I have read the chapter." },
+      { infinitive: "tänka", tense: "present", before: "Hon", after: "på framtiden.", translation: "She is thinking about the future." },
+      { infinitive: "tänka", tense: "past", before: "Vi", after: "länge.", translation: "We thought for a long time." },
+      { infinitive: "söka", tense: "supine", before: "Han har", after: "jobbet.", translation: "He has applied for the job." },
+      { infinitive: "söka", tense: "present", before: "De", after: "efter vägen.", translation: "They search for the path." },
+      { infinitive: "köpa", tense: "past", before: "Jag", after: "kaffe.", translation: "I bought coffee." },
+      { infinitive: "köpa", tense: "supine", before: "Vi har", after: "biljetter.", translation: "We have bought tickets." },
+      { infinitive: "åka", tense: "present", before: "Bussen", after: "snart.", translation: "The bus leaves soon." },
+      { infinitive: "åka", tense: "past", before: "De", after: "till Malmö.", translation: "They travelled to Malmö." },
+      { infinitive: "hjälpa", tense: "supine", before: "Du har", after: "mig mycket.", translation: "You have helped me a lot." },
+      { infinitive: "hjälpa", tense: "present", before: "Hon", after: "sin bror.", translation: "She helps her brother." },
+      { infinitive: "möta", tense: "past", before: "Vi", after: "läraren.", translation: "We met the teacher." },
+      { infinitive: "möta", tense: "supine", before: "Jag har", after: "gruppen.", translation: "I have met the group." },
+      { infinitive: "besöka", tense: "present", before: "De", after: "museet.", translation: "They visit the museum." },
+      { infinitive: "besöka", tense: "past", before: "Hon", after: "sin vän.", translation: "She visited her friend." },
+      { infinitive: "tro", tense: "present", before: "Jag", after: "på dig.", translation: "I believe in you." },
+      { infinitive: "tro", tense: "past", before: "Vi", after: "på planen.", translation: "We believed in the plan." },
+      { infinitive: "ske", tense: "past", before: "Olyckan", after: "på natten.", translation: "The accident happened at night." },
+      { infinitive: "ske", tense: "supine", before: "Det har", after: "en förändring.", translation: "A change has occurred." },
+      { infinitive: "nå", tense: "present", before: "Du", after: "målet snart.", translation: "You will reach the goal soon." },
+      { infinitive: "nå", tense: "supine", before: "Vi har", after: "toppen.", translation: "We have reached the top." },
+      { infinitive: "bo", tense: "past", before: "Hon", after: "i London.", translation: "She lived in London." },
+      { infinitive: "bo", tense: "present", before: "De", after: "nära skolan.", translation: "They live near the school." },
+      { infinitive: "bero", tense: "present", before: "Det", after: "på vädret.", translation: "It depends on the weather." },
+      { infinitive: "bero", tense: "past", before: "Beslutet", after: "på kostnaden.", translation: "The decision depended on the cost." },
+      { infinitive: "må", tense: "supine", before: "Jag har", after: "bättre.", translation: "I have felt better." },
+      { infinitive: "må", tense: "present", before: "Hur", after: "du idag?", translation: "How are you feeling today?" },
+      { infinitive: "uppnå", tense: "past", before: "Laget", after: "målet.", translation: "The team achieved the goal." },
+      { infinitive: "uppnå", tense: "supine", before: "Vi har", after: "resultatet.", translation: "We have achieved the result." },
+      { infinitive: "bry sig", tense: "present", before: "Hon", after: "sig om miljön.", translation: "She cares about the environment.", answer: "bryr" },
+      { infinitive: "bry sig", tense: "supine", before: "De har", after: "om frågan.", translation: "They have cared about the issue." },
+      { infinitive: "fly", tense: "past", before: "Familjen", after: "från kriget.", translation: "The family fled from the war." },
+      { infinitive: "fly", tense: "present", before: "Människorna", after: "söderut.", translation: "The people flee south." },
+      { infinitive: "bete sig", tense: "past", before: "Barnet", after: "lugnt.", translation: "The child behaved calmly." },
+      { infinitive: "bete sig", tense: "supine", before: "Han har", after: "illa.", translation: "He has behaved badly." }
+    ];
+
+    exercises.push({
+      title: "In sentences",
+      type: "mixed",
+      prompts: mixedPrompts
+    });
+
+    const wrongPresentForms = {
+      "börja": "börjer",
+      "visa": "viser",
+      "öva": "över",
+      "handla": "handler",
+      "skapa": "skaper",
+      "tala": "taler",
+      "spela": "speler",
+      "hitta": "hitter",
+      "lämna": "lämner",
+      "svara": "svarer",
+      "anmäla": "anmälar",
+      "använda": "användar",
+      "bedöma": "bedömar",
+      "beställa": "beställar",
+      "bestämma": "bestämmar",
+      "bygga": "byggar",
+      "känna": "kännar",
+      "kräva": "krävar",
+      "leva": "levar",
+      "stänga": "stängar",
+      "tycka": "tyckar",
+      "försöka": "försökar",
+      "läsa": "läsar",
+      "tänka": "tänkar",
+      "söka": "sökar",
+      "köpa": "köpar",
+      "åka": "åkar",
+      "hjälpa": "hjälpar",
+      "möta": "mötar",
+      "besöka": "besökar",
+      "tro": "troer",
+      "ske": "skear",
+      "nå": "nåer",
+      "bo": "boer",
+      "bero": "beroer",
+      "må": "måer",
+      "uppnå": "uppnåer",
+      "bry sig": "bryar sig",
+      "fly": "flyer",
+      "bete sig": "betear sig"
+    };
+
+    const wrongPastForms = {
+      "börja": "börjte",
+      "visa": "viste",
+      "öva": "övde",
+      "handla": "handlte",
+      "skapa": "skapte",
+      "tala": "talte",
+      "spela": "spelte",
+      "hitta": "hittte",
+      "lämna": "lämnte",
+      "svara": "svarte",
+      "anmäla": "anmälade",
+      "använda": "användade",
+      "bedöma": "bedömte",
+      "beställa": "beställte",
+      "bestämma": "bestämte",
+      "bygga": "byggte",
+      "känna": "kännte",
+      "kräva": "krävte",
+      "leva": "levte",
+      "stänga": "stängte",
+      "tycka": "tyckade",
+      "försöka": "försökade",
+      "läsa": "lästade",
+      "tänka": "tänkade",
+      "söka": "sökade",
+      "köpa": "köpade",
+      "åka": "åkade",
+      "hjälpa": "hjälpade",
+      "möta": "mötade",
+      "besöka": "besökade",
+      "tro": "trode",
+      "ske": "skede",
+      "nå": "nåde",
+      "bo": "bode",
+      "bero": "berode",
+      "må": "måde",
+      "uppnå": "uppnåde",
+      "bry sig": "bryde sig",
+      "fly": ["flyde", "flyte"],
+      "bete sig": "betede sig"
+    };
+
+    let activeExerciseIndex = 0;
+
+    function shuffled(options) {
+      const result = [...options];
+
+      for (let index = result.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [result[index], result[randomIndex]] = [result[randomIndex], result[index]];
+      }
+
+      return result;
+    }
+
+    function optionList(options) {
+      return [
+        '<option value="">Choose...</option>',
+        ...shuffled(options).map((option) => `<option value="${option}">${option}</option>`)
+      ].join("");
+    }
+
+    function mixedAnswer(prompt) {
+      if (prompt.answer) {
+        return prompt.answer;
+      }
+
+      return verbsByInfinitive.get(prompt.infinitive)[prompt.tense];
+    }
+
+    function presentStem(infinitive) {
+      const bareInfinitive = infinitive.replace(" sig", "");
+
+      if (bareInfinitive.endsWith("a")) {
+        return bareInfinitive.slice(0, -1);
+      }
+
+      return bareInfinitive;
+    }
+
+    function withReflexive(infinitive, form) {
+      return infinitive.endsWith(" sig") ? `${form} sig` : form;
+    }
+
+    function uniqueFirstFive(options) {
+      return [...new Set(options)].slice(0, 5);
+    }
+
+    function formCore(form) {
+      return form.replace(" sig", "");
+    }
+
+    function stemFromPast(form) {
+      const core = formCore(form);
+      const suffix = ["ade", "dde", "tte", "de", "te"].find((ending) => core.endsWith(ending));
+      return suffix ? core.slice(0, -suffix.length) : core;
+    }
+
+    function stemFromSupine(form) {
+      const core = formCore(form);
+      const suffix = ["at", "it", "et", "tt", "t"].find((ending) => core.endsWith(ending));
+      return suffix ? core.slice(0, -suffix.length) : core;
+    }
+
+    function presentOptions(prompt) {
+      const answer = mixedAnswer(prompt);
+      const stem = presentStem(prompt.infinitive);
+      const variants = [
+        answer,
+        `${stem}ar`,
+        `${stem}er`,
+        `${stem}ir`,
+        `${stem}or`,
+        `${stem}yr`
+      ];
+
+      return uniqueFirstFive(variants);
+    }
+
+    function pastOptions(prompt) {
+      const answer = mixedAnswer(prompt);
+      const stem = stemFromPast(answer);
+      const specificWrongForms = [].concat(wrongPastForms[prompt.infinitive] || []);
+      const variants = [
+        answer,
+        ...specificWrongForms,
+        withReflexive(prompt.infinitive, `${stem}ade`),
+        withReflexive(prompt.infinitive, `${stem}de`),
+        withReflexive(prompt.infinitive, `${stem}te`),
+        withReflexive(prompt.infinitive, `${stem}dde`),
+        withReflexive(prompt.infinitive, `${stem}tte`)
+      ];
+
+      return uniqueFirstFive(variants);
+    }
+
+    function supineOptions(prompt) {
+      const answer = mixedAnswer(prompt);
+      const stem = stemFromSupine(answer);
+      const variants = [
+        answer,
+        withReflexive(prompt.infinitive, `${stem}t`),
+        withReflexive(prompt.infinitive, `${stem}tt`),
+        withReflexive(prompt.infinitive, `${stem}at`),
+        withReflexive(prompt.infinitive, `${stem}it`),
+        withReflexive(prompt.infinitive, `${stem}et`)
+      ];
+
+      if (prompt.infinitive === "skapa") {
+        variants.splice(1, 0, "skapt");
+      }
+
+      return uniqueFirstFive(variants);
+    }
+
+    function mixedOptions(prompt) {
+      if (prompt.tense === "present") {
+        return presentOptions(prompt);
+      }
+
+      if (prompt.tense === "past") {
+        return pastOptions(prompt);
+      }
+
+      if (prompt.tense === "supine") {
+        return supineOptions(prompt);
+      }
+
+      return [];
+    }
+
+    function renderTabs() {
+      const tabs = document.querySelector("#exercise-tabs");
+      tabs.innerHTML = exercises.map((exercise, index) => `
+        <button
+          type="button"
+          class="tab-button"
+          id="tab-${index}"
+          role="tab"
+          aria-controls="panel-${index}"
+          aria-selected="${index === activeExerciseIndex}"
+          data-exercise-index="${index}"
+        >
+          ${exercise.title}
+        </button>
+      `).join("");
+    }
+
+    function renderMixedExercise(exercise, exerciseIndex) {
+      const promptRows = shuffled(exercise.prompts).map((prompt, index) => {
+        const verb = verbsByInfinitive.get(prompt.infinitive);
+        const answer = mixedAnswer(prompt);
+
+        return `
+          <li class="mixed-item" data-infinitive="${prompt.infinitive}" data-tense="${prompt.tense}">
+            <span class="mixed-number">${index + 1}.</span>
+            <span class="tense-label">${mixedTenseLabels[prompt.tense]}:</span>
+            <span class="mixed-sentence">
+              ${prompt.before}
+              <select data-answer="${answer}" aria-label="${prompt.infinitive}: choose ${mixedTenseLabels[prompt.tense].toLowerCase()}">
+                ${optionList(mixedOptions(prompt))}
+              </select>
+              ${prompt.after}
+              <span class="translation-tooltip">${prompt.translation}</span>
+            </span>
+          </li>
+        `;
+      }).join("");
+
+      return `
+        <section
+          class="exercise-section"
+          id="panel-${exerciseIndex}"
+          role="tabpanel"
+          aria-labelledby="tab-${exerciseIndex}"
+          data-exercise-index="${exerciseIndex}"
+        >
+          <h2>${exercise.title}</h2>
+          <div class="mixed-panel">
+            <ol class="mixed-list">${promptRows}</ol>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderTable(exercise, exerciseIndex) {
+      if (exercise.type === "mixed") {
+        return renderMixedExercise(exercise, exerciseIndex);
+      }
+
+      const rowsHtml = exercise.rows.map((row, index) => {
+        const tenseCells = ["present", "past", "supine"].map((tense) => {
+          if (row.missing === tense) {
+            return `
+              <td>
+                <select data-answer="${row[tense]}" aria-label="${row.infinitive}: choose ${formLabels[tense]}">
+                  ${optionList(row.formOptions)}
+                </select>
+              </td>
+            `;
+          }
+
+          return `<td class="fixed">${row[tense]}</td>`;
+        }).join("");
+
+        return `
+          <tr>
+            <td class="word">${index + 1}. ${row.infinitive}</td>
+            ${tenseCells}
+            <td>
+              <select data-answer="${row.english}" aria-label="${row.infinitive}: choose English translation">
+                ${optionList(row.englishOptions)}
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      return `
+        <section
+          class="exercise-section"
+          id="panel-${exerciseIndex}"
+          role="tabpanel"
+          aria-labelledby="tab-${exerciseIndex}"
+          data-exercise-index="${exerciseIndex}"
+        >
+          <h2>${exercise.title}</h2>
+          <div class="table-wrap">
+            <table aria-label="Verb practice for ${exercise.title.toLowerCase()}">
+              <colgroup>
+                <col class="infinitive-col">
+                <col class="tense-col">
+                <col class="tense-col">
+                <col class="tense-col">
+                <col class="english-col">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Infinitiv</th>
+                  <th>Presens</th>
+                  <th>Preteritum</th>
+                  <th>Supinum</th>
+                  <th>Engelska</th>
+                </tr>
+              </thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderExercises() {
+      const container = document.querySelector("#exercise-sections");
+      renderTabs();
+      container.innerHTML = exercises.map(renderTable).join("");
+      setActiveExercise(activeExerciseIndex);
+
+      document.querySelector("#result").textContent = "";
+    }
+
+    function setActiveExercise(index) {
+      activeExerciseIndex = index;
+      const isMixedExercise = exercises[activeExerciseIndex].type === "mixed";
+      const translationControl = document.querySelector(".translation-control");
+      const translationToggle = document.querySelector("#translation-toggle");
+      const pageInstruction = document.querySelector("#page-instruction");
+
+      document.querySelectorAll(".tab-button").forEach((button) => {
+        const isActive = Number(button.dataset.exerciseIndex) === activeExerciseIndex;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-selected", String(isActive));
+      });
+
+      document.querySelectorAll(".exercise-section").forEach((section) => {
+        section.hidden = Number(section.dataset.exerciseIndex) !== activeExerciseIndex;
+      });
+
+      translationControl.hidden = !isMixedExercise;
+      pageInstruction.textContent = isMixedExercise ? mixedInstruction : defaultInstruction;
+      document.body.classList.toggle("translations-on", isMixedExercise && translationToggle.checked);
+      document.querySelector("#result").textContent = "";
+    }
+
+    function gradeSelect(select) {
+      select.classList.remove("correct", "incorrect");
+
+      if (!select.value) {
+        return false;
+      }
+
+      const isCorrect = select.value === select.dataset.answer;
+      select.classList.add(isCorrect ? "correct" : "incorrect");
+      return isCorrect;
+    }
+
+    function updateResult() {
+      const activeSection = document.querySelector(`.exercise-section[data-exercise-index="${activeExerciseIndex}"]`);
+      const selects = Array.from(activeSection.querySelectorAll("select"));
+      const answered = selects.filter((select) => Boolean(select.value));
+      const correct = answered.filter((select) => select.value === select.dataset.answer).length;
+
+      if (answered.length === 0) {
+        document.querySelector("#result").textContent = "";
+        return;
+      }
+
+      document.querySelector("#result").textContent = `${correct} out of ${answered.length} answered correctly`;
+    }
+
+    function checkAnswers() {
+      const activeSection = document.querySelector(`.exercise-section[data-exercise-index="${activeExerciseIndex}"]`);
+      const selects = Array.from(activeSection.querySelectorAll("select"));
+      let correct = 0;
+
+      selects.forEach((select) => {
+        if (gradeSelect(select)) {
+          correct += 1;
+        }
+      });
+
+      document.querySelector("#result").textContent = `${correct} out of ${selects.length} correct`;
+    }
+
+    function resetActiveExercise() {
+      const activeSection = document.querySelector(`.exercise-section[data-exercise-index="${activeExerciseIndex}"]`);
+      activeSection.outerHTML = renderTable(exercises[activeExerciseIndex], activeExerciseIndex);
+      setActiveExercise(activeExerciseIndex);
+      document.querySelector("#result").textContent = "";
+    }
+
+    document.querySelector("#exercise-tabs").addEventListener("click", (event) => {
+      const button = event.target.closest(".tab-button");
+
+      if (!button) {
+        return;
+      }
+
+      setActiveExercise(Number(button.dataset.exerciseIndex));
+    });
+
+    document.querySelector("#reset").addEventListener("click", resetActiveExercise);
+    document.querySelector("#translation-toggle").addEventListener("change", (event) => {
+      const isMixedExercise = exercises[activeExerciseIndex].type === "mixed";
+      document.body.classList.toggle("translations-on", isMixedExercise && event.target.checked);
+    });
+    document.querySelector("#exercise-sections").addEventListener("change", (event) => {
+      if (!event.target.matches("select")) {
+        return;
+      }
+
+      gradeSelect(event.target);
+      updateResult();
+    });
+
+    renderExercises();
+  </script>
+</body>
+</html>
