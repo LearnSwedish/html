@@ -1,0 +1,519 @@
+
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e7e4dd">
+  <title>Kanalparken öppnar – Stadsbladet</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700;6..72,800&display=swap');
+
+    :root {
+      --paper: #fbfaf6;
+      --ink: #171716;
+      --muted: #67645f;
+      --rule: #242321;
+      --thin-rule: #bcb8af;
+      --red: #9e3029;
+      --answer: #fff0a6;
+      --answer-line: #b94837;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { background: #d9d6cf; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 0, rgba(255,255,255,.6), transparent 28%),
+        #d9d6cf;
+      font-family: "Newsreader", Georgia, serif;
+    }
+
+    button { font: inherit; }
+
+    .web-tools {
+      position: sticky;
+      z-index: 20;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 10px 16px;
+      color: #f8f7f2;
+      background: rgba(31,31,29,.94);
+      box-shadow: 0 4px 18px rgba(0,0,0,.18);
+      backdrop-filter: blur(8px);
+      font-family: "Libre Franklin", Arial, sans-serif;
+    }
+
+    .web-tools span {
+      margin-right: 8px;
+      color: #c9c6be;
+      font-size: 12px;
+    }
+
+    .tool-button {
+      border: 1px solid #716f69;
+      border-radius: 4px;
+      color: white;
+      background: transparent;
+      padding: 7px 11px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tool-button:hover { background: #3e3d39; }
+    .tool-button.active { border-color: #e4bb5e; color: #1e1d1b; background: #e4bb5e; }
+
+    .newspaper {
+      width: min(1140px, calc(100% - 34px));
+      margin: 24px auto 54px;
+      padding: 30px 42px 38px;
+      background:
+        linear-gradient(rgba(71,58,38,.018), rgba(71,58,38,.018)),
+        var(--paper);
+      box-shadow: 0 18px 55px rgba(35,31,24,.22);
+    }
+
+    .utility-line {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: end;
+      padding-bottom: 7px;
+      border-bottom: 1px solid var(--rule);
+      font-family: "Libre Franklin", Arial, sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .utility-line .edition { text-align: center; }
+    .utility-line .price { text-align: right; }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 91px;
+      border-bottom: 5px double var(--rule);
+      font-size: clamp(54px, 8vw, 91px);
+      font-weight: 800;
+      line-height: .9;
+      letter-spacing: -.065em;
+    }
+
+    .masthead span { position: relative; }
+    .masthead span::before {
+      content: "GRUNDAD 1894";
+      position: absolute;
+      left: -78px;
+      top: 50%;
+      width: 60px;
+      font: 700 7px/1.3 "Libre Franklin", Arial, sans-serif;
+      letter-spacing: .12em;
+      text-align: right;
+    }
+
+    .section-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0 6px;
+      border-bottom: 1px solid var(--rule);
+      font-family: "Libre Franklin", Arial, sans-serif;
+    }
+
+    .section-name { color: var(--red); font-size: 16px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .section-links { color: #5c5954; font-size: 9px; font-weight: 700; word-spacing: 13px; text-transform: uppercase; }
+
+    .article-kicker {
+      margin: 27px 0 9px;
+      color: var(--red);
+      font-family: "Libre Franklin", Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 940px;
+      margin: 0;
+      font-size: clamp(48px, 6.7vw, 79px);
+      font-weight: 700;
+      line-height: .91;
+      letter-spacing: -.052em;
+    }
+
+    .deck {
+      max-width: 900px;
+      margin: 18px 0 17px;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.25;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 0;
+      border-top: 1px solid var(--thin-rule);
+      border-bottom: 1px solid var(--thin-rule);
+      font-family: "Libre Franklin", Arial, sans-serif;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .author-mark {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: white;
+      background: #282724;
+      font-weight: 800;
+      letter-spacing: .03em;
+    }
+
+    .byline strong { display: block; font-size: 10px; letter-spacing: .04em; }
+    .byline span { color: var(--muted); }
+    .publish-time { margin-left: auto; color: var(--muted); font-weight: 600; }
+
+    .lead-figure { margin: 20px 0 0; }
+    .lead-figure img {
+      display: block;
+      width: 100%;
+      max-height: 590px;
+      object-fit: cover;
+      filter: saturate(.86) contrast(1.03);
+    }
+
+    figcaption {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      padding: 7px 0 10px;
+      border-bottom: 1px solid var(--rule);
+      color: #4b4945;
+      font-family: "Libre Franklin", Arial, sans-serif;
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    figcaption .credit { white-space: nowrap; font-weight: 700; text-transform: uppercase; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2.3fr) minmax(220px, .8fr);
+      gap: 36px;
+      margin-top: 20px;
+    }
+
+    .story-columns {
+      column-count: 2;
+      column-gap: 34px;
+      column-rule: 1px solid #d4d0c7;
+      font-size: 17px;
+      line-height: 1.48;
+      text-align: left;
+      hyphens: auto;
+    }
+
+    .story-columns p { margin: 0 0 15px; break-inside: avoid; }
+    .story-columns .opening::first-letter {
+      float: left;
+      margin: 7px 7px 0 0;
+      color: var(--red);
+      font-size: 66px;
+      font-weight: 700;
+      line-height: .65;
+    }
+
+    .story-columns h2 {
+      margin: 22px 0 9px;
+      padding-top: 8px;
+      border-top: 3px solid var(--rule);
+      font: 800 13px/1.2 "Libre Franklin", Arial, sans-serif;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      break-after: avoid;
+    }
+
+    .pullquote {
+      margin: 20px 0;
+      padding: 13px 5px 12px;
+      border-top: 4px solid var(--red);
+      border-bottom: 1px solid var(--thin-rule);
+      color: #292724;
+      font-size: 27px;
+      font-weight: 700;
+      line-height: 1.05;
+      break-inside: avoid;
+    }
+
+    .pullquote span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font: 700 8px/1.3 "Libre Franklin", Arial, sans-serif;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .rail {
+      padding-left: 18px;
+      border-left: 1px solid var(--rule);
+      font-family: "Libre Franklin", Arial, sans-serif;
+    }
+
+    .rail-box { margin-bottom: 25px; padding-top: 8px; border-top: 5px solid var(--rule); }
+    .rail-box h3 { margin: 0 0 10px; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; }
+    .rail-box ul { margin: 0; padding: 0; list-style: none; }
+    .rail-box li { padding: 7px 0; border-top: 1px solid #d7d3ca; font-size: 11px; line-height: 1.35; }
+    .rail-box li strong { display: block; }
+
+    .number-box { padding: 16px 14px; color: white; background: var(--red); }
+    .number-box strong { display: block; font: 700 42px/1 "Newsreader", Georgia, serif; }
+    .number-box span { font-size: 10px; line-height: 1.35; }
+
+    .related { display:grid;gap:12px; }
+    .related-item { display:grid;grid-template-columns:55px 1fr;gap:9px;align-items:start;padding-top:10px;border-top:1px solid #aaa69d; }
+    .related-thumb { height:50px;background:linear-gradient(135deg,#a5b39c,#536b59); }
+    .related-item:nth-child(2) .related-thumb { background:linear-gradient(135deg,#d0a774,#876a4d); }
+    .related-item strong { font:700 13px/1.15 "Newsreader",Georgia,serif; }
+    .related-item small { display:block;margin-top:3px;color:var(--muted);font-size:8px;text-transform:uppercase; }
+
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      padding-top: 7px;
+      border-top: 1px solid var(--rule);
+      color: #5f5b55;
+      font-family: "Libre Franklin", Arial, sans-serif;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .language-error {
+      border-radius: 2px;
+      transition: background .2s, box-shadow .2s;
+    }
+
+    body.show-answers .language-error {
+      background: var(--answer);
+      box-shadow: inset 0 -2px var(--answer-line);
+      cursor: help;
+    }
+
+    body.show-answers .language-error::after {
+      content: " [" attr(data-number) "]";
+      color: var(--red);
+      font: 700 9px "Libre Franklin", Arial, sans-serif;
+      vertical-align: super;
+    }
+
+    .answer-key {
+      display: none;
+      margin-top: 22px;
+      padding: 18px 20px;
+      border: 2px solid var(--red);
+      background: #fffdf5;
+      font-family: "Libre Franklin", Arial, sans-serif;
+    }
+
+    body.show-answers .answer-key { display: block; }
+    .answer-key h2 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; }
+    .answer-key ol { columns: 2; margin: 0; padding-left: 20px; font-size: 11px; line-height: 1.55; }
+    .answer-key li { padding-right: 18px; }
+    .wrong { color: var(--red); text-decoration: line-through; }
+    .right { color: #25603c; font-weight: 800; }
+
+    @media (max-width: 780px) {
+      .newspaper { width: 100%; margin: 0; padding: 22px 19px 30px; box-shadow: none; }
+      .utility-line { grid-template-columns: 1fr 1fr; }
+      .utility-line .edition { display: none; }
+      .masthead { min-height: 70px; font-size: 50px; }
+      .masthead span::before { display: none; }
+      .section-links { display: none; }
+      h1 { font-size: 48px; }
+      .deck { font-size: 19px; }
+      .content-grid { grid-template-columns: 1fr; }
+      .story-columns { column-count: 1; font-size: 18px; }
+      .rail { padding: 0; border-left: 0; }
+      .answer-key ol { columns: 1; }
+      .web-tools span { display: none; }
+    }
+
+    @media print {
+      @page { size: A4 portrait; margin: 10mm; }
+      html, body { background: white; }
+      .web-tools { display: none !important; }
+      .newspaper { width: 100%; margin: 0; padding: 0; box-shadow: none; }
+      .masthead { min-height: 58px; font-size: 54px; }
+      .article-kicker { margin-top: 14px; }
+      h1 { font-size: 52px; }
+      .deck { margin: 10px 0; font-size: 16px; }
+      .lead-figure { margin-top: 12px; }
+      .lead-figure img { max-height: 320px; }
+      .content-grid { gap: 20px; margin-top: 12px; }
+      .story-columns { column-gap: 22px; font-size: 11px; line-height: 1.36; }
+      .story-columns p { margin-bottom: 8px; }
+      .pullquote { font-size: 19px; }
+      .rail { padding-left: 12px; }
+      .answer-key { break-before: page; }
+      body:not(.show-answers) .answer-key { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="web-tools" aria-label="Verktyg">
+    <span>Elevblad · 10 grammatikfel är gömda i artikeln</span>
+    <button class="tool-button" id="answers-button" type="button" aria-pressed="false">Visa facit</button>
+    <button class="tool-button" id="print-button" type="button">Skriv ut</button>
+  </nav>
+
+  <main class="newspaper">
+    <header>
+      <div class="utility-line">
+        <span>Tisdag 23 juni 2026</span>
+        <span class="edition">Oberoende lokaltidning</span>
+        <span class="price">Pris 29 kronor · Nr 146</span>
+      </div>
+      <div class="masthead"><span>Stadsbladet</span></div>
+      <div class="section-bar">
+        <strong class="section-name">Lokalt</strong>
+        <span class="section-links">Nyheter Kultur Sport Opinion Familj</span>
+      </div>
+    </header>
+
+    <article>
+      <p class="article-kicker">Stadsutveckling</p>
+      <h1>Kanalparken öppnar efter två års arbete</h1>
+      <p class="deck">Nya gångvägar, en regnträdgård och större ytor för lek ska locka fler till stadens östra kvarter. På lördag slår den ombyggda Kanalparken upp grindarna.</p>
+
+      <div class="article-meta">
+        <div class="author-mark" aria-hidden="true">EL</div>
+        <div class="byline"><strong>Text: Elin Lundqvist</strong><span>elin.lundqvist@stadsbladet.se</span></div>
+        <div class="publish-time">Publicerad 08.14 · Uppdaterad 09.02</div>
+      </div>
+
+      <figure class="lead-figure">
+        <img src="kanalparken-pressfoto.png" alt="Besökare går över en träbro i den nyrenoverade Kanalparken och samtalar med en kommunanställd.">
+        <figcaption>
+          <span>Under förhandsvisningen fick boende i området prova den nya träbron över regnträdgården. Parken öppnar för allmänheten på lördag.</span>
+          <span class="credit">Foto: Sofia Berg</span>
+        </figcaption>
+      </figure>
+
+      <div class="content-grid">
+        <div class="story-columns">
+          <p class="opening">För första gången på nästan två år öppnas grindarna till Kanalparken igen. Området mellan Ågatan och Ringvägen har fått nya gångstråk, fler träd och en större lekdel. Parken beskrivs som <span class="language-error" data-number="1" data-correction="ett efterlängtat grönområde">ett efterlängtad grönområde</span> i en del av staden där många bostäder har byggts under de senaste åren.</p>
+
+          <p>Arbetet inleddes våren 2024 efter flera års diskussioner om översvämningar och slitna lekredskap. Den tidigare grusplanen har ersatts av planteringar som kan samla upp regnvatten. Enligt kommunen ska lösningen minska belastningen på dagvattensystemet när kraftiga skyfall drar in över staden.</p>
+
+          <h2>En plats för flera generationer</h2>
+
+          <p><span class="language-error" data-number="2" data-correction="På lördag öppnar parken">På lördag parken öppnar</span> officiellt klockan 11. Vid huvudentrén finns <span class="language-error" data-number="3" data-correction="tre nya lekplatser">tre nya lekplats</span> med klätterställningar, gungor och en låg hinderbana. Längre in i parken finns sittplatser, ett utegym och bord med plats för både schack och picknick.</p>
+
+          <p>I redskapsboden finns många färgglada <span class="language-error" data-number="4" data-correction="bollar">boller</span>, hopprep och små koner som föreningar kan använda vid aktiviteter. Bredvid boden står <span class="language-error" data-number="5" data-correction="ett informationsbord">en informationsbord</span> där besökarna kan läsa om parkens växter och djurliv.</p>
+
+          <blockquote class="pullquote">”Vi ville skapa en park som fungerar en vanlig tisdag, inte bara när det är festival.”<span>Anna Sjöberg, stadsträdgårdsmästare</span></blockquote>
+
+          <p><span class="language-error" data-number="6" data-correction="Besökarna kan låna">Besökarna kan att låna</span> utrustningen kostnadsfritt under bemannade tider. Kommunen hoppas samtidigt att skolor och äldreboenden i närheten ska använda området för undervisning, promenader och gemensamma aktiviteter.</p>
+
+          <h2>Boende fick testa området</h2>
+
+          <p><span class="language-error" data-number="7" data-correction="I går genomförde kommunen">I går kommunen genomförde</span> en förhandsvisning för boende i närområdet. Ett femtiotal personer deltog trots det kyliga vädret. Flera uppskattade den nya belysningen och att gångvägarna har gjorts bredare.</p>
+
+          <p>Alla detaljer är ännu inte på plats. Några planteringar ska kompletteras i höst, och de nya bänkarna är <span class="language-error" data-number="8" data-correction="tillverkade">tillverkad</span> men har ännu inte levererats. Entreprenören ska också justera underlaget vid parkens södra entré.</p>
+
+          <p>Ombyggnaden har kostat 38 miljoner kronor. I summan ingår nya vattenledningar, belysning och en gångbro. Kommunen hoppas att fler människor <span class="language-error" data-number="9" data-correction="kommer att lämna">kommer lämnar</span> bilen hemma när det blir enklare att gå och cykla genom området.</p>
+
+          <p>Redan under förhandsvisningen kom många <span class="language-error" data-number="10" data-correction="familjer">familj</span> från kvarteren runt parken. En av dem var Amir Rahmani, som bor två gator bort med sin dotter. Han tror att platsen kommer att användas ofta.</p>
+
+          <p>– Tidigare gick vi mest förbi här. Nu finns det en anledning att stanna. Min dotter började leka direkt, och jag hann faktiskt prata med flera grannar som jag bara har hälsat på tidigare, säger han.</p>
+
+          <p>Invigningen pågår mellan klockan 11 och 15 på lördag. Det blir musik, tipspromenad och guidade visningar av regnträdgården. Vid kraftigt regn flyttas delar av programmet till Kanalens aktivitetshus.</p>
+        </div>
+
+        <aside class="rail" aria-label="Fakta och relaterat">
+          <section class="rail-box">
+            <h3>Det här är nytt</h3>
+            <ul>
+              <li><strong>Regnträdgård</strong>Samlar upp vatten vid skyfall.</li>
+              <li><strong>Träbro</strong>Binder samman parkens gångvägar.</li>
+              <li><strong>Lek och rörelse</strong>Tre lekytor och ett utegym.</li>
+              <li><strong>Mer grönska</strong>46 nya träd och 1 200 perenner.</li>
+            </ul>
+          </section>
+
+          <section class="rail-box number-box">
+            <strong>38</strong>
+            <span>miljoner kronor har ombyggnaden av Kanalparken kostat.</span>
+          </section>
+
+          <section class="rail-box">
+            <h3>Invigningen</h3>
+            <ul>
+              <li><strong>När?</strong>Lördag 27 juni, klockan 11–15.</li>
+              <li><strong>Var?</strong>Huvudentrén vid Ågatan.</li>
+              <li><strong>Pris?</strong>Fri entré och kostnadsfria aktiviteter.</li>
+            </ul>
+          </section>
+
+          <section class="rail-box">
+            <h3>Mer lokalt</h3>
+            <div class="related">
+              <div class="related-item"><div class="related-thumb"></div><div><strong>Nya cykelbanan klar före skolstarten</strong><small>Lokalt · Sidan 6</small></div></div>
+              <div class="related-item"><div class="related-thumb"></div><div><strong>Så ska centrum få fler kvällsbesökare</strong><small>Näringsliv · Sidan 8</small></div></div>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="answer-key" aria-label="Facit">
+        <h2>Facit – de tio grammatikfelen</h2>
+        <ol>
+          <li><span class="wrong">ett efterlängtad grönområde</span> → <span class="right">ett efterlängtat grönområde</span></li>
+          <li><span class="wrong">På lördag parken öppnar</span> → <span class="right">På lördag öppnar parken</span> (V2)</li>
+          <li><span class="wrong">tre nya lekplats</span> → <span class="right">tre nya lekplatser</span></li>
+          <li><span class="wrong">boller</span> → <span class="right">bollar</span></li>
+          <li><span class="wrong">en informationsbord</span> → <span class="right">ett informationsbord</span></li>
+          <li><span class="wrong">kan att låna</span> → <span class="right">kan låna</span></li>
+          <li><span class="wrong">I går kommunen genomförde</span> → <span class="right">I går genomförde kommunen</span> (V2)</li>
+          <li><span class="wrong">bänkarna är tillverkad</span> → <span class="right">bänkarna är tillverkade</span></li>
+          <li><span class="wrong">kommer lämnar</span> → <span class="right">kommer att lämna</span></li>
+          <li><span class="wrong">många familj</span> → <span class="right">många familjer</span></li>
+        </ol>
+      </section>
+    </article>
+
+    <footer class="page-footer"><span>Stadsbladet · Lokalt</span><span>stadsbladet.se</span><span>Sidan 4</span></footer>
+  </main>
+
+  <script>
+    const answersButton = document.querySelector('#answers-button');
+    answersButton.addEventListener('click', () => {
+      const isVisible = document.body.classList.toggle('show-answers');
+      answersButton.textContent = isVisible ? 'Dölj facit' : 'Visa facit';
+      answersButton.classList.toggle('active', isVisible);
+      answersButton.setAttribute('aria-pressed', String(isVisible));
+    });
+
+    document.querySelector('#print-button').addEventListener('click', () => window.print());
+  </script>
+</body>
+</html>
