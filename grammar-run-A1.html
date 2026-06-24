@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="sv">
 <head>
@@ -71,7 +70,7 @@
   
   <h2 id="high-score-display" style="color: #8b0000; margin: 10px 0;">RECORD: 0</h2>
   
-  <h2 style="color: #007bff; margin: 10px 0;">Press ENTER to begin</h2>
+  <h2 id="start-status" style="color: #007bff; margin: 10px 0;">Loading game...</h2>
 
   <img id="start-img" src="start-1.png" class="center-img" alt="Start bild" height="35%">
 
@@ -225,7 +224,6 @@ const words = [
 { text: "OKTOBER", type: "en" },
 { text: "ORGANISATION", type: "en" },
 { text: "MEDLEM", type: "en" },
-{ text: "KRONA", type: "en" },
 { text: "RÄTTIGHET", type: "en" },
 { text: "HUS", type: "ett" },
 { text: "VÄN", type: "en" },
@@ -360,7 +358,6 @@ const words = [
 { text: "UTREDNING", type: "en" },
 { text: "KUNG", type: "en" },
 { text: "KATT", type: "en" },
-{ text: "KLOCKA", type: "en" },
 { text: "SKATT", type: "en" },
 { text: "BEFOLKNING", type: "en" },
 { text: "RO", type: "en" },
@@ -859,8 +856,8 @@ const TIMELINE = {
 
 // --- KONTROLLPANEL TIDER OCH VARAKTIGHET ---
 
-// --- KULANS HASTIGHET: hur snabbt spelet rullar framåt ---
-SPEED: 0.7,
+// --- KULANS HASTIGHET: enheter per sekund ---
+SPEED: 42,
 
 // --- NÄR FÖRSTA SKYLT VISAS: från det att spelet startas ---
 SHOW_WORD: 0.5,
@@ -901,6 +898,9 @@ let yVelocity = 0;
 let isJumping = false;
 let isRabbitTrap = false;
 let challengeData = { enX: 0, ettX: 0, animalX: 0, processed: false };
+let lastFrameTime = null;
+let resourcesReady = false;
+let resourceLoadFailed = false;
 
 // --- GULDMYNT & DISTANS ---
 const COINS_PER_JUMP = 10;      // Mynt som krävs för att hoppa över muren
@@ -913,7 +913,8 @@ let lastCoinLane = -99;
 let roundsSinceWall = 0;        // Antal vanliga rundor avklarade sedan senaste muren
 let rabbitWallPending = false;  // Flagga: nästa artikelpassage = kaninmur
 
-const GRAVITY = -0.018, JUMP_FORCE = 0.5;
+// Samma hoppkänsla som tidigare vid 60 Hz, nu uttryckt per sekund.
+const GRAVITY = -64.8, JUMP_FORCE = 30;
 
 // (updateStartImage och dekorationsfunktioner förblir desamma som i din kod...)
 const startImages = ['start-1.png', 'start-2.png', 'start-3.png', 'start-4.png', 'start-5.png'];
@@ -1016,8 +1017,25 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const texLoader = new THREE.TextureLoader();
+const startStatus = document.getElementById('start-status');
+const loadingManager = new THREE.LoadingManager(
+    () => {
+        if (resourceLoadFailed || !font) return;
+        resourcesReady = true;
+        startStatus.textContent = 'Press ENTER to begin';
+    },
+    undefined,
+    () => {
+        resourceLoadFailed = true;
+        resourcesReady = false;
+        startStatus.textContent = 'Could not load the game. Please reload and try again.';
+        startStatus.style.color = '#8b0000';
+    }
+);
+
+const texLoader = new THREE.TextureLoader(loadingManager);
 const bunnyTexture = texLoader.load('https://learnswedish.github.io/html/bunny.png');
+const coinTexture = texLoader.load('https://learnswedish.github.io/html/rabbit-coin.png');
 
 function createTextTexture(text, color) {
     const canvas = document.createElement('canvas');
@@ -1033,6 +1051,17 @@ function createTextTexture(text, color) {
 
 const enTex = createTextTexture("EN", "#1a5d1a");
 const ettTex = createTextTexture("ETT", "#8b0000");
+const enSpriteMaterial = new THREE.SpriteMaterial({ map: enTex, transparent: true });
+const ettSpriteMaterial = new THREE.SpriteMaterial({ map: ettTex, transparent: true });
+const bunnySpriteMaterial = new THREE.SpriteMaterial({ map: bunnyTexture, transparent: true });
+const coinGeometry = new THREE.PlaneGeometry(1.5, 1.5);
+const coinMaterial = new THREE.MeshBasicMaterial({
+    map: coinTexture,
+    transparent: true,
+    side: THREE.DoubleSide
+});
+const starParticleGeometry = new THREE.IcosahedronGeometry(0.2, 0);
+const starParticleMaterial = new THREE.MeshStandardMaterial({ color: 0xf1c40f, emissive: 0xf1c40f });
 
 scene.add(new THREE.AmbientLight(0xffffff, 1.1));
 const sun = new THREE.DirectionalLight(0xffffff, 0.7);
@@ -1046,7 +1075,7 @@ portalGroup = new THREE.Group(); scene.add(portalGroup);
 function triggerStarEffect() {
     playStarSound();
     for(let i=0; i<15; i++) {
-        const p = new THREE.Mesh(new THREE.IcosahedronGeometry(0.2, 0), new THREE.MeshStandardMaterial({color: 0xf1c40f, emissive: 0xf1c40f}));
+        const p = new THREE.Mesh(starParticleGeometry, starParticleMaterial);
         p.position.set(player.position.x, player.position.y + 0.5, player.position.z);
         p.userData = { vel: new THREE.Vector3((Math.random()-0.5)*0.4, Math.random()*0.4, (Math.random()-0.5)*0.2), life: 1.0 };
         starParticles.push(p); scene.add(p);
@@ -1057,10 +1086,6 @@ function triggerStarEffect() {
 function spawnCoinBatch(spawnStartZ) {
     const lanes = [-3, 0, 3];
     const spacing = 22; 
-    
-    const loader = new THREE.TextureLoader();
-    loader.setCrossOrigin('anonymous');
-    const coinTexture = loader.load('https://learnswedish.github.io/html/rabbit-coin.png');
 
     for (let i = 0; i < COINS_PER_ROUND; i++) {
         const available = lanes.filter(l => l !== lastCoinLane);
@@ -1069,15 +1094,7 @@ function spawnCoinBatch(spawnStartZ) {
 
         const z = spawnStartZ - i * spacing;
         
-        // Vi använder PlaneGeometry för en platt bild
-        const coinGeo = new THREE.PlaneGeometry(1.5, 1.5);
-        const coinMat = new THREE.MeshBasicMaterial({ 
-            map: coinTexture, 
-            transparent: true,
-            side: THREE.DoubleSide // Gör att bilden syns när den snurrat ett halvt varv
-        });
-        
-        const coinMesh = new THREE.Mesh(coinGeo, coinMat);
+        const coinMesh = new THREE.Mesh(coinGeometry, coinMaterial);
         coinMesh.position.set(x, 1.0, z);
         
         scene.add(coinMesh);
@@ -1085,12 +1102,12 @@ function spawnCoinBatch(spawnStartZ) {
     }
 }
 
-function updateCoins() {
+function updateCoins(delta) {
     for (let i = coinMeshes.length - 1; i >= 0; i--) {
         const coin = coinMeshes[i];
 
         // Detta får myntet att rotera runt stående (vertikalt)
-        coin.rotation.y += 0.1; 
+        coin.rotation.y += 6 * delta; 
 
         // Resten av din befintliga kod för borttagning och kollision...
         if (coin.position.z > player.position.z + 2) {
@@ -1135,7 +1152,7 @@ function buildRabbitWall(impactZ) {
     const rowOffsets = [0, -3.5];
     lanes.forEach(x => {
         rowOffsets.forEach(dz => {
-            const bunny = new THREE.Sprite(new THREE.SpriteMaterial({ map: bunnyTexture, transparent: true }));
+            const bunny = new THREE.Sprite(bunnySpriteMaterial);
             bunny.scale.set(2.3, 2.3, 1);
             bunny.center.set(0.5, 0);
             bunny.position.set(x, 0, impactZ + dz);
@@ -1168,12 +1185,28 @@ function createRoadSegment(z) {
 
 for(let i=0; i<100; i++) roadSegments.push(createRoadSegment(-i * 5));
 
-const loader = new FontLoader();
-loader.load('https://cdn.jsdelivr.net/npm/three@0.158.0/examples/fonts/droid/droid_sans_bold.typeface.json', f => {
-    font = f;
-    const hs = localStorage.getItem('grammarHigh') || 0;
-    document.getElementById('high-score-display').textContent = `RECORD: ${hs}`;
-});
+const loader = new FontLoader(loadingManager);
+loader.load(
+    'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/fonts/droid/droid_sans_bold.typeface.json',
+    f => {
+        font = f;
+        const hs = localStorage.getItem('grammarHigh') || 0;
+        document.getElementById('high-score-display').textContent = `RECORD: ${hs}`;
+    }
+);
+
+function disposeWordGroup() {
+    if (!wordGroup) return;
+    scene.remove(wordGroup);
+    wordGroup.traverse(obj => {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) {
+            const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+            materials.forEach(material => material.dispose());
+        }
+    });
+    wordGroup = null;
+}
 
 function initRound() {
     if (availableWords.length === 0) { endGame(true); return; }
@@ -1184,7 +1217,7 @@ function initRound() {
 
     // Rensa gamla objekt
     portalGroup.clear();
-    if (wordGroup) { scene.remove(wordGroup); wordGroup = null; }
+    disposeWordGroup();
 
     // Räkna upp rundor. Efter ROUNDS_PER_WALL vanliga rundor → kaninmur
     roundsSinceWall++;
@@ -1248,29 +1281,36 @@ window.addEventListener('keydown', e => {
     }
 });
 
-function animate() {
+function animate(frameTime) {
     requestAnimationFrame(animate);
-    if (!gameActive) return;
+    if (!gameActive) {
+        lastFrameTime = frameTime;
+        return;
+    }
+
+    const delta = Math.min(Math.max((frameTime - (lastFrameTime ?? frameTime)) / 1000, 0), 0.05);
+    lastFrameTime = frameTime;
 
     // 1. TIDSHANTERING
-    timer += 1 / 60;
+    timer += delta;
 
     // 2. SPELARRÖRELSE
-    player.position.z -= TIMELINE.SPEED;
-    player.position.x += (targetX - player.position.x) * 0.2;
+    player.position.z -= TIMELINE.SPEED * delta;
+    const lateralSmoothing = 1 - Math.pow(0.8, delta * 60);
+    player.position.x += (targetX - player.position.x) * lateralSmoothing;
     
-    player.position.y += yVelocity;
-    yVelocity += GRAVITY;
+    player.position.y += yVelocity * delta;
+    yVelocity += GRAVITY * delta;
     if (player.position.y <= 0.6) { 
         player.position.y = 0.6; 
         yVelocity = 0; 
         isJumping = false; 
     }
-    player.rotation.x -= TIMELINE.SPEED * 1.5;
+    player.rotation.x -= TIMELINE.SPEED * 1.5 * delta;
 
     // 3. UI-UPPDATERING (METER & HÄLSA)
     // Räkna "riktiga" meter baserat på framfart
-    distanceTraveled += TIMELINE.SPEED * 0.5; 
+    distanceTraveled += TIMELINE.SPEED * 0.5 * delta; 
     score = Math.floor(distanceTraveled);
     document.getElementById('score-val').textContent = score + ' m';
     
@@ -1297,13 +1337,13 @@ function animate() {
     camera.position.set(0, 5, player.position.z + 9);
     camera.lookAt(0, 1.2, player.position.z - 5);
 
-    updateCoins();
+    updateCoins(delta);
 
     // 4. PARTIKELSYSTEM
     for (let i = starParticles.length - 1; i >= 0; i--) {
         const p = starParticles[i];
-        p.position.add(p.userData.vel);
-        p.userData.life -= 0.02;
+        p.position.addScaledVector(p.userData.vel, delta * 60);
+        p.userData.life -= 1.2 * delta;
         p.scale.setScalar(p.userData.life);
         if (p.userData.life <= 0) {
             scene.remove(p);
@@ -1345,20 +1385,20 @@ function animate() {
 
     // FAS B: VISA VALEN
     if (timer >= TIME_STAMP_CHOICES && portalGroup.children.length === 0) {
-        const distRemaining = TIMELINE.COLLISION * TIMELINE.SPEED * 60;
+        const distRemaining = TIMELINE.COLLISION * TIMELINE.SPEED;
         const impactZ = player.position.z - distRemaining;
 
         if (rabbitWallPending) {
             buildRabbitWall(impactZ);
         } else {
-            const createSign = (tex, x) => {
-                const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true }));
+            const createSign = (material, x) => {
+                const sprite = new THREE.Sprite(material);
                 sprite.scale.set(3, 1.75, 1); sprite.position.set(x, 1.2, impactZ);
                 portalGroup.add(sprite);
             };
-            createSign(enTex, challengeData.enX);
-            createSign(ettTex, challengeData.ettX);
-            const animal = new THREE.Sprite(new THREE.SpriteMaterial({ map: bunnyTexture, transparent: true }));
+            createSign(enSpriteMaterial, challengeData.enX);
+            createSign(ettSpriteMaterial, challengeData.ettX);
+            const animal = new THREE.Sprite(bunnySpriteMaterial);
             animal.scale.set(2.3, 2.3, 1); animal.center.set(0.5, 0); animal.position.set(challengeData.animalX, 0, impactZ);
             portalGroup.add(animal);
         }
@@ -1426,6 +1466,8 @@ function animate() {
 window.addEventListener('keydown', (e) => { if (e.key === "Enter" && !gameActive) document.getElementById('overlay').click(); });
 
 document.getElementById('overlay').addEventListener('click', () => {
+    if (!resourcesReady || resourceLoadFailed) return;
+
     // 1. Ljud och bakgrund
     audioCtx.resume();
     scene.background = new THREE.Color(0xa2d2ff);
@@ -1451,11 +1493,14 @@ document.getElementById('overlay').addEventListener('click', () => {
     roundsSinceWall = 0;
     rabbitWallPending = false;
     lastCoinLane = -99;
+    lastFrameTime = performance.now();
 
     // 4. Rensa gamla objekt från scenen
     coinMeshes.forEach(c => scene.remove(c));
     coinMeshes = [];
-    if (wordGroup) { scene.remove(wordGroup); wordGroup = null; }
+    starParticles.forEach(p => scene.remove(p));
+    starParticles = [];
+    disposeWordGroup();
     portalGroup.clear();
 
     // 5. Återställ positioner
@@ -1468,7 +1513,7 @@ document.getElementById('overlay').addEventListener('click', () => {
     gameActive = true;
     initRound();
 });
-animate();
+requestAnimationFrame(animate);
 </script>
 </body>
 </html>
