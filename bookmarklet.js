@@ -1,4 +1,5 @@
 (function () {
+  try {
   const id = "takeover-folder-bookmarklet";
   document.getElementById(id)?.remove();
 
@@ -2202,8 +2203,15 @@
     #${id} .tf-count { font-size: 12px; color: #64748b; font-weight: 650; }
     #${id} .tf-search { width: min(100%, 420px); height: 40px; margin: 0 auto 20px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(148,163,184,.36); background: rgba(255,255,255,.9); color: #172033; outline: 0; font: inherit; font-size: 13px; box-shadow: 0 8px 20px rgba(15,23,42,.06); }
     #${id} .tf-search:focus { border-color: rgba(37,99,235,.56); box-shadow: 0 0 0 4px rgba(37,99,235,.10), 0 8px 20px rgba(15,23,42,.06); }
-    #${id} .tf-global-search { width: min(100%, 520px); height: 44px; margin: 22px auto 0; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,.40); background: rgba(255,255,255,.94); color: #172033; outline: 0; font: inherit; font-size: 14px; box-shadow: 0 10px 24px rgba(15,23,42,.07); flex: 0 0 auto; }
+    #${id} .tf-search-wrap { position: relative; width: min(100%, 520px); margin: 22px auto 0; flex: 0 0 auto; }
+    #${id} .tf-global-search { width: 100%; height: 44px; padding: 0 48px 0 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,.40); background: rgba(255,255,255,.94); color: #172033; outline: 0; font: inherit; font-size: 14px; box-shadow: 0 10px 24px rgba(15,23,42,.07); }
     #${id} .tf-global-search:focus { border-color: rgba(37,99,235,.58); box-shadow: 0 0 0 4px rgba(37,99,235,.11), 0 10px 24px rgba(15,23,42,.07); }
+    #${id} .tf-search-clear { position: absolute; right: 7px; top: 50%; transform: translateY(-50%) scale(.92); width: 30px; height: 30px; border: 0; border-radius: 50%; background: rgba(226,232,240,.86); color: #334155; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .14s ease, transform .14s ease, background .14s ease; display: grid; place-items: center; padding: 0; }
+    #${id} .tf-search-wrap.tf-has-value .tf-search-clear { opacity: 1; pointer-events: auto; transform: translateY(-50%) scale(1); }
+    #${id} .tf-search-clear:hover { background: #dbeafe; }
+    #${id} .tf-search-clear::before, #${id} .tf-search-clear::after { content: ""; position: absolute; width: 12px; height: 2px; border-radius: 999px; background: currentColor; }
+    #${id} .tf-search-clear::before { transform: rotate(45deg); }
+    #${id} .tf-search-clear::after { transform: rotate(-45deg); }
     #${id} .tf-results { display: none; margin: 24px auto 0; width: min(100%, 860px); flex: 1 1 auto; min-height: 0; overflow: auto; padding: 4px 6px 12px; text-align: left; scrollbar-width: thin; }
     #${id}.tf-searching .tf-roots, #${id}.tf-searching .tf-stage { display: none; }
     #${id}.tf-searching .tf-results { display: block; }
@@ -2228,7 +2236,7 @@
     @media (max-width: 720px) { #${id} .tf-card { width: 96vw; height: 86vh; padding: 34px 22px 24px; border-radius: 24px; } #${id} .tf-roots { gap: 18px; } #${id} .tf-stage { padding-left: 0; padding-right: 0; } #${id} .tf-grid { grid-template-columns: 1fr; } #${id} .tf-stage-head { margin-left: 42px; margin-right: 42px; } }
     @media (max-width: 520px) { #${id} .tf-card { height: 88vh; padding: 32px 18px 22px; border-radius: 22px; } #${id} .tf-icon { width: 60px; height: 60px; border-radius: 18px; } #${id} .tf-stage .tf-icon { width: 42px; height: 42px; border-radius: 13px; } }
   `;
-  document.head.appendChild(css);
+  (document.head || document.documentElement).appendChild(css);
 
   let path = [];
   let stage;
@@ -2377,6 +2385,8 @@
     modal.classList.remove("tf-searching");
     const globalSearch = modal.querySelector(".tf-global-search");
     if (globalSearch) globalSearch.value = "";
+    const searchWrap = modal.querySelector(".tf-search-wrap");
+    if (searchWrap) searchWrap.classList.remove("tf-has-value");
     setActiveRoot();
     renderStage();
   }
@@ -2384,6 +2394,8 @@
   function renderGlobalResults(query) {
     const resultsNode = modal.querySelector(".tf-results");
     const terms = termsFrom(query);
+    const searchWrap = modal.querySelector(".tf-search-wrap");
+    if (searchWrap) searchWrap.classList.toggle("tf-has-value", Boolean(query.trim()));
 
     if (!terms.length) {
       modal.classList.remove("tf-searching");
@@ -2478,7 +2490,10 @@
       <button class="tf-modal-close" title="St\u00e4ng">&times;</button>
       <h2 style="margin:6px 0 6px;font-size:18px">Mina genv\u00e4gar</h2>
       <p style="margin:0;color:#555;font-size:15px">\u00d6ppna en grupp eller filtrera allt</p>
-      <input class="tf-global-search" type="search" placeholder="Filtrera grupper och URL:er" autocomplete="off">
+      <div class="tf-search-wrap">
+        <input class="tf-global-search" type="search" placeholder="Filtrera grupper och URL:er" autocomplete="off">
+        <button class="tf-search-clear" title="Rensa filter" type="button"></button>
+      </div>
       <div class="tf-roots">
         ${data.map((group, index) => `<button class="tf-root" data-index="${index}" title="${group.label}"><span class="tf-icon">${icons[group.icon] || icons.folder}</span><span class="tf-label">${group.label}</span></button>`).join("")}
       </div>
@@ -2486,7 +2501,8 @@
       <div class="tf-results"></div>
     </div>
   `;
-  document.body.appendChild(modal);
+  (document.body || document.documentElement).appendChild(modal);
+  console.info("Genvägsmenyn skapades.");
   stage = modal.querySelector(".tf-stage");
 
   modal.querySelector(".tf-modal-close").onclick = () => modal.remove();
@@ -2498,6 +2514,17 @@
     const resultApp = event.target.closest(".tf-result-app");
     const resultGroup = event.target.closest(".tf-result-group");
     const close = event.target.closest(".tf-stage-close");
+    const clearSearch = event.target.closest(".tf-search-clear");
+
+    if (clearSearch) {
+      const globalSearch = modal.querySelector(".tf-global-search");
+      if (globalSearch) {
+        globalSearch.value = "";
+        globalSearch.focus();
+      }
+      renderGlobalResults("");
+      return;
+    }
 
     if (root) {
       path = [Number(root.dataset.index)];
@@ -2543,4 +2570,8 @@
     const globalSearch = event.target.closest(".tf-global-search");
     if (globalSearch) renderGlobalResults(globalSearch.value);
   });
+  } catch (error) {
+    console.error("Genvägsmenyn kunde inte skapas.", error);
+    alert("Genvägsmenyn kunde inte skapas: " + (error && error.message ? error.message : error));
+  }
 })();
