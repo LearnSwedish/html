@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
@@ -135,6 +135,127 @@
       text-align: center;
     }
 
+    .difference-button {
+      width: 100%;
+      margin-top: 12px;
+      border: 1px solid #bdc7d6;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #fff;
+      padding: 11px 12px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(23, 32, 42, .16);
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .difference-button:hover {
+      background: #253241;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(23, 32, 42, .18);
+    }
+
+    .difference-button:focus-visible,
+    .modal-close:focus-visible {
+      outline: 3px solid rgba(47,111,237,.45);
+      outline-offset: 3px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(23, 32, 42, .42);
+      z-index: 100;
+    }
+
+    .modal-overlay.is-open {
+      display: grid;
+    }
+
+    .modal-panel {
+      position: relative;
+      width: min(720px, 100%);
+      max-height: min(82vh, 760px);
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 28px 80px rgba(23, 32, 42, .28);
+      padding: 26px 30px 28px;
+      transform: translateY(10px) scale(.98);
+      opacity: 0;
+      transition: transform .22s ease, opacity .22s ease;
+    }
+
+    .modal-overlay.is-open .modal-panel {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .modal-panel h2 {
+      margin: 0 42px 14px 0;
+      font-size: 1.45rem;
+      line-height: 1.15;
+    }
+
+    .modal-panel p {
+      margin: 0 0 13px;
+      color: var(--ink);
+    }
+
+    .modal-panel .example-line {
+      margin: 16px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--clause);
+      border-radius: 8px;
+      background: #f8fafc;
+      font-size: .88rem;
+      line-height: 1.45;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .modal-close::before,
+    .modal-close::after {
+      content: "";
+      position: absolute;
+      top: 15px;
+      left: 8px;
+      width: 16px;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--marker);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .modal-close::before { transform: rotate(45deg); }
+    .modal-close::after { transform: rotate(-45deg); }
+
+    .modal-close:hover::before {
+      transform: rotate(135deg);
+      background: #9f2e39;
+    }
+
+    .modal-close:hover::after {
+      transform: rotate(45deg);
+      background: #9f2e39;
+    }
+
     .controls {
       position: sticky;
       top: 0;
@@ -205,6 +326,10 @@
     .summary {
       margin: 0 0 14px;
       color: var(--muted);
+    }
+
+    .sentence-card > .summary {
+      margin-top: 12px;
     }
 
     .sentence-card {
@@ -436,6 +561,7 @@
       .section.wide { grid-column: auto; }
       .parts, .parallel, .insight-row, .formula { grid-template-columns: 1fr; }
       .intro { min-height: 0; }
+      .modal-panel { padding: 24px 20px; }
     }
   </style>
 </head>
@@ -464,6 +590,7 @@
             <span class="legend-segment"><span class="legend-tail">är läkare.</span><small>rest</small></span>
           </span>
         </div>
+        <button class="difference-button" type="button" data-open-modal="difference-modal">What's the difference?</button>
       </aside>
     </div>
 
@@ -503,7 +630,7 @@
           <tr><td><strong>där</strong></td><td>place where something happens</td><td>natural for location; alternative is often <strong>som + preposition</strong></td><td>EN <strong>where</strong><br>DE <strong>in dem/wo</strong><br>NL <strong>waar(in)</strong></td></tr>
           <tr><td><strong>dit</strong></td><td>place as destination or direction</td><td>compact for movement towards; alternative is often <strong>som + preposition</strong></td><td>EN <strong>where to/to which</strong><br>DE <strong>in die/zu dem</strong><br>NL <strong>waarheen/naartoe</strong></td></tr>
           <tr><td><strong>varifrån</strong></td><td>place as source or origin</td><td>clear but often more written; everyday alternative is often <strong>som + preposition</strong></td><td>EN <strong>where from/from which</strong><br>DE <strong>aus dem/von dem</strong><br>NL <strong>waaruit/vandaan</strong></td></tr>
-          <tr><td><strong>när<br>då</strong></td><td>time at which something happens</td><td><strong>när</strong> is safest everyday choice; <strong>då</strong> is often more written</td><td>EN <strong>when</strong><br>DE often <strong>an dem/in der</strong><br>NL often <strong>waarop/waarin</strong></td></tr>
+          <tr><td><strong>när<br>då</strong></td><td>time at which something happens</td><td><strong>när</strong> is safest everyday choice; it can often be omitted with clear time nouns; <strong>som + preposition</strong> is also possible</td><td>EN <strong>when</strong><br>DE often <strong>an dem/in der</strong><br>NL often <strong>waarop/waarin</strong></td></tr>
           <tr><td><strong>vars</strong></td><td>possession or belonging</td><td>compact and useful; same form for all antecedents</td><td>EN <strong>whose/of which</strong><br>DE <strong>dessen/deren</strong><br>NL <strong>wiens/waarvan</strong></td></tr>
         </tbody>
       </table>
@@ -684,17 +811,18 @@
         <h2>när / då</h2>
         <p class="summary"><b>När</b> and <b>då</b> both mean <b>when</b>. For learners, <b>när</b> is the safest everyday choice. <b>Då</b> is common in writing and can sound slightly more formal or literary.</p>
         <div class="insight-row">
-          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish has two simple time markers, <strong>när</strong> and <strong>då</strong>, and can sometimes also use <strong>som</strong> with a clearly delimited time phrase. German and Dutch often use prepositional forms for the same job.</div>
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish has two simple time markers, <strong>när</strong> and <strong>då</strong>, but <strong>när</strong> can often disappear after clear time nouns: <strong>dagen vi träffades</strong>. With place nouns, Swedish can also use <strong>som + preposition</strong>, as in <strong>restaurangen som vi åt på</strong>.</div>
           <div class="callout consensus"><b>Shared pattern</b>All four languages have a “when” strategy for time relatives, especially in learner-friendly examples.</div>
-          <div class="callout register"><b>Register note</b><strong>när</strong> is the everyday learner-safe form. <strong>då</strong> is common in written Swedish. English <strong>when</strong> is neutral; Dutch <strong>waarop/waarin</strong> is more written than many everyday alternatives.</div>
+          <div class="callout register"><b>Register note</b><strong>när</strong> is the everyday learner-safe form. Omission is common with words like <strong>dag</strong>, <strong>år</strong> and <strong>gång</strong>. <strong>Då</strong> is common in written Swedish; Dutch <strong>waarop/waarin</strong> is more written than many everyday alternatives.</div>
         </div>
         <div class="sentence-card">
           <span class="sentence"><span class="correlate">Dagen</span> <span class="clause"><span class="marker">när</span> vi träffades</span> glömmer jag aldrig.</span>
           <div class="parallel">
-            <div><b>English</b>I will never forget the day when we met.<span><strong>When</strong> can also be omitted: the day we met.</span></div>
+            <div><b>English</b>I will never forget the day when we met.<span><strong>When</strong> can be omitted: the day we met.</span></div>
             <div><b>German</b>Den Tag, an dem wir uns trafen, vergesse ich nie.<span>German uses <strong>an dem</strong> for a day/time point.</span></div>
             <div><b>Dutch</b>De dag waarop we elkaar ontmoetten, vergeet ik nooit.<span><strong>Waarop</strong> is common in writing; <strong>dat</strong> is also common in speech.</span></div>
           </div>
+          <p class="summary">Swedish can omit <strong>när</strong> here too: <strong>Dagen vi träffades glömmer jag aldrig.</strong></p>
         </div>
         <div class="sentence-card">
           <span class="sentence">Det var <span class="correlate">en tid</span> <span class="clause"><span class="marker">då</span> många flyttade till städerna</span>.</span>
@@ -704,7 +832,15 @@
             <div><b>Dutch</b>Het was een tijd waarin veel mensen naar de steden verhuisden.<span>Dutch often uses <strong>waarin</strong> for periods of time.</span></div>
           </div>
         </div>
-        <p class="summary"><b>Som</b> can also occur with clearly delimited time expressions, especially in everyday language: <strong>året som hon bodde i Uppsala</strong>.</p>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Restaurangen</span> <span class="clause"><span class="marker">som</span> vi åt på</span> var fullbokad.</span>
+          <div class="parallel">
+            <div><b>English</b>The restaurant we ate at was fully booked.<span>Everyday English can strand <strong>at</strong>; formal English has <strong>at which</strong>.</span></div>
+            <div><b>German</b>Das Restaurant, in dem wir gegessen haben, war ausgebucht.<span>German normally uses the prepositional form <strong>in dem</strong>.</span></div>
+            <div><b>Dutch</b>Het restaurant waar we aten was volgeboekt.<span>Dutch often uses <strong>waar</strong>, with <strong>waar ... in</strong> also possible.</span></div>
+          </div>
+        </div>
+        <p class="summary">For clear time nouns Swedish therefore has two especially useful patterns: <strong>dagen när vi träffades</strong> and <strong>dagen vi träffades</strong>. The related <strong>som + preposition</strong> pattern is clearest with place nouns: <strong>restaurangen som vi åt på</strong>.</p>
       </section>
 
       <section class="section wide" id="vars">
@@ -750,6 +886,45 @@
       </div>
     </section>
   </main>
+  <div class="modal-overlay" id="difference-modal" role="dialog" aria-modal="true" aria-labelledby="difference-title" hidden>
+    <article class="modal-panel">
+      <button class="modal-close" type="button" aria-label="Close"></button>
+      <h2 id="difference-title">What difference does a relative clause make?</h2>
+      <p>What is the difference between using a relative clause and opting not to? After all, one can say <strong>Boken som ligger på bordet är min</strong> <em>(The book that is lying on the table is mine)</em>, or split the thought in two: <strong>Där ligger en bok. Den är min.</strong> <em>(There is a book lying there. It is mine.)</em></p>
+      <p>While the structural difference might seem minimal at first glance—neither version saving much time or breath—the real distinction is semantic and rhetorical. Slightly simplified, a relative clause performs one of two fascinating functions: it either identifies or characterises.</p>
+      <p>First, it identifies. It allows the listener or reader to instantly pin down exactly who or what is being discussed. Take the sentence: <strong>Mannen som bor här är läkare</strong> <em>(The man who lives here is a doctor)</em>. Here, the relative clause acts as a pinpoint spotlight, isolating the specific individual without the need for clumsy, iterative phrasing. If we chop it up into <strong>Här bor en man och han är läkare</strong> <em>(A man lives here, and he is a doctor)</em>, that sharp, immediate connection between identity and attributes is diluted.</p>
+      <p>Second, it characterises. Instead of merely pointing someone out, a relative clause bakes new information directly into their identity. Consider: <strong>Jag har en granne vars hund skäller hela natten</strong> <em>(I have a neighbour whose dog barks all night)</em>. The alternative would be a clunky coordination of facts: <strong>Jag har en granne och han har en hund som skäller hela natten</strong> <em>(I have a neighbour, and he has a dog that barks all night)</em>. In the fragmented version, the connection remains loose: you get a neighbour-fact alongside a dog-fact. But with the relative clause, something much more sophisticated happens. The neighbour is no longer just any neighbour; he is structurally defined by that disruptive dog. The barking is no longer a postscript—it becomes an intrinsic part of how the neighbour is conceptualised. And that is rather elegant.</p>
+    </article>
+  </div>
+  <script>
+    const differenceModal = document.getElementById("difference-modal");
+    const differenceOpenButton = document.querySelector("[data-open-modal='difference-modal']");
+    const differenceCloseButton = differenceModal.querySelector(".modal-close");
+
+    function openDifferenceModal() {
+      differenceModal.hidden = false;
+      requestAnimationFrame(() => {
+        differenceModal.classList.add("is-open");
+        differenceCloseButton.focus();
+      });
+    }
+
+    function closeDifferenceModal() {
+      differenceModal.classList.remove("is-open");
+      setTimeout(() => {
+        differenceModal.hidden = true;
+        differenceOpenButton.focus();
+      }, 220);
+    }
+
+    differenceOpenButton.addEventListener("click", openDifferenceModal);
+    differenceCloseButton.addEventListener("click", closeDifferenceModal);
+    differenceModal.addEventListener("click", (event) => {
+      if (event.target === differenceModal) closeDifferenceModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !differenceModal.hidden) closeDifferenceModal();
+    });
+  </script>
 </body>
 </html>
-
