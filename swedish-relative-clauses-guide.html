@@ -1,0 +1,755 @@
+﻿<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swedish Relative Clauses: A Compact Guide</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #5d6978;
+      --paper: #fbfaf7;
+      --panel: #ffffff;
+      --line: #d9dee7;
+      --correlate: #2f6fed;
+      --marker: #c23b48;
+      --clause: #198754;
+      --note: #6f4dbf;
+      --gold: #b7791f;
+      --shadow: 0 18px 45px rgba(23, 32, 42, 0.10);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(47,111,237,.055) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(25,135,84,.045) 1px, transparent 1px),
+        var(--paper);
+      background-size: 34px 34px;
+      font: 16px/1.55 "Aptos", "Segoe UI", Arial, sans-serif;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 28px 20px 52px;
+    }
+
+    .topbar {
+      display: block;
+      margin-bottom: 18px;
+    }
+
+    .intro, .legend, .section, .matrix, .closing {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .intro {
+      padding: 24px 26px;
+      min-height: 250px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 4.15rem);
+      line-height: .96;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 1.06rem;
+    }
+
+    .legend {
+      padding: 18px;
+      position: fixed;
+      top: 28px;
+      left: calc(50% + 538px);
+      width: 300px;
+      z-index: 30;
+    }
+
+    .legend h2, .section h2, .matrix h2, .closing h2 {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      letter-spacing: 0;
+    }
+
+    .legend-example {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 12px;
+      overflow: hidden;
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    .legend-sentence {
+      display: grid;
+      grid-template-columns: max-content max-content max-content;
+      column-gap: 6px;
+      align-items: start;
+      font-size: .98rem;
+      line-height: 1.45;
+    }
+
+    .legend-segment {
+      display: grid;
+      grid-template-rows: 28px 34px;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .legend-segment small {
+      display: block;
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.25;
+      text-align: center;
+      align-self: start;
+    }
+
+    .legend-tail {
+      color: var(--ink);
+      white-space: nowrap;
+      padding-top: 2px;
+    }
+
+    .legend-marker-note {
+      display: block;
+      margin-top: 2px;
+      color: var(--marker);
+      font-size: .7rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .controls {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0 0 18px;
+      padding: 10px;
+      background: rgba(251,250,247,.94);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      overflow-x: auto;
+      box-shadow: 0 10px 22px rgba(23,32,42,.08);
+    }
+
+    .controls a {
+      color: var(--ink);
+      text-decoration: none;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      font-size: .92rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .controls a:hover { border-color: var(--correlate); color: var(--correlate); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .section {
+      padding: 18px;
+      min-height: 320px;
+      scroll-margin-top: 78px;
+    }
+
+    .section.wide { grid-column: 1 / -1; }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: .84rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .pill {
+      color: #fff;
+      background: var(--ink);
+      border-radius: 999px;
+      padding: 2px 8px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: .8rem;
+    }
+
+    .summary {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    .sentence-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 13px;
+      margin: 12px 0;
+    }
+
+    .sentence {
+      display: block;
+      font-size: 1.14rem;
+      line-height: 1.8;
+      margin-bottom: 6px;
+    }
+
+    .correlate, .marker, .clause {
+      border-radius: 5px;
+      padding: 2px 5px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .correlate {
+      color: #fff;
+      background: var(--correlate);
+    }
+
+    .marker {
+      color: #fff;
+      background: var(--marker);
+      font-weight: 800;
+    }
+
+    .clause {
+      color: #063f24;
+      background: rgba(25,135,84,.14);
+      border-bottom: 3px solid rgba(25,135,84,.55);
+    }
+
+    .parallel {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+      align-items: stretch;
+    }
+
+    .parallel div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      padding: 10px;
+      min-height: 112px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      align-content: start;
+    }
+
+    .parallel b {
+      display: block;
+      color: var(--gold);
+      margin-bottom: 4px;
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .parallel span {
+      display: block;
+      color: var(--muted);
+      font-size: .88rem;
+      margin-top: 4px;
+    }
+
+    .insight-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .callout {
+      border: 1px solid var(--line);
+      border-left-width: 5px;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #fff;
+    }
+
+    .callout b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .swedish-edge {
+      border-left-color: var(--correlate);
+      background: rgba(47,111,237,.06);
+    }
+
+    .consensus {
+      border-left-color: var(--clause);
+      background: rgba(25,135,84,.06);
+    }
+
+    .register {
+      border-left-color: var(--gold);
+      background: rgba(183,121,31,.08);
+    }
+
+    .parts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .part {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      min-height: 64px;
+      background: #fbfcfe;
+    }
+
+    .part b {
+      display: block;
+      font-size: .76rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+      letter-spacing: .04em;
+    }
+
+    code {
+      font-family: "Cascadia Mono", Consolas, monospace;
+      font-size: .94em;
+      white-space: normal;
+    }
+
+    .matrix {
+      margin: 18px 0 16px;
+      padding: 18px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      padding: 10px 9px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      background: #f8fafc;
+    }
+
+    .matrix col:nth-child(1) { width: 17.5%; }
+    .matrix col:nth-child(2) { width: 32.5%; }
+    .matrix col:nth-child(3) { width: 32.5%; }
+    .matrix col:nth-child(4) { width: 27.5%; }
+
+    .closing {
+      padding: 18px;
+      margin-top: 16px;
+    }
+
+    .formula {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(110px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .formula span {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .formula span b,
+    .formula span strong {
+      display: block;
+    }
+
+    @media (max-width: 1360px) {
+      main {
+        max-width: 1040px;
+        padding-right: 20px;
+      }
+
+      .legend {
+        position: sticky;
+        top: 12px;
+        left: auto;
+        right: auto;
+        width: auto;
+        margin: 0 0 18px;
+        z-index: 20;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .section.wide { grid-column: auto; }
+      .parts, .parallel, .insight-row, .formula { grid-template-columns: 1fr; }
+      .intro { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="topbar">
+      <section class="intro" aria-labelledby="title">
+        <h1 id="title">Swedish Relative Clauses</h1>
+        <p class="subtitle">A compact guide to the main Swedish relative clause markers, with clear sentence anatomy and comparisons with English, German and Dutch.</p>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Mannen</span> <span class="clause"><span class="marker">som</span> bor här</span> är läkare.</span>
+          <div class="parallel">
+            <div><b>English</b>The man who lives here is a doctor.<span>English chooses <strong>who</strong> for a person.</span></div>
+            <div><b>German</b>Der Mann, der hier wohnt, ist Arzt.<span>German marks gender and case: <strong>der</strong>.</span></div>
+            <div><b>Dutch</b>De man die hier woont, is arts.<span>Dutch uses <strong>die</strong> with de-words.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="legend" aria-labelledby="legend-title">
+        <h2 id="legend-title">How to Read the Marking</h2>
+        <div class="legend-example">
+          <span class="legend-sentence">
+            <span class="legend-segment"><span class="correlate">Mannen</span><small>correlate</small></span>
+            <span class="legend-segment"><span class="clause"><span class="marker">som</span> bor här</span><small>relative clause <em class="legend-marker-note">red word = marker</em></small></span>
+            <span class="legend-segment"><span class="legend-tail">är läkare.</span><small>rest</small></span>
+          </span>
+        </div>
+      </aside>
+    </div>
+
+    <nav class="controls" aria-label="Relative marker navigation">
+      <a href="#som">som</a>
+      <a href="#vilken">vilken/vilket/vilka</a>
+      <a href="#vilket-clause">vilket</a>
+      <a href="#dar">där</a>
+      <a href="#dit">dit</a>
+      <a href="#varifran">varifrån</a>
+      <a href="#nar-da">när/då</a>
+      <a href="#vars">vars</a>
+      <a href="#summary">summary</a>
+    </nav>
+
+    <section class="matrix" id="summary" aria-labelledby="matrix-title">
+      <h2 id="matrix-title">The System at a Glance</h2>
+      <table>
+        <colgroup>
+          <col>
+          <col>
+          <col>
+          <col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Swedish marker</th>
+            <th>Grammatical job</th>
+            <th>Everyday Swedish</th>
+            <th>English / German / Dutch</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>som</strong></td><td>general relative marker for people, things and clauses with an understood noun phrase</td><td>neutral default; <strong>som</strong> can often be omitted when the relative clause has its own new subject</td><td>EN <strong>who/which/that</strong><br>DE <strong>der/die/das</strong><br>NL <strong>die/dat</strong></td></tr>
+          <tr><td><strong>vilken<br>vilket<br>vilka</strong></td><td>formal relative pronoun agreeing with the antecedent</td><td>use mainly in formal or written Swedish; everyday Swedish usually prefers <strong>som</strong></td><td>EN <strong>which</strong><br>DE <strong>der/die/das</strong>; formal <strong>welcher</strong><br>NL usually <strong>die/dat</strong></td></tr>
+          <tr><td><strong>vilket</strong></td><td>appositional marker referring to a whole previous statement or situation</td><td>normal choice for “which” when it is used to mean “and this fact”</td><td>EN <strong>which</strong><br>DE <strong>was</strong><br>NL <strong>wat</strong></td></tr>
+          <tr><td><strong>där</strong></td><td>place where something happens</td><td>natural for location; alternative is often <strong>som + preposition</strong></td><td>EN <strong>where</strong><br>DE <strong>in dem/wo</strong><br>NL <strong>waar(in)</strong></td></tr>
+          <tr><td><strong>dit</strong></td><td>place as destination or direction</td><td>compact for movement towards; alternative is often <strong>som + preposition</strong></td><td>EN <strong>where to/to which</strong><br>DE <strong>in die/zu dem</strong><br>NL <strong>waarheen/naartoe</strong></td></tr>
+          <tr><td><strong>varifrån</strong></td><td>place as source or origin</td><td>clear but often more written; everyday alternative is often <strong>som + preposition</strong></td><td>EN <strong>where from/from which</strong><br>DE <strong>aus dem/von dem</strong><br>NL <strong>waaruit/vandaan</strong></td></tr>
+          <tr><td><strong>när<br>då</strong></td><td>time at which something happens</td><td><strong>när</strong> is safest everyday choice; <strong>då</strong> is often more written</td><td>EN <strong>when</strong><br>DE often <strong>an dem/in der</strong><br>NL often <strong>waarop/waarin</strong></td></tr>
+          <tr><td><strong>vars</strong></td><td>possession or belonging</td><td>compact and useful; same form for all antecedents</td><td>EN <strong>whose/of which</strong><br>DE <strong>dessen/deren</strong><br>NL <strong>wiens/waarvan</strong></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="grid">
+      <section class="section wide" id="som">
+        <div class="kicker"><span class="pill">1</span> neutral default</div>
+        <h2>som</h2>
+        <p class="summary"><b>Som</b> is the central, stylistically neutral Swedish relative marker. It introduces a relative clause with an understood element inside the clause.</p>
+        <div class="insight-row">
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish uses one neutral <strong>som</strong> across people, animals, things and many abstract antecedents. English splits this between <strong>who</strong>, <strong>which</strong> and <strong>that</strong>; German and Dutch make more form choices.</div>
+          <div class="callout consensus"><b>Shared pattern</b>All four languages treat subject relatives as structurally important: the relative marker normally cannot simply disappear.</div>
+          <div class="callout register"><b>Register note</b><strong>som</strong> is not informal slang. It is the normal, neutral Swedish choice in both speech and ordinary writing.</div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Mannen</span> <span class="clause"><span class="marker">som</span> bor här</span> är läkare.</span>
+          <div class="parallel">
+            <div><b>English</b>The man who lives here is a doctor.<span>Subject relative: the marker cannot be omitted.</span></div>
+            <div><b>German</b>Der Mann, der hier wohnt, ist Arzt.<span><strong>Der</strong> agrees and carries nominative case.</span></div>
+            <div><b>Dutch</b>De man die hier woont, is arts.<span>Uses <strong>die</strong>; the finite verb stays in the relative clause.</span></div>
+          </div>
+          <div class="parts">
+            <div class="part"><b>correlate</b>Mannen</div>
+            <div class="part"><b>marker</b>som</div>
+            <div class="part"><b>relative clause</b>som bor här</div>
+          </div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Boken</span> <span class="clause">(<span class="marker">som</span>) jag läste</span> var bra.</span>
+          <div class="parallel">
+            <div><b>English</b>The book (that/which) I read was good.<span>Object relative: <strong>that/which</strong> can often be omitted.</span></div>
+            <div><b>German</b>Das Buch, das ich gelesen habe, war gut.<span>German keeps <strong>das</strong>; the verb group goes to the end.</span></div>
+            <div><b>Dutch</b>Het boek dat ik gelezen heb, was goed.<span>Dutch uses <strong>dat</strong> with het-words.</span></div>
+          </div>
+        </div>
+        <p class="summary">If the understood element is the subject, <b>som</b> must normally be present. If it is the object, <b>som</b> can often be omitted.</p>
+      </section>
+
+      <section class="section wide" id="vilken">
+        <div class="kicker"><span class="pill">2</span> formal which</div>
+        <h2>vilken / vilket / vilka</h2>
+        <p class="summary">These mean roughly <b>which</b> and agree with the antecedent: <strong>vilken</strong> for en-words, <strong>vilket</strong> for ett-words, <strong>vilka</strong> for plurals. They are mostly written or formal; <b>som</b> is usually more natural in everyday Swedish.</p>
+        <div class="insight-row">
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish has a formal <strong>vilken/vilket/vilka</strong> option, but everyday Swedish usually avoids it and uses <strong>som</strong>. This is different from English, where <strong>which</strong> is not automatically stiff.</div>
+          <div class="callout consensus"><b>Shared pattern</b>All four languages can use a “which-like” strategy in more careful writing, but the normal form differs by language.</div>
+          <div class="callout register"><b>Register note</b>German <strong>welcher/welches/welche</strong> is often formal or marked; Dutch usually prefers <strong>die/dat</strong>. Swedish <strong>vilken</strong>-forms are best taught as recognition-first for general learners.</div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence">Jag läste <span class="correlate">en bok</span>, <span class="clause"><span class="marker">vilken</span> var mycket intressant</span>.</span>
+          <div class="parallel">
+            <div><b>English</b>I read a book, which was very interesting.<span>English which is normal here.</span></div>
+            <div><b>German</b>Ich las ein Buch, welches sehr interessant war.<span><strong>Welches</strong> is possible but formal; <strong>das</strong> is usually more natural.</span></div>
+            <div><b>Dutch</b>Ik las een boek dat erg interessant was.<span>Dutch normally uses <strong>dat</strong>, not a direct equivalent of <strong>vilken</strong>.</span></div>
+          </div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence">Hon ärvde <span class="correlate">ett hus</span>, <span class="clause"><span class="marker">vilket</span> behövde renoveras</span>.</span>
+          <div class="parallel">
+            <div><b>English</b>She inherited a house, which needed renovating.<span><strong>Which</strong> refers to house.</span></div>
+            <div><b>German</b>Sie erbte ein Haus, das renoviert werden musste.<span>German usually uses <strong>das</strong> here.</span></div>
+            <div><b>Dutch</b>Ze erfde een huis dat gerenoveerd moest worden.<span>Het-word antecedent gives <strong>dat</strong>.</span></div>
+          </div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence">De köpte <span class="correlate">två stolar</span>, <span class="clause"><span class="marker">vilka</span> behövde lagas</span>.</span>
+          <div class="parallel">
+            <div><b>English</b>They bought two chairs, which needed repairing.<span><strong>Which</strong> covers plural things too.</span></div>
+            <div><b>German</b>Sie kauften zwei Stühle, die repariert werden mussten.<span>Plural relative pronoun: <strong>die</strong>.</span></div>
+            <div><b>Dutch</b>Ze kochten twee stoelen die gerepareerd moesten worden.<span>Plural/de-word form: <strong>die</strong>.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section wide" id="vilket-clause">
+        <div class="kicker"><span class="pill">3</span> whole situation</div>
+        <h2>vilket</h2>
+        <p class="summary"><b>Vilket</b> can refer back to an entire preceding statement, not just a noun.</p>
+        <div class="insight-row">
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish uses neuter <strong>vilket</strong> for “the whole previous situation”. This is not the same use as <strong>vilket</strong> agreeing with an ett-word noun.</div>
+          <div class="callout consensus"><b>Shared pattern</b>All four languages have a way to refer back to an entire previous clause: English <strong>which</strong>, German <strong>was</strong>, Dutch <strong>wat</strong>.</div>
+          <div class="callout register"><b>Register note</b>This construction is normal in Swedish writing and also usable in speech. A more conversational Swedish paraphrase is often <strong>något som ...</strong>.</div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Han kom för sent</span>, <span class="clause"><span class="marker">vilket</span> irriterade oss</span>.</span>
+          <div class="parallel">
+            <div><b>English</b>He arrived late, which annoyed us.<span><strong>Which</strong> refers to the whole fact.</span></div>
+            <div><b>German</b>Er kam zu spät, was uns ärgerte.<span>German uses <strong>was</strong> for the whole situation.</span></div>
+            <div><b>Dutch</b>Hij kwam te laat, wat ons irriteerde.<span>Dutch uses <strong>wat</strong> for the whole situation.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section wide" id="dar">
+        <div class="kicker"><span class="pill">4</span> location</div>
+        <h2>där</h2>
+        <p class="summary"><b>Där</b> means <b>where</b>. Use it when the antecedent is a place and the relative clause says what happens there.</p>
+        <div class="insight-row">
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish can often avoid a preposition completely with <strong>där</strong>: <strong>huset där jag bor</strong>. German commonly needs <strong>in dem</strong>, and Dutch often uses <strong>waarin</strong> or <strong>waar ... in</strong>.</div>
+          <div class="callout consensus"><b>Shared pattern</b>All four languages distinguish a location meaning: “the place where something happens”.</div>
+          <div class="callout register"><b>Register note</b>Swedish <strong>där</strong> is natural and ordinary. <strong>som ... i/på/vid</strong> is also correct, but can sound heavier when the meaning is simply “where”.</div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Huset</span> <span class="clause"><span class="marker">där</span> jag bor</span> är gammalt.</span>
+          <div class="parallel">
+            <div><b>English</b>The house where I live is old.<span><strong>Where</strong> marks location.</span></div>
+            <div><b>German</b>Das Haus, in dem ich wohne, ist alt.<span>German uses <strong>in dem</strong>: preposition + relative pronoun.</span></div>
+            <div><b>Dutch</b>Het huis waarin ik woon, is oud.<span>Dutch often uses <strong>waar + preposition</strong>: <strong>waarin</strong>.</span></div>
+          </div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Huset</span> <span class="clause"><span class="marker">som</span> jag bor i</span> är gammalt.</span>
+          <div class="parallel">
+            <div><b>English</b>The house that I live in is old.<span>English can strand <strong>in</strong>.</span></div>
+            <div><b>German</b>Das Haus, in dem ich wohne, ist alt.<span>German normally keeps <strong>in dem</strong> together.</span></div>
+            <div><b>Dutch</b>Het huis waar ik in woon, is oud.<span>Dutch can use a split <strong>waar ... in</strong> pattern.</span></div>
+          </div>
+        </div>
+        <p class="summary">Both can work. <b>Där</b> is often smoother for simple location; <b>som</b> normally needs a final preposition.</p>
+      </section>
+
+      <section class="section wide" id="dit">
+        <div class="kicker"><span class="pill">5</span> direction to</div>
+        <h2>dit</h2>
+        <p class="summary"><b>Dit</b> means <b>to which</b> or <b>where to</b>. It marks movement towards a place.</p>
+        <div class="insight-row">
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish has a compact destination word, <strong>dit</strong>, so it can mark direction without adding <strong>till</strong>. English often strands <strong>to</strong>; German and Dutch normally show direction through a prepositional form.</div>
+          <div class="callout consensus"><b>Shared pattern</b>All four languages need to distinguish “where something is” from “where something goes”.</div>
+          <div class="callout register"><b>Register note</b><strong>dit</strong> is not especially formal. Dutch <strong>waarheen</strong> is more written than <strong>waar ... naartoe</strong>; German <strong>in die/zu dem</strong> is the ordinary grammatical route.</div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Staden</span> <span class="clause"><span class="marker">dit</span> vi reste</span> ligger vid kusten.</span>
+          <div class="parallel">
+            <div><b>English</b>The town we travelled to is on the coast.<span>English commonly leaves <strong>to</strong> at the end.</span></div>
+            <div><b>German</b>Die Stadt, in die wir reisten, liegt an der Küste.<span>Direction: <strong>in + accusative die</strong>.</span></div>
+            <div><b>Dutch</b>De stad waarheen we reisden, ligt aan de kust.<span><strong>Waarheen</strong> marks direction towards.</span></div>
+          </div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Staden</span> <span class="clause"><span class="marker">som</span> vi reste till</span> ligger vid kusten.</span>
+          <div class="parallel">
+            <div><b>English</b>The town that we travelled to is on the coast.<span><strong>That</strong> is possible; it may also be omitted.</span></div>
+            <div><b>German</b>Die Stadt, in die wir reisten, liegt an der Küste.<span>German expresses direction with <strong>in die</strong>.</span></div>
+            <div><b>Dutch</b>De stad waar we naartoe reisden, ligt aan de kust.<span>Very natural Dutch: <strong>waar ... naartoe</strong>.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section wide" id="varifran">
+        <div class="kicker"><span class="pill">6</span> origin from</div>
+        <h2>varifrån</h2>
+        <p class="summary"><b>Varifrån</b> means <b>from which</b> or <b>where from</b>. It is correct and clear, but often more written or formal than <b>som ... från</b>.</p>
+        <div class="insight-row">
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish offers two very teachable choices: compact <strong>varifrån</strong> or neutral <strong>som ... från</strong>. English usually uses a stranded <strong>from</strong>; German uses <strong>aus/von + relative pronoun</strong>; Dutch often uses <strong>waar ... vandaan</strong>.</div>
+          <div class="callout consensus"><b>Shared pattern</b>All four languages mark source or origin separately from ordinary location.</div>
+          <div class="callout register"><b>Register note</b><strong>varifrån</strong> is clear and correct but often more written. Dutch <strong>waaruit</strong> is similarly more compact/written than <strong>waar ... vandaan</strong>.</div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Landet</span> <span class="clause"><span class="marker">varifrån</span> de kom</span> ligger långt bort.</span>
+          <div class="parallel">
+            <div><b>English</b>The country they came from is far away.<span>English often strands <strong>from</strong>.</span></div>
+            <div><b>German</b>Das Land, aus dem sie kamen, liegt weit weg.<span>Source: <strong>aus + dative dem</strong>.</span></div>
+            <div><b>Dutch</b>Het land waar ze vandaan kwamen, ligt ver weg.<span>Everyday Dutch often uses <strong>waar ... vandaan</strong>.</span></div>
+          </div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Landet</span> <span class="clause"><span class="marker">som</span> de kom från</span> ligger långt bort.</span>
+          <div class="parallel">
+            <div><b>English</b>The country that they came from is far away.<span><strong>That</strong> can be omitted in many contexts.</span></div>
+            <div><b>German</b>Das Land, aus dem sie kamen, liegt weit weg.<span>No direct equivalent of Swedish <strong>som ... från</strong>.</span></div>
+            <div><b>Dutch</b>Het land waaruit ze kwamen, ligt ver weg.<span><strong>Waaruit</strong> is more compact and slightly more written.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section wide" id="nar-da">
+        <div class="kicker"><span class="pill">7</span> time</div>
+        <h2>när / då</h2>
+        <p class="summary"><b>När</b> and <b>då</b> both mean <b>when</b>. For learners, <b>när</b> is the safest everyday choice. <b>Då</b> is common in writing and can sound slightly more formal or literary.</p>
+        <div class="insight-row">
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish has two simple time markers, <strong>när</strong> and <strong>då</strong>, and can sometimes also use <strong>som</strong> with a clearly delimited time phrase. German and Dutch often use prepositional forms for the same job.</div>
+          <div class="callout consensus"><b>Shared pattern</b>All four languages have a “when” strategy for time relatives, especially in learner-friendly examples.</div>
+          <div class="callout register"><b>Register note</b><strong>när</strong> is the everyday learner-safe form. <strong>då</strong> is common in written Swedish. English <strong>when</strong> is neutral; Dutch <strong>waarop/waarin</strong> is more written than many everyday alternatives.</div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Dagen</span> <span class="clause"><span class="marker">när</span> vi träffades</span> glömmer jag aldrig.</span>
+          <div class="parallel">
+            <div><b>English</b>I will never forget the day when we met.<span><strong>When</strong> can also be omitted: the day we met.</span></div>
+            <div><b>German</b>Den Tag, an dem wir uns trafen, vergesse ich nie.<span>German uses <strong>an dem</strong> for a day/time point.</span></div>
+            <div><b>Dutch</b>De dag waarop we elkaar ontmoetten, vergeet ik nooit.<span><strong>Waarop</strong> is common in writing; <strong>dat</strong> is also common in speech.</span></div>
+          </div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence">Det var <span class="correlate">en tid</span> <span class="clause"><span class="marker">då</span> många flyttade till städerna</span>.</span>
+          <div class="parallel">
+            <div><b>English</b>It was a time when many people moved to the cities.<span><strong>When</strong> is the natural English marker.</span></div>
+            <div><b>German</b>Es war eine Zeit, in der viele Menschen in die Städte zogen.<span>German uses <strong>in der</strong> with Zeit.</span></div>
+            <div><b>Dutch</b>Het was een tijd waarin veel mensen naar de steden verhuisden.<span>Dutch often uses <strong>waarin</strong> for periods of time.</span></div>
+          </div>
+        </div>
+        <p class="summary"><b>Som</b> can also occur with clearly delimited time expressions, especially in everyday language: <strong>året som hon bodde i Uppsala</strong>.</p>
+      </section>
+
+      <section class="section wide" id="vars">
+        <div class="kicker"><span class="pill">8</span> possession</div>
+        <h2>vars</h2>
+        <p class="summary"><b>Vars</b> means <b>whose</b> or <b>of which</b>. It does not change form and stands before the noun that belongs to someone or something.</p>
+        <div class="insight-row">
+          <div class="callout swedish-edge"><b>Swedish standout</b>Swedish <strong>vars</strong> is unusually simple: it does not change for gender, number or case. German must choose <strong>dessen/deren</strong>; Dutch often switches between <strong>wiens</strong> and <strong>waarvan</strong>.</div>
+          <div class="callout consensus"><b>Shared pattern</b>All four languages have a possessive relative construction corresponding to “whose”.</div>
+          <div class="callout register"><b>Register note</b>English <strong>whose</strong> is normal for people and possible for organisations. Dutch <strong>wiens</strong> is quite formal; <strong>waarvan</strong> is often more natural for organisations and things.</div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Mannen</span> <span class="clause"><span class="marker">vars</span> bil står utanför</span> är min granne.</span>
+          <div class="parallel">
+            <div><b>English</b>The man whose car is parked outside is my neighbour.<span><strong>Whose</strong> expresses possession.</span></div>
+            <div><b>German</b>Der Mann, dessen Auto draußen steht, ist mein Nachbar.<span>German chooses <strong>dessen</strong> for masculine/neuter singular antecedents.</span></div>
+            <div><b>Dutch</b>De man wiens auto buiten staat, is mijn buurman.<span><strong>Wiens</strong> is correct, but somewhat formal.</span></div>
+          </div>
+        </div>
+        <div class="sentence-card">
+          <span class="sentence"><span class="correlate">Ett företag</span> <span class="clause"><span class="marker">vars</span> anställda trivs</span> fungerar ofta bättre.</span>
+          <div class="parallel">
+            <div><b>English</b>A company whose employees are happy often works better.<span><strong>Whose</strong> can refer to organisations too.</span></div>
+            <div><b>German</b>Ein Unternehmen, dessen Mitarbeiter zufrieden sind, funktioniert oft besser.<span><strong>Dessen</strong> also works for neuter singular Unternehmen.</span></div>
+            <div><b>Dutch</b>Een bedrijf waarvan de werknemers tevreden zijn, functioneert vaak beter.<span>Dutch often uses <strong>waarvan</strong> for organisations/things.</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="closing">
+      <h2>The Clean Teaching Formula</h2>
+      <p class="summary">For a general learner, Swedish relative clauses are easiest if the marker is chosen by meaning.</p>
+      <div class="formula" aria-label="Teaching formula">
+        <span><b>neutral:</b><strong>som</strong></span>
+        <span><b>place:</b><strong>där</strong></span>
+        <span><b>to place:</b><strong>dit</strong></span>
+        <span><b>from place:</b><strong>varifrån</strong></span>
+        <span><b>time:</b><strong>när/då</strong></span>
+        <span><b>possession:</b><strong>vars</strong></span>
+        <span><b>formal which:</b><strong>vilken/vilket/vilka</strong></span>
+        <span><b>whole statement:</b><strong>vilket</strong></span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
+
