@@ -367,7 +367,7 @@
 .custom-select-dropdown .dropdown-option[data-value="__EMPTY__"] i {
   display: inline-block;
   width: 1em;
-  margin: 0;
+  margin: 0 .35em 0 0;
   text-align: left;
 }
 
@@ -403,6 +403,7 @@
 .custom-select-label .fa-check {
   font-size: 1em;
   line-height: 1;
+  margin-right: .35em;
 }
 
 .fa-solid.fa-check::before {
@@ -2470,7 +2471,7 @@
             "id": "everyday_location_04",
             "section": "5 location",
             "situation": "Neutral Swedish",
-            "prompt": "Restaurangen ___ vi åt på var väldigt populär.",
+            "prompt": "Restaurangen ___ vi åt på var fullbokad.",
             "acceptedAnswers": [
                 {
                     "value": "som",
@@ -2626,7 +2627,7 @@
             "id": "formal_location_dar_03",
             "section": "5 location",
             "situation": "Semi-formal Swedish",
-            "prompt": "Scenen ___ orkestern ska spela är inte färdigbyggd.",
+            "prompt": "Scenen ___ orkestern spelar är tillfälligt byggd.",
             "acceptedAnswers": [
                 {
                     "value": "där",
@@ -3800,7 +3801,7 @@
             "id": "everyday_possession_02",
             "section": "9 possession",
             "situation": "Neutral Swedish",
-            "prompt": "Kvinnan ___ den stora hunden har flyttat.",
+            "prompt": "Kvinnan ___ den där fula hunden har flyttat.",
             "acceptedAnswers": [
                 {
                     "value": "som har",
@@ -3836,7 +3837,7 @@
             "id": "everyday_possession_04",
             "section": "9 possession",
             "situation": "Neutral Swedish",
-            "prompt": "Föräldrar ___ stökiga barn som stör på lektionerna ska bli kontaktade.",
+            "prompt": "Föräldrar ___ stökiga elever ska bli kontaktade.",
             "acceptedAnswers": [
                 {
                     "value": "som har",
@@ -3962,7 +3963,7 @@
             "id": "formal_possession_vars_04",
             "section": "9 possession",
             "situation": "Formal Swedish",
-            "prompt": "Journalisten ___ artikel avslöjade bristerna har vunnit ett pris.",
+            "prompt": "Skolan vill ha fokus på elever ___ föräldrar har problematisk situation.",
             "acceptedAnswers": [
                 {
                     "value": "vars",
@@ -4102,7 +4103,7 @@
     }
 
 function labelForValue(value) {
-  if (value === '__EMPTY__') return 'the omitted relative marker';
+  if (value === '__EMPTY__') return 'omitted';
   return OPTIONS.find(option => option.value === value)?.label || value;
 }
 
@@ -4112,7 +4113,7 @@ function labelForValue(value) {
 
     function optionLabelMarkup(option) {
       if (option.value === '__EMPTY__') {
-        return '<i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only">no marker</span>';
+        return '<i class="fa-solid fa-check" aria-hidden="true"></i><span>omitted</span>';
       }
       return escapeHtml(option.label);
     }
@@ -4389,8 +4390,8 @@ if (item.situation === 'Formal Swedish') {
           }
 
           if (selected === '__EMPTY__') {
-            label.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only">no marker</span>';
-            label.setAttribute('aria-label', 'no marker');
+            label.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i><span>omitted</span>';
+            label.setAttribute('aria-label', 'omitted relative marker');
           } else {
             label.textContent = labelForValue(selected);
             label.removeAttribute('aria-label');
