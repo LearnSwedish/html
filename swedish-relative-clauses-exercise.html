@@ -1,0 +1,4644 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swedish Relative Clauses</title>
+  <style>
+    :root {
+      --bg: #f4f1eb;
+      --card: #fffaf2;
+      --ink: #1f2933;
+      --muted: #667085;
+      --line: #d9cfc0;
+      --accent: #324c5f;
+      --accent-light: #e4edf2;
+      --good: #217a43;
+      --good-bg: #e5f5eb;
+      --bad: #a33a2b;
+      --bad-bg: #f8e7e4;
+      --shadow: 0 22px 50px rgba(31, 41, 51, .14);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 34px 28px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(50, 76, 95, .16), transparent 34rem),
+        linear-gradient(135deg, #f7f2ea 0%, #ece6dc 100%);
+    }
+
+    main {
+      width: min(920px, 100%);
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: baseline;
+      margin: 0 0 44px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    body.exercise-not-started .progress,
+    body.exercise-not-started .card,
+    body.exercise-not-started .feedback,
+    body.exercise-not-started .next-row {
+      display: none;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(217, 207, 192, .9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(28px, 4vw, 44px);
+      position: relative;
+      overflow: visible;
+    }
+
+    .card.situation-everyday {
+      background: #eff8ef;
+      border-color: rgba(77, 148, 91, .35);
+    }
+
+    .card.situation-formal {
+      background: #fff0ee;
+      border-color: rgba(163, 58, 43, .32);
+    }
+
+.card.situation-semi-formal {
+  background: #eef6fb;
+  border-color: rgba(111, 163, 196, .45);
+}
+
+.card.situation-semi-formal .situation-icon {
+  color: #2f6f95;
+  border-color: #6fa3c4;
+  box-shadow: 0 0 0 4px rgba(111, 163, 196, .18), 0 14px 32px rgba(31, 41, 51, .16);
+}
+
+.card.situation-semi-formal .style-hint {
+  color: #2f6f95;
+  border-color: rgba(111, 163, 196, .45);
+}	
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 8px;
+      background: linear-gradient(90deg, var(--accent), #7d938f, #c2a979);
+    }
+
+    .situation-icon {
+      position: absolute;
+      top: -34px;
+      right: 30px;
+      width: 68px;
+      height: 68px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid rgba(31, 41, 51, .12);
+      box-shadow: 0 14px 32px rgba(31, 41, 51, .16);
+      font-size: 2.4rem;
+      font-style: normal;
+      z-index: 4;
+    }
+
+    .card.situation-everyday .situation-icon {
+      color: var(--good);
+      border-color: var(--good);
+      box-shadow: 0 0 0 4px rgba(33, 122, 67, .18), 0 14px 32px rgba(31, 41, 51, .16);
+    }
+
+    .card.situation-formal .situation-icon {
+      color: var(--bad);
+      border-color: #7f1d1d;
+      box-shadow: 0 0 0 4px rgba(127, 29, 29, .18), 0 14px 32px rgba(31, 41, 51, .16);
+    }
+
+    .situation-icon.fa-face-laugh::before {
+      content: "\1F642";
+      display: block;
+      line-height: 1;
+    }
+
+    .situation-icon.fa-briefcase::before {
+      content: "\1F4BC";
+      display: block;
+      line-height: 1;
+      transform: translateY(-3px);
+    }
+
+    .progress {
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      letter-spacing: -0.03em;
+      color: var(--accent);
+    }
+
+    .hint-row {
+      position: absolute;
+      top: -16px;
+      left: 30px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      max-width: calc(100% - 112px);
+    }
+
+    .style-hint,
+    .meaning-hint {
+      color: var(--accent);
+      background: #fff;
+      border: 1px solid rgba(31, 41, 51, .12);
+      border-radius: 999px;
+      box-shadow: 0 10px 24px rgba(31, 41, 51, .12);
+      padding: .38rem .8rem;
+      font-weight: 850;
+      font-size: clamp(1rem, 1.65vw, 1.22rem);
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .meaning-hint {
+      color: #3f4a54;
+      border-color: rgba(31, 41, 51, .16);
+      font-size: clamp(.84rem, 1.25vw, 1rem);
+      letter-spacing: .01em;
+      text-transform: none;
+    }
+
+    .style-hint:empty,
+    .meaning-hint:empty {
+      display: none;
+    }
+
+    .card.situation-everyday .style-hint {
+      color: var(--good);
+      border-color: rgba(77, 148, 91, .35);
+    }
+
+    .card.situation-formal .style-hint {
+      color: var(--bad);
+      border-color: rgba(163, 58, 43, .32);
+    }
+
+    .sentence {
+      font-size: clamp(1.22rem, 2.6vw, 2rem);
+      line-height: 1.22;
+      letter-spacing: -0.045em;
+      margin: 0;
+      font-weight: 750;
+    }
+
+    .blank-wrap {
+      display: inline-flex;
+      vertical-align: baseline;
+      min-width: min(100%, 190px);
+      margin: 0 .1em;
+      position: relative;
+      top: -5px;
+    }
+
+    .custom-select-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      user-select: none;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .7em;
+      font: inherit;
+      font-size: clamp(.95rem, 1.55vw, 1.15rem);
+      font-weight: 750;
+      line-height: 1.1;
+      padding: .35em .6em .35em .75em;
+      border: 2px solid var(--accent);
+      border-radius: 999px;
+      background: white;
+      color: var(--ink);
+      outline: none;
+      cursor: pointer;
+      transition: border-color .18s ease, background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+
+    .custom-select-trigger:hover,
+    .custom-select-wrapper.open .custom-select-trigger,
+    .custom-select-trigger:focus-visible {
+      box-shadow: 0 0 0 4px rgba(50, 76, 95, .16);
+    }
+
+    .custom-select-label.placeholder {
+      color: var(--ink);
+    }
+
+    .chevron {
+      width: 1em;
+      height: 1em;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform .18s ease;
+    }
+
+    .custom-select-wrapper.open .chevron {
+      transform: rotate(180deg);
+    }
+
+/* Dropdown-containern – bredd och padding anpassad så texten får plats */
+.custom-select-dropdown {
+  display: block; /* Styrs via opacity/pointer-events för hårdvaruaccelererad animation utan lagg */
+  opacity: 0;
+  transform: translateY(4px) scale(0.99);
+  pointer-events: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: max(100%, 480px);
+  background: #ffffff;
+  border: 1px solid rgba(219, 211, 199, 0.6);
+  border-radius: 20px;
+  z-index: 50;
+  padding: 12px;
+  box-shadow: 
+    0 4px 6px -1px rgba(31, 41, 51, 0.05),
+    0 20px 40px -2px rgba(31, 41, 51, 0.12);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.custom-select-wrapper.multi-answer .custom-select-dropdown {
+  width: max(100%, 620px);
+}
+/* Visas när dropdownen är öppen */
+.custom-select-wrapper.open .custom-select-dropdown {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+/* Tre kolumner med fyra svarsalternativ i varje när listan har tolv val */
+.dropdown-cols-2-r5 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-template-rows: repeat(4, auto);
+  gap: 8px;
+}
+
+.custom-select-wrapper.multi-answer .dropdown-cols-2-r5 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(110px, .8fr);
+}
+/* Svarsalternativen – designade som eleganta, klickbara piller */
+.dropdown-option {
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.06rem;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  white-space: normal;
+  background: rgba(31, 41, 51, 0.03);
+  color: rgba(31, 41, 51, 0.65);
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.dropdown-option::first-line {
+  color: var(--ink);
+}
+ 
+/* Hover- och fokusläge */
+.dropdown-option:hover,
+.dropdown-option:focus-visible {
+  background: var(--accent-light);
+  color: var(--accent);
+  transform: translateY(-1px);
+  outline: none;
+}
+/* När man klickar/håller ner */
+.dropdown-option:active {
+  transform: translateY(0);
+}
+/* Valt alternativ – fylls helt med din mörka accentfärg */
+.dropdown-option.selected {
+  background: var(--accent);
+  color: #ffffff !important;
+}
+/* Säkerställer att även förstalinjen blir vit i valt läge */
+.dropdown-option.selected::first-line {
+  color: #ffffff !important;
+}
+
+.custom-select-dropdown .dropdown-option[data-value="__EMPTY__"] {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start !important;
+  text-align: left !important;
+}
+
+.custom-select-dropdown .dropdown-option[data-value="__EMPTY__"] i {
+  display: inline-block;
+  width: 1em;
+  margin: 0;
+  text-align: left;
+}
+
+.dropdown-option.found {
+  background: var(--good-bg);
+  color: var(--good);
+  font-weight: 850;
+}
+
+.dropdown-option.found::first-line {
+  color: var(--good) !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dropdown-option.empty-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+.custom-select-label .fa-check {
+  font-size: 1em;
+  line-height: 1;
+}
+
+.fa-solid.fa-check::before {
+  content: "\2713";
+}
+
+.dropdown-done {
+  display: none;
+  grid-column: 4;
+  grid-row: 1;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.02rem;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+  padding: 10px 12px;
+  transition: background-color .15s ease, transform .1s ease;
+}
+
+.custom-select-wrapper.multi-answer .dropdown-done {
+  display: flex;
+}
+
+.dropdown-done:hover,
+.dropdown-done:focus-visible {
+  background: #1f3648;
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.dropdown-done:active {
+  transform: translateY(0);
+}
+
+.feedback {
+  min-height: 3.4rem;
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+    .is-correct .custom-select-trigger {
+      border-color: var(--good);
+      background: var(--good-bg);
+      transform: translateY(-1px);
+    }
+
+    .is-wrong .custom-select-trigger {
+      border-color: var(--bad);
+      background: var(--bad-bg);
+      animation: shake .24s ease both;
+    }
+
+    .feedback.correct { color: var(--good); }
+    .feedback.wrong { color: var(--bad); }
+
+    .next-row {
+      display: none;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    .next-row.visible {
+      display: flex;
+    }
+
+    .next-button {
+      border: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #ffffff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1.05rem;
+      font-weight: 850;
+      letter-spacing: -0.01em;
+      padding: .72rem 1.8rem;
+      box-shadow: 0 12px 26px rgba(31, 41, 51, .18);
+      transition: background-color .15s ease, transform .12s ease, box-shadow .15s ease;
+    }
+
+    .next-button:hover,
+    .next-button:focus-visible {
+      background: #1f3648;
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(31, 41, 51, .22);
+      outline: none;
+    }
+
+    .next-button:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 22px rgba(31, 41, 51, .18);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 24, 40, .45);
+      display: none;
+      place-items: center;
+      padding: 24px;
+      z-index: 20;
+    }
+
+    .modal-backdrop.open { display: grid; }
+
+    .modal {
+      width: min(560px, 100%);
+      background: #fffaf2;
+      border-radius: 26px;
+      box-shadow: 0 28px 70px rgba(0,0,0,.28);
+      padding: 42px 34px 34px;
+      position: relative;
+      transform: translateY(12px) scale(.98);
+      opacity: 0;
+      animation: modalIn .22s ease forwards;
+      border: 1px solid rgba(217, 207, 192, .95);
+    }
+
+    @keyframes modalIn {
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .modal h2 {
+      margin: 0 0 14px;
+      color: var(--accent);
+      font-size: clamp(1.45rem, 3vw, 2.1rem);
+      letter-spacing: -0.04em;
+    }
+
+    .modal p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 1.15rem;
+      line-height: 1.55;
+    }
+
+
+    .exercise-length-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .exercise-length-options[hidden] {
+      display: none;
+    }
+
+    .exercise-length-button {
+      border: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #ffffff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1.02rem;
+      font-weight: 850;
+      letter-spacing: -0.01em;
+      padding: .78rem 1.1rem;
+      box-shadow: 0 12px 26px rgba(31, 41, 51, .16);
+      transition: background-color .15s ease, transform .12s ease, box-shadow .15s ease;
+    }
+
+    .exercise-length-button:hover,
+    .exercise-length-button:focus-visible {
+      background: #1f3648;
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(31, 41, 51, .2);
+      outline: none;
+    }
+
+    .exercise-length-button:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 22px rgba(31, 41, 51, .16);
+    }
+
+    .completion-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 28px;
+    }
+
+    .completion-actions[hidden] {
+      display: none;
+    }
+
+    .restart-button {
+      border: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #ffffff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1.05rem;
+      font-weight: 850;
+      letter-spacing: -0.01em;
+      padding: .72rem 1.8rem;
+      box-shadow: 0 12px 26px rgba(31, 41, 51, .18);
+      transition: background-color .15s ease, transform .12s ease, box-shadow .15s ease;
+    }
+
+    .restart-button:hover,
+    .restart-button:focus-visible {
+      background: #1f3648;
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(31, 41, 51, .22);
+      outline: none;
+    }
+
+    .restart-button:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 22px rgba(31, 41, 51, .18);
+    }
+
+    .close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--accent);
+      font-size: 30px;
+      line-height: 1;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: transform .25s ease, background-color .2s ease, color .2s ease;
+    }
+	
+.situation-icon.fa-pen-nib::before {
+  content: "\270E";
+  display: block;
+  line-height: 1;
+}
+
+    .close:hover,
+    .close:focus {
+      background: var(--accent-light);
+      color: #172631;
+      transform: rotate(90deg) scale(1.08);
+      outline: none;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 22px 16px; }
+      .page-header { flex-direction: column; gap: 8px; margin-bottom: 38px; }
+      .card { border-radius: 22px; }
+      .situation-icon { top: -24px; right: 20px; width: 54px; height: 54px; font-size: 1.9rem; }
+      .hint-row { top: -13px; left: 20px; max-width: calc(100% - 86px); gap: 6px; }
+      .style-hint { font-size: .92rem; }
+      .meaning-hint { font-size: .78rem; }
+      .blank-wrap { display: block; margin: .35em 0; min-width: 0; width: 100%; }
+      .custom-select-wrapper { width: 100%; }
+      .custom-select-dropdown { width: 100%; min-width: 0; }
+      .custom-select-wrapper.multi-answer .custom-select-dropdown { width: 100%; }
+      .custom-select-wrapper.multi-answer .dropdown-cols-2-r5 { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; }
+      .custom-select-wrapper.multi-answer .dropdown-done { grid-column: 1 / -1; grid-row: auto; min-height: 48px; }
+      .dropdown-option { font-size: .98rem; }
+      .exercise-length-options { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="exercise-not-started">
+  <main>
+    <header class="page-header">
+      <h1>Swedish Relative clauses</h1>
+      <div class="progress" id="progress">0 / 0 points</div>
+    </header>
+
+    <section class="card" id="card" aria-live="polite">
+      <i class="situation-icon fa-regular fa-face-laugh" id="situationIcon" aria-hidden="true"></i>
+      <div class="hint-row" aria-live="polite">
+        <span class="style-hint" id="styleHint"></span>
+        <span class="meaning-hint" id="meaningHint"></span>
+      </div>
+      <p class="sentence" id="sentence"></p>
+    </section>
+
+    <div class="feedback" id="feedback" aria-live="assertive"></div>
+    <div class="next-row" id="nextRow">
+      <button type="button" class="next-button" id="nextButton">Next</button>
+    </div>
+  </main>
+
+  <div class="modal-backdrop open" id="modalBackdrop" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle">Customise your practice</h2>
+      <p id="modalText">Choose how many sentences your practice should contain!</p>
+      <div class="exercise-length-options" id="exerciseLengthOptions" aria-label="Choose exercise length">
+        <button type="button" class="exercise-length-button" data-count="15">15 sentences</button>
+        <button type="button" class="exercise-length-button" data-count="30">30 sentences</button>
+        <button type="button" class="exercise-length-button" data-count="50">50 sentences</button>
+        <button type="button" class="exercise-length-button" data-count="100">100 sentences</button>
+      </div>
+      <div class="completion-actions" id="completionActions" hidden>
+        <button type="button" class="restart-button" id="restartButton">Restart</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const EXERCISE_BANK = {
+    "title": "Swedish relative clause dropdown exercise bank",
+    "description": "Sentence bank for dropdown exercises based on the guide. Word-order practice is intentionally excluded.",
+    "scoring": {
+        "perAcceptedAnswer": 1,
+        "mode": "A learner can collect one point for each accepted answer in a question. The value __EMPTY__ means no visible marker."
+    },
+    "defaultDropdownOptions": [
+        {
+            "value": "__EMPTY__",
+            "label": "no marker"
+        },
+        {
+            "value": "vilken",
+            "label": "vilken"
+        },
+        {
+            "value": "vilket",
+            "label": "vilket"
+        },
+        {
+            "value": "vilka",
+            "label": "vilka"
+        },
+        {
+            "value": "som",
+            "label": "som"
+        },
+        {
+            "value": "dit",
+            "label": "dit"
+        },
+        {
+            "value": "där",
+            "label": "där"
+        },
+        {
+            "value": "då",
+            "label": "då"
+        },
+        {
+            "value": "när",
+            "label": "när"
+        },
+        {
+            "value": "varifrån",
+            "label": "varifrån"
+        },
+        {
+            "value": "som har",
+            "label": "som har"
+        },
+        {
+            "value": "vars",
+            "label": "vars"
+        }
+    ],
+    "items": [
+        {
+            "id": "everyday_som_subject_01",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Mannen ___ bor här är läkare.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_02",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Kvinnan ___ ringde nyss söker dig.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_03",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Barnet ___ gråter i hallen är trött.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_04",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Läraren ___ undervisar i svenska är sjuk idag.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_05",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Huset ___ står vid sjön är till salu.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_06",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Bilen ___ står utanför blockerar infarten.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_07",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Flickan ___ sjunger på scenen är min syster.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_08",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Katten ___ sitter i fönstret heter Maja.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_09",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Eleven ___ sitter längst fram har en fråga.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_10",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Boken ___ ligger på bordet är min.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_11",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Väskan ___ ligger under stolen är min.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_subject_12",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Personen ___ ansvarar för bokningen är sjuk idag.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "subject relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_01",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Boken ___ jag läste var bra.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_02",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Mannen ___ vi träffade igår var trevlig.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_03",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Filmen ___ hon rekommenderade var fantastisk.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_04",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Huset ___ de köpte var dyrt.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_05",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Väskan ___ du glömde står i hallen.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_06",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Texten ___ läraren skrev på tavlan var svår.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_07",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Restaurangen ___ vi besökte låg nära stationen.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_08",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Brevet ___ han skickade kom aldrig fram.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_09",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Stolen ___ jag målade blev blå.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_10",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Museet ___ de ville besöka var stängt.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_11",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Kakan ___ hon bakade smakade fantastiskt.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_som_object_12",
+            "section": "1 neutral default",
+            "situation": "Neutral Swedish",
+            "prompt": "Frågan ___ du ställde var viktig.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "som optional",
+                "omitted marker",
+                "object relative",
+                "everyday"
+            ]
+        },
+        {
+            "id": "formal_object_which_01",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Boken ___ jag läste var bra.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_02",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Mannen ___ vi träffade igår var trevlig.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_03",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Filmen ___ hon rekommenderade var fantastisk.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_04",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Huset ___ de köpte var dyrt.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_05",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Väskan ___ du glömde står i hallen.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_06",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Texten ___ läraren skrev på tavlan var svår.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_07",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Restaurangen ___ vi besökte låg nära stationen.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_08",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Brevet ___ han skickade kom aldrig fram.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_09",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Stolen ___ jag målade blev blå.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_10",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Museet ___ de ville besöka var stängt.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_11",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Kakan ___ hon bakade smakade fantastiskt.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "formal_object_which_12",
+            "section": "1 neutral default",
+            "situation": "Formal Swedish",
+            "prompt": "Frågan ___ du ställde var viktig.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "formal vilken/vilket",
+                "object relative",
+                "formal counterpart to optional som"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_01",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "Den ___ vill följa med måste anmäla sig idag.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_02",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "Den ___ kommer först får välja plats.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_03",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "Den ___ bor här vet nog svaret.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_04",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "Den ___ har frågor kan stanna efter lektionen.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_05",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "Det ___ hände igår var mycket märkligt.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_06",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "Det ___ oroar mig är kostnaden.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_07",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "Det ___ du säger är viktigt.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday",
+                "object relative after det"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_08",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "Det ___ står i brevet är sant.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_09",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "De ___ redan har betalat kan gå in.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_10",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "De ___ arbetar på helgerna får extra betalt.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_11",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "De ___ inte har legitimation måste vänta här.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_general_pronoun_12",
+            "section": "2 general pronouns",
+            "situation": "Neutral Swedish",
+            "prompt": "De ___ vill delta får skriva upp sig.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "den/det/de som",
+                "everyday"
+            ]
+        },
+        {
+            "id": "formal_vilken_01",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Jag läste en bok, ___ var mycket intressant.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilken",
+                "formal",
+                "en-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilken_02",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Hon köpte en tavla, ___ senare visade sig vara värdefull.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilken",
+                "formal",
+                "en-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilken_03",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Vi såg en film, ___ hade fått mycket god kritik.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilken",
+                "formal",
+                "en-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilken_04",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Jag hittade en artikel, ___ var mycket relevant.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilken",
+                "formal",
+                "en-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilken_05",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "De passerade en kyrka, ___ var byggd på 1100-talet.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilken",
+                    "label": "vilken"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilken",
+                "formal",
+                "en-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilket_01",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Hon ärvde ett hus, ___ behövde renoveras.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket agreeing",
+                "formal",
+                "ett-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilket_02",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "De besökte ett museum, ___ låg nära stationen.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket agreeing",
+                "formal",
+                "ett-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilket_03",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Han skrev ett brev, ___ aldrig skickades.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket agreeing",
+                "formal",
+                "ett-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilket_04",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Kommunen öppnade ett bibliotek, ___ snabbt blev populärt.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket agreeing",
+                "formal",
+                "ett-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilket_05",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Företaget lanserade ett system, ___ sparade mycket tid.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket agreeing",
+                "formal",
+                "ett-word agreement"
+            ]
+        },
+        {
+            "id": "formal_vilka_01",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "De köpte två stolar, ___ behövde lagas.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilka",
+                    "label": "vilka"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilka",
+                "formal",
+                "plural agreement"
+            ]
+        },
+        {
+            "id": "formal_vilka_02",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Han läste flera böcker, ___ alla handlade om svensk historia.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilka",
+                    "label": "vilka"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilka",
+                "formal",
+                "plural agreement"
+            ]
+        },
+        {
+            "id": "formal_vilka_03",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "De intervjuade tre personer, ___ alla hade lång erfarenhet.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilka",
+                    "label": "vilka"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilka",
+                "formal",
+                "plural agreement"
+            ]
+        },
+        {
+            "id": "formal_vilka_04",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Vi hittade några artiklar, ___ var mycket användbara.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilka",
+                    "label": "vilka"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilka",
+                "formal",
+                "plural agreement"
+            ]
+        },
+        {
+            "id": "formal_vilka_05",
+            "section": "3 formal which",
+            "situation": "Formal Swedish",
+            "prompt": "Hon planterade flera blommor, ___ behövde mycket ljus.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilka",
+                    "label": "vilka"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilka",
+                "formal",
+                "plural agreement"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_01",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Jag läste en bok ___ var mycket intressant.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_02",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Hon köpte en tavla ___ senare visade sig vara värdefull.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_03",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Vi såg en film ___ hade fått mycket god kritik.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_04",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Jag hittade en artikel ___ var mycket relevant.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_05",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "De passerade en kyrka ___ var byggd på 1100-talet.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_06",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Hon ärvde ett hus ___ behövde renoveras.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_07",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "De besökte ett museum ___ låg nära stationen.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_08",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Han skrev ett brev ___ aldrig skickades.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_09",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Kommunen öppnade ett bibliotek ___ snabbt blev populärt.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_10",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Företaget lanserade ett system ___ sparade mycket tid.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_11",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "De köpte två stolar ___ behövde lagas.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_12",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Han läste flera böcker ___ alla handlade om svensk historia.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_13",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "De intervjuade tre personer ___ alla hade lång erfarenhet.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_14",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Vi hittade några artiklar ___ var mycket användbara.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_formal_which_counterpart_15",
+            "section": "3 formal which",
+            "situation": "Neutral Swedish",
+            "prompt": "Hon planterade flera blommor ___ behövde mycket ljus.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "som required",
+                "everyday counterpart to formal vilken/vilket/vilka"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_01",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Han kom för sent, ___ irriterade oss.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_02",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Det började regna, ___ förstörde picknicken.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_03",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Hon tackade nej, ___ förvånade alla.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_04",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Bussen var inställd, ___ gjorde oss sena.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_05",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Han glömde nyckeln, ___ skapade problem.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_06",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Mötet drog ut på tiden, ___ ingen hade räknat med.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_07",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Priserna steg kraftigt, ___ påverkade hela budgeten.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_08",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Han svarade aldrig, ___ gjorde situationen besvärlig.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_09",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "De stängde museet tidigare, ___ många besökare klagade på.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_vilket_whole_situation_10",
+            "section": "4 whole situation",
+            "situation": "Neutral Swedish",
+            "prompt": "Hon vann tävlingen, ___ gjorde henne mycket glad.",
+            "acceptedAnswers": [
+                {
+                    "value": "vilket",
+                    "label": "vilket"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vilket whole situation",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_location_01",
+            "section": "5 location",
+            "situation": "Neutral Swedish",
+            "prompt": "Huset ___ jag bor i är gammalt.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "location",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_location_02",
+            "section": "5 location",
+            "situation": "Neutral Swedish",
+            "prompt": "Lägenheten ___ hon bor i ligger nära stationen.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "location",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_location_03",
+            "section": "5 location",
+            "situation": "Neutral Swedish",
+            "prompt": "Scenen ___ orkestern spelar på är tillfälligt byggd.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "location",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_location_04",
+            "section": "5 location",
+            "situation": "Neutral Swedish",
+            "prompt": "Restaurangen ___ vi åt på var fullbokad.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "location",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_location_05",
+            "section": "5 location",
+            "situation": "Neutral Swedish",
+            "prompt": "Stranden ___ vi badar på ligger nedanför hotellet.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "location",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_location_06",
+            "section": "5 location",
+            "situation": "Neutral Swedish",
+            "prompt": "Rummet ___ vi sover i är nymålat.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "location",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_location_07",
+            "section": "5 location",
+            "situation": "Neutral Swedish",
+            "prompt": "Salen ___ vi ska ses i ligger på andra våningen.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "location",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_location_08",
+            "section": "5 location",
+            "situation": "Neutral Swedish",
+            "prompt": "Lokalen ___ konserten ägde rum i är numera ett museum.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "location",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "formal_location_dar_01",
+            "section": "5 location",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Huset ___ jag bor är gammalt.",
+            "acceptedAnswers": [
+                {
+                    "value": "där",
+                    "label": "där"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "där",
+                "location",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_location_dar_02",
+            "section": "5 location",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Lägenheten ___ hon bor ligger nära stationen.",
+            "acceptedAnswers": [
+                {
+                    "value": "där",
+                    "label": "där"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "där",
+                "location",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_location_dar_03",
+            "section": "5 location",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Scenen ___ orkestern spelar är tillfälligt byggd.",
+            "acceptedAnswers": [
+                {
+                    "value": "där",
+                    "label": "där"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "där",
+                "location",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_location_dar_04",
+            "section": "5 location",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Restaurangen ___ vi åt var fullbokad.",
+            "acceptedAnswers": [
+                {
+                    "value": "där",
+                    "label": "där"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "där",
+                "location",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_location_dar_05",
+            "section": "5 location",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Stranden ___ vi badar ligger nedanför hotellet.",
+            "acceptedAnswers": [
+                {
+                    "value": "där",
+                    "label": "där"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "där",
+                "location",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_location_dar_06",
+            "section": "5 location",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Rummet ___ vi sover är nymålat.",
+            "acceptedAnswers": [
+                {
+                    "value": "där",
+                    "label": "där"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "där",
+                "location",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_location_dar_07",
+            "section": "5 location",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Salen ___ vi ska ses ligger på andra våningen.",
+            "acceptedAnswers": [
+                {
+                    "value": "där",
+                    "label": "där"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "där",
+                "location",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_location_dar_08",
+            "section": "5 location",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Lokalen ___ konserten ägde rum är numera ett museum.",
+            "acceptedAnswers": [
+                {
+                    "value": "där",
+                    "label": "där"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "där",
+                "location",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "everyday_direction_01",
+            "section": "6 direction to",
+            "situation": "Neutral Swedish",
+            "prompt": "Staden ___ vi reste till ligger vid kusten.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "direction",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_direction_02",
+            "section": "6 direction to",
+            "situation": "Neutral Swedish",
+            "prompt": "Italien är ett land ___ många vill resa till för maten och kulturen.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "direction",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_direction_03",
+            "section": "6 direction to",
+            "situation": "Neutral Swedish",
+            "prompt": "Kommunen bygger en badplats ___ familjer kan cykla till på sommaren.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "direction",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_direction_04",
+            "section": "6 direction to",
+            "situation": "Neutral Swedish",
+            "prompt": "Ute i vattnet finns ett hopptorn ___ barnen kan simma till från bryggan.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "direction",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_direction_05",
+            "section": "6 direction to",
+            "situation": "Neutral Swedish",
+            "prompt": "I Lund finns många kaféer ___ studenter söker sig till för att läsa.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "direction",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_direction_06",
+            "section": "6 direction to",
+            "situation": "Neutral Swedish",
+            "prompt": "Hotellet har en takterrass ___ besökarna kan ta hissen till.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "direction",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_direction_07",
+            "section": "6 direction to",
+            "situation": "Neutral Swedish",
+            "prompt": "Biblioteket öppnade ett studierum ___ eleverna kunde gå till efter skolan.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "direction",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "formal_direction_dit_01",
+            "section": "6 direction to",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Staden ___ vi reste ligger vid kusten.",
+            "acceptedAnswers": [
+                {
+                    "value": "dit",
+                    "label": "dit"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "dit",
+                "direction",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_direction_dit_02",
+            "section": "6 direction to",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Italien är ett land ___ många vill resa för maten och kulturen.",
+            "acceptedAnswers": [
+                {
+                    "value": "dit",
+                    "label": "dit"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "dit",
+                "direction",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_direction_dit_03",
+            "section": "6 direction to",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Kommunen bygger en badplats ___ familjer kan cykla på sommaren.",
+            "acceptedAnswers": [
+                {
+                    "value": "dit",
+                    "label": "dit"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "dit",
+                "direction",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_direction_dit_04",
+            "section": "6 direction to",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Ute i vattnet finns ett hopptorn ___ barnen kan simma från bryggan.",
+            "acceptedAnswers": [
+                {
+                    "value": "dit",
+                    "label": "dit"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "dit",
+                "direction",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_direction_dit_05",
+            "section": "6 direction to",
+            "situation": "Semi-formal Swedish",
+            "prompt": "I Lund finns många kaféer ___ studenter söker sig för att läsa.",
+            "acceptedAnswers": [
+                {
+                    "value": "dit",
+                    "label": "dit"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "dit",
+                "direction",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_direction_dit_06",
+            "section": "6 direction to",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Hotellet har en takterrass ___ besökarna kan ta hissen.",
+            "acceptedAnswers": [
+                {
+                    "value": "dit",
+                    "label": "dit"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "dit",
+                "direction",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_direction_dit_07",
+            "section": "6 direction to",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Biblioteket öppnade ett studierum ___ eleverna kunde gå efter skolan.",
+            "acceptedAnswers": [
+                {
+                    "value": "dit",
+                    "label": "dit"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "dit",
+                "direction",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "everyday_origin_01",
+            "section": "7 origin from",
+            "situation": "Neutral Swedish",
+            "prompt": "Landet ___ de kom från ligger långt bort.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "origin",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_origin_02",
+            "section": "7 origin from",
+            "situation": "Neutral Swedish",
+            "prompt": "Landet ___ många människor flyr från har länge varit drabbat av krig.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "origin",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_origin_03",
+            "section": "7 origin from",
+            "situation": "Neutral Swedish",
+            "prompt": "Hamnen ___ färjorna avgår från ligger längst ut på ön.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "origin",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_origin_04",
+            "section": "7 origin from",
+            "situation": "Neutral Swedish",
+            "prompt": "Landet ___ företaget importerar sitt kaffe från har kritiserats.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "origin",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_origin_05",
+            "section": "7 origin from",
+            "situation": "Neutral Swedish",
+            "prompt": "Plattformen ___ talaren kunde nå en stor publik från var väl vald.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "origin",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_origin_06",
+            "section": "7 origin from",
+            "situation": "Neutral Swedish",
+            "prompt": "Berget ___ soldaterna inledde anfallet från syns från dalen.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "origin",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_origin_07",
+            "section": "7 origin from",
+            "situation": "Neutral Swedish",
+            "prompt": "Staden ___ tåget avgår från ligger två timmar bort.",
+            "acceptedAnswers": [
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 2,
+            "coverage": [
+                "origin",
+                "som optional",
+                "omitted marker",
+                "final preposition",
+                "everyday"
+            ]
+        },
+        {
+            "id": "formal_origin_varifran_01",
+            "section": "7 origin from",
+            "situation": "Formal Swedish",
+            "prompt": "Landet ___ de kom ligger långt bort.",
+            "acceptedAnswers": [
+                {
+                    "value": "varifrån",
+                    "label": "varifrån"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "varifrån",
+                "origin",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_origin_varifran_02",
+            "section": "7 origin from",
+            "situation": "Formal Swedish",
+            "prompt": "Landet ___ många människor flyr har länge varit drabbat av krig.",
+            "acceptedAnswers": [
+                {
+                    "value": "varifrån",
+                    "label": "varifrån"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "varifrån",
+                "origin",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_origin_varifran_03",
+            "section": "7 origin from",
+            "situation": "Formal Swedish",
+            "prompt": "Hamnen ___ färjorna avgår ligger längst ut på ön.",
+            "acceptedAnswers": [
+                {
+                    "value": "varifrån",
+                    "label": "varifrån"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "varifrån",
+                "origin",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_origin_varifran_04",
+            "section": "7 origin from",
+            "situation": "Formal Swedish",
+            "prompt": "Landet ___ företaget importerar sitt kaffe har kritiserats.",
+            "acceptedAnswers": [
+                {
+                    "value": "varifrån",
+                    "label": "varifrån"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "varifrån",
+                "origin",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_origin_varifran_05",
+            "section": "7 origin from",
+            "situation": "Formal Swedish",
+            "prompt": "Plattformen ___ talaren kunde nå en stor publik var väl vald.",
+            "acceptedAnswers": [
+                {
+                    "value": "varifrån",
+                    "label": "varifrån"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "varifrån",
+                "origin",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_origin_varifran_06",
+            "section": "7 origin from",
+            "situation": "Formal Swedish",
+            "prompt": "Berget ___ soldaterna inledde anfallet syns från dalen.",
+            "acceptedAnswers": [
+                {
+                    "value": "varifrån",
+                    "label": "varifrån"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "varifrån",
+                "origin",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_origin_varifran_07",
+            "section": "7 origin from",
+            "situation": "Formal Swedish",
+            "prompt": "Staden ___ tåget avgår ligger två timmar bort.",
+            "acceptedAnswers": [
+                {
+                    "value": "varifrån",
+                    "label": "varifrån"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "varifrån",
+                "origin",
+                "formal"
+            ]
+        },
+        {
+            "id": "everyday_time_01",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Dagen ___ vi träffades glömmer jag aldrig.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_02",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Året ___ hon bodde i Uppsala minns hon tydligt.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_03",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Sommaren ___ han lärde sig simma var ovanligt varm.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_04",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Veckan ___ hela staden var utan el var kaotisk.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_05",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Månaden ___ hon arbetade i Paris gick snabbt.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_06",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Kvällen ___ vi firade examen blev oförglömlig.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_07",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Natten ___ stormen drog in sov ingen särskilt bra.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_08",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Morgonen ___ tåget gick försov han sig.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_09",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Helgen ___ vi målade huset regnade det hela tiden.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_time_10",
+            "section": "8 time",
+            "situation": "Neutral Swedish",
+            "prompt": "Stunden ___ allt förändrades minns jag fortfarande.",
+            "acceptedAnswers": [
+                {
+                    "value": "när",
+                    "label": "när"
+                },
+                {
+                    "value": "som",
+                    "label": "som"
+                },
+                {
+                    "value": "__EMPTY__",
+                    "label": "no marker"
+                }
+            ],
+            "maxScore": 3,
+            "coverage": [
+                "time",
+                "när",
+                "som optional",
+                "omitted marker",
+                "everyday"
+            ]
+        },
+        {
+            "id": "formal_time_da_01",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Dagen ___ vi träffades glömmer jag aldrig.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_02",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Året ___ hon bodde i Uppsala minns hon tydligt.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_03",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Sommaren ___ han lärde sig simma var ovanligt varm.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_04",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Veckan ___ hela staden var utan el var kaotisk.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_05",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Månaden ___ hon arbetade i Paris gick snabbt.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_06",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Kvällen ___ vi firade examen blev oförglömlig.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_07",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Natten ___ stormen drog in sov ingen särskilt bra.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_08",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Morgonen ___ tåget gick försov han sig.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_09",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Helgen ___ vi målade huset regnade det hela tiden.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "formal_time_da_10",
+            "section": "8 time",
+            "situation": "Semi-formal Swedish",
+            "prompt": "Stunden ___ allt förändrades minns jag fortfarande.",
+            "acceptedAnswers": [
+                {
+                    "value": "då",
+                    "label": "då"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "time",
+                "då",
+                "somewhat formal"
+            ]
+        },
+        {
+            "id": "everyday_possession_01",
+            "section": "9 possession",
+            "situation": "Neutral Swedish",
+            "prompt": "Mannen ___ bilen utanför är min granne.",
+            "acceptedAnswers": [
+                {
+                    "value": "som har",
+                    "label": "som har"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "possession",
+                "som har",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_possession_02",
+            "section": "9 possession",
+            "situation": "Neutral Swedish",
+            "prompt": "Kvinnan ___ den där fula hunden har flyttat.",
+            "acceptedAnswers": [
+                {
+                    "value": "som har",
+                    "label": "som har"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "possession",
+                "som har",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_possession_03",
+            "section": "9 possession",
+            "situation": "Neutral Swedish",
+            "prompt": "Huset ___ röda väggar har brunnit.",
+            "acceptedAnswers": [
+                {
+                    "value": "som har",
+                    "label": "som har"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "possession",
+                "som har",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_possession_04",
+            "section": "9 possession",
+            "situation": "Neutral Swedish",
+            "prompt": "Föräldrar ___ stökiga elever ska bli kontaktade.",
+            "acceptedAnswers": [
+                {
+                    "value": "som har",
+                    "label": "som har"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "possession",
+                "som har",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_possession_05",
+            "section": "9 possession",
+            "situation": "Neutral Swedish",
+            "prompt": "Pojken ___ grön mössa är min kusin.",
+            "acceptedAnswers": [
+                {
+                    "value": "som har",
+                    "label": "som har"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "possession",
+                "som har",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_possession_06",
+            "section": "9 possession",
+            "situation": "Neutral Swedish",
+            "prompt": "Rummet ___ fönster mot innergården är mitt sovrum.",
+            "acceptedAnswers": [
+                {
+                    "value": "som har",
+                    "label": "som har"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "possession",
+                "som har",
+                "everyday"
+            ]
+        },
+        {
+            "id": "everyday_possession_07",
+            "section": "9 possession",
+            "situation": "Neutral Swedish",
+            "prompt": "Flickan ___ rött hår sprang hem.",
+            "acceptedAnswers": [
+                {
+                    "value": "som har",
+                    "label": "som har"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "possession",
+                "som har",
+                "everyday"
+            ]
+        },
+        {
+            "id": "formal_possession_vars_01",
+            "section": "9 possession",
+            "situation": "Formal Swedish",
+            "prompt": "Mannen ___ bil står utanför är min granne.",
+            "acceptedAnswers": [
+                {
+                    "value": "vars",
+                    "label": "vars"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vars",
+                "possession",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_possession_vars_02",
+            "section": "9 possession",
+            "situation": "Formal Swedish",
+            "prompt": "Kvinnan ___ hund skäller varje natt bor här.",
+            "acceptedAnswers": [
+                {
+                    "value": "vars",
+                    "label": "vars"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vars",
+                "possession",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_possession_vars_03",
+            "section": "9 possession",
+            "situation": "Formal Swedish",
+            "prompt": "Författaren ___ böcker hon länge har beundrat kommer på besök.",
+            "acceptedAnswers": [
+                {
+                    "value": "vars",
+                    "label": "vars"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vars",
+                "possession",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_possession_vars_04",
+            "section": "9 possession",
+            "situation": "Formal Swedish",
+            "prompt": "Skolan vill ha fokus på elever ___ föräldrar har problematisk situation.",
+            "acceptedAnswers": [
+                {
+                    "value": "vars",
+                    "label": "vars"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vars",
+                "possession",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_possession_vars_05",
+            "section": "9 possession",
+            "situation": "Formal Swedish",
+            "prompt": "Forskaren ___ resultat väckte stor uppmärksamhet intervjuas i kväll.",
+            "acceptedAnswers": [
+                {
+                    "value": "vars",
+                    "label": "vars"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vars",
+                "possession",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_possession_vars_06",
+            "section": "9 possession",
+            "situation": "Formal Swedish",
+            "prompt": "Företaget ___ produkter säljs över hela världen har bytt ägare.",
+            "acceptedAnswers": [
+                {
+                    "value": "vars",
+                    "label": "vars"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vars",
+                "possession",
+                "formal"
+            ]
+        },
+        {
+            "id": "formal_possession_vars_07",
+            "section": "9 possession",
+            "situation": "Formal Swedish",
+            "prompt": "Organisationen ___ mål är att hjälpa barn söker nu volontärer.",
+            "acceptedAnswers": [
+                {
+                    "value": "vars",
+                    "label": "vars"
+                }
+            ],
+            "maxScore": 1,
+            "coverage": [
+                "vars",
+                "possession",
+                "formal"
+            ]
+        }
+    ],
+    "coverageChecklist": {
+        "included": [
+            "som required as subject of the relative clause",
+            "som optional when the relative clause has its own subject",
+            "omitted marker",
+            "den som / det som / de som",
+            "formal vilken / vilket / vilka with agreement",
+            "everyday som instead of formal vilken / vilket / vilka",
+            "everyday vilket referring to a whole situation",
+            "location: där and (som) ... i/på",
+            "direction: dit and (som) ... till",
+            "origin: varifrån and (som) ... från",
+            "time: när / då / som / omitted marker",
+            "possession: vars and everyday som har",
+            "paired everyday/formal variants where Swedish has a relevant formal counterpart",
+            "relative clauses with final prepositions are tagged as everyday variants"
+        ],
+        "excluded": [
+            "relative clause word order"
+        ]
+    }
+};
+
+    const BANK = EXERCISE_BANK.items;
+    const OPTIONS = EXERCISE_BANK.defaultDropdownOptions;
+
+    const state = {
+      remaining: [],
+      currentItemIndex: null,
+      currentItem: null,
+      foundAnswers: new Set(),
+      selectedAnswers: new Set(),
+      completed: 0,
+      score: 0,
+      mistakes: 0,
+      locked: false,
+      started: false,
+      totalSentences: 0,
+      totalPoints: 0
+    };
+
+    const sentenceEl = document.getElementById('sentence');
+    const styleHintEl = document.getElementById('styleHint');
+    const meaningHintEl = document.getElementById('meaningHint');
+    const feedbackEl = document.getElementById('feedback');
+    const nextRowEl = document.getElementById('nextRow');
+    const nextButtonEl = document.getElementById('nextButton');
+    const progressEl = document.getElementById('progress');
+    const cardEl = document.getElementById('card');
+    const situationIconEl = document.getElementById('situationIcon');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const closeModal = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalText = document.getElementById('modalText');
+    const exerciseLengthOptions = document.getElementById('exerciseLengthOptions');
+    const completionActions = document.getElementById('completionActions');
+    const restartButton = document.getElementById('restartButton');
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function acceptedValues(item) {
+      return item.acceptedAnswers.map(answer => answer.value);
+    }
+
+function labelForValue(value) {
+  if (value === '__EMPTY__') return 'the omitted relative marker';
+  return OPTIONS.find(option => option.value === value)?.label || value;
+}
+
+    function updateStats() {
+      progressEl.textContent = `${state.score} / ${state.totalPoints} points`;
+    }
+
+    function optionLabelMarkup(option) {
+      if (option.value === '__EMPTY__') {
+        return '<i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only">no marker</span>';
+      }
+      return escapeHtml(option.label);
+    }
+
+    function optionMarkup() {
+      return OPTIONS.map(option => {
+        const emptyClass = option.value === '__EMPTY__' ? ' empty-option' : '';
+        return `<div class="dropdown-option${emptyClass}" role="option" aria-selected="false" tabindex="-1" data-value="${escapeHtml(option.value)}">${optionLabelMarkup(option)}</div>`;
+      }).join('');
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function correctFeedback(item, answerCount = 1) {
+      if (item.section === '4 whole situation') {
+        return 'Correct. Vilket refers to the whole previous clause or situation.';
+      }
+      if (item.situation === 'Semi-formal Swedish') {
+        return answerCount > 1
+          ? 'Correct. These are accepted semi-formal forms.'
+          : 'Correct. This is the semi-formal form.';
+      }
+      if (item.situation === 'Formal Swedish') {
+        return answerCount > 1
+          ? 'Correct. These are accepted formal forms.'
+          : 'Correct. This is the formal form.';
+      }
+      return answerCount > 1
+        ? 'Correct. These are accepted neutral forms.'
+        : 'Correct. This is the neutral form.';
+    }
+
+function answerFeedback(item, value) {
+  if (value === '__EMPTY__') {
+    return 'Correct. The relative marker can be omitted here.';
+  }
+  const storedFeedback = item.acceptedAnswers.find(answer => answer.value === value)?.feedback;
+  return storedFeedback || correctFeedback(item, 1);
+}
+
+    function meaningHintForItem(item) {
+      if (item.section === '5 location') return 'location';
+      if (item.section === '6 direction to') return 'movement towards';
+      if (item.section === '7 origin from') return 'movement from';
+      if (item.section === '8 time') return 'time/period';
+      if (item.section === '9 possession') return 'belonging / relation';
+      if (item.section === '4 whole situation') return 'reference to everything before';
+      return '';
+    }
+
+    function registerPromptKey(prompt) {
+      return prompt.toLowerCase().replaceAll(',', '').replace(/\s+/g, ' ').trim();
+    }
+
+    function itemNumber(item) {
+      return item.id.match(/_(\d+)$/)?.[1] || null;
+    }
+
+    function canCompareBySectionAndNumber(item, candidate) {
+      const comparableSections = ['5 location', '6 direction to', '7 origin from', '8 time'];
+      return comparableSections.includes(item.section) &&
+        candidate.section === item.section &&
+        itemNumber(candidate) &&
+        itemNumber(candidate) === itemNumber(item);
+    }
+
+    function registerName(situation) {
+      if (situation === 'Neutral Swedish' || situation === 'Everyday Swedish') return 'neutral Swedish';
+      if (situation === 'Semi-formal Swedish') return 'semi-formal Swedish';
+      if (situation === 'Formal Swedish') return 'formal Swedish';
+      return situation.toLowerCase();
+    }
+
+    function betterRegisterContext(item, value) {
+      const key = registerPromptKey(item.prompt);
+      const counterpart = BANK.find(candidate =>
+        candidate !== item &&
+        candidate.situation !== item.situation &&
+        acceptedValues(candidate).includes(value) &&
+        (
+          registerPromptKey(candidate.prompt) === key ||
+          canCompareBySectionAndNumber(item, candidate)
+        )
+      );
+      return counterpart?.situation || null;
+    }
+
+    function registerMismatchClause(item, values) {
+      const groups = values.reduce((acc, value) => {
+        const context = betterRegisterContext(item, value);
+        if (!context) return acc;
+        if (!acc[context]) acc[context] = [];
+        acc[context].push(value);
+        return acc;
+      }, {});
+
+      const clauses = Object.entries(groups).map(([context, groupedValues]) => {
+        if (groupedValues.length === 1 && groupedValues[0] === '__EMPTY__') {
+          return `Omitting the marker is grammatically correct in this example, but in terms of register, it is better suited to ${registerName(context)}`;
+        }
+
+        const subject = capitalizeFirst(quotedAnswerList(groupedValues));
+        const verb = groupedValues.length === 1 ? 'is' : 'are';
+        const pronoun = groupedValues.length === 1 ? 'it is' : 'they are';
+        return `${subject} ${verb} grammatically correct in this example, but in terms of register, ${pronoun} better suited to ${registerName(context)}`;
+      });
+
+      if (clauses.length <= 1) return clauses[0] || '';
+      return clauses.join('. ');
+    }
+
+    function alternativeCountText(count) {
+      if (count === 1) return 'one alternative';
+      if (count === 2) return 'two alternatives';
+      return `${count} alternatives`;
+    }
+
+    function missedAlternativeCount(item, selectedValues, correctValues) {
+      const correctSelectedCount = selectedValues.filter(value => correctValues.includes(value)).length;
+      const registerCompatibleCount = selectedValues.filter(value =>
+        !correctValues.includes(value) && betterRegisterContext(item, value)
+      ).length;
+      return Math.max(0, correctValues.length - correctSelectedCount - registerCompatibleCount);
+    }
+
+    function quotedAnswerList(values) {
+      const labels = values.map(value => value === '__EMPTY__'
+        ? 'omitting the marker'
+        : `"${labelForValue(value)}"`
+      );
+      if (labels.length <= 1) return labels[0] || '';
+      return `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`;
+    }
+
+    function capitalizeFirst(value) {
+      if (!value) return '';
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
+    function isOrAre(count) {
+      return count === 1 ? 'is' : 'are';
+    }
+
+    function sameAnswerSet(selectedValues, correctValues) {
+      if (selectedValues.length !== correctValues.length) return false;
+      return correctValues.every(value => selectedValues.includes(value));
+    }
+
+    function hideNextButton() {
+      nextRowEl.classList.remove('visible');
+      nextButtonEl.disabled = true;
+    }
+
+    function showNextButton() {
+      nextButtonEl.disabled = false;
+      nextRowEl.classList.add('visible');
+      nextButtonEl.focus();
+    }
+
+    function renderSentence(item) {
+      const isMultiAnswer = item.acceptedAnswers.length > 1;
+      const triggerLabel = isMultiAnswer ? 'Pick all' : 'Choose';
+      const customSelect = `
+        <span class="blank-wrap">
+          <span class="custom-select-wrapper" id="answerSelectWrapper">
+            <button type="button" class="custom-select-trigger" id="answerSelectTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Choose the relative-clause introducer">
+              <span class="custom-select-label placeholder" id="answerSelectLabel">${triggerLabel}</span>
+              <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <span class="custom-select-dropdown" role="listbox" aria-label="Relative-clause introducer">
+              <span class="dropdown-cols-2-r5" id="answerDropdownCols">
+                ${optionMarkup()}
+                <button type="button" class="dropdown-done" id="answerDone">I'm done</button>
+              </span>
+            </span>
+          </span>
+        </span>`;
+
+      sentenceEl.innerHTML = escapeHtml(item.prompt).replace('___', customSelect);
+      styleHintEl.textContent = item.situation;
+      meaningHintEl.textContent = meaningHintForItem(item);
+      feedbackEl.textContent = '';
+      feedbackEl.className = 'feedback';
+      hideNextButton();
+cardEl.classList.remove(
+  'is-correct',
+  'is-wrong',
+  'situation-everyday',
+  'situation-semi-formal',
+  'situation-formal'
+);
+
+if (item.situation === 'Formal Swedish') {
+  cardEl.classList.add('situation-formal');
+  situationIconEl.className = 'situation-icon fa-solid fa-briefcase';
+} else if (item.situation === 'Semi-formal Swedish') {
+  cardEl.classList.add('situation-semi-formal');
+  situationIconEl.className = 'situation-icon fa-solid fa-pen-nib';
+} else {
+  cardEl.classList.add('situation-everyday');
+  situationIconEl.className = 'situation-icon fa-regular fa-face-laugh';
+}
+
+      initAnswerSelect();
+    }
+
+    function closeAnswerSelect() {
+      const wrapper = document.getElementById('answerSelectWrapper');
+      const trigger = document.getElementById('answerSelectTrigger');
+      if (!wrapper || !trigger) return;
+      wrapper.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function resetAnswerLabel(text = 'Choose') {
+      const label = document.getElementById('answerSelectLabel');
+      if (!label) return;
+      label.textContent = text;
+      label.classList.toggle('placeholder', text === 'Choose' || text === 'Choose another' || text === 'Pick all');
+    }
+
+    function markFoundOption(value) {
+      const option = document.querySelector(`.dropdown-option[data-value="${CSS.escape(value)}"]`);
+      if (option) option.classList.add('found');
+    }
+
+    function initAnswerSelect() {
+      const wrapper = document.getElementById('answerSelectWrapper');
+      const trigger = document.getElementById('answerSelectTrigger');
+      const label = document.getElementById('answerSelectLabel');
+      const doneButton = document.getElementById('answerDone');
+      if (!wrapper || !trigger || !label) return;
+      const isMultiAnswer = state.currentItem.acceptedAnswers.length > 1;
+      wrapper.classList.toggle('multi-answer', isMultiAnswer);
+      resetAnswerLabel(isMultiAnswer ? 'Pick all' : 'Choose');
+
+      trigger.addEventListener('click', event => {
+        event.stopPropagation();
+        if (state.locked) return;
+        const willOpen = !wrapper.classList.contains('open');
+        wrapper.classList.toggle('open', willOpen);
+        trigger.setAttribute('aria-expanded', String(willOpen));
+      });
+
+      wrapper.querySelector('.custom-select-dropdown').addEventListener('click', event => {
+        event.stopPropagation();
+      });
+
+      wrapper.querySelectorAll('.dropdown-option').forEach(option => {
+        option.addEventListener('click', () => {
+          const selected = option.dataset.value;
+          if (isMultiAnswer) {
+            const isSelected = state.selectedAnswers.has(selected);
+            if (isSelected) {
+              state.selectedAnswers.delete(selected);
+              option.classList.remove('selected');
+              option.setAttribute('aria-selected', 'false');
+            } else {
+              state.selectedAnswers.add(selected);
+              option.classList.add('selected');
+              option.setAttribute('aria-selected', 'true');
+            }
+            cardEl.classList.remove('is-correct', 'is-wrong');
+            feedbackEl.textContent = '';
+            feedbackEl.className = 'feedback';
+            return;
+          }
+
+          if (selected === '__EMPTY__') {
+            label.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i><span class="sr-only">no marker</span>';
+            label.setAttribute('aria-label', 'no marker');
+          } else {
+            label.textContent = labelForValue(selected);
+            label.removeAttribute('aria-label');
+          }
+          label.classList.remove('placeholder');
+          wrapper.querySelectorAll('.dropdown-option').forEach(item => item.classList.remove('selected'));
+          option.classList.add('selected');
+          closeAnswerSelect();
+          handleAnswer(selected);
+        });
+      });
+
+      if (doneButton) {
+        doneButton.addEventListener('click', event => {
+          event.stopPropagation();
+          handleMultiAnswerSubmit();
+        });
+      }
+    }
+
+    function nextSentence() {
+      state.locked = false;
+      state.foundAnswers = new Set();
+      state.selectedAnswers = new Set();
+      if (state.remaining.length === 0) {
+        updateStats();
+        openCompletionModal();
+        return;
+      }
+      state.currentItemIndex = state.remaining.shift();
+      state.currentItem = BANK[state.currentItemIndex];
+      renderSentence(state.currentItem);
+      updateStats();
+    }
+
+    function handleAnswer(selected) {
+      if (state.locked) return;
+      const item = state.currentItem;
+      const correctValues = acceptedValues(item);
+      const isCorrect = correctValues.includes(selected);
+
+      cardEl.classList.toggle('is-correct', isCorrect);
+      cardEl.classList.toggle('is-wrong', !isCorrect);
+
+      if (state.foundAnswers.has(selected)) {
+        feedbackEl.textContent = `Already found: ${labelForValue(selected)}. Try another accepted answer.`;
+        feedbackEl.className = 'feedback correct';
+        setTimeout(() => cardEl.classList.remove('is-correct'), 320);
+        resetAnswerLabel('Choose another');
+        return;
+      }
+
+      if (isCorrect) {
+        state.foundAnswers.add(selected);
+        state.score += 1;
+        markFoundOption(selected);
+        state.locked = true;
+        state.completed += 1;
+        feedbackEl.textContent = answerFeedback(item, selected);
+        feedbackEl.className = 'feedback correct';
+        updateStats();
+        showNextButton();
+      } else {
+        state.mistakes += 1;
+        const registerMismatch = registerMismatchClause(item, [selected]);
+        if (registerMismatch) {
+          feedbackEl.textContent = `${registerMismatch}.`;
+        } else if (selected === '__EMPTY__') {
+          feedbackEl.textContent = 'Incorrect. The relative marker cannot be omitted here.';
+        } else {
+          feedbackEl.textContent = 'Incorrect. Try again.';
+        }
+        feedbackEl.className = 'feedback wrong';
+        updateStats();
+        setTimeout(() => cardEl.classList.remove('is-wrong'), 320);
+      }
+    }
+
+    function handleMultiAnswerSubmit() {
+      if (state.locked) return;
+      const item = state.currentItem;
+      const correctValues = acceptedValues(item);
+      const selectedValues = [...state.selectedAnswers];
+      closeAnswerSelect();
+
+      if (selectedValues.length === 0) {
+        cardEl.classList.add('is-wrong');
+        feedbackEl.textContent = 'Choose at least one answer before you click I\'m done.';
+        feedbackEl.className = 'feedback wrong';
+        setTimeout(() => cardEl.classList.remove('is-wrong'), 320);
+        return;
+      }
+
+      const isFullyCorrect = sameAnswerSet(selectedValues, correctValues);
+      cardEl.classList.toggle('is-correct', isFullyCorrect);
+      cardEl.classList.toggle('is-wrong', !isFullyCorrect);
+
+      if (isFullyCorrect) {
+        state.locked = true;
+        state.completed += 1;
+        state.score += correctValues.length;
+        correctValues.forEach(markFoundOption);
+        feedbackEl.textContent = correctFeedback(item, correctValues.length);
+        feedbackEl.className = 'feedback correct';
+        updateStats();
+        showNextButton();
+        return;
+      }
+
+      state.mistakes += 1;
+      const correctSelected = selectedValues.filter(value => correctValues.includes(value)).length;
+      const extraAnswers = selectedValues.filter(value => !correctValues.includes(value));
+      const correctSelectedValues = selectedValues.filter(value => correctValues.includes(value));
+      const missingCount = correctValues.filter(value => !selectedValues.includes(value)).length;
+      const missingCountForFeedback = missedAlternativeCount(item, selectedValues, correctValues);
+      const registerMismatch = registerMismatchClause(item, extraAnswers);
+      const strictlyWrongAnswers = extraAnswers.filter(value => !betterRegisterContext(item, value));
+
+      if (selectedValues.length === 1 && correctSelected === 1) {
+        if (selectedValues[0] === '__EMPTY__') {
+          feedbackEl.textContent = `Correct. The relative marker can be omitted here, but you have missed ${alternativeCountText(missingCount)}.`;
+        } else {
+          feedbackEl.textContent = `Correct, but you have missed ${alternativeCountText(missingCount)}.`;
+        }
+      } else if (selectedValues.length === 1 && registerMismatch) {
+        feedbackEl.textContent = `${registerMismatch}.`;
+        if (missingCountForFeedback > 0 && correctValues.length > 1) {
+          feedbackEl.textContent += ` Also, you have missed ${alternativeCountText(missingCountForFeedback)}.`;
+        }
+      } else if (selectedValues.length === 1) {
+        if (selectedValues[0] === '__EMPTY__') {
+          feedbackEl.textContent = 'Incorrect. The relative marker cannot be omitted here. You have also missed that there are several accepted answers.';
+        } else {
+          feedbackEl.textContent = 'Incorrect, and you have missed that there are several accepted answers.';
+        }
+      } else if (extraAnswers.length === 0 && missingCount > 0) {
+        feedbackEl.textContent = `Correct, but you have missed ${alternativeCountText(missingCount)}.`;
+      } else if (correctSelectedValues.length > 0 && extraAnswers.length > 0) {
+        feedbackEl.textContent = `${capitalizeFirst(quotedAnswerList(correctSelectedValues))} ${isOrAre(correctSelectedValues.length)} correct.`;
+        if (registerMismatch) {
+          feedbackEl.textContent += ` ${registerMismatch}.`;
+        }
+        if (strictlyWrongAnswers.length > 0) {
+          feedbackEl.textContent += ` ${capitalizeFirst(quotedAnswerList(strictlyWrongAnswers))} ${isOrAre(strictlyWrongAnswers.length)} incorrect.`;
+        }
+        if (missingCountForFeedback > 0) {
+          feedbackEl.textContent += ` Also, you have missed ${alternativeCountText(missingCountForFeedback)}.`;
+        }
+      } else if (registerMismatch) {
+        feedbackEl.textContent = `${registerMismatch}.`;
+        if (strictlyWrongAnswers.length > 0) {
+          feedbackEl.textContent += ` ${capitalizeFirst(quotedAnswerList(strictlyWrongAnswers))} ${isOrAre(strictlyWrongAnswers.length)} incorrect.`;
+        }
+        if (missingCountForFeedback > 0 && correctValues.length > 1) {
+          feedbackEl.textContent += ` Also, you have missed ${alternativeCountText(missingCountForFeedback)}.`;
+        }
+      } else if (missingCount > 0) {
+        feedbackEl.textContent = 'Incorrect, and you have missed that there are several accepted answers.';
+      } else {
+        feedbackEl.textContent = 'Incorrect. Try again.';
+      }
+      feedbackEl.className = 'feedback wrong';
+      updateStats();
+      setTimeout(() => cardEl.classList.remove('is-wrong'), 320);
+    }
+
+    function openSetupModal() {
+      modalTitle.textContent = 'Customise your practice';
+      modalText.textContent = 'Choose how many sentences your practice should contain!';
+      exerciseLengthOptions.hidden = false;
+      if (completionActions) completionActions.hidden = true;
+      if (closeModal) closeModal.hidden = true;
+      modalBackdrop.classList.add('open');
+      const firstLengthButton = exerciseLengthOptions.querySelector('.exercise-length-button');
+      if (firstLengthButton) firstLengthButton.focus();
+    }
+
+    function openCompletionModal() {
+      modalTitle.textContent = 'Finished';
+      modalText.textContent = `You scored ${state.score} out of ${state.totalPoints} possible points across ${state.totalSentences} practice sentences, with ${state.mistakes} ${state.mistakes === 1 ? 'mistake' : 'mistakes'}.`;
+      exerciseLengthOptions.hidden = true;
+      if (completionActions) completionActions.hidden = false;
+      if (closeModal) closeModal.hidden = false;
+      modalBackdrop.classList.add('open');
+      if (restartButton) {
+        restartButton.focus();
+      } else if (closeModal) {
+        closeModal.focus();
+      } else {
+        modalTitle.setAttribute('tabindex', '-1');
+        modalTitle.focus();
+      }
+    }
+
+    function closeModalFn() {
+      modalBackdrop.classList.remove('open');
+    }
+
+    function startExercise(sentenceCount) {
+      const selectedIndices = shuffle([...BANK.keys()]).slice(0, sentenceCount);
+      state.remaining = selectedIndices;
+      state.currentItemIndex = null;
+      state.currentItem = null;
+      state.foundAnswers = new Set();
+      state.selectedAnswers = new Set();
+      state.completed = 0;
+      state.score = 0;
+      state.mistakes = 0;
+      state.locked = false;
+      state.started = true;
+      state.totalSentences = selectedIndices.length;
+      state.totalPoints = selectedIndices.reduce((sum, index) => sum + BANK[index].maxScore, 0);
+      if (completionActions) completionActions.hidden = true;
+      document.body.classList.remove('exercise-not-started');
+      closeModalFn();
+      nextSentence();
+    }
+
+    nextButtonEl.addEventListener('click', nextSentence);
+
+    if (restartButton) {
+      restartButton.addEventListener('click', () => {
+        window.location.reload();
+      });
+    }
+
+    exerciseLengthOptions.querySelectorAll('.exercise-length-button').forEach(button => {
+      button.addEventListener('click', () => startExercise(Number(button.dataset.count)));
+    });
+
+    document.addEventListener('click', closeAnswerSelect);
+
+    if (closeModal) {
+      closeModal.addEventListener('click', () => {
+        if (state.started) closeModalFn();
+      });
+    }
+    modalBackdrop.addEventListener('click', event => {
+      if (event.target === modalBackdrop && state.started) closeModalFn();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeAnswerSelect();
+        if (state.started && modalBackdrop.classList.contains('open')) closeModalFn();
+      }
+    });
+
+    openSetupModal();
+  </script>
+</body>
+</html>
