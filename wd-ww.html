@@ -1,793 +1,304 @@
+
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Vilken vecka? Vilka dagar?</title>
-   <link rel="icon" href="calfav.ico" type="image/x-icon">
-   
-   <!-- Import Google Font "Work Sans" -->
-   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-
-   <!-- Import Font Awesome -->
-   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"  type='text/css'>
-   
-   <style>
-/* Apply "Work Sans" font to the entire application */
-body, html {
-    height: 100%;
-    margin: 0;
-    font-family: 'Work Sans', sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    background-color: #f4f4f9;
-}
-
-.container {
-    width: 700px; /* Fixed width as per previous settings */
-    padding: 20px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    text-align: center;
-    margin-top: 15px;
-}
-
-h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    font-weight: 500; /* Medium weight for better appearance */
-    color: #333; /* Darker text for contrast */
-}
-
-.input-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px; /* Maintained for spacing */
-}
-
-.button-group {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
-    justify-content: center;
-}
-
-/* Uppdaterad Button Styling */
-.button {
-    background-color: white; /* Vit bakgrund */
-    color: black; /* Svart text */
-    border: 2px solid #555555; /* Mörkgrå kant */
-    padding: 10px 15px; /* Padding */
-    text-align: center;
-    text-decoration: none;
-    display: inline-flex; /* Använd inline-flex för flexbox layout */
-    align-items: center; /* Vertikal centering av innehåll */
-    font-size: 16px; /* Fontstorlek */
-    margin: 4px 2px; /* Marginaler */
-    transition-duration: 0.4s; /* Transition för hover */
-    cursor: pointer; /* Pointersymbol vid hover */
-    border-radius: 6px; /* Rundade hörn */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtil skugga */
-}
-
-
-button i {
-    margin-right: 8px; /* Lägger till utrymme mellan ikonen och texten */
-    font-size: 1.0rem; /* Justera ikonstorlek om nödvändigt */
-}
-
-/* Hover-effekt */
-.button:hover {
-    background-color: #555555; /* Mörkgrå bakgrund vid hover */
-    color: white; /* Vit text vid hover */
-}
-
-/* Responsiv Justering för Knappar */
-@media (max-width: 600px) {
-    button {
-        padding: 10px 20px; /* Justera padding för mindre skärmar */
-        font-size: 0.9rem; /* Justera fontstorlek */
-        border-radius: 20px; /* Justera hörnradie */
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vilken vecka? Vilka dagar?</title>
+  <link rel="icon" href="calfav.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root { --blue:#007bff; --blue-dark:#0056b3; --ink:#333; --border:#ccc; --range:#dcecff; --gold:#ffd700; }
+    * { box-sizing: border-box; }
+    html { min-height:100%; margin:0; overflow-y:scroll; scrollbar-gutter:stable; }
+    body { min-height:100%; margin:0; }
+    body { font-family:'Work Sans',sans-serif; background:#f4f4f9; color:var(--ink); padding:15px; }
+    .container { width:min(1120px,100%); margin:0 auto; padding:20px; border:1px solid var(--border); background:#fff; box-shadow:0 4px 8px rgba(0,0,0,.2); border-radius:10px; text-align:center; }
+    h1 { font-size:1.5rem; margin:0 0 10px; font-weight:500; }
+    p { margin:.45rem 0; }
+    .view-switch { display:inline-flex; gap:4px; padding:4px; margin:15px 0 20px; border-radius:9px; background:#ececf1; }
+    .view-tab { width:132px; border:0; border-radius:6px; padding:9px 12px; font:500 1rem inherit; background:transparent; cursor:pointer; color:#333; }
+    .view-tab.active { color:#fff; background:#555; box-shadow:0 2px 4px rgba(0,0,0,.15); }
+    .view { width:100%; }
+    .view[hidden] { display:none; }
+    .input-container { display:flex; width:100%; flex-direction:column; align-items:center; gap:18px; }
+    .button-group { display:flex; width:100%; gap:8px; flex-wrap:wrap; justify-content:center; }
+    .button { background:#fff; color:#000; border:2px solid #555; padding:9px 14px; display:inline-flex; align-items:center; gap:8px; font:inherit; transition:.2s; cursor:pointer; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,.1); }
+    .button:hover, .button:focus-visible { background:#555; color:#fff; }
+    input[type="date"] { width:14ch; padding:8px; border:1px solid var(--border); border-radius:5px; font:1rem 'Work Sans',sans-serif; box-shadow:0 2px 4px rgba(0,0,0,.1); }
+    .date-picker-trigger { min-width:210px; justify-content:center; font-weight:500; }
+    .date-picker-trigger .fa-calendar-days { color:var(--blue); }
+    .slider-group { display:flex; align-items:center; width:100%; }
+    .slider-group label { width:70px; text-align:right; font-size:1.25rem; flex-shrink:0; }
+    .slider-container { display:flex; align-items:center; flex:1; gap:15px; padding:0 25px; }
+    input[type="range"] { flex:1; accent-color:var(--blue); }
+    .slider-value { width:55px; text-align:right; font-size:1.25rem; font-variant-numeric:tabular-nums; }
+    #weekdays { width:100%; margin-top:20px; text-align:left; }
+    #weekdays ul { list-style:none; padding:0; margin:0; }
+    #weekdays li { display:flex; align-items:center; gap:10px; min-height:36px; padding:6px 10px; border-radius:4px; }
+    #weekdays li:nth-child(even) { background:#d1cecd; }
+    #weekdays li.highlight { background:var(--gold); font-weight:700; }
+    .date { width:235px; }
+    .holiday { color:#b83532; font-weight:700; }
+    .year-toolbar { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+    .year-toolbar strong { min-width:72px; font-size:1.5rem; font-variant-numeric:tabular-nums; }
+    .year-slider-wrap { display:flex; align-items:center; justify-content:center; gap:14px; width:min(650px,100%); margin:0 auto 16px; }
+    .year-slider-wrap input { flex:1; }
+    .range-help { padding:10px; margin:0 auto 18px; border:1px solid #c9d9ef; border-radius:8px; background:#f5f9ff; font-size:.9rem; color:#555; }
+    .range-tools { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin:0 auto 18px; }
+    .range-tools .range-help { margin:0; flex:1 1 420px; }
+    .modal-backdrop { position:fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(20,25,35,.58); animation:fade-in .18s ease-out; }
+    .modal-backdrop[hidden] { display:none; }
+    .result-modal { position:relative; width:min(480px,100%); padding:34px 28px 26px; border-radius:12px; background:#fff; box-shadow:0 18px 55px rgba(0,0,0,.32); text-align:center; animation:modal-in .22s ease-out; }
+    .result-modal h2 { margin:0 32px 14px; font-size:1.28rem; text-align:center; }
+    #rangeResult { font-size:1.08rem; line-height:1.5; }
+    #rangeResult strong { color:var(--blue-dark); font-size:1.2rem; }
+    .result-row { display:flex; align-items:baseline; justify-content:space-between; gap:20px; padding:10px 0; border-bottom:1px solid #e2e7ed; text-align:left; }
+    .result-row:last-of-type { border-bottom:0; }
+    .result-row strong { white-space:nowrap; font-variant-numeric:tabular-nums; }
+    .result-dates { margin-top:12px; color:#626d79; font-size:.9rem; }
+    .modal-actions { display:flex; justify-content:center; margin-top:20px; }
+    .modal-close { position:absolute; top:10px; right:10px; width:40px; height:40px; border:0; border-radius:50%; background:transparent; color:#555; font-size:1.5rem; cursor:pointer; transition:background-color .2s,color .2s,transform .25s ease; }
+    .modal-close:hover, .modal-close:focus-visible { background:#555; color:#fff; transform:rotate(90deg) scale(1.08); outline:none; }
+    .picker-nav { display:grid; grid-template-columns:42px 42px 1fr 42px 42px; align-items:center; gap:5px; margin-bottom:14px; }
+    .picker-nav button { width:38px; height:38px; border:1px solid #d8e0e9; border-radius:7px; background:#f7faff; color:#35465a; cursor:pointer; transition:.18s; }
+    .picker-nav button:hover, .picker-nav button:focus-visible { background:var(--blue); color:#fff; border-color:var(--blue); }
+    .picker-nav strong { text-align:center; text-transform:capitalize; color:#26384d; }
+    .picker-grid { display:grid; grid-template-columns:1.05fr repeat(7,1fr); gap:5px; }
+    .picker-weekday { padding:4px 0; color:#6c7887; font-size:.78rem; font-weight:700; text-align:center; }
+    .picker-week-number { display:flex; align-items:center; justify-content:center; border-right:1px solid #dce3eb; border-radius:4px 0 0 4px; background:#f4f7fa; color:#718095; font-size:.72rem; font-weight:700; }
+    .picker-day, .picker-empty { aspect-ratio:1; }
+    .picker-day { border:0; border-radius:50%; background:transparent; color:#253447; font:500 .9rem 'Work Sans',sans-serif; cursor:pointer; transition:.16s; }
+    .picker-day:hover, .picker-day:focus-visible { background:#e6f1ff; color:#004eaa; outline:2px solid var(--blue); outline-offset:-2px; transform:scale(1.06); }
+    .picker-day.weekend { color:#a42d2a; }
+    .picker-day.picker-today { box-shadow:inset 0 0 0 2px #777; }
+    .picker-day.picker-selected { background:var(--blue); color:#fff; font-weight:700; box-shadow:0 2px 7px rgba(0,123,255,.35); }
+    .picker-footer { margin-top:16px; display:flex; justify-content:center; }
+    @keyframes fade-in { from { opacity:0; } }
+    @keyframes modal-in { from { opacity:0; transform:translateY(14px) scale(.97); } }
+    .year-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; text-align:center; }
+    .month { overflow:hidden; border:1px solid #d9e0e8; border-radius:11px; padding:0 10px 11px; background:linear-gradient(180deg,#f7faff 0,#fff 42px); box-shadow:0 3px 10px rgba(44,62,80,.08); transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease; }
+    .month:hover { transform:translateY(-2px); border-color:#b8cbe3; box-shadow:0 7px 18px rgba(44,62,80,.13); }
+    .month h3 { margin:0 -10px 8px; padding:9px 8px; font-size:1rem; font-weight:700; text-transform:capitalize; color:#26384d; background:linear-gradient(135deg,#edf5ff,#f8fbff); border-bottom:1px solid #dce7f3; }
+    .month-grid { display:grid; grid-template-columns:1.15fr repeat(7,1fr); gap:3px; }
+    .weekday-head { font-size:.72rem; color:#607086; padding:4px 0 5px; font-weight:700; }
+    .week-number { display:flex; align-items:center; justify-content:center; color:#758398; font-size:.68rem; font-weight:700; border-right:1px solid #dce3eb; background:#f6f8fb; border-radius:3px 0 0 3px; }
+    .day, .empty-day { aspect-ratio:1; min-width:0; }
+    .day { border:0; border-radius:50%; background:transparent; font:500 .79rem 'Work Sans',sans-serif; cursor:pointer; position:relative; z-index:0; transition:background-color .15s,color .15s,transform .15s; }
+    .day:hover, .day:focus-visible { outline:2px solid var(--blue); outline-offset:-2px; background:#edf5ff; transform:scale(1.08); }
+    .day.weekend { color:#a42d2a; }
+    .day.today { box-shadow:inset 0 0 0 2px #555; }
+    .day.in-range { background:var(--range); border-radius:4px; }
+    .day.range-start, .day.range-end { background:var(--blue); color:#fff; border-radius:50%; font-weight:700; }
+    .day.range-start.range-end { background:#6f42c1; }
+    .legend { display:flex; justify-content:center; gap:18px; flex-wrap:wrap; font-size:.82rem; margin-top:14px; color:#555; }
+    .legend span::before { content:""; display:inline-block; width:12px; height:12px; margin-right:5px; vertical-align:-2px; border-radius:3px; background:var(--range); }
+    .legend .endpoint::before { background:var(--blue); border-radius:50%; }
+    @media (max-width:800px) { .year-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:540px) {
+      body { padding:8px; } .container { padding:14px 10px; }
+      .year-grid { grid-template-columns:1fr; }
+      .slider-container { padding:0 5px 0 12px; }
+      .slider-group label { width:58px; font-size:1rem; }
+      .date { width:165px; } .holiday { font-size:.86rem; }
     }
-
-    button i {
-        margin-right: 6px; /* Justera utrymme mellan ikon och text */
-        font-size: 1rem; /* Justera ikonstorlek */
-    }
-}
-
-.slider-group {
-    display: flex;
-    align-items: center;
-    width: 100%; /* Ensures slider group takes full width */
-}
-
-.slider-group label {
-    width: 60px; /* Fixed width to prevent jumping */
-    text-align: right;
-    font-size: 1.5rem;
-    margin-left: 10px;
-    flex-shrink: 0; /* Prevents label from shrinking */
-    color: #333; /* Darker text for contrast */
-}
-
-.slider-container {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    padding-left: 50px; /* Ensures 50px padding from the left */
-    padding-right: 50px; /* Ensures 50px padding from the right */
-}
-
-.slider-container input[type="range"] {
-    flex-grow: 1; /* Allows slider to occupy available space */
-    -webkit-appearance: none; /* Remove default appearance */
-    height: 8px;
-    border-radius: 5px;
-    background: #d3d3d3;
-    outline: none;
-    transition: background 0.3s;
-}
-
-/* Slider Thumb Styling */
-.slider-container input[type="range"]::-webkit-slider-thumb,
-.slider-container input[type="range"]::-moz-range-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #007bff;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.slider-container input[type="range"]::-webkit-slider-thumb:hover,
-.slider-container input[type="range"]::-moz-range-thumb:hover {
-    background: #0056b3;
-}
-
-/* Slider Track Hover Effect */
-.slider-container input[type="range"]:hover {
-    background: #c0c0c0;
-}
-
-#weekResult, #yearResult {
-    display: inline-block;
-    width: 50px; /* Fixed width to prevent jumping */
-    text-align: right; /* Right-align text */
-    margin-left: 10px;
-    font-size: 1.5rem; /* Increase font size */
-}
-
-#weekdays {
-    margin-top: 20px; /* Maintained for spacing */
-    text-align: left;
-    font-size: 1rem;
-    width: 100%; /* Ensures weekdays section takes full width */
-}
-
-.highlight {
-    background-color: #ffd700;
-    font-weight: bold;
-    border-radius: 4px;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-li {
-    display: flex; /* Enable flex layout for list items */
-    align-items: center;
-    justify-content: flex-start;
-    margin-bottom: 5px;
-    padding: 5px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-/* Varannan rad mjuk grå bakgrund, start på måndag */
-li:nth-child(even) {
-    background-color: #d1cecd;
-}
-
-li:hover {
-    background-color: #f0f0f0;
-}
-
-.date {
-    width: 200px; /* Fixed width for date to ensure alignment */
-}
-
-.holiday {
-    color: #b83532; /* Röd färg för att markera helgdagar */
-    font-weight: bold;
-    margin-left: 10px;
-    white-space: nowrap; /* Förhindra radbrytning */
-}
-
-/* Förhindra att highlightad dag får grå bakgrund */
-li.highlight {
-    background-color: #ffd700; /* Gult för highlight */
-}
-
-/* Responsive Adjustments */
-@media (max-width: 600px) {
-    .slider-group label {
-        width: 50px;
-        font-size: 0.9rem;
-    }
-
-    .slider-container span {
-        width: 25px;
-        font-size: 0.9rem;
-    }
-
-    button {
-        padding: 5px 10px;
-        font-size: 0.9rem;
-    }
-
-    h2 {
-        font-size: 1.3rem;
-    }
-
-    .date {
-        width: 120px; /* Adjust width for smaller screens */
-    }
-}
-
-/* Date Picker Styling */
-#dateInput {
-    width: 13ch; /* Updated width to fit YYYY-MM-DD */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-family: 'Work Sans', sans-serif; /* Ensure font consistency */
-}
-   </style>
+  </style>
 </head>
 <body>
-   <div class="container">
-      <h2>Vilken vecka? Vilka dagar?</h2>
-      <p>Välj datum – och se veckonumret.</p>
-      <p>Ändra veckonummer – och se vilka dagar den innehåller.</p>
-      <p>Ändra år – och se vilken dag ett särskilt datum inträffar.</p>
-      <p>&nbsp;</p>
+  <main class="container">
+    <h1>Vilken vecka? Vilka dagar?</h1>
+    <p id="intro">Välj datum – och se veckonumret. Ändra vecka eller år – och se vilka dagar veckan innehåller.</p>
+    <nav class="view-switch" aria-label="Välj kalendervy">
+      <button class="view-tab active" id="weekTab" aria-controls="weekView" aria-selected="true"><i class="fa-regular fa-calendar"></i> Veckovy</button>
+      <button class="view-tab" id="yearTab" aria-controls="yearView" aria-selected="false"><i class="fa-solid fa-calendar-days"></i> Årsvy</button>
+    </nav>
+
+    <section id="weekView" class="view">
       <div class="input-container">
-         <!-- Date Picker -->
-         <input type="date" id="dateInput" aria-label="Välj datum">
-
-         <!-- Buttons for date adjustment -->
-         <div class="button-group">
-<button class="button" id="decreaseWeekBtn">
-    <i class="fa-solid fa-circle-minus"></i> 1 vecka
-</button>
-<button class="button" id="increaseWeekBtn">
-    <i class="fa-solid fa-circle-plus"></i> 1 vecka
-</button>
-<button class="button" id="decreaseYearBtn">
-    <i class="fa-solid fa-circle-minus"></i> 1 år
-</button>
-<button class="button" id="increaseYearBtn">
-    <i class="fa-solid fa-circle-plus"></i> 1 år
-</button>
-<button class="button" id="todayBtn">
-    <i class="fa-solid fa-calendar-day"></i> Idag
-</button>
-         </div>
-
-         <!-- Sliders for week and year -->
-         <div class="slider-group">
-            <label for="weekSlider">Vecka:</label>
-            <div class="slider-container">
-               <input type="range" id="weekSlider" min="1" max="53">
-               <span id="weekResult">1</span>
-            </div>
-         </div>
-         <div class="slider-group">
-            <label for="yearSlider">År:</label>
-            <div class="slider-container">
-               <input type="range" id="yearSlider" min="1950" max="2100">
-               <span id="yearResult">1950</span>
-            </div>
-         </div>
+        <input type="hidden" id="dateInput">
+        <button class="button date-picker-trigger" id="openDatePicker" type="button"><i class="fa-solid fa-calendar-days"></i><span id="selectedDateLabel">Välj datum</span></button>
+        <div class="button-group">
+          <button class="button" id="decreaseWeekBtn"><i class="fa-solid fa-circle-minus"></i> 1 vecka</button>
+          <button class="button" id="increaseWeekBtn"><i class="fa-solid fa-circle-plus"></i> 1 vecka</button>
+          <button class="button" id="decreaseYearBtn"><i class="fa-solid fa-circle-minus"></i> 1 år</button>
+          <button class="button" id="increaseYearBtn"><i class="fa-solid fa-circle-plus"></i> 1 år</button>
+          <button class="button" id="todayBtn"><i class="fa-solid fa-calendar-day"></i> Idag</button>
+        </div>
+        <div class="slider-group"><label for="weekSlider">Vecka:</label><div class="slider-container"><input type="range" id="weekSlider" min="1" max="53"><span class="slider-value" id="weekResult">1</span></div></div>
+        <div class="slider-group"><label for="yearSlider">År:</label><div class="slider-container"><input type="range" id="yearSlider" min="1950" max="2100"><span class="slider-value" id="yearResult">1950</span></div></div>
       </div>
-      <div id="weekdays" class="result-container"></div>
-   </div>
+      <div id="weekdays" aria-live="polite"></div>
+    </section>
 
-<script>
-   // Objekt som mappar fasta datum till deras respektive etiketter
-   const fixedHolidays = {
-      "01-01": "Nyårsdagen, Sverige blir medlem i EU (1995)", 
-      "01-06": "Trettondedag jul",
-      "01-13": "Tjugondag Knut",
-      "01-27": "Förintelsens minnesdag",
-	  "02-06": "Samernas nationaldag",
-      "02-14": "Alla hjärtans dag",
-	  "02-24": "Sverigefinnarnas dag",
-	  "02-28": "Olof Palme mördas (1986)",
-      "03-08": "Internationella kvinnodagen",
-	  "03-16": "Gustav III blir skjuten (1792)",
-      "03-25": "Våffeldagen",
-      "04-07": "Världshälsodagen",
-      "04-30": "Valborgsmässoafton",
-      "05-01": "Första maj",
-	  "05-24": "Allmän rösträtt (1919)",
-      "06-06": "Nationaldagen",
-	  "06-28": "Slaget vid Poltava (1709)",
-	  "09-26": "Göta kanal invigs (1832)",
-	  "09-28": "Estoniakatastrofen (1994)",
-      "10-04": "Kanelbullens dag",
-      "10-24": "FN-dagen",
-	  "10-28": "Unionsupplösningen (1905)",
-      "10-31": "Halloween",
-      "11-06": "Gustav Adolfsdagen",
-	  "11-10": "Mårtensgås",
-      "11-11": "Chokladens dag",
-	  "11-30": "Karl XII stupar vid Fredrikshald (1718)",
-	  "12-02": "Sveriges tryckfrihetsförordning antas (1766)",
-	  "12-04": "Slaget vid Lund (1676)",
-      "12-10": "Nobeldagen",
-      "12-13": "Luciadagen",
-      "12-24": "Julafton",
-      "12-25": "Juldagen",
-      "12-26": "Annandag jul",
-      "12-31": "Nyårsafton"
-   };
+    <section id="yearView" class="view" hidden>
+      <div class="year-toolbar">
+        <button class="button" id="previousCalendarYear" aria-label="Föregående år"><i class="fa-solid fa-chevron-left"></i> Föregående</button>
+        <strong id="calendarYearLabel"></strong>
+        <button class="button" id="nextCalendarYear">Nästa <i class="fa-solid fa-chevron-right"></i></button>
+        <button class="button" id="calendarTodayBtn"><i class="fa-solid fa-calendar-day"></i> I år</button>
+      </div>
+      <div class="year-slider-wrap"><label for="calendarYearSlider">År</label><input type="range" id="calendarYearSlider" min="1950" max="2100"></div>
+      <div class="range-tools">
+        <div class="range-help" id="selectionStatus" aria-live="polite">Klicka på ett startdatum och därefter på ett slutdatum. Antalet kalenderdagar räknas inklusive båda datumen.</div>
+        <button class="button" id="clearRangeBtnOutside" type="button"><i class="fa-solid fa-eraser"></i> Rensa intervall</button>
+      </div>
+      <div id="yearGrid" class="year-grid"></div>
+      <div class="legend"><span class="endpoint">Start/slut</span><span>Datum i intervallet</span></div>
+    </section>
+  </main>
+  <div class="modal-backdrop" id="datePickerBackdrop" hidden>
+    <section class="result-modal" role="dialog" aria-modal="true" aria-labelledby="datePickerTitle">
+      <button class="modal-close" id="closeDatePicker" type="button" aria-label="Stäng datumväljaren"><i class="fa-solid fa-xmark"></i></button>
+      <h2 id="datePickerTitle">Välj datum</h2>
+      <div class="picker-nav">
+        <button id="pickerPreviousYear" type="button" aria-label="Föregående år"><i class="fa-solid fa-angles-left"></i></button>
+        <button id="pickerPreviousMonth" type="button" aria-label="Föregående månad"><i class="fa-solid fa-chevron-left"></i></button>
+        <strong id="pickerMonthLabel"></strong>
+        <button id="pickerNextMonth" type="button" aria-label="Nästa månad"><i class="fa-solid fa-chevron-right"></i></button>
+        <button id="pickerNextYear" type="button" aria-label="Nästa år"><i class="fa-solid fa-angles-right"></i></button>
+      </div>
+      <div class="picker-grid" id="pickerGrid"></div>
+      <div class="picker-footer"><button class="button" id="pickerToday" type="button"><i class="fa-solid fa-calendar-day"></i> Idag</button></div>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="resultModalBackdrop" hidden>
+    <section class="result-modal" role="dialog" aria-modal="true" aria-labelledby="resultModalTitle" aria-describedby="rangeResult">
+      <button class="modal-close" id="closeResultModal" type="button" aria-label="Stäng resultat"><i class="fa-solid fa-xmark"></i></button>
+      <h2 id="resultModalTitle">Valt datumintervall</h2>
+      <div id="rangeResult"></div>
+      <div class="modal-actions"><button class="button" id="clearRangeBtn" type="button"><i class="fa-solid fa-eraser"></i> Rensa intervall</button></div>
+    </section>
+  </div>
+  <script>
+    'use strict';
+    const MS_PER_DAY = 86400000;
+    const monthNames = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+    const weekdayNames = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
+    const shortWeekdays = ['M','T','O','T','F','L','S'];
+    const fixedHolidays = {'01-01':'Nyårsdagen, Sverige blir medlem i EU (1995)','01-06':'Trettondedag jul','01-13':'Tjugondag Knut','01-27':'Förintelsens minnesdag','02-06':'Samernas nationaldag','02-14':'Alla hjärtans dag','02-24':'Sverigefinnarnas dag','02-28':'Olof Palme mördas (1986)','03-08':'Internationella kvinnodagen','03-16':'Gustav III blir skjuten (1792)','03-25':'Våffeldagen','04-07':'Världshälsodagen','04-30':'Valborgsmässoafton','05-01':'Första maj','05-24':'Allmän rösträtt (1919)','06-06':'Nationaldagen','06-28':'Slaget vid Poltava (1709)','09-26':'Göta kanal invigs (1832)','09-28':'Estoniakatastrofen (1994)','10-04':'Kanelbullens dag','10-24':'FN-dagen','10-28':'Unionsupplösningen (1905)','10-31':'Halloween','11-06':'Gustav Adolfsdagen','11-10':'Mårtensgås','11-11':'Chokladens dag','11-30':'Karl XII stupar vid Fredrikshald (1718)','12-02':'Tryckfrihetsförordningen antas (1766)','12-04':'Slaget vid Lund (1676)','12-10':'Nobeldagen','12-13':'Luciadagen','12-24':'Julafton','12-25':'Juldagen','12-26':'Annandag jul','12-31':'Nyårsafton'};
+    const $ = id => document.getElementById(id);
+    const pad = n => String(n).padStart(2,'0');
+    const toISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const parseISO = iso => { const [y,m,d]=iso.split('-').map(Number); return new Date(y,m-1,d,12); };
+    const utcDay = iso => { const [y,m,d]=iso.split('-').map(Number); return Date.UTC(y,m-1,d)/MS_PER_DAY; };
+    const displayDate = iso => parseISO(iso).toLocaleDateString('sv-SE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-   // Kontrollflagga för att bestämma om markering ska appliceras
-   let shouldHighlight = true;
-
-   // Funktion för att formatera datum i YYYY-MM-DD baserat på lokal tid
-   function formatDateLocal(date) {
-       const year = date.getFullYear();
-       const month = (date.getMonth() + 1).toString().padStart(2, '0');
-       const day = date.getDate().toString().padStart(2, '0');
-       return `${year}-${month}-${day}`;
-   }
-
-   // Funktion för att beräkna Påskdagen baserat på Gauss algoritm
-   function calculateEaster(year) {
-       const a = year % 19;
-       const b = Math.floor(year / 100);
-       const c = year % 100;
-       const d = Math.floor(b / 4);
-       const e = b % 4;
-       const f = Math.floor((b + 8) / 25);
-       const g = Math.floor((b - f + 1) / 3);
-       const h = (19 * a + b - d - g + 15) % 30;
-       const i = Math.floor(c / 4);
-       const k = c % 4;
-       const l = (32 + 2 * e + 2 * i - h - k) % 7;
-       const m = Math.floor((a + 11 * h + 22 * l) / 451);
-       const month = Math.floor((h + l - 7 * m + 114) / 31); // 3=March, 4=April
-       const day = ((h + l - 7 * m + 114) % 31) + 1;
-       return new Date(year, month - 1, day);
-   }
-
-   // Funktion för att få datum från ISO veckonummer och år
-   function getDateOfISOWeek(week, year) {
-       const thursday = new Date(year, 0, 4); // January 4th
-       const dayOfWeek = thursday.getDay() || 7; // Sunday=7
-       const mondayFirstWeek = new Date(thursday);
-       mondayFirstWeek.setDate(thursday.getDate() - dayOfWeek + 1);
-       const desiredMonday = new Date(mondayFirstWeek);
-       desiredMonday.setDate(mondayFirstWeek.getDate() + (week - 1) * 7);
-       return desiredMonday;
-   }
-
-   // Funktion för att få totalt antal ISO veckor i ett år
-   function getISOWeeksInYear(year) {
-       const dec28 = new Date(year, 11, 28);
-       return getISOWeekNumber(dec28);
-   }
-
-   // Funktion för att få ISO veckonummer
-   function getISOWeekNumber(date) {
-       const tempDate = new Date(date.getTime());
-       tempDate.setHours(0, 0, 0, 0);
-       tempDate.setDate(tempDate.getDate() + 3 - ((tempDate.getDay() + 6) % 7));
-       const week1 = new Date(tempDate.getFullYear(), 0, 4);
-       const weekNumber = 1 + Math.round(((tempDate - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
-       return weekNumber;
-   }
-
-   // Funktioner för att beräkna rörliga helgdagar
-   function getMovableHolidays(year) {
-       const holidays = {};
-
-       // Beräkna Påskdagen
-       const easterSunday = calculateEaster(year);
-
-       // Fettisdagen: 47 dagar före Påskdagen
-       const fettis = new Date(easterSunday);
-       fettis.setDate(easterSunday.getDate() - 47);
-       holidays[formatDateLocal(fettis).slice(5)] = "Fettisdagen";
-
-       // Påskdagen: Påskdagen
-       holidays[formatDateLocal(easterSunday).slice(5)] = "Påskdagen";
-
-       // Skärtorsdag: 3 dagar före Påskdagen
-       const skartorsdag = new Date(easterSunday);
-       skartorsdag.setDate(easterSunday.getDate() - 3);
-       holidays[formatDateLocal(skartorsdag).slice(5)] = "Skärtorsdag";
-
-       // Långfredag: 2 dagar före Påskdagen
-       const langfredag = new Date(easterSunday);
-       langfredag.setDate(easterSunday.getDate() - 2);
-       holidays[formatDateLocal(langfredag).slice(5)] = "Långfredag";
-
-       // Påskafton: 1 dag före Påskdagen
-       const paskafton = new Date(easterSunday);
-       paskafton.setDate(easterSunday.getDate() - 1);
-       holidays[formatDateLocal(paskafton).slice(5)] = "Påskafton";
-
-       // Kristi himmelsfärdsdag: 39 dagar efter Påskdagen
-       const kristiHimmelsfardsdag = new Date(easterSunday);
-       kristiHimmelsfardsdag.setDate(easterSunday.getDate() + 39);
-       holidays[formatDateLocal(kristiHimmelsfardsdag).slice(5)] = "Kristi himmelsfärdsdag";
-
-       // Midsommarafton: Fredag mellan 19-25 juni
-       const midsommaraftonDate = getMidsommarafton(year);
-       if (midsommaraftonDate) {
-           holidays[midsommaraftonDate] = "Midsommarafton";
-
-           // Midsommardag: Lördag efter Midsommarafton
-           const [month, day] = midsommaraftonDate.split('-').map(Number);
-           const midsommarafton = new Date(year, month - 1, day);
-           midsommarafton.setDate(midsommarafton.getDate() + 1);
-           const midsommardagDate = formatDateLocal(midsommarafton).slice(5);
-           holidays[midsommardagDate] = "Midsommardag";
-       }
-
-       // Alla helgons dag: Lördag mellan 31 oktober och 6 november
-       const allaHelgonsDagDate = getAllaHelgonsDag(year);
-       if (allaHelgonsDagDate) {
-           holidays[allaHelgonsDagDate] = "Alla helgons dag";
-       }
-
-       // Mors dag: Sista söndagen i maj
-       const morsDagDate = getMorsDag(year);
-       if (morsDagDate) {
-           holidays[morsDagDate] = "Mors dag";
-       }
-
-       // Fars dag: Andra söndagen i november
-       const farsDagDate = getFarsDag(year);
-       if (farsDagDate) {
-           holidays[farsDagDate] = "Fars dag";
-       }
-
-       // Första advent: Söndag mellan 27 november och 3 december
-       const firstAdventDate = getFirstAdvent(year);
-       if (firstAdventDate) {
-           holidays[firstAdventDate] = "Första advent";
-       }
-
-       // Sommartid: Sista söndagen i mars
-       const sommartidDate = getSommartid(year);
-       if (sommartidDate) {
-           holidays[sommartidDate] = "Sommartid";
-       }
-
-       // Vintertid: Sista söndagen i oktober
-       const vintertidDate = getVintertid(year);
-       if (vintertidDate) {
-           holidays[vintertidDate] = "Vintertid";
-       }
-
-       return holidays;
-   }
-
-   // Hjälpfunktioner för att beräkna specifika helgdagar
-   function getMidsommarafton(year) {
-       for (let day = 19; day <= 25; day++) { // June 19-25
-           const date = new Date(year, 5, day); // June is month 5 (0-based)
-           if (date.getDay() === 5) { // Friday
-               return formatDateLocal(date).slice(5);
-           }
-       }
-       return null;
-   }
-
-   function getAllaHelgonsDag(year) {
-       for (let day = 31; day <= 37; day++) { // 31 Oct to 6 Nov
-           const date = new Date(year, 9, day); // October is month 9 (0-based)
-           if (date.getDay() === 6 && date.getDate() <= 6) { // Saturday
-               return formatDateLocal(date).slice(5);
-           }
-       }
-       return null;
-   }
-
-   function getMorsDag(year) {
-       // Mors dag: sista söndagen i maj
-       const mayLast = new Date(year, 4, 31); // May is month 4 (0-based)
-       const lastSunday = new Date(mayLast);
-       const day = lastSunday.getDay();
-       lastSunday.setDate(mayLast.getDate() - (day === 0 ? 0 : day));
-       return formatDateLocal(lastSunday).slice(5);
-   }
-
-   function getFarsDag(year) {
-       // Fars dag: andra söndagen i november
-       let count = 0;
-       for (let day = 1; day <= 30; day++) {
-           const date = new Date(year, 10, day); // November is month 10 (0-based)
-           if (date.getDay() === 0) { // Sunday
-               count++;
-               if (count === 2) {
-                   return formatDateLocal(date).slice(5);
-               }
-           }
-       }
-       return null;
-   }
-
-function getFirstAdvent(year) {
-    // Första advent: Söndag mellan 27 november och 3 december
-    for (let day = 27; day <= 30; day++) {
-        const date = new Date(year, 10, day); // November is month 10 (0-based)
-        if (date.getDay() === 0) { // If Sunday
-            return formatDateLocal(date).slice(5); // Return formatted MM-DD
-        }
+    function isoWeekData(date) {
+      const d = new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+      d.setUTCDate(d.getUTCDate()+4-(d.getUTCDay()||7));
+      const year=d.getUTCFullYear(), start=new Date(Date.UTC(year,0,1));
+      return {week:Math.ceil((((d-start)/MS_PER_DAY)+1)/7),year};
     }
-    for (let day = 1; day <= 3; day++) { // Check if December 1-3 is a Sunday
-        const date = new Date(year, 11, day); // December is month 11 (0-based)
-        if (date.getDay() === 0) { // If Sunday
-            return formatDateLocal(date).slice(5); // Return formatted MM-DD
-        }
+    function weeksInISOYear(year) { return isoWeekData(new Date(year,11,28,12)).week; }
+    function mondayOfISOWeek(week,year) {
+      const jan4=new Date(year,0,4,12), monday=new Date(jan4);
+      monday.setDate(jan4.getDate()-((jan4.getDay()+6)%7)+(week-1)*7); return monday;
     }
-    return null;
-}
+    function easter(year) {
+      const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=(h+l-7*m+114)%31+1;
+      return new Date(year,month-1,day,12);
+    }
+    function shifted(date,days) { const copy=new Date(date); copy.setDate(copy.getDate()+days); return copy; }
+    function lastWeekday(year,month,weekday) { const d=new Date(year,month+1,0,12); d.setDate(d.getDate()-((d.getDay()-weekday+7)%7)); return d; }
+    function movableHolidays(year) {
+      const out={}, add=(date,name)=>out[toISO(date).slice(5)]=name, e=easter(year);
+      add(shifted(e,-47),'Fettisdagen'); add(shifted(e,-3),'Skärtorsdag'); add(shifted(e,-2),'Långfredag'); add(shifted(e,-1),'Påskafton'); add(e,'Påskdagen'); add(shifted(e,1),'Annandag påsk'); add(shifted(e,39),'Kristi himmelsfärdsdag');
+      for(let day=19;day<=25;day++){const d=new Date(year,5,day,12);if(d.getDay()===5){add(d,'Midsommarafton');add(shifted(d,1),'Midsommardagen');break;}}
+      for(let day=31;day<=37;day++){const d=new Date(year,9,day,12);if(d.getDay()===6){add(d,'Alla helgons dag');break;}}
+      add(lastWeekday(year,4,0),'Mors dag'); add(new Date(year,10,8+((7-new Date(year,10,1,12).getDay())%7),12),'Fars dag');
+      for(let day=27;day<=33;day++){const d=new Date(year,10,day,12);if(d.getDay()===0){add(d,'Första advent');break;}}
+      add(lastWeekday(year,2,0),'Sommartid'); add(lastWeekday(year,9,0),'Vintertid'); return out;
+    }
 
-   function getSommartid(year) {
-       // Sommartid: sista söndagen i mars
-       const marchLast = new Date(year, 2, 31); // March is month 2 (0-based)
-       const lastSunday = new Date(marchLast);
-       const day = lastSunday.getDay();
-       lastSunday.setDate(marchLast.getDate() - (day === 0 ? 0 : day));
-       return formatDateLocal(lastSunday).slice(5);
-   }
+    let selectedDate=new Date(); selectedDate.setHours(12,0,0,0);
+    let pickerDate=new Date(selectedDate);
+    let calendarYear=selectedDate.getFullYear(), rangeStart=null, rangeEnd=null;
+    function updateWeekView(date=selectedDate) {
+      selectedDate=new Date(date); selectedDate.setHours(12,0,0,0);
+      const info=isoWeekData(selectedDate), max=weeksInISOYear(info.year);
+      $('dateInput').value=toISO(selectedDate); $('selectedDateLabel').textContent=selectedDate.toLocaleDateString('sv-SE',{year:'numeric',month:'long',day:'numeric'}); $('weekSlider').max=max; $('weekSlider').value=info.week; $('weekResult').textContent=info.week; $('yearSlider').value=info.year; $('yearResult').textContent=info.year;
+      const monday=mondayOfISOWeek(info.week,info.year), holidaysByYear={}; let html='<ul>';
+      for(let i=0;i<7;i++){const d=shifted(monday,i),iso=toISO(d),year=d.getFullYear(); holidaysByYear[year] ||= movableHolidays(year); const holiday=holidaysByYear[year][iso.slice(5)]||fixedHolidays[iso.slice(5)]||''; html+=`<li class="${iso===toISO(selectedDate)?'highlight':''}"><span class="date">${weekdayNames[i]} ${iso}</span>${holiday?`<span class="holiday">${holiday}</span>`:''}</li>`;}
+      $('weekdays').innerHTML=html+'</ul>';
+    }
+    function setISOWeek(week,year) { const max=weeksInISOYear(year); updateWeekView(mondayOfISOWeek(Math.min(Number(week),max),year)); }
+    function changeSelected(days,years=0) { const d=new Date(selectedDate); if(years){const month=d.getMonth();d.setFullYear(d.getFullYear()+years);if(d.getMonth()!==month)d.setDate(0);}else d.setDate(d.getDate()+days); updateWeekView(d); }
 
-   function getVintertid(year) {
-       // Vintertid: sista söndagen i oktober
-       const octoberLast = new Date(year, 9, 31); // October is month 9 (0-based)
-       const lastSunday = new Date(octoberLast);
-       const day = lastSunday.getDay();
-       lastSunday.setDate(octoberLast.getDate() - (day === 0 ? 0 : day));
-       return formatDateLocal(lastSunday).slice(5);
-   }
+    function setView(name) {
+      const year=name==='year'; $('weekView').hidden=year; $('yearView').hidden=!year;
+      $('weekTab').classList.toggle('active',!year); $('yearTab').classList.toggle('active',year); $('weekTab').setAttribute('aria-selected',String(!year)); $('yearTab').setAttribute('aria-selected',String(year));
+      $('intro').textContent=year?'Välj två datum – och se hur många kalenderdagar spannet omfattar.':'Välj datum – och se veckonumret. Ändra vecka eller år – och se vilka dagar veckan innehåller.';
+      if(year) renderYear();
+    }
+    function renderYear() {
+      $('calendarYearLabel').textContent=calendarYear; $('calendarYearSlider').value=calendarYear; const today=toISO(new Date()); let html='';
+      for(let month=0;month<12;month++){
+        const first=new Date(calendarYear,month,1,12), offset=(first.getDay()+6)%7, days=new Date(calendarYear,month+1,0,12).getDate(), rows=Math.ceil((offset+days)/7);
+        html+=`<article class="month"><h3>${monthNames[month]}</h3><div class="month-grid"><span class="weekday-head" title="Vecka">v.</span>${shortWeekdays.map(d=>`<span class="weekday-head">${d}</span>`).join('')}`;
+        for(let row=0;row<rows;row++){
+          const monday=new Date(calendarYear,month,1-offset+row*7,12); html+=`<span class="week-number" title="Vecka ${isoWeekData(monday).week}">${isoWeekData(monday).week}</span>`;
+          for(let column=0;column<7;column++){
+            const day=row*7+column-offset+1;
+            if(day<1||day>days){html+='<span class="empty-day"></span>';continue;}
+            const iso=`${calendarYear}-${pad(month+1)}-${pad(day)}`, dow=new Date(calendarYear,month,day,12).getDay(), u=utcDay(iso), start=rangeStart&&utcDay(rangeStart), end=rangeEnd&&utcDay(rangeEnd), classes=['day']; if(dow===0||dow===6)classes.push('weekend');if(iso===today)classes.push('today');if(rangeStart&&rangeEnd&&u>Math.min(start,end)&&u<Math.max(start,end))classes.push('in-range');if(iso===rangeStart)classes.push('range-start');if(iso===rangeEnd)classes.push('range-end');html+=`<button class="${classes.join(' ')}" data-date="${iso}" aria-label="${displayDate(iso)}, vecka ${isoWeekData(new Date(calendarYear,month,day,12)).week}">${day}</button>`;
+          }
+        }
+        html+='</div></article>';
+      } $('yearGrid').innerHTML=html; updateRangeResult();
+    }
+    function updateRangeResult() {
+      if(!rangeStart){$('selectionStatus').textContent='Klicka på ett startdatum och därefter på ett slutdatum. Antalet kalenderdagar räknas inklusive båda datumen.';$('rangeResult').textContent='';return;}
+      if(!rangeEnd){$('selectionStatus').innerHTML=`Start valt: <strong>${displayDate(rangeStart)}</strong>. Klicka nu på ett slutdatum.`;$('rangeResult').textContent='';return;}
+      const first=utcDay(rangeStart)<=utcDay(rangeEnd)?rangeStart:rangeEnd, last=first===rangeStart?rangeEnd:rangeStart, count=Math.abs(utcDay(rangeEnd)-utcDay(rangeStart))+1;
+      $('rangeResult').innerHTML=`<div class="result-row"><span>Totalt omfattade dagar:</span><strong>${count}</strong></div><div class="result-row"><span>Dagar till slutdatum:</span><strong>${count-1}</strong></div><div class="result-dates">Från ${displayDate(first)} till ${displayDate(last)}.</div>`;
+      $('selectionStatus').textContent='Intervallet är valt. Klicka på ett nytt datum för att påbörja ett nytt intervall.';
+    }
+    function openResultModal(){ $('resultModalBackdrop').hidden=false; document.body.style.overflow='hidden'; $('closeResultModal').focus(); }
+    function closeResultModal(){ $('resultModalBackdrop').hidden=true; document.body.style.overflow=''; }
+    function chooseRangeDate(iso) { if(!rangeStart||rangeEnd){rangeStart=iso;rangeEnd=null;closeResultModal();renderYear();}else{rangeEnd=iso;renderYear();openResultModal();} }
+    function setCalendarYear(year){calendarYear=Math.max(1950,Math.min(2100,Number(year)));renderYear();}
 
-   // Funktion för att hämta rörliga helgdagar för ett år
-   function getMovableHolidaysByYear(year) {
-       return getMovableHolidays(year);
-   }
+    function renderDatePicker(){
+      const year=pickerDate.getFullYear(),month=pickerDate.getMonth(),first=new Date(year,month,1,12),offset=(first.getDay()+6)%7,days=new Date(year,month+1,0,12).getDate(),today=toISO(new Date()),chosen=toISO(selectedDate);
+      $('pickerMonthLabel').textContent=`${monthNames[month]} ${year}`;
+      let html='<span class="picker-weekday" title="Vecka">v.</span>'+shortWeekdays.map(day=>`<span class="picker-weekday">${day}</span>`).join('');
+      for(let row=0;row<6;row++){
+        const monday=new Date(year,month,1-offset+row*7,12),week=isoWeekData(monday).week;
+        html+=`<span class="picker-week-number" title="Vecka ${week}">${week}</span>`;
+        for(let column=0;column<7;column++){
+          const day=row*7+column-offset+1;
+          if(day<1||day>days){html+='<span class="picker-empty"></span>';continue;}
+          const iso=`${year}-${pad(month+1)}-${pad(day)}`,dow=new Date(year,month,day,12).getDay(),classes=['picker-day'];if(dow===0||dow===6)classes.push('weekend');if(iso===today)classes.push('picker-today');if(iso===chosen)classes.push('picker-selected');html+=`<button class="${classes.join(' ')}" type="button" data-picker-date="${iso}" aria-label="${displayDate(iso)}, vecka ${week}">${day}</button>`;
+        }
+      }
+      $('pickerGrid').innerHTML=html;
+    }
+    function openDatePicker(){pickerDate=new Date(selectedDate);renderDatePicker();$('datePickerBackdrop').hidden=false;document.body.style.overflow='hidden';$('closeDatePicker').focus();}
+    function closeDatePickerModal(){$('datePickerBackdrop').hidden=true;if($('resultModalBackdrop').hidden)document.body.style.overflow='';}
+    function movePicker(months,years=0){pickerDate=new Date(pickerDate.getFullYear()+years,pickerDate.getMonth()+months,1,12);renderDatePicker();}
+    function choosePickerDate(iso){updateWeekView(parseISO(iso));closeDatePickerModal();$('openDatePicker').focus();}
 
-   // Funktion för att hämta veckodagar med eventuell helgdagsetikett
-   function getWeekDates(mondayDate, selectedDate, holidays) {
-       const daysOfWeek = ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag", "Söndag"];
-       const days = [];
-       const selectedDateStr = formatDateLocal(new Date(selectedDate));
-
-       for (let i = 0; i < 7; i++) {
-           const currentDay = new Date(mondayDate);
-           currentDay.setDate(mondayDate.getDate() + i);
-           const currentDayStr = formatDateLocal(currentDay);
-           
-           // Extrahera månad och dag för att jämföra med helgdagar
-           const monthDay = currentDayStr.slice(5); // "MM-DD"
-
-           // Kolla om dagens datum finns i helgdagar
-           const holiday = holidays[monthDay] || fixedHolidays[monthDay] || "";
-
-           days.push({
-               name: daysOfWeek[i],
-               date: currentDayStr,
-               isSelected: shouldHighlight && currentDayStr === selectedDateStr,
-               holiday: holiday // Lägg till helgdagsetikett om det finns
-           });
-       }
-       return days;
-   }
-
-   // Funktion för att uppdatera visade veckodagar med helgdagsetikett och varannan rad bakgrund
-   function updateResults(mondayDate) {
-       const selectedDate = document.getElementById("dateInput").value;
-       const year = mondayDate.getFullYear();
-       const movableHolidays = getMovableHolidaysByYear(year);
-       const days = getWeekDates(mondayDate, selectedDate, movableHolidays);
-       let listHtml = "<ul>";
-
-       days.forEach(day => {
-           // Lägg till helgdagsetikett om det finns
-           const holidayText = day.holiday ? day.holiday : "";
-           
-           // Strukturera listitem med två spans för fixering
-           listHtml += `
-               <li class="${day.isSelected ? 'highlight' : ''}">
-                   <span class="date">${day.name}: ${day.date}</span>
-                   <span class="holiday">${holidayText}</span>
-               </li>
-           `;
-       });
-
-       listHtml += "</ul>";
-       document.getElementById("weekdays").innerHTML = listHtml;
-   }
-
-   // Funktion för att uppdatera vecka och år sliders baserat på valt datum
-   function updateSliders(mondayDate) {
-       const selectedDate = document.getElementById("dateInput").value;
-       const weekNumber = getISOWeekNumber(mondayDate);
-       const year = mondayDate.getFullYear();
-       const totalWeeks = getISOWeeksInYear(year);
-       const weekSlider = document.getElementById("weekSlider");
-       const yearSlider = document.getElementById("yearSlider");
-
-       // Uppdatera veckans maxvärde baserat på året
-       weekSlider.max = totalWeeks;
-       // Sätt veckans värde, men klampar till totalWeeks om nödvändigt
-       const adjustedWeekNumber = Math.min(weekNumber, totalWeeks);
-       weekSlider.value = adjustedWeekNumber;
-       document.getElementById("weekResult").textContent = adjustedWeekNumber;
-
-       // Uppdatera årets värde
-       yearSlider.value = year;
-       document.getElementById("yearResult").textContent = year;
-   }
-
-   // Funktion för att justera datumet med ett antal dagar
-   function adjustDate(days) {
-       const dateInput = document.getElementById("dateInput");
-       let selectedDate = new Date(dateInput.value);
-       selectedDate.setDate(selectedDate.getDate() + days);
-       const formattedDate = formatDateLocal(selectedDate);
-       dateInput.value = formattedDate;
-       const mondayDate = getMondayOfWeek(selectedDate);
-       updateResults(mondayDate);
-       updateSliders(mondayDate);
-   }
-
-   // Funktion för att justera året med ett antal
-   function adjustYear(yearChange) {
-       const dateInput = document.getElementById("dateInput");
-       let selectedDate = new Date(dateInput.value);
-       const originalMonth = selectedDate.getMonth();
-       const originalDay = selectedDate.getDate();
-
-       selectedDate.setFullYear(selectedDate.getFullYear() + yearChange);
-
-       // Bevara månaden och dagen så mycket som möjligt
-       // Om den nya månaden inte har den ursprungliga dagen, sätt till sista dagen i månaden
-       const lastDayOfMonth = new Date(selectedDate.getFullYear(), originalMonth + 1, 0).getDate();
-       if (originalDay > lastDayOfMonth) {
-           selectedDate.setDate(lastDayOfMonth);
-       }
-
-       const formattedDate = formatDateLocal(selectedDate);
-       dateInput.value = formattedDate;
-       const mondayDate = getMondayOfWeek(selectedDate);
-       updateResults(mondayDate);
-       updateSliders(mondayDate);
-   }
-
-   // Funktion för att sätta datumväljaren till idag
-   function setToToday() {
-       const today = new Date();
-       const formattedDate = formatDateLocal(today);
-       document.getElementById("dateInput").value = formattedDate;
-       const mondayDate = getMondayOfWeek(today);
-       updateResults(mondayDate);
-       updateSliders(mondayDate);
-   }
-
-   // Hjälpfunktion för att beräkna måndagen i den valda veckan
-   function getMondayOfWeek(date) {
-       const dayOfWeek = date.getDay() || 7; // Sunday=7
-       const monday = new Date(date);
-       monday.setDate(date.getDate() - dayOfWeek + 1);
-       return monday;
-   }
-
-   // Event listeners för knappar
-   document.getElementById("decreaseWeekBtn").addEventListener("click", () => {
-       shouldHighlight = true;
-       adjustDate(-7);
-   });
-   document.getElementById("increaseWeekBtn").addEventListener("click", () => {
-       shouldHighlight = true;
-       adjustDate(7);
-   });
-   document.getElementById("decreaseYearBtn").addEventListener("click", () => {
-       shouldHighlight = true;
-       adjustYear(-1);
-   });
-   document.getElementById("increaseYearBtn").addEventListener("click", () => {
-       shouldHighlight = true;
-       adjustYear(1);
-   });
-   document.getElementById("todayBtn").addEventListener("click", () => {
-       shouldHighlight = true;
-       setToToday();
-   });
-
-   // Event listener för datumväljaren (med auto-replace när input är tömd)
-   document.getElementById("dateInput").addEventListener("input", function () {
-       if (this.value === "") {
-           // Sätt automatiskt dagens datum när input är tömd
-           this.value = formatDateLocal(new Date());
-       }
-   });
-
-   // Event listener för datumväljaren när värdet ändras
-   document.getElementById("dateInput").addEventListener("change", function () {
-       shouldHighlight = true;
-       const selectedDate = new Date(this.value);
-       const mondayDate = getMondayOfWeek(selectedDate);
-       updateResults(mondayDate);
-       updateSliders(mondayDate);
-   });
-
-   // Event listener för vecka slider
-   document.getElementById("weekSlider").addEventListener("input", function() {
-       let weekNumber = parseInt(this.value);
-       const year = parseInt(document.getElementById("yearResult").textContent);
-       const totalWeeks = getISOWeeksInYear(year);
-
-       // Säkerställ att weekNumber är inom giltigt intervall
-       if (weekNumber > totalWeeks) {
-           weekNumber = totalWeeks;
-           this.value = weekNumber;
-           document.getElementById("weekResult").textContent = weekNumber;
-       }
-
-       const mondayOfWeek = getDateOfISOWeek(weekNumber, year);
-       shouldHighlight = false; // Inaktivera highlight för slider-interaktion
-       document.getElementById("dateInput").value = formatDateLocal(mondayOfWeek);
-       updateResults(mondayOfWeek);
-       updateSliders(mondayOfWeek);
-       shouldHighlight = true; // Återaktivera highlight för framtida interaktioner
-   });
-
-   // Event listener för år slider
-   document.getElementById("yearSlider").addEventListener("input", function() {
-       const newYear = parseInt(this.value);
-       const dateInput = document.getElementById("dateInput");
-       let selectedDate = new Date(dateInput.value);
-       const originalMonth = selectedDate.getMonth();
-       const originalDay = selectedDate.getDate();
-
-       selectedDate.setFullYear(newYear);
-
-       // Justera dag om det behövs (t.ex. 29 februari i icke-skottår)
-       const lastDayOfMonth = new Date(newYear, originalMonth + 1, 0).getDate();
-       if (originalDay > lastDayOfMonth) {
-           selectedDate.setDate(lastDayOfMonth);
-       }
-
-       const formattedDate = formatDateLocal(selectedDate);
-       dateInput.value = formattedDate;
-
-       const mondayDate = getMondayOfWeek(selectedDate);
-       updateResults(mondayDate);
-       updateSliders(mondayDate);
-   });
-
-   // Initiera sidan med dagens datum
-   document.addEventListener("DOMContentLoaded", setToToday);
-</script>
-
+    $('weekTab').addEventListener('click',()=>setView('week')); $('yearTab').addEventListener('click',()=>setView('year'));
+    $('openDatePicker').addEventListener('click',openDatePicker);
+    $('closeDatePicker').addEventListener('click',closeDatePickerModal);
+    $('datePickerBackdrop').addEventListener('click',e=>{if(e.target===$('datePickerBackdrop'))closeDatePickerModal();});
+    $('pickerPreviousYear').addEventListener('click',()=>movePicker(0,-1)); $('pickerPreviousMonth').addEventListener('click',()=>movePicker(-1)); $('pickerNextMonth').addEventListener('click',()=>movePicker(1)); $('pickerNextYear').addEventListener('click',()=>movePicker(0,1));
+    $('pickerGrid').addEventListener('click',e=>{const button=e.target.closest('[data-picker-date]');if(button)choosePickerDate(button.dataset.pickerDate);});
+    $('pickerToday').addEventListener('click',()=>choosePickerDate(toISO(new Date())));
+    $('decreaseWeekBtn').addEventListener('click',()=>changeSelected(-7)); $('increaseWeekBtn').addEventListener('click',()=>changeSelected(7)); $('decreaseYearBtn').addEventListener('click',()=>changeSelected(0,-1)); $('increaseYearBtn').addEventListener('click',()=>changeSelected(0,1)); $('todayBtn').addEventListener('click',()=>updateWeekView(new Date()));
+    $('weekSlider').addEventListener('input',e=>setISOWeek(e.target.value,Number($('yearSlider').value))); $('yearSlider').addEventListener('input',e=>setISOWeek($('weekSlider').value,e.target.value));
+    $('previousCalendarYear').addEventListener('click',()=>setCalendarYear(calendarYear-1)); $('nextCalendarYear').addEventListener('click',()=>setCalendarYear(calendarYear+1)); $('calendarTodayBtn').addEventListener('click',()=>setCalendarYear(new Date().getFullYear())); $('calendarYearSlider').addEventListener('input',e=>setCalendarYear(e.target.value));
+    $('closeResultModal').addEventListener('click',closeResultModal);
+    $('resultModalBackdrop').addEventListener('click',e=>{if(e.target===$('resultModalBackdrop'))closeResultModal();});
+    document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('datePickerBackdrop').hidden)closeDatePickerModal();else if(!$('resultModalBackdrop').hidden)closeResultModal();});
+    function clearRange(){rangeStart=null;rangeEnd=null;closeResultModal();renderYear();}
+    $('clearRangeBtn').addEventListener('click',clearRange);
+    $('clearRangeBtnOutside').addEventListener('click',clearRange);
+    $('yearGrid').addEventListener('click',e=>{const button=e.target.closest('[data-date]');if(button)chooseRangeDate(button.dataset.date);});
+    updateWeekView();
+  </script>
 </body>
 </html>
