@@ -125,12 +125,94 @@
     .legend span::before { content:""; display:inline-block; width:12px; height:12px; margin-right:5px; vertical-align:-2px; border-radius:3px; background:var(--range); }
     .legend .endpoint::before { background:var(--blue); border-radius:50%; }
     @media (max-width:800px) { .year-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-    @media (max-width:540px) {
-      body { padding:8px; } .container { padding:14px 10px; }
-      .year-grid { grid-template-columns:1fr; }
-      .slider-container { padding:0 5px 0 12px; }
-      .slider-group label { width:58px; font-size:1rem; }
-      .date { width:165px; } .holiday { font-size:.86rem; }
+    @media (max-width:640px) {
+      body { padding:8px; background:#f7f8fb; }
+      .container { width:100%; padding:16px 12px 18px; border-radius:14px; box-shadow:0 6px 18px rgba(32,40,55,.12); }
+      h1 { font-size:1.35rem; line-height:1.2; margin-bottom:8px; }
+      #intro { max-width:33ch; margin:0 auto; font-size:.94rem; line-height:1.45; color:#4c5563; }
+      .view-switch { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); width:100%; gap:5px; margin:14px 0 18px; padding:5px; }
+      .view-tab { width:auto; min-width:0; padding:10px 4px; font-size:.82rem; line-height:1.1; white-space:nowrap; }
+      .view-tab i { display:block; margin:0 auto 4px; font-size:.95rem; }
+      .input-container { gap:12px; }
+      #weekView .input-container { gap:0; }
+      .week-slider-wrap, .year-slider-wrap {
+        display:grid;
+        grid-template-columns:44px minmax(0,1fr) 44px;
+        grid-template-areas:
+          "label label label"
+          "prev range next";
+        width:100%;
+        margin:0 0 12px;
+        column-gap:8px;
+        row-gap:7px;
+      }
+      #weekView .week-slider-wrap:first-of-type, #monthView .year-slider-wrap, #yearView .year-slider-wrap { margin-bottom:12px; }
+      .week-slider-wrap label, .year-slider-wrap label {
+        grid-area:label;
+        justify-self:center;
+        width:auto;
+        grid-template-columns:auto auto;
+        gap:6px;
+        font-size:.98rem;
+      }
+      .week-slider-wrap strong, .year-slider-wrap strong { font-size:1.28rem; text-align:left; }
+      #weekResult { text-align:left; }
+      .week-slider-wrap label + .button, .year-slider-wrap label + .button { grid-area:prev; }
+      .week-slider-wrap input + .button, .year-slider-wrap input + .button { grid-area:next; }
+      .week-slider-wrap input, .year-slider-wrap input { grid-area:range; width:100%; min-width:0; }
+      .week-slider-wrap .button, .year-slider-wrap .button {
+        width:44px;
+        height:42px;
+        padding:0;
+        justify-content:center;
+        gap:0;
+        font-size:0;
+        border-radius:10px;
+      }
+      .week-slider-wrap .button i, .year-slider-wrap .button i { font-size:1rem; }
+      .week-status { min-height:1em; margin:-4px 0 10px; font-size:.82rem; line-height:1.3; }
+      .date-tools {
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        width:100%;
+        margin:0;
+        padding-left:0;
+        gap:9px;
+      }
+      .event-search { grid-column:1 / -1; width:100%; min-height:44px; font-size:1rem; border-radius:10px; }
+      .date-tools .button, .range-tools .button, .date-picker-trigger { width:100%; min-width:0; min-height:44px; border-radius:10px; }
+      #weekdays, #monthDays { margin-top:16px; }
+      #weekdays li, #monthDays li { align-items:start; min-height:0; padding:9px 10px; border-radius:8px; gap:5px 10px; }
+      #weekdays li { display:grid; grid-template-columns:minmax(0,1fr); }
+      #monthDays li { display:grid; grid-template-columns:50px minmax(0,1fr); }
+      #weekdays li.search-marked, #monthDays li.search-marked { padding:8px 9px; }
+      .month-week { width:auto; padding-top:1px; font-size:.82rem; }
+      .date { width:auto; min-width:0; font-size:.92rem; line-height:1.35; }
+      .holiday, .holiday-more { grid-column:1 / -1; font-size:.9rem; line-height:1.35; }
+      .holiday-more { align-items:flex-start; gap:10px; }
+      .year-view-spacer { display:none; }
+      .range-tools { display:grid; grid-template-columns:1fr 1fr; width:100%; margin:0 0 18px; gap:9px; }
+      .range-help { grid-column:1 / -1; width:100%; margin:0; line-height:1.4; }
+      .year-grid { grid-template-columns:1fr; gap:14px; }
+      .month { border-radius:10px; padding:0 8px 10px; }
+      .month-grid { gap:4px; }
+      .weekday-head { font-size:.68rem; }
+      .day { font-size:.78rem; }
+      .modal-backdrop { padding:10px; align-items:flex-start; overflow:auto; }
+      .result-modal { width:100%; margin:18px 0; padding:32px 20px 24px; border-radius:14px; }
+      .result-modal h2 { margin-left:38px; margin-right:38px; }
+      .picker-nav { grid-template-columns:38px 38px 1fr 38px 38px; gap:4px; }
+      .picker-nav button { width:36px; height:36px; }
+      .picker-grid { gap:4px; }
+    }
+    @media (max-width:380px) {
+      .container { padding:14px 9px 16px; }
+      .view-tab { font-size:.76rem; }
+      .week-slider-wrap, .year-slider-wrap { grid-template-columns:40px minmax(0,1fr) 40px; }
+      .week-slider-wrap .button, .year-slider-wrap .button { width:40px; height:40px; }
+      #monthDays li { grid-template-columns:44px minmax(0,1fr); }
+      .date { font-size:.88rem; }
+      .holiday, .holiday-more { font-size:.86rem; }
     }
   </style>
 </head>
