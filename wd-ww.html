@@ -1,13 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vilken vecka? Vilka dagar?</title>
-  <link rel="icon" href="calfav.ico" type="image/x-icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" href="https://learnswedish.github.io/html/calfav.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -25,35 +24,59 @@
     .view { width:100%; }
     .view[hidden] { display:none; }
     .input-container { display:flex; width:100%; flex-direction:column; align-items:center; gap:18px; }
+    #weekView .input-container { gap:0; }
     .button-group { display:flex; width:100%; gap:8px; flex-wrap:wrap; justify-content:center; }
     .button { background:#fff; color:#000; border:2px solid #555; padding:9px 14px; display:inline-flex; align-items:center; gap:8px; font:inherit; transition:.2s; cursor:pointer; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,.1); }
     .button:hover, .button:focus-visible { background:#555; color:#fff; }
     input[type="date"] { width:14ch; padding:8px; border:1px solid var(--border); border-radius:5px; font:1rem 'Work Sans',sans-serif; box-shadow:0 2px 4px rgba(0,0,0,.1); }
-    .date-picker-trigger { min-width:210px; justify-content:center; font-weight:500; }
+    .date-picker-trigger { min-width:210px; justify-content:center; }
     .date-picker-trigger .fa-calendar-days { color:var(--blue); }
     .slider-group { display:flex; align-items:center; width:100%; }
     .slider-group label { width:70px; text-align:right; font-size:1.25rem; flex-shrink:0; }
     .slider-container { display:flex; align-items:center; flex:1; gap:15px; padding:0 25px; }
     input[type="range"] { flex:1; accent-color:var(--blue); }
     .slider-value { width:55px; text-align:right; font-size:1.25rem; font-variant-numeric:tabular-nums; }
-    #weekdays { width:100%; margin-top:20px; text-align:left; }
-    #weekdays ul { list-style:none; padding:0; margin:0; }
-    #weekdays li { display:flex; align-items:center; gap:10px; min-height:36px; padding:6px 10px; border-radius:4px; }
-    #weekdays li:nth-child(even) { background:#d1cecd; }
-    #weekdays li.highlight { background:var(--gold); font-weight:700; }
-    .date { width:235px; }
+    #weekdays, #monthDays { width:100%; margin-top:20px; text-align:left; }
+    #weekdays ul, #monthDays ul { list-style:none; padding:0; margin:0; }
+    #weekdays li, #monthDays li { display:flex; align-items:center; gap:10px; min-height:36px; padding:6px 10px; border:2px solid transparent; border-radius:4px; }
+    #weekdays li:nth-child(even), #monthDays li:nth-child(even) { background:#d1cecd; }
+    #weekdays li.highlight, #monthDays li.highlight { background:var(--gold); font-weight:700; }
+    #weekdays li.selected-pulse, #monthDays li.selected-pulse { animation:selected-row-pulse 2s ease-in-out; }
+    #weekdays li.search-marked, #monthDays li.search-marked { border-width:3px; border-color:var(--blue); padding:5px 9px; box-shadow:0 0 0 3px rgba(0,123,255,.18); }
+    .month-week { width:58px; flex-shrink:0; color:#536983; font-weight:600; font-variant-numeric:tabular-nums; }
+    .date { width:195px; }
     .holiday { color:#b83532; font-weight:700; }
+    .holiday-more { display:flex; align-items:center; justify-content:space-between; gap:12px; flex:1; padding:0; border:0; background:transparent; font-family:inherit; font-size:inherit; font-weight:700; color:#b83532; text-align:left; cursor:pointer; }
+    .holiday-more i { flex-shrink:0; margin-left:auto; color:#555; }
+    .holiday-more:hover, .holiday-more:focus-visible { text-decoration:none; outline:none; }
+    .holiday-more:hover span, .holiday-more:focus-visible span { text-decoration:underline; }
+    .event-modal-text { text-align:left; line-height:1.55; color:#b83532; font-weight:700; }
+    .event-modal-text ul { margin:0; padding-left:1.2rem; }
+    .event-modal-text li + li { margin-top:8px; }
     .year-toolbar { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
     .year-toolbar strong { min-width:72px; font-size:1.5rem; font-variant-numeric:tabular-nums; }
-    .year-slider-wrap { display:flex; align-items:center; justify-content:center; gap:14px; width:min(650px,100%); margin:0 auto 16px; }
-    .year-slider-wrap input { flex:1; }
+    .week-slider-wrap, .year-slider-wrap { display:flex; align-items:center; justify-content:center; column-gap:8px; row-gap:10px; width:calc(100% - 130px); margin:0 90px 16px 40px; }
+    #weekView .week-slider-wrap:first-of-type { margin-bottom:8px; }
+    #monthView .year-slider-wrap, #yearView .year-slider-wrap { margin-bottom:8px; }
+    .year-view-spacer { height:41px; margin:0 90px 16px 40px; }
+    .week-slider-wrap label, .year-slider-wrap label { display:grid; grid-template-columns:6ch 4ch; align-items:baseline; gap:0; width:120px; text-align:left; flex-shrink:0; }
+    .week-slider-wrap strong, .year-slider-wrap strong { display:inline-block; min-width:0; font-size:1.4rem; font-variant-numeric:tabular-nums; text-align:right; }
+    #weekResult { text-align:left; }
+    .week-slider-wrap .button, .year-slider-wrap .button { flex-shrink:0; }
+    .week-slider-wrap input, .year-slider-wrap input { flex:1; }
+    .week-status { min-height:1.2em; margin:-9px 0 9px; color:#626d79; font-size:.9rem; }
+    .date-tools, .range-tools { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }
+    .date-tools { width:calc(100% - 130px); margin:0 90px 0 40px; padding-left:128px; box-sizing:border-box; justify-content:flex-start; }
+    .date-tools .button, .range-tools .button { width:130px; min-width:0; justify-content:center; }
+    .event-search { width:485px; min-width:0; padding:9px 12px; border:2px solid #555; border-radius:6px; font:inherit; box-shadow:0 2px 4px rgba(0,0,0,.1); }
+    .event-search:focus { outline:2px solid rgba(0,123,255,.25); outline-offset:2px; }
     .range-help { padding:10px; margin:0 auto 18px; border:1px solid #c9d9ef; border-radius:8px; background:#f5f9ff; font-size:.9rem; color:#555; }
-    .range-tools { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin:0 auto 18px; }
-    .range-tools .range-help { margin:0; flex:1 1 420px; }
+    .range-tools { margin:0 auto 28px; }
     .modal-backdrop { position:fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(20,25,35,.58); animation:fade-in .18s ease-out; }
     .modal-backdrop[hidden] { display:none; }
-    .result-modal { position:relative; width:min(480px,100%); padding:34px 28px 26px; border-radius:12px; background:#fff; box-shadow:0 18px 55px rgba(0,0,0,.32); text-align:center; animation:modal-in .22s ease-out; }
+    .result-modal { position:relative; width:min(580px,100%); padding:34px 28px 26px; border-radius:12px; background:#fff; box-shadow:0 18px 55px rgba(0,0,0,.32); text-align:center; animation:modal-in .22s ease-out; }
     .result-modal h2 { margin:0 32px 14px; font-size:1.28rem; text-align:center; }
+    #eventModalTitle { margin-bottom:22px; }
     #rangeResult { font-size:1.08rem; line-height:1.5; }
     #rangeResult strong { color:var(--blue-dark); font-size:1.2rem; }
     .result-row { display:flex; align-items:baseline; justify-content:space-between; gap:20px; padding:10px 0; border-bottom:1px solid #e2e7ed; text-align:left; }
@@ -79,6 +102,10 @@
     .picker-footer { margin-top:16px; display:flex; justify-content:center; }
     @keyframes fade-in { from { opacity:0; } }
     @keyframes modal-in { from { opacity:0; transform:translateY(14px) scale(.97); } }
+    @keyframes selected-row-pulse {
+      0%, 16%, 34%, 50%, 68%, 84%, 100% { border-color:transparent; box-shadow:none; }
+      8%, 42%, 76% { border-color:var(--blue); box-shadow:0 0 0 3px rgba(0,123,255,.16); }
+    }
     .year-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; text-align:center; }
     .month { overflow:hidden; border:1px solid #d9e0e8; border-radius:11px; padding:0 10px 11px; background:linear-gradient(180deg,#f7faff 0,#fff 42px); box-shadow:0 3px 10px rgba(44,62,80,.08); transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease; }
     .month:hover { transform:translateY(-2px); border-color:#b8cbe3; box-shadow:0 7px 18px rgba(44,62,80,.13); }
@@ -113,42 +140,42 @@
     <p id="intro">Välj datum – och se veckonumret. Ändra vecka eller år – och se vilka dagar veckan innehåller.</p>
     <nav class="view-switch" aria-label="Välj kalendervy">
       <button class="view-tab active" id="weekTab" aria-controls="weekView" aria-selected="true"><i class="fa-regular fa-calendar"></i> Veckovy</button>
+      <button class="view-tab" id="monthTab" aria-controls="monthView" aria-selected="false"><i class="fa-regular fa-calendar-days"></i> Månadsvy</button>
       <button class="view-tab" id="yearTab" aria-controls="yearView" aria-selected="false"><i class="fa-solid fa-calendar-days"></i> Årsvy</button>
     </nav>
 
     <section id="weekView" class="view">
       <div class="input-container">
         <input type="hidden" id="dateInput">
-        <button class="button date-picker-trigger" id="openDatePicker" type="button"><i class="fa-solid fa-calendar-days"></i><span id="selectedDateLabel">Välj datum</span></button>
-        <div class="button-group">
-          <button class="button" id="decreaseWeekBtn"><i class="fa-solid fa-circle-minus"></i> 1 vecka</button>
-          <button class="button" id="increaseWeekBtn"><i class="fa-solid fa-circle-plus"></i> 1 vecka</button>
-          <button class="button" id="decreaseYearBtn"><i class="fa-solid fa-circle-minus"></i> 1 år</button>
-          <button class="button" id="increaseYearBtn"><i class="fa-solid fa-circle-plus"></i> 1 år</button>
-          <button class="button" id="todayBtn"><i class="fa-solid fa-calendar-day"></i> Idag</button>
-        </div>
-        <div class="slider-group"><label for="weekSlider">Vecka:</label><div class="slider-container"><input type="range" id="weekSlider" min="1" max="53"><span class="slider-value" id="weekResult">1</span></div></div>
-        <div class="slider-group"><label for="yearSlider">År:</label><div class="slider-container"><input type="range" id="yearSlider" min="1950" max="2100"><span class="slider-value" id="yearResult">1950</span></div></div>
+        <div class="week-slider-wrap"><label for="yearSlider">År <strong id="yearResult">1950</strong></label><button class="button" id="decreaseYearBtn"><i class="fa-solid fa-chevron-left"></i> Föregående</button><input type="range" id="yearSlider" min="1950" max="2100"><button class="button" id="increaseYearBtn">Nästa <i class="fa-solid fa-chevron-right"></i></button></div>
+        <div class="week-slider-wrap"><label for="weekSlider">Vecka <strong id="weekResult">1</strong></label><button class="button" id="decreaseWeekBtn"><i class="fa-solid fa-chevron-left"></i> Föregående</button><input type="range" id="weekSlider" min="1" max="53"><button class="button" id="increaseWeekBtn">Nästa <i class="fa-solid fa-chevron-right"></i></button></div>
+        <div class="week-status" id="weekStatus" aria-live="polite"></div>
+        <div class="date-tools"><input class="event-search" id="weekEventSearch" type="search" list="eventSuggestions" placeholder="Sök händelse" autocomplete="off" aria-label="Sök händelse"><button class="button date-picker-trigger" id="openDatePicker" type="button"><i class="fa-solid fa-calendar-days"></i><span id="selectedDateLabel">Datum</span></button><button class="button" id="todayBtn"><i class="fa-solid fa-calendar-day"></i> Idag</button></div>
       </div>
       <div id="weekdays" aria-live="polite"></div>
     </section>
 
+    <section id="monthView" class="view" hidden>
+      <div class="year-slider-wrap"><label for="monthYearSlider">År <strong id="monthYearLabel"></strong></label><button class="button" id="previousMonthYear" aria-label="Föregående år"><i class="fa-solid fa-chevron-left"></i> Föregående</button><input type="range" id="monthYearSlider" min="1950" max="2100"><button class="button" id="nextMonthYear">Nästa <i class="fa-solid fa-chevron-right"></i></button></div>
+      <div class="week-slider-wrap"><label for="monthSlider">Månad <strong id="monthResult"></strong></label><button class="button" id="decreaseMonthBtn"><i class="fa-solid fa-chevron-left"></i> Föregående</button><input type="range" id="monthSlider" min="0" max="11"><button class="button" id="increaseMonthBtn">Nästa <i class="fa-solid fa-chevron-right"></i></button></div>
+      <div class="week-status" aria-hidden="true"></div>
+      <div class="date-tools"><input class="event-search" id="monthEventSearch" type="search" list="eventSuggestions" placeholder="Sök händelse" autocomplete="off" aria-label="Sök händelse"><button class="button date-picker-trigger" id="monthOpenDatePicker" type="button"><i class="fa-solid fa-calendar-days"></i><span>Datum</span></button><button class="button" id="monthTodayBtn"><i class="fa-solid fa-calendar-day"></i> Idag</button></div>
+      <div id="monthDays" aria-live="polite"></div>
+    </section>
+
     <section id="yearView" class="view" hidden>
-      <div class="year-toolbar">
-        <button class="button" id="previousCalendarYear" aria-label="Föregående år"><i class="fa-solid fa-chevron-left"></i> Föregående</button>
-        <strong id="calendarYearLabel"></strong>
-        <button class="button" id="nextCalendarYear">Nästa <i class="fa-solid fa-chevron-right"></i></button>
+      <div class="year-slider-wrap"><label for="calendarYearSlider">År <strong id="calendarYearLabel"></strong></label><button class="button" id="previousCalendarYear" aria-label="Föregående år"><i class="fa-solid fa-chevron-left"></i> Föregående</button><input type="range" id="calendarYearSlider" min="1950" max="2100"><button class="button" id="nextCalendarYear">Nästa <i class="fa-solid fa-chevron-right"></i></button></div>
+      <div class="year-view-spacer" aria-hidden="true"></div>
+      <div class="week-status" aria-hidden="true"></div>
+      <div class="range-tools">
+        <div class="range-help" id="selectionStatus" aria-live="polite" hidden>Klicka på ett startdatum och därefter på ett slutdatum. Antalet kalenderdagar räknas inklusive båda datumen.</div>
+        <button class="button" id="clearRangeBtnOutside" type="button"><i class="fa-solid fa-eraser"></i> Rensa</button>
         <button class="button" id="calendarTodayBtn"><i class="fa-solid fa-calendar-day"></i> I år</button>
       </div>
-      <div class="year-slider-wrap"><label for="calendarYearSlider">År</label><input type="range" id="calendarYearSlider" min="1950" max="2100"></div>
-      <div class="range-tools">
-        <div class="range-help" id="selectionStatus" aria-live="polite">Klicka på ett startdatum och därefter på ett slutdatum. Antalet kalenderdagar räknas inklusive båda datumen.</div>
-        <button class="button" id="clearRangeBtnOutside" type="button"><i class="fa-solid fa-eraser"></i> Rensa intervall</button>
-      </div>
       <div id="yearGrid" class="year-grid"></div>
-      <div class="legend"><span class="endpoint">Start/slut</span><span>Datum i intervallet</span></div>
     </section>
   </main>
+  <datalist id="eventSuggestions"></datalist>
   <div class="modal-backdrop" id="datePickerBackdrop" hidden>
     <section class="result-modal" role="dialog" aria-modal="true" aria-labelledby="datePickerTitle">
       <button class="modal-close" id="closeDatePicker" type="button" aria-label="Stäng datumväljaren"><i class="fa-solid fa-xmark"></i></button>
@@ -172,60 +199,441 @@
       <div class="modal-actions"><button class="button" id="clearRangeBtn" type="button"><i class="fa-solid fa-eraser"></i> Rensa intervall</button></div>
     </section>
   </div>
+  <div class="modal-backdrop" id="eventModalBackdrop" hidden>
+    <section class="result-modal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle" aria-describedby="eventModalText">
+      <button class="modal-close" id="closeEventModal" type="button" aria-label="Stäng händelser"><i class="fa-solid fa-xmark"></i></button>
+      <h2 id="eventModalTitle">Händelser</h2>
+      <div class="event-modal-text" id="eventModalText"></div>
+    </section>
+  </div>
   <script>
     'use strict';
     const MS_PER_DAY = 86400000;
     const monthNames = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+    const shortMonthNames = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
     const weekdayNames = ['Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag','Söndag'];
     const shortWeekdays = ['M','T','O','T','F','L','S'];
     const fixedHolidays = {
-  '01-01': 'Nyårsdagen, Sverige blir medlem i EU (1995)',
+  '01-01': 'Nyårsdagen, religionsfrihetslagen träder i kraft (1952), nya regeringsformen och abortlagen träder i kraft (1975), Sverige blir medlem i EU (1995)',
+  '01-02': 'Sigrid (Bojan) Roland föds (1883) f. Sjöström, Johan Erik Lindström föds (1842)',
+  '01-03': 'Tutankhamons sarkofag öppnas (1924)',
+  '01-04': 'Isaac Newton föds (1643)',
+  '01-05': 'Röntgenstrålarna blir världsnyhet (1896)',
   '01-06': 'Trettondedag jul',
-  '01-13': 'Tjugondag Knut',
-  '01-27': 'Förintelsens minnesdag, Wolfgang Amadeus Mozart föds (1756)',
-  '01-31': 'Franz Schubert föds (1797)',
-  '02-06': 'Samernas nationaldag',
+  '01-07': 'Galileo upptäcker Jupiters månar (1610)',
+  '01-08': 'Elvis Presley föds (1935)',
+  '01-09': 'Simone de Beauvoir föds (1908)',
+  '01-10': 'Nationernas förbund grundas (1920)',
+  '01-11': 'Insulin används på människa för första gången (1922)',
+  '01-12': 'Jordbävningen i Haiti (2010), Gustav Vasa kröns (1528)',
+  '01-13': 'Tjugondag Knut, Zolas J’accuse publiceras (1898)',
+  '01-14': 'Huygens landar på Titan (2005)',
+  '01-15': 'Martin Luther King Jr. föds (1929)',
+  '01-16': 'Ivan den förskräcklige kröns till tsar (1547)',
+  '01-17': 'Edvard Persson föds (1888), Robert Falcon Scott når Sydpolen (1912), Raoul Wallenberg försvinner (1945)',
+  '01-18': 'Tyska kejsardömet proklameras (1871)',
+  '01-19': 'Petter Hjelmström dör (2012), Edgar Allan Poe föds (1809)',
+  '01-20': 'Wannseekonferensen hålls (1942)',
+  '01-21': 'Ludvig XVI avrättas (1793)',
+  '01-22': 'Blodiga söndagen i Sankt Petersburg (1905), August Strindberg föds (1849)',
+  '01-23': 'Salvador Dalí dör (1989)',
+  '01-24': 'Winston Churchill dör (1965)',
+  '01-25': 'Första vinter-OS öppnas (1924)',
+  '01-26': 'Evy Hofvendahl dör (2009) f. Olsson, Mozarts Così fan tutte uruppförs (1790)',
+  '01-27': 'Förintelsens minnesdag, Wolfgang Amadeus Mozart föds (1756), Svante Hjelmström dör (2008), Stella Grundström föds (1912), Börge Hofvendahl dör (1992)',
+  '01-28': 'Astrid Lindgren dör (2002), rymdfärjan Challenger exploderar (1986)',
+  '01-29': 'Mozarts Idomeneo uruppförs (1781), Carl Benz patenterar bilen (1886)',
+  '01-30': 'Augusta Maria Forsberg föds (1842), Hitler blir rikskansler (1933), Mahatma Gandhi mördas (1948)',
+  '01-31': 'Franz Schubert föds (1797), Birgitta Hahmann föds (1917) f. Roland, Fritiof Nilsson Piraten dör (1972), Explorer 1 skjuts upp (1958)',
+  '02-01': 'Elisabeth Hofvendahl dör (1951), Rymdfärjan Columbia havererar (2003)',
+  '02-02': 'Slaget vid Stalingrad slutar (1943)',
+  '02-03': 'Luna 9 landar på månen (1966)',
+  '02-04': 'Facebook lanseras (2004)',
+  '02-05': 'Bengta Jönsson dör (1937) f. Larsson, Tage Danielsson föds (1928), Nutelladagen, Jaltakonferensen börjar (1945)',
+  '02-06': 'Samernas nationaldag, Elizabeth II blir drottning (1952)',
+  '02-07': 'Thomas Otto föds (1946)',
+  '02-08': 'Dmitrij Mendelejev föds (1834)',
+  '02-09': 'Fjodor Dostojevskij dör (1881), Internationella pizzadagen',
+  '02-10': 'Göran Ohlsson föds (1947), Sjuårskriget avslutas (1763)',
+  '02-11': 'Nils-Sten Hofvendahl föds (1879), Nelson Mandela friges (1990)',
+  '02-12': 'Charles Darwin föds (1809)',
+  '02-13': 'Bombningen av Dresden börjar (1945)',
   '02-14': 'Alla hjärtans dag',
-  '02-24': 'Sverigefinnarnas dag',
+  '02-15': 'Anton Hofvendahl dör (1952), Galileo Galilei föds (1564)',
+  '02-16': 'Tutankhamons gravkammare öppnas (1923)',
+  '02-17': 'Kajsa Hofvendahl föds (1973), Kosovo utropar självständighet (2008)',
+  '02-18': 'Michelangelo dör (1564)',
+  '02-19': 'Gunilla Thornander föds (1939) född Hofvendahl, Sigismund och drottning Anna kröns (1594), Nikolaus Kopernikus föds (1473)',
+  '02-20': 'Rymdstationen Mir skjuts upp (1986)',
+  '02-21': 'Kommunistiska manifestet publiceras (1848)',
+  '02-22': 'Kim Waldén föds (1945), Sophie och Hans Scholl avrättas (1943)',
+  '02-23': 'Georg Friedrich Händel föds (1685)',
+  '02-24': 'Sverigefinnarnas dag, Rysslands fullskaliga invasion av Ukraina börjar (2022)',
+  '02-25': 'Muhammad Ali blir världsmästare (1964)',
+  '02-26': 'Gabrielle Roland Waldén föds (1946), Hulda Hofvendahl föds (1873), freden i Roskilde sluts (1658)',
+  '02-27': 'Anton Hofvendahl föds (1877), Beethovens symfoni nr 8 uruppförs (1814), Reichstag brinner (1933)',
   '02-28': 'Olof Palme mördas (1986)',
+  '02-29': 'Gioachino Rossini föds (1792)',
   '03-01': 'Frédéric Chopin föds (1810)',
+  '03-02': 'Michail Gorbatjov föds (1931)',
+  '03-03': 'Birgitta Hofvendahl föds (1960), Freden i Brest-Litovsk undertecknas (1918)',
+  '03-04': 'Göran Hofvendahl föds (1938)',
+  '03-05': 'Beethovens symfoni nr 4 uruppförs (1807), Josef Stalin dör (1953)',
+  '03-06': 'Evy Hofvendahl föds (1916) f. Olsson, Per Hofvendahl föds (1973), Michelangelo föds (1475)',
+  '03-07': 'Alexander Graham Bell patenterar telefonen (1876)',
   '03-08': 'Internationella kvinnodagen',
-  '03-16': 'Gustav III blir skjuten (1792)',
-  '03-25': 'Våffeldagen',
-  '03-26': 'Ludwig van Beethoven dör (1827)',
-  '04-07': 'Världshälsodagen',
-  '04-30': 'Valborgsmässoafton',
-  '05-01': 'Första maj',
-  '05-07': 'Pjotr Tjajkovskij föds (1840)',
-  '05-24': 'Allmän rösträtt (1919)',
-  '06-06': 'Nationaldagen',
+  '03-09': 'Åsa Hofvendahl föds (1953) f. Persson',
+  '03-10': 'Tibetupproret börjar (1959)',
+  '03-11': 'Jordbävningen och tsunamin i Japan (2011)',
+  '03-12': 'Anna-Elisabeth Hofvendahl föds (1870), Victoria namnsdag, Gandhis saltmarsch börjar (1930)',
+  '03-13': 'Dragana Predhon föds (1971), Uranus upptäcks (1781)',
+  '03-14': 'Nils-Otto Roland dör (2010), Kristofer Svensson föds (1968), Albert Einstein föds (1879)',
+  '03-15': 'Julius Caesar mördas (44 f.Kr.), Karl IX och drottning Kristina kröns (1607)',
+  '03-16': 'Gustav III blir skjuten (1792), Zofia Bartoszewicz föds (1946), Selma Lagerlöf dör (1940), My Lai-massakern (1968)',
+  '03-17': 'Ella Hjelmström föds (1923), Dorrit Trönnberg föds (1913) f. Roland, Ulrika Eleonora kröns (1719), Italien enas (1861)',
+  '03-18': 'Otto Sixten Alfred Svensson föds (1847), Pariskommunen börjar (1871)',
+  '03-19': 'Sydney Harbour Bridge invigs (1932)',
+  '03-20': 'Ingela Hofvendahl föds (1916) f. Rhodin, Bothilda Nilsd. föds (1843), Petter Hjelmström föds (1918), Irakkriget börjar (2003)',
+  '03-21': 'Margaretha Hofvendahl föds (1882) f. André de la Porte, Currie dör (2009)',
+  '03-22': 'Johann Wolfgang von Goethe dör (1832)',
+  '03-23': 'Mussolini grundar fasciströrelsen (1919)',
+  '03-24': 'Malin Grundström föds (1974), Anna de Maré dör (1938), Exxon Valdez-olyckan (1989)',
+  '03-25': 'Våffeldagen, Hulda Hofvendahl dör (1946), Romfördraget undertecknas (1957)',
+  '03-26': 'Ludwig van Beethoven dör (1827), Bangladesh utropar självständighet (1971)',
+  '03-27': 'Teneriffakatastrofen (1977)',
+  '03-28': 'Three Mile Island-olyckan (1979)',
+  '03-29': 'Terrakottaarmén upptäcks (1974)',
+  '03-30': 'Krimkriget avslutas (1856)',
+  '03-31': 'Eiffeltornet invigs (1889), Jugoslaviska krigen börjar (1991)',
+  '04-01': 'Emelia Hofvendahl föds (1980), Apple grundas (1976)',
+  '04-02': 'Beethovens symfoni nr 1 uruppförs (1800), Falklandskriget börjar (1982)',
+  '04-03': 'Franz Berwald dör (1868), Gustav IV Adolf kröns (1800), Marshallplanen undertecknas (1948)',
+  '04-04': 'Nato grundas (1949), Martin Luther King mördas (1968)',
+  '04-05': 'Beethovens symfoni nr 2 uruppförs (1803), Kurt Cobain dör (1994)',
+  '04-06': 'Första moderna OS öppnas (1896), ABBA vinner Eurovision (1974)',
+  '04-07': 'Världshälsodagen, Beethovens symfoni nr 3 Eroica uruppförs (1805), Folkmordet i Rwanda börjar (1994)',
+  '04-08': 'Pablo Picasso dör (1973)',
+  '04-09': 'Ottilia namnsdag, Amerikanska inbördeskriget slutar (1865)',
+  '04-10': 'Elsa Hofvendahl Grundström föds (2010) kl. 12:33, Björn Hofvendahl föds (1976), Titanic lämnar Southampton (1912)',
+  '04-11': 'Anna Hjelmström dör (1894) f. Härdelin, Apollo 13 skjuts upp (1970)',
+  '04-12': 'Jurij Gagarin blir första människan i rymden (1961)',
+  '04-13': 'Apollo 13 havererar (1970)',
+  '04-14': 'Lincoln blir skjuten (1865), Titanic kolliderar med isberg (1912)',
+  '04-15': 'Anna-Elisabeth Hofvendahl dör (1876), Lennart Hofvendahl dör (1981), Titanic förliser (1912)',
+  '04-16': 'Charlie Chaplin föds (1889)',
+  '04-17': 'Invasionen i Grisbukten börjar (1961)',
+  '04-18': 'San Francisco-jordbävningen (1906), Albert Einstein dör (1955)',
+  '04-19': 'Upproret i Warszawas getto börjar (1943)',
+  '04-20': 'Johan Henric Kellgren dör (1795), Deepwater Horizon-olyckan (2010)',
+  '04-21': 'Elizabeth II föds (1926)',
+  '04-22': 'Kerstin Hofvendahl föds (1939), Earth Day firas första gången (1970)',
+  '04-23': 'William Shakespeare dör (1616)',
+  '04-24': 'Eva Zederfeldt föds (1950) född Hofvendahl, Bothilda Nilsd. dör (1902), Armeniska folkmordet börjar (1915)',
+  '04-25': 'Gallipolifälttåget börjar (1915), DNA-strukturen publiceras (1953)',
+  '04-26': 'Tjernobylkatastrofen (1986)',
+  '04-27': 'Gösta Hofvendahl föds (1908), Julia Hofvendahl föds (2009), Apartheid faller i Sydafrika (1994)',
+  '04-28': 'Peter Hofvendahl föds (1949), Mussolini avrättas (1945)',
+  '04-29': 'Dachau befrias (1945)',
+  '04-30': 'Valborgsmässoafton, Hitler begår självmord (1945)',
+  '05-01': 'Första maj, Svante Hjelmström föds (1919), Mozarts Figaros bröllop uruppförs (1786), Empire State Building invigs (1931), könsneutral äktenskapslag träder i kraft i Sverige (2009)',
+  '05-02': 'Leonardo da Vinci dör (1519)',
+  '05-03': 'Hugo Roland dör (1971), Fredrik I kröns (1720), Karl XV och drottning Lovisa kröns (1860), Världspressfrihetsdagen',
+  '05-04': 'Tito dör (1980), Fjärde maj-rörelsen börjar i Kina (1919)',
+  '05-05': 'Napoleon dör (1821), Europarådet grundas (1949)',
+  '05-06': 'Elisabeth Hofvendahl föds (1880), Hindenburgkatastrofen (1937)',
+  '05-07': 'Tito föds (1892), Pjotr Tjajkovskij föds (1840), Hedda Hofvendahl Grundström föds (2008), Beethovens symfoni nr 9 uruppförs (1824), Tyskland kapitulerar (1945)',
+  '05-08': 'Otto Hofvendahl föds (1940), Segerdagen i Europa (1945)',
+  '05-09': 'Schumandeklarationen läggs fram (1950)',
+  '05-10': 'Nelson Mandela installeras som president (1994)',
+  '05-11': 'Karl XIV Johan kröns (1818)',
+  '05-12': 'Oscar II och drottning Sofia kröns (1873)',
+  '05-13': 'Påven Johannes Paulus II blir skjuten (1981), Internationella hummusdagen',
+  '05-14': 'Maja Hofvendahl Gréf föds (2008), Tuva Tod föds (1946) f. Hjelmström, Anna Hjelmström föds (1857) f. Härdelin, August Strindberg dör (1912), Israel utropas (1948)',
+  '05-15': 'Ulla Hofvendahl föds (1926) f. Lundström',
+  '05-16': 'Karin Ask föds (1902), Kulturrevolutionen börjar (1966)',
+  '05-17': 'Norges grundlag antas (1814)',
+  '05-18': 'Mount St. Helens får utbrott (1980)',
+  '05-19': 'Agnes Hofvendahl föds (2014), Anne Boleyn avrättas (1536)',
+  '05-20': 'Charles Lindbergh startar sin Atlantflygning (1927)',
+  '05-21': 'Amelia Earhart flyger ensam över Atlanten (1932), Internationella tedagen',
+  '05-22': 'Richard Wagner föds (1813)',
+  '05-23': 'Ottilia Hjelmström föds (1886) f. Lindström, Trettioåriga kriget börjar (1618)',
+  '05-24': 'Allmän och kvinnlig rösträtt beslutas i Sverige (1919), Bob Dylan föds (1941)',
+  '05-25': 'Star Wars har premiär (1977)',
+  '05-26': 'Mikael Hofvendahl föds (1970), Dracula publiceras (1897)',
+  '05-27': 'Bengta Jönsson föds (1852) f. Larsson, Golden Gate-bron invigs (1937)',
+  '05-28': 'Kaiza föds (2019), Dragica Jeremic föds (1945), Hye Hofvendahl föds (1908) f. Åkerlund, Karl Hjelmström föds (1890), Hamburgerdagen, Pariskommunen krossas (1871)',
+  '05-29': 'Konstantinopel faller (1453), Gustav III och Sofia Magdalena kröns (1772), Everest bestigs första gången (1953)',
+  '05-30': 'Jeanne d’Arc avrättas (1431)',
+  '05-31': 'Big Ben börjar gå (1859)',
+  '06-01': 'Marilyn Monroe föds (1926), Världsmjölkdagen',
+  '06-02': 'Elizabeth II kröns (1953)',
+  '06-03': 'Franz Kafka dör (1924)',
+  '06-04': 'Milly Hofvendahl föds (1875) f. Petersén, Massakern på Himmelska fridens torg (1989)',
+  '06-05': 'Daniel Magnell föds (1978), Världsmiljödagen, Sexdagarskriget börjar (1967), Serbien blir självständigt (2006)',
+  '06-06': 'Nationaldagen, Gustav Vasa väljs till kung (1523), D-dagen (1944), Karl X Gustav kröns (1654)',
+  '06-07': 'Tordesillasfördraget undertecknas (1494)',
   '06-08': 'Robert Schumann föds (1810)',
-  '06-28': 'Slaget vid Poltava (1709)',
-  '07-29': 'Robert Schumann dör (1856)',
-  '07-31': 'Franz Liszt dör (1886)',
-  '09-26': 'Göta kanal invigs (1832)',
-  '09-28': 'Estoniakatastrofen (1994)',
-  '10-04': 'Kanelbullens dag',
-  '10-17': 'Frédéric Chopin dör (1849)',
-  '10-22': 'Franz Liszt föds (1811)',
-  '10-24': 'FN-dagen',
-  '10-28': 'Unionsupplösningen (1905)',
-  '10-31': 'Halloween',
-  '11-06': 'Gustav Adolfsdagen, Pjotr Tjajkovskij dör (1893)',
-  '11-10': 'Mårtensgås',
-  '11-11': 'Chokladens dag',
-  '11-19': 'Franz Schubert dör (1828)',
+  '06-09': 'Hye Hofvendahl dör (1984) f. Åkerlund, Sten Hofvendahl föds (1945), Kalle Anka debuterar (1934)',
+  '06-10': 'Alexandra Hofvendahl Svensson föds (1994), Italien går in i andra världskriget (1940)',
+  '06-11': 'Augusta Maria Forsberg dör (1907), Jacques Cousteau föds (1910)',
+  '06-12': 'Anne Frank föds (1929)',
+  '06-13': 'William Butler Yeats föds (1865)',
+  '06-14': 'Lennart Hofvendahl föds (1911), Falklandskriget slutar (1982)',
+  '06-15': 'Levi Hofvendahl Ekberg föds (2016), Magna Carta beseglas (1215)',
+  '06-16': 'Jeannes och Ottos bröllopsdag (1966), Valentina Teresjkova blir första kvinnan i rymden (1963)',
+  '06-17': 'Watergateinbrottet (1972)',
+  '06-18': 'Åke Grundström föds (1914), Internationella sushidagen, Slaget vid Waterloo (1815)',
+  '06-19': 'Salman Rushdie föds (1947)',
+  '06-20': 'Esther Hofvendahl föds (1883) f. Jönsson, Världsflyktingdagen, V-2 passerar rymdgränsen (1944)',
+  '06-21': 'Jean-Paul Sartre föds (1905)',
+  '06-22': 'Operation Barbarossa börjar (1941)',
+  '06-23': 'Alan Turing föds (1912)',
+  '06-24': 'Napoleon invaderar Ryssland (1812)',
+  '06-25': 'Per Hofvendahl dä. dör (1902), Maria Hofvendahl Kuritzén föds (1951), Michael Jackson dör (2009), Koreakriget börjar (1950)',
+  '06-26': 'FN-stadgan undertecknas (1945)',
+  '06-27': 'Tove Jansson dör (2001), Helen Keller föds (1880)',
+  '06-28': 'Hasse Alfredson föds (1931), Slaget vid Poltava (1709), Skotten i Sarajevo (1914)',
+  '06-29': 'Jeanne Roland Hofvendahl föds (1943), Erik XIV kröns (1561), Karl XIII kröns (1809)',
+  '06-30': 'Tunguska-händelsen (1908)',
+  '07-01': 'Moped får köras från 15 år i Sverige (1952), slaget vid Somme börjar (1916), Hongkong återlämnas till Kina (1997), barnaga förbjuds i Sverige (1979)',
+  '07-02': 'Hjalmar Söderberg föds (1869), Amelia Earhart försvinner (1937)',
+  '07-03': 'Anna Hofvendahl föds (1978), Slaget vid Gettysburg slutar (1863)',
+  '07-04': 'Oscar Hofvendahl Svensson föds (1992), Oscar I föds (1799), USA:s självständighetsförklaring antas (1776)',
+  '07-05': 'Dolly föds som första klonade däggdjuret (1996)',
+  '07-06': 'Frida Kahlo föds (1907)',
+  '07-07': 'Terrorattackerna i London (2005), Världschokladdagen',
+  '07-08': 'Oscar I dör (1859)',
+  '07-09': 'Argentina utropar självständighet (1816)',
+  '07-10': 'Ingela Hofvendahl dör (1998) f. Rhodin, Johan III kröns (1569), Nikola Tesla föds (1856)',
+  '07-11': 'Massakern i Srebrenica börjar (1995), Pär Lagerkvist dör (1974)',
+  '07-12': 'Margareta Hofvendahl Fridolf föds (1951), Pablo Neruda föds (1904)',
+  '07-13': 'Live Aid hålls (1985)',
+  '07-14': 'Ingmar Bergman föds (1918), Bastiljen stormas (1789)',
+  '07-15': 'Rosettastenen hittas (1799)',
+  '07-16': 'Dorrit Trönnberg dör (2002) f. Roland, Mozarts Enleveringen ur seraljen uruppförs (1782), Apollo 11 skjuts upp (1969)',
+  '07-17': 'Tsarfamiljen Romanov avrättas (1918)',
+  '07-18': 'Birgitta Hahmann dör (2015) f. Roland, Nelson Mandela föds (1918)',
+  '07-19': 'Seneca Falls-konferensen börjar (1848)',
+  '07-20': 'Johan Hofvendahl dä. föds (1874), Erik Axel Karlfeldt föds (1864), Månlandningen (1969)',
+  '07-21': 'Ernest Hemingway föds (1899)',
+  '07-22': 'Terrorattackerna i Norge (2011)',
+  '07-23': 'Franz Berwald föds (1796), Revolutionen i Egypten (1952)',
+  '07-24': 'Machu Picchu blir känt för omvärlden (1911)',
+  '07-25': 'Första provrörsbarnet föds (1978)',
+  '07-26': 'Suezkrisen börjar (1956)',
+  '07-27': 'Vapenstilleståndet i Koreakriget (1953)',
+  '07-28': 'Agda Hofvendahl dör (1950), Första världskriget börjar (1914), Johann Sebastian Bach dör (1750)',
+  '07-29': 'Robert Schumann dör (1856), NASA grundas (1958)',
+  '07-30': 'Ingmar Bergman dör (2007), Henry Ford föds (1863), Cheesecake-dagen',
+  '07-31': 'Franz Liszt dör (1886), Otto Hofvendahl dör (2012), Kristina Jäderlund föds (1942) född Hofvendahl, Antoine de Saint-Exupéry försvinner (1944)',
+  '08-01': 'Warszawaupproret börjar (1944)',
+  '08-02': 'Dorrit (Toppu) Hjelmström dör (2013) f. Frilund, Karl Hjelmström dör (1973), Irak invaderar Kuwait (1990)',
+  '08-03': 'Liam Celander Hofvendahl föds (2009), Vattenmelondagen, Columbus avseglar mot väster (1492)',
+  '08-04': 'Raoul Wallenberg föds (1912), Anne Frank grips (1944)',
+  '08-05': 'Maria Fridolf föds (1985), Marilyn Monroe dör (1962)',
+  '08-06': 'Atombomben över Hiroshima (1945)',
+  '08-07': 'Kon-Tiki når Polynesien (1947)',
+  '08-08': 'Wilhelm Moberg dör (1973), Cornelis Vreeswijk föds (1937), Nixon meddelar sin avgång (1974)',
+  '08-09': 'Tove Jansson föds (1914), Anna Cecilia Roland dör (2001) f. Hjelmström, Atombomben över Nagasaki (1945)',
+  '08-10': 'Louvren öppnar som museum (1793)',
+  '08-11': 'Marianne Hofvendahl föds (1968)',
+  '08-12': 'Dorrit (Toppu) Hjelmström föds (1920) f. Frilund, Karin Ask dör (1983), IBM PC presenteras (1981)',
+  '08-13': 'Berlinmuren börjar byggas (1961)',
+  '08-14': 'Lars Hofvendahl föds (1948), Japan accepterar kapitulation (1945)',
+  '08-15': 'Karl Adolf Hjelmström dör (1930), Woodstockfestivalen börjar (1969)',
+  '08-16': 'Elvis Presley dör (1977)',
+  '08-17': 'Indonesien utropar självständighet (1945)',
+  '08-18': 'Djingis khan dör (1227)',
+  '08-19': 'Kuppförsöket i Moskva börjar (1991)',
+  '08-20': 'Wilhelm Moberg föds (1898), Pragvåren krossas (1968)',
+  '08-21': 'Zoë Magnell Hofvendahl föds (2006), Marie Hofvendahl föds (1976)',
+  '08-22': 'Första Genèvekonventionen undertecknas (1864)',
+  '08-23': 'Nils-Otto Roland föds (1915), minnesdag för offer för stalinism och nazism, Norrmalmstorgsdramat börjar (1973), Molotov-Ribbentrop-pakten sluts (1939)',
+  '08-24': 'Pompeji begravs (79), Bartolomeinatten börjar (1572)',
+  '08-25': 'Paris befrias (1944)',
+  '08-26': 'Ottilia Hjelmström dör (1975) f. Lindström, Människorättsförklaringen antas i Frankrike (1789)',
+  '08-27': 'Lisa Ohlsson föds (1946), Krakatau får sitt stora utbrott (1883)',
+  '08-28': 'Martin Luther King håller I Have a Dream-talet (1963)',
+  '08-29': 'Michael Jackson föds (1958), Sovjetunionen spränger sin första atombomb (1949)',
+  '08-30': 'Mary Shelley föds (1797)',
+  '08-31': 'Prinsessan Diana av Wales dör (1997)',
+  '09-01': 'Anna de Maré föds (1860), Andra världskriget börjar (1939)',
+  '09-02': 'Andra världskriget slutar (1945)',
+  '09-03': 'Vesna föds (1967), Sverige går över till högertrafik (1967), Parisfreden avslutar amerikanska frihetskriget (1783)',
+  '09-04': 'Johan Hofvendahl föds (1970), Google grundas (1998)',
+  '09-05': 'Münchenmassakern börjar (1972)',
+  '09-06': 'Mozarts La clemenza di Tito uruppförs (1791), Magellans expedition återvänder (1522)',
+  '09-07': 'Emelia Gréf dör (2020) f. Hofvendahl, Blitzen mot London börjar (1940)',
+  '09-08': 'Esther Hofvendahl dör (1977) f. Jönsson, Belägringen av Leningrad börjar (1941)',
+  '09-09': 'Augusta Ottilia Eklund föds (1860), Mao Zedong dör (1976)',
+  '09-10': 'Exi föds (2012), kvinnor röstar i riksdagsval för första gången i Sverige (1921), Hasse Alfredson dör (2017), Anna Lindh blir knivhuggen (2003)',
+  '09-11': 'Terrorattackerna i USA (2001), Anna Lindh dör (2003), Militärkuppen i Chile (1973)',
+  '09-12': 'Lascauxgrottan upptäcks (1940)',
+  '09-13': 'Osloavtalet undertecknas (1993)',
+  '09-14': 'Dante Alighieri dör (1321)',
+  '09-15': 'Internationella dagen för demokrati, Lehman Brothers kollapsar (2008)',
+  '09-16': 'Dan Andersson dör (1920), Montrealprotokollet undertecknas (1987)',
+  '09-17': 'Jöns Jönsson dör (1926), Martin Fridolf föds (1982), Sovjetunionen invaderar Polen (1939)',
+  '09-18': 'Dag Hammarskjöld dör (1961), Jimi Hendrix dör (1970)',
+  '09-19': 'Hjalmar Bergman föds (1883), Edvard Persson dör (1957), Nya Zeeland ger kvinnor rösträtt (1893), Allan Pettersson föds (1911)',
+  '09-20': 'Anna Roland föds (1948), Jöns Jönsson föds (1849), Augusta Ottilia Eklund dör (1897)',
+  '09-21': 'Internationella fredsdagen, Bilbo publiceras (1937)',
+  '09-22': 'Iran-Irakkriget börjar (1980)',
+  '09-23': 'Neptunus upptäcks (1846)',
+  '09-24': 'F. Scott Fitzgerald föds (1896)',
+  '09-25': 'Slaget vid Stamford Bridge (1066)',
+  '09-26': 'Göta kanal invigs (1832), Vera Hofvendahl föds (2025), Margaretha Hofvendahl dör (1963) f. André de la Porte, C.J.L. Almqvist dör (1866)',
+  '09-27': 'Lottie Ekberg föds (1984)',
+  '09-28': 'Estoniakatastrofen (1994), Karl XI kröns (1675), Oscar I och Josefina kröns (1844)',
+  '09-29': 'Münchenöverenskommelsen undertecknas (1938)',
+  '09-30': 'Krocken i Lund (2011), Toma Zdravković dör (1991), Mozarts Trollflöjten uruppförs (1791), Nürnbergrättegångarnas domar meddelas (1946)',
+  '10-01': 'Internationella kaffedagen, motboken avskaffas i Sverige (1955), AM-körkort för moped klass I införs (2009)',
+  '10-02': 'Jöns Persson Sjöström föds (1836), Sten-Anders Hofvendahl föds (1948), Mahatma Gandhi föds (1869)',
+  '10-03': 'Gösta Hofvendahl dör (1967)',
+  '10-04': 'Kanelbullens dag, Robert Waldén föds (1976), Sputnik 1 skjuts upp (1957)',
+  '10-05': 'Steve Jobs dör (2011)',
+  '10-06': 'Nils-Sten Hofvendahl dör (1936)',
+  '10-07': 'Hamas anfaller Israel (2023)',
+  '10-08': 'Per Hofvendahl dä. föds (1839), Johan Erik Lindström dör (1919)',
+  '10-09': 'Marianne Hofvendahl dä. dör (2000) f. Domeij',
+  '10-10': 'Giuseppe Verdi föds (1813), Världsdagen för psykisk hälsa',
+  '10-11': 'Apollo 7 skjuts upp (1968)',
+  '10-12': 'Columbus når Amerika (1492)',
+  '10-13': 'Tage Danielsson dör (1985)',
+  '10-14': 'Slaget vid Hastings (1066)',
+  '10-15': 'Hedda namnsdag',
+  '10-16': 'Världslivsmedelsdagen',
+  '10-17': 'Frédéric Chopin dör (1849), internationella dagen för utrotande av fattigdom',
+  '10-18': 'Kjell-Eric Hofvendahl dör (2003)',
+  '10-19': 'Britterna kapitulerar vid Yorktown (1781)',
+  '10-20': 'Kjell-Eric Hofvendahl föds (1918), Milly Hofvendahl dör (1951) f. Petersén',
+  '10-21': 'Alfred Nobel föds (1833), slaget vid Trafalgar (1805)',
+  '10-22': 'Franz Liszt föds (1811), Bengt Hofvendahl föds (1905)',
+  '10-23': 'Ungernrevolten börjar (1956)',
+  '10-24': 'FN-dagen, Trettioåriga kriget slutar (1648)',
+  '10-25': 'Sarah Predhon föds (1998), Världspastadagen',
+  '10-26': 'Johan Helmich Roman föds (1694), Marianne Hofvendahl dä. föds (1915) f. Domeij',
+  '10-27': 'Niccolò Paganini föds (1782)',
+  '10-28': 'Unionsupplösningen (1905), Morfar N.O. Roland spränger bort sin vänstra fot (1943), Nicolas Predhon föds (2001), Börge Hofvendahl föds (1914)',
+  '10-29': 'Mozarts Don Giovanni uruppförs (1787)',
+  '10-30': 'Elsa namnsdag',
+  '10-31': 'Halloween, Stella Grundström dör (2008), Johan Hofvendahl dä. dör (1920)',
+  '11-01': 'Världsvegandagen',
+  '11-02': 'Nils Börge Hofvendahl föds (1952)',
+  '11-03': 'Ulla Hofvendahl dör (2010) f. Lundström, Smörgåsdagen',
+  '11-04': 'Tutankhamons grav upptäcks (1922)',
+  '11-05': 'Krutkonspirationen avslöjas (1605)',
+  '11-06': 'Gustav Adolfsdagen, Gustav II Adolf stupar vid Lützen (1632), Pjotr Tjajkovskij dör (1893)',
+  '11-07': 'Marie Curie föds (1867), Oktoberrevolutionen börjar (1917)',
+  '11-08': 'Mikaela Rose Hofvendahl föds (2015), Stockholms blodbad börjar (1520)',
+  '11-09': 'Stefan Hofvendahl föds (1940), Elisabeth Sundin Hofvendahl föds (1955), Kristallnatten (1938), Berlinmuren faller (1989)',
+  '11-10': 'Mårtensgås, Jöns & Bengta bröllopsdag 1875',
+  '11-11': 'Chokladens dag, Första världskriget slutar (1918)',
+  '11-12': 'Grace Kelly föds (1929)',
+  '11-13': 'Sverige röstar ja till EU-medlemskap (1994), terrorattackerna i Paris (2015)',
+  '11-14': 'Astrid Lindgren föds (1907)',
+  '11-15': 'Brasilien blir republik (1889)',
+  '11-16': 'Unesco grundas (1945)',
+  '11-17': 'Suezkanalen öppnas (1869)',
+  '11-18': 'Otto Sixten Alfred Svensson dör (1937)',
+  '11-19': 'Franz Schubert dör (1828), Bodil Hofvendahl föds (1937) f. Erlandsson',
+  '11-20': 'Selma Lagerlöf föds (1858), Toma Zdravković föds (1938), Johan Helmich Roman dör (1758), Barnkonventionen antas av FN (1989), Anna Cecilia Roland föds (1915) f. Hjelmström, Karl Adolf Hjelmström föds (1848)',
+  '11-21': 'Voltaire föds (1694)',
+  '11-22': 'Cecilia namnsdag',
+  '11-23': 'Doctor Who sänds första gången (1963)',
+  '11-24': 'Darwins Om arternas uppkomst ges ut (1859)',
+  '11-25': 'Fidel Castro dör (2016)',
+  '11-26': 'Internationella tårtdagen',
+  '11-27': 'Alfred Nobel undertecknar sitt testamente (1895)',
+  '11-28': 'Jöns Persson Sjöström dör (1884)',
+  '11-29': 'FN antar delningsplanen för Palestina (1947)',
   '11-30': 'Karl XII stupar vid Fredrikshald (1718)',
-  '12-02': 'Tryckfrihetsförordningen antas (1766)',
-  '12-04': 'Slaget vid Lund (1676)',
-  '12-05': 'Wolfgang Amadeus Mozart dör (1791)',
-  '12-10': 'Nobeldagen',
-  '12-13': 'Luciadagen',
-  '12-17': 'Ludwig van Beethoven föds (döps 1770)',
+  '12-01': 'Johan Henric Kellgren föds (1751), Världsaidsdagen',
+  '12-02': 'Tryckfrihetsförordningen antas (1766), Fredrik Hofvendahl föds (1971)',
+  '12-03': 'Första sms:et skickas (1992)',
+  '12-04': 'Slaget vid Lund (1676), Fritiof Nilsson Piraten föds (1895), Hugo Roland föds (1883), Kakdagen',
+  '12-05': 'Wolfgang Amadeus Mozart dör (1791), Walter Magnell Hofvendahl föds (2013)',
+  '12-06': 'Finland förklarar sig självständigt (1917)',
+  '12-07': 'Japan anfaller Pearl Harbor (1941)',
+  '12-08': 'Ulf Hofvendahl föds (1941)',
+  '12-09': 'Bengt Hofvendahl dör (1984)',
+  '12-10': 'Nobeldagen, FN:s deklaration om de mänskliga rättigheterna antas (1948), Kelly Waldén föds (2018), Paul Waldén föds (1973), Sigrid (Bojan) Roland dör (1972) f. Sjöström',
+  '12-11': 'Unicef grundas (1946)',
+  '12-12': 'Marconi tar emot första transatlantiska radiosignalen (1901)',
+  '12-13': 'Luciadagen, Åke Grundström dör (2007)',
+  '12-14': 'Wilmer Magnell Hofvendahl föds (2008)',
+  '12-15': 'Cupcakedagen',
+  '12-16': 'Boston Tea Party äger rum (1773)',
+  '12-17': 'Ludwig van Beethoven föds (döps 1770), bröderna Wright flyger för första gången (1903)',
+  '12-18': 'Tjajkovskijs Nötknäpparen uruppförs (1892)',
+  '12-19': 'Charles Dickens En julsaga ges ut (1843)',
+  '12-20': 'Macau återlämnas till Kina (1999)',
+  '12-21': 'Apollo 8 skjuts upp (1968)',
+  '12-22': 'Beethovens symfoni nr 5 uruppförs (1808), Beethovens symfoni nr 6 Pastoralsymfonin uruppförs (1808)',
+  '12-23': 'Vincent van Gogh skär av sig örat (1888)',
   '12-24': 'Julafton',
   '12-25': 'Juldagen',
-  '12-26': 'Annandag jul',
-  '12-31': 'Nyårsafton'
+  '12-26': 'Annandag jul, Agda Hofvendahl föds (1881)',
+  '12-27': 'Johannes Kepler föds (1571)',
+  '12-28': 'Bröderna Lumière visar film för betalande publik (1895)',
+  '12-29': 'Lennart Fridolf föds (1947)',
+  '12-30': 'Sovjetunionen grundas (1922)',
+  '12-31': 'Nyårsafton, Erik Celander föds (1977)'
+};
+    const nationalDays = {
+  '02-11': 'Vatikanstaten nationaldag',
+  '02-15': 'Serbien nationaldag',
+  '02-16': 'Litauen nationaldag',
+  '02-17': 'Kosovo nationaldag',
+  '02-24': 'Estland nationaldag',
+  '03-01': 'Bosnien och Hercegovina självständighetsdag',
+  '03-03': 'Bulgarien nationaldag',
+  '03-17': 'Irland nationaldag',
+  '03-25': 'Grekland nationaldag',
+  '03-31': 'Malta frihetsdag',
+  '04-27': 'Nederländerna kungens dag',
+  '05-03': 'Polen konstitutionsdag',
+  '05-17': 'Norge nationaldag',
+  '05-21': 'Montenegro självständighetsdag',
+  '05-30': 'Kroatien nationaldag',
+  '06-02': 'Italien nationaldag',
+  '06-05': 'Danmark grundlagsdag',
+  '06-06': 'Sveriges nationaldag',
+  '06-10': 'Portugal nationaldag',
+  '06-12': 'Ryssland nationaldag',
+  '06-17': 'Island nationaldag',
+  '06-23': 'Luxemburg nationaldag',
+  '06-25': 'Kroatien självständighetsdag, Slovenien nationaldag',
+  '07-03': 'Belarus nationaldag',
+  '07-13': 'Montenegro nationaldag',
+  '07-14': 'Frankrike nationaldag',
+  '07-21': 'Belgien nationaldag',
+  '08-01': 'Schweiz nationaldag',
+  '08-15': 'Liechtenstein nationaldag',
+  '08-20': 'Ungern nationaldag',
+  '08-24': 'Ukraina nationaldag',
+  '08-27': 'Moldavien nationaldag',
+  '08-29': 'Slovakien nationella upprorets dag',
+  '09-01': 'Slovakien konstitutionsdag',
+  '09-03': 'San Marino nationaldag',
+  '09-08': 'Andorra nationaldag, Malta segerdag, Nordmakedonien nationaldag',
+  '09-21': 'Malta självständighetsdag',
+  '10-01': 'Cypern nationaldag',
+  '10-03': 'Tyskland nationaldag',
+  '10-12': 'Spanien nationaldag',
+  '10-26': 'Österrike nationaldag',
+  '10-28': 'Tjeckien nationaldag, Grekland Ohi-dagen',
+  '10-29': 'Turkiet republikdag',
+  '11-04': 'Ryssland enhetsdag',
+  '11-11': 'Polen självständighetsdag',
+  '11-18': 'Lettland nationaldag',
+  '11-19': 'Monaco nationaldag',
+  '11-25': 'Bosnien och Hercegovina statsbildningsdag',
+  '11-28': 'Albanien nationaldag',
+  '12-01': 'Rumänien nationaldag',
+  '12-06': 'Finland nationaldag',
+  '12-13': 'Malta republikdag'
 };
     const $ = id => document.getElementById(id);
     const pad = n => String(n).padStart(2,'0');
@@ -233,6 +641,7 @@
     const parseISO = iso => { const [y,m,d]=iso.split('-').map(Number); return new Date(y,m-1,d,12); };
     const utcDay = iso => { const [y,m,d]=iso.split('-').map(Number); return Date.UTC(y,m-1,d)/MS_PER_DAY; };
     const displayDate = iso => parseISO(iso).toLocaleDateString('sv-SE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const escapeHTML = text => text.replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
     function isoWeekData(date) {
       const d = new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
@@ -252,34 +661,157 @@
     function shifted(date,days) { const copy=new Date(date); copy.setDate(copy.getDate()+days); return copy; }
     function lastWeekday(year,month,weekday) { const d=new Date(year,month+1,0,12); d.setDate(d.getDate()-((d.getDay()-weekday+7)%7)); return d; }
     function movableHolidays(year) {
-      const out={}, add=(date,name)=>out[toISO(date).slice(5)]=name, e=easter(year);
-      add(shifted(e,-47),'Fettisdagen'); add(shifted(e,-3),'Skärtorsdag'); add(shifted(e,-2),'Långfredag'); add(shifted(e,-1),'Påskafton'); add(e,'Påskdagen'); add(shifted(e,1),'Annandag påsk'); add(shifted(e,39),'Kristi himmelsfärdsdag');
+      const out={}, add=(date,name)=>{const key=toISO(date).slice(5);out[key]=[out[key],name].filter(Boolean).join(', ');}, e=easter(year);
+      const nthWeekday=(month,weekday,n)=>{const d=new Date(year,month,1,12);d.setDate(1+((weekday-d.getDay()+7)%7)+(n-1)*7);return d;};
+      const calendarDay=(calendar,monthName,day)=>{try{const fmt=new Intl.DateTimeFormat(`en-u-ca-${calendar}`,{day:'numeric',month:'long'});for(let d=new Date(year,0,1,12);d.getFullYear()===year;d.setDate(d.getDate()+1)){if(fmt.format(d)===`${day} ${monthName}`)return new Date(d);}}catch(err){}return null;};
+      add(shifted(e,-47),'Fettisdagen, semmeldagen, internationella pannkaksdagen'); add(shifted(e,-3),'Skärtorsdag'); add(shifted(e,-2),'Långfredag'); add(shifted(e,-1),'Påskafton'); add(e,'Påskdagen'); add(shifted(e,1),'Annandag påsk'); add(shifted(e,39),'Kristi himmelsfärdsdag');
       for(let day=19;day<=25;day++){const d=new Date(year,5,day,12);if(d.getDay()===5){add(d,'Midsommarafton');add(shifted(d,1),'Midsommardagen');break;}}
       for(let day=31;day<=37;day++){const d=new Date(year,9,day,12);if(d.getDay()===6){add(d,'Alla helgons dag');break;}}
       add(lastWeekday(year,4,0),'Mors dag'); add(new Date(year,10,8+((7-new Date(year,10,1,12).getDay())%7),12),'Fars dag');
       for(let day=27;day<=33;day++){const d=new Date(year,10,day,12);if(d.getDay()===0){add(d,'Första advent');break;}}
+      add(nthWeekday(4,0,3),'Internationella bakdagen');
+      add(nthWeekday(5,5,1),'Munkdagen');
+      add(nthWeekday(5,6,3),'Storbritannien kungens officiella födelsedag');
+      add(nthWeekday(6,0,3),'Internationella glassdagen');
       add(lastWeekday(year,2,0),'Sommartid'); add(lastWeekday(year,9,0),'Vintertid'); return out;
+    }
+    function holidayText(year, monthDay) {
+      return [fixedHolidays[monthDay], nationalDays[monthDay], movableHolidays(year)[monthDay]].filter(Boolean).join(', ');
+    }
+    function renderHoliday(holiday) {
+      if(!holiday)return '';
+      if(holiday.length<=80)return `<span class="holiday">${escapeHTML(holiday)}</span>`;
+      const preview=escapeHTML(holiday.slice(0,80).trimEnd());
+      return `<button class="holiday holiday-more" type="button" data-events="${encodeURIComponent(holiday)}"><span>${preview}...</span><i class="fa-regular fa-note-sticky" aria-hidden="true"></i></button>`;
     }
 
     let selectedDate=new Date(); selectedDate.setHours(12,0,0,0);
     let pickerDate=new Date(selectedDate);
+    let monthViewYear=selectedDate.getFullYear(), monthViewMonth=selectedDate.getMonth();
     let calendarYear=selectedDate.getFullYear(), rangeStart=null, rangeEnd=null;
-    function updateWeekView(date=selectedDate) {
+    let pulsingDate=null, pulseTimer=null, searchMarkedDate=null;
+    let activeView='week';
+    function updateWeekView(date=selectedDate, statusText='') {
       selectedDate=new Date(date); selectedDate.setHours(12,0,0,0);
       const info=isoWeekData(selectedDate), max=weeksInISOYear(info.year);
-      $('dateInput').value=toISO(selectedDate); $('selectedDateLabel').textContent=selectedDate.toLocaleDateString('sv-SE',{year:'numeric',month:'long',day:'numeric'}); $('weekSlider').max=max; $('weekSlider').value=info.week; $('weekResult').textContent=info.week; $('yearSlider').value=info.year; $('yearResult').textContent=info.year;
-      const monday=mondayOfISOWeek(info.week,info.year), holidaysByYear={}; let html='<ul>';
-      for(let i=0;i<7;i++){const d=shifted(monday,i),iso=toISO(d),year=d.getFullYear(); holidaysByYear[year] ||= movableHolidays(year); const holiday=holidaysByYear[year][iso.slice(5)]||fixedHolidays[iso.slice(5)]||''; html+=`<li class="${iso===toISO(selectedDate)?'highlight':''}"><span class="date">${weekdayNames[i]} ${iso}</span>${holiday?`<span class="holiday">${holiday}</span>`:''}</li>`;}
+      $('dateInput').value=toISO(selectedDate); $('selectedDateLabel').textContent='Datum'; $('weekSlider').max=max; $('weekSlider').value=info.week; $('weekResult').textContent=info.week; $('yearSlider').value=info.year; $('yearResult').textContent=info.year;
+      $('weekStatus').textContent=statusText;
+      const monday=mondayOfISOWeek(info.week,info.year), today=toISO(new Date()); let html='<ul>';
+      for(let i=0;i<7;i++){const d=shifted(monday,i),iso=toISO(d),year=d.getFullYear(),classes=[];if(iso===today)classes.push('highlight');if(iso===pulsingDate)classes.push('selected-pulse');else if(iso===searchMarkedDate)classes.push('search-marked'); const holiday=holidayText(year,iso.slice(5)); html+=`<li class="${classes.join(' ')}"><span class="date">${weekdayNames[i]} ${iso}</span>${renderHoliday(holiday)}</li>`;}
       $('weekdays').innerHTML=html+'</ul>';
     }
-    function setISOWeek(week,year) { const max=weeksInISOYear(year); updateWeekView(mondayOfISOWeek(Math.min(Number(week),max),year)); }
+    function setISOWeek(week,year) {
+      const requested=Number(week), max=weeksInISOYear(year), shown=Math.min(requested,max);
+      updateWeekView(mondayOfISOWeek(shown,year),requested>max?`${year} har ingen vecka ${requested}, visar vecka ${shown}.`:'');
+    }
     function changeSelected(days,years=0) { const d=new Date(selectedDate); if(years){const month=d.getMonth();d.setFullYear(d.getFullYear()+years);if(d.getMonth()!==month)d.setDate(0);}else d.setDate(d.getDate()+days); updateWeekView(d); }
+    function changeISOYear(delta) { setISOWeek(Number($('weekSlider').value),Number($('yearSlider').value)+delta); }
 
     function setView(name) {
-      const year=name==='year'; $('weekView').hidden=year; $('yearView').hidden=!year;
-      $('weekTab').classList.toggle('active',!year); $('yearTab').classList.toggle('active',year); $('weekTab').setAttribute('aria-selected',String(!year)); $('yearTab').setAttribute('aria-selected',String(year));
-      $('intro').textContent=year?'Välj två datum – och se hur många kalenderdagar spannet omfattar.':'Välj datum – och se veckonumret. Ändra vecka eller år – och se vilka dagar veckan innehåller.';
+      const week=name==='week', month=name==='month', year=name==='year';
+      activeView=name;
+      $('weekView').hidden=!week; $('monthView').hidden=!month; $('yearView').hidden=!year;
+      $('weekTab').classList.toggle('active',week); $('monthTab').classList.toggle('active',month); $('yearTab').classList.toggle('active',year);
+      $('weekTab').setAttribute('aria-selected',String(week)); $('monthTab').setAttribute('aria-selected',String(month)); $('yearTab').setAttribute('aria-selected',String(year));
+      $('intro').textContent=year?'Välj två datum – och se hur många kalenderdagar spannet omfattar.':month?'Visar alla dagar i aktuell månad. Ändra år – och se samma månad under andra år.':'Välj datum – och se veckonumret. Ändra vecka eller år – och se vilka dagar veckan innehåller.';
+      if(month) renderMonth();
       if(year) renderYear();
+      if(week||month) updateEventSuggestions();
+    }
+    function renderMonth() {
+      $('monthYearLabel').textContent=monthViewYear; $('monthYearSlider').value=monthViewYear; $('monthResult').textContent=shortMonthNames[monthViewMonth]; $('monthSlider').value=monthViewMonth;
+      const days=new Date(monthViewYear,monthViewMonth+1,0,12).getDate(), today=toISO(new Date()); let html='<ul>';
+      for(let day=1;day<=days;day++){
+        const date=new Date(monthViewYear,monthViewMonth,day,12), iso=toISO(date), monthDay=iso.slice(5), holiday=holidayText(monthViewYear,monthDay), classes=[];
+        if(iso===today)classes.push('highlight');
+        if(iso===pulsingDate)classes.push('selected-pulse');
+        else if(iso===searchMarkedDate)classes.push('search-marked');
+        html+=`<li class="${classes.join(' ')}"><span class="month-week" title="Vecka ${isoWeekData(date).week}">v. ${isoWeekData(date).week}</span><span class="date">${weekdayNames[(date.getDay()+6)%7]} ${iso}</span>${renderHoliday(holiday)}</li>`;
+      }
+      $('monthDays').innerHTML=html+'</ul>';
+    }
+    function setMonthYear(year) {
+      monthViewYear=Math.max(1950,Math.min(2100,Number(year))); renderMonth();
+    }
+    function setMonth(month) {
+      monthViewMonth=Math.max(0,Math.min(11,Number(month))); renderMonth();
+    }
+    function changeMonth(delta) {
+      const date=new Date(monthViewYear,monthViewMonth+delta,1,12);
+      monthViewYear=Math.max(1950,Math.min(2100,date.getFullYear()));
+      monthViewMonth=date.getFullYear()<1950?0:date.getFullYear()>2100?11:date.getMonth();
+      renderMonth();
+    }
+    function splitEvents(text) {
+      return text.split(',').map(event=>event.trim()).filter(Boolean);
+    }
+    function validISODate(year, monthDay) {
+      const [month,day]=monthDay.split('-').map(Number), date=new Date(year,month-1,day,12);
+      return date.getFullYear()===year&&date.getMonth()===month-1&&date.getDate()===day?toISO(date):null;
+    }
+    function nextFixedISO(monthDay,startDate=new Date()) {
+      const startISO=toISO(startDate), start=utcDay(startISO);
+      for(let year=startDate.getFullYear();year<=startDate.getFullYear()+8;year++){
+        const iso=validISODate(year,monthDay);
+        if(iso&&utcDay(iso)>=start)return iso;
+      }
+      return validISODate(startDate.getFullYear(),monthDay);
+    }
+    function eventSearchItems() {
+      const today=new Date(), todayTime=utcDay(toISO(today)), byEvent=new Map();
+      const add=(event,iso)=>{
+        if(!iso||utcDay(iso)<todayTime)return;
+        const key=event.toLocaleLowerCase('sv'), existing=byEvent.get(key);
+        if(!existing||utcDay(iso)<utcDay(existing.iso))byEvent.set(key,{event,iso});
+      };
+      Object.entries(fixedHolidays).forEach(([monthDay,text])=>splitEvents(text).forEach(event=>add(event,nextFixedISO(monthDay,today))));
+      Object.entries(nationalDays).forEach(([monthDay,text])=>splitEvents(text).forEach(event=>add(event,nextFixedISO(monthDay,today))));
+      for(let year=today.getFullYear();year<=today.getFullYear()+8;year++){
+        Object.entries(movableHolidays(year)).forEach(([monthDay,text])=>splitEvents(text).forEach(event=>add(event,validISODate(year,monthDay))));
+      }
+      return [...byEvent.values()].sort((a,b)=>a.event.localeCompare(b.event,'sv'));
+    }
+    function updateEventSuggestions(query='') {
+      const needle=query.trim().toLocaleLowerCase('sv'), seen=new Set();
+      if(!needle){$('eventSuggestions').innerHTML='';return;}
+      const options=eventSearchItems().filter(item=>item.event.toLocaleLowerCase('sv').includes(needle)).filter(item=>{
+        const key=item.event.toLocaleLowerCase('sv');
+        if(seen.has(key))return false; seen.add(key); return true;
+      }).slice(0,20).map(item=>`<option value="${item.event}"></option>`).join('');
+      $('eventSuggestions').innerHTML=options;
+    }
+    function renderActiveSearchView() {
+      if(activeView==='month')renderMonth();
+      else if(activeView==='week')updateWeekView();
+    }
+    function clearSearchMark(render=false) {
+      const marked=searchMarkedDate;
+      if(!marked)return;
+      searchMarkedDate=null;
+      if(pulsingDate===marked){
+        pulsingDate=null;
+        clearTimeout(pulseTimer);
+      }
+      if(render)renderActiveSearchView();
+    }
+    function pulseShownDate(iso, markAfterPulse=false) {
+      pulsingDate=iso; clearTimeout(pulseTimer);
+      searchMarkedDate=markAfterPulse?iso:null;
+      pulseTimer=setTimeout(()=>{if(pulsingDate===iso){pulsingDate=null;renderActiveSearchView();}},2000);
+    }
+    function showEventDate(iso) {
+      const date=parseISO(iso); selectedDate=new Date(date); pulseShownDate(iso,activeView==='month'||activeView==='week');
+      if(activeView==='month'){monthViewYear=date.getFullYear();monthViewMonth=date.getMonth();renderMonth();}
+      else updateWeekView(date);
+    }
+    function runEventSearch(input) {
+      const query=input.value.trim().toLocaleLowerCase('sv');
+      if(!query)return;
+      const match=eventSearchItems().find(item=>item.event.toLocaleLowerCase('sv')===query)||eventSearchItems().find(item=>item.event.toLocaleLowerCase('sv').includes(query));
+      if(match){input.value=match.event;$('eventSuggestions').innerHTML='';showEventDate(match.iso);}
+    }
+    function clearEventSearches() {
+      $('weekEventSearch').value=''; $('monthEventSearch').value=''; $('eventSuggestions').innerHTML='';
     }
     function renderYear() {
       $('calendarYearLabel').textContent=calendarYear; $('calendarYearSlider').value=calendarYear; const today=toISO(new Date()); let html='';
@@ -308,6 +840,13 @@
     function closeResultModal(){ $('resultModalBackdrop').hidden=true; document.body.style.overflow=''; }
     function chooseRangeDate(iso) { if(!rangeStart||rangeEnd){rangeStart=iso;rangeEnd=null;closeResultModal();renderYear();}else{rangeEnd=iso;renderYear();openResultModal();} }
     function setCalendarYear(year){calendarYear=Math.max(1950,Math.min(2100,Number(year)));renderYear();}
+    function openEventModal(text) {
+      $('eventModalText').innerHTML=`<ul>${splitEvents(text).map(event=>`<li>${escapeHTML(event)}</li>`).join('')}</ul>`;
+      $('eventModalBackdrop').hidden=false; document.body.style.overflow='hidden'; $('closeEventModal').focus();
+    }
+    function closeEventModal() {
+      $('eventModalBackdrop').hidden=true; if($('datePickerBackdrop').hidden&&$('resultModalBackdrop').hidden)document.body.style.overflow='';
+    }
 
     function renderDatePicker(){
       const year=pickerDate.getFullYear(),month=pickerDate.getMonth(),first=new Date(year,month,1,12),offset=(first.getDay()+6)%7,days=new Date(year,month+1,0,12).getDate(),today=toISO(new Date()),chosen=toISO(selectedDate);
@@ -324,24 +863,48 @@
       }
       $('pickerGrid').innerHTML=html;
     }
-    function openDatePicker(){pickerDate=new Date(selectedDate);renderDatePicker();$('datePickerBackdrop').hidden=false;document.body.style.overflow='hidden';$('closeDatePicker').focus();}
+    function openDatePicker(){if(activeView==='month'){const days=new Date(monthViewYear,monthViewMonth+1,0,12).getDate();pickerDate=new Date(monthViewYear,monthViewMonth,Math.min(selectedDate.getDate(),days),12);}else pickerDate=new Date(selectedDate);renderDatePicker();$('datePickerBackdrop').hidden=false;document.body.style.overflow='hidden';$('closeDatePicker').focus();}
     function closeDatePickerModal(){$('datePickerBackdrop').hidden=true;if($('resultModalBackdrop').hidden)document.body.style.overflow='';}
     function movePicker(months,years=0){pickerDate=new Date(pickerDate.getFullYear()+years,pickerDate.getMonth()+months,1,12);renderDatePicker();}
-    function choosePickerDate(iso){updateWeekView(parseISO(iso));closeDatePickerModal();$('openDatePicker').focus();}
+    function choosePickerDate(iso){const picked=parseISO(iso);selectedDate=new Date(picked);pulsingDate=iso;clearTimeout(pulseTimer);if(activeView==='month'){monthViewYear=picked.getFullYear();monthViewMonth=picked.getMonth();renderMonth();}else updateWeekView(picked);pulseTimer=setTimeout(()=>{if(pulsingDate===iso){pulsingDate=null;if(activeView==='month')renderMonth();else updateWeekView();}},2000);closeDatePickerModal();$(activeView==='month'?'monthOpenDatePicker':'openDatePicker').focus();}
+    function addHoldStepper(id,step) {
+      const button=$(id); let startTimer=null, repeatTimer=null, held=false;
+      const stop=()=>{clearTimeout(startTimer);clearInterval(repeatTimer);startTimer=null;repeatTimer=null;};
+      button.addEventListener('pointerdown',e=>{if(e.button!==0)return;held=false;button.setPointerCapture?.(e.pointerId);step();startTimer=setTimeout(()=>{held=true;repeatTimer=setInterval(step,110);},380);});
+      button.addEventListener('pointerup',stop); button.addEventListener('pointercancel',stop); button.addEventListener('pointerleave',stop);
+      button.addEventListener('click',e=>{if(held){e.preventDefault();e.stopPropagation();held=false;}});
+      button.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!startTimer){step();startTimer=setTimeout(()=>{repeatTimer=setInterval(step,110);},380);}});
+      button.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')stop();});
+      button.addEventListener('blur',stop);
+    }
 
-    $('weekTab').addEventListener('click',()=>setView('week')); $('yearTab').addEventListener('click',()=>setView('year'));
-    $('openDatePicker').addEventListener('click',openDatePicker);
+    function clearSearchMarkForControl(target) {
+      if(target.closest?.('.holiday-more'))return;
+      if(!target.closest?.('button,input,select,textarea,a,[role="button"]'))return;
+      clearSearchMark(true);
+    }
+    $('weekTab').addEventListener('click',()=>setView('week')); $('monthTab').addEventListener('click',()=>setView('month')); $('yearTab').addEventListener('click',()=>setView('year'));
+    ['weekEventSearch','monthEventSearch'].forEach(id=>{const input=$(id);input.addEventListener('focus',()=>updateEventSuggestions(input.value));input.addEventListener('input',()=>{clearSearchMark(true);updateEventSuggestions(input.value);});input.addEventListener('change',()=>runEventSearch(input));input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runEventSearch(input);}});});
+    document.addEventListener('pointerdown',e=>{clearSearchMarkForControl(e.target);if(!e.target.closest?.('.event-search'))clearEventSearches();});
+    document.addEventListener('focusin',e=>{clearSearchMarkForControl(e.target);if(!e.target.closest?.('.event-search'))clearEventSearches();});
+    $('openDatePicker').addEventListener('click',openDatePicker); $('monthOpenDatePicker').addEventListener('click',openDatePicker);
     $('closeDatePicker').addEventListener('click',closeDatePickerModal);
     $('datePickerBackdrop').addEventListener('click',e=>{if(e.target===$('datePickerBackdrop'))closeDatePickerModal();});
     $('pickerPreviousYear').addEventListener('click',()=>movePicker(0,-1)); $('pickerPreviousMonth').addEventListener('click',()=>movePicker(-1)); $('pickerNextMonth').addEventListener('click',()=>movePicker(1)); $('pickerNextYear').addEventListener('click',()=>movePicker(0,1));
     $('pickerGrid').addEventListener('click',e=>{const button=e.target.closest('[data-picker-date]');if(button)choosePickerDate(button.dataset.pickerDate);});
     $('pickerToday').addEventListener('click',()=>choosePickerDate(toISO(new Date())));
-    $('decreaseWeekBtn').addEventListener('click',()=>changeSelected(-7)); $('increaseWeekBtn').addEventListener('click',()=>changeSelected(7)); $('decreaseYearBtn').addEventListener('click',()=>changeSelected(0,-1)); $('increaseYearBtn').addEventListener('click',()=>changeSelected(0,1)); $('todayBtn').addEventListener('click',()=>updateWeekView(new Date()));
+    addHoldStepper('decreaseWeekBtn',()=>changeSelected(-7)); addHoldStepper('increaseWeekBtn',()=>changeSelected(7)); addHoldStepper('decreaseYearBtn',()=>changeISOYear(-1)); addHoldStepper('increaseYearBtn',()=>changeISOYear(1)); $('todayBtn').addEventListener('click',()=>updateWeekView(new Date()));
     $('weekSlider').addEventListener('input',e=>setISOWeek(e.target.value,Number($('yearSlider').value))); $('yearSlider').addEventListener('input',e=>setISOWeek($('weekSlider').value,e.target.value));
-    $('previousCalendarYear').addEventListener('click',()=>setCalendarYear(calendarYear-1)); $('nextCalendarYear').addEventListener('click',()=>setCalendarYear(calendarYear+1)); $('calendarTodayBtn').addEventListener('click',()=>setCalendarYear(new Date().getFullYear())); $('calendarYearSlider').addEventListener('input',e=>setCalendarYear(e.target.value));
+    addHoldStepper('decreaseMonthBtn',()=>changeMonth(-1)); addHoldStepper('increaseMonthBtn',()=>changeMonth(1)); $('monthSlider').addEventListener('input',e=>setMonth(e.target.value));
+    $('monthTodayBtn').addEventListener('click',()=>{const today=new Date();selectedDate=new Date(today);monthViewYear=today.getFullYear();monthViewMonth=today.getMonth();renderMonth();});
+    addHoldStepper('previousMonthYear',()=>setMonthYear(monthViewYear-1)); addHoldStepper('nextMonthYear',()=>setMonthYear(monthViewYear+1)); $('monthYearSlider').addEventListener('input',e=>setMonthYear(e.target.value));
+    addHoldStepper('previousCalendarYear',()=>setCalendarYear(calendarYear-1)); addHoldStepper('nextCalendarYear',()=>setCalendarYear(calendarYear+1)); $('calendarTodayBtn').addEventListener('click',()=>setCalendarYear(new Date().getFullYear())); $('calendarYearSlider').addEventListener('input',e=>setCalendarYear(e.target.value));
     $('closeResultModal').addEventListener('click',closeResultModal);
     $('resultModalBackdrop').addEventListener('click',e=>{if(e.target===$('resultModalBackdrop'))closeResultModal();});
-    document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('datePickerBackdrop').hidden)closeDatePickerModal();else if(!$('resultModalBackdrop').hidden)closeResultModal();});
+    $('closeEventModal').addEventListener('click',closeEventModal);
+    $('eventModalBackdrop').addEventListener('click',e=>{if(e.target===$('eventModalBackdrop'))closeEventModal();});
+    document.addEventListener('click',e=>{const button=e.target.closest?.('.holiday-more');if(button){openEventModal(decodeURIComponent(button.dataset.events));clearSearchMark(true);}});
+    document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!$('eventModalBackdrop').hidden)closeEventModal();else if(!$('datePickerBackdrop').hidden)closeDatePickerModal();else if(!$('resultModalBackdrop').hidden)closeResultModal();});
     function clearRange(){rangeStart=null;rangeEnd=null;closeResultModal();renderYear();}
     $('clearRangeBtn').addEventListener('click',clearRange);
     $('clearRangeBtnOutside').addEventListener('click',clearRange);
