@@ -32,7 +32,7 @@
   }
   button,a{font:inherit}
   a{color:inherit}
-  .shell{max-width:760px;margin:0 auto;min-height:100vh;padding-bottom:88px}
+  .shell{max-width:760px;margin:0 auto;min-height:100vh;padding-bottom:148px}
   header{
     background:linear-gradient(145deg,#16202a 0%,#23313f 100%);
     color:#fff;
@@ -150,13 +150,26 @@
   }
   .sticky-inner{
     max-width:732px;margin:0 auto;background:#17202a;border-radius:17px;padding:5px;
-    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));box-shadow:0 8px 28px rgba(16,24,40,.22)
+    display:grid;grid-template-columns:repeat(4,minmax(0,1fr));box-shadow:0 8px 28px rgba(16,24,40,.22)
   }
   .sticky a{
-    text-decoration:none;color:#fff;text-align:center;font-size:11px;font-weight:700;padding:9px 3px;border-radius:12px
+    text-decoration:none;color:#fff;text-align:center;font-size:10px;font-weight:700;padding:9px 2px;border-radius:12px;min-width:0
   }
   .sticky a:active{background:rgba(255,255,255,.1)}
   .sticky .sicon{display:block;font-size:17px;margin-bottom:2px}
+
+  .places-grid{display:grid;grid-template-columns:1fr;gap:9px}
+  .place-link{
+    display:flex;justify-content:space-between;align-items:center;gap:14px;text-decoration:none;
+    border:1px solid var(--line);border-radius:15px;padding:13px 14px;background:var(--surface-2);
+    transition:transform .12s ease,border-color .12s ease,background .12s ease
+  }
+  .place-link:active{transform:scale(.99);background:#fff}
+  .place-link .place-name{font-size:14px;font-weight:800;line-height:1.25}
+  .place-link .place-meta{font-size:12px;color:var(--muted);line-height:1.35;margin-top:3px}
+  .place-link .maps{font-size:11px;font-weight:800;color:#175cd3;white-space:nowrap}
+  .place-link .maps:after{content:" ↗"}
+  .places-note{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.45}
 
   .voucher-grid{display:grid;grid-template-columns:1fr;gap:10px}
   .voucher-card{
@@ -179,7 +192,58 @@
   .voucher-inline{margin-top:11px;display:flex;gap:8px;flex-wrap:wrap}
   .voucher-inline .voucher-btn{font-size:13px;padding:10px 13px}
 
+  /* Hotellgalleri */
+  .hotel-gallery{margin-top:14px}
+  .gallery-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:9px}
+  .gallery-title{font-size:14px;font-weight:800}
+  .gallery-source{font-size:11px;color:var(--muted);text-decoration:none}
+  .gallery-source:hover{text-decoration:underline}
+  .gallery-frame{
+    position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--line);
+    background:#111827;aspect-ratio:3/2;touch-action:pan-y
+  }
+  .gallery-frame img{
+    width:100%;height:100%;display:block;object-fit:contain;cursor:zoom-in;
+    user-select:none;-webkit-user-drag:none
+  }
+  .gallery-btn{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:44px;height:44px;
+    border:0;border-radius:999px;background:rgba(17,24,39,.76);color:#fff;font-size:27px;
+    line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.22)
+  }
+  .gallery-btn.prev{left:10px}.gallery-btn.next{right:10px}
+  .gallery-btn:focus-visible,.gallery-close:focus-visible{outline:3px solid #fff;outline-offset:2px}
+  .gallery-counter{
+    position:absolute;right:10px;bottom:10px;z-index:2;background:rgba(17,24,39,.78);color:#fff;
+    border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;letter-spacing:.02em
+  }
+  .gallery-help{margin-top:7px;font-size:11px;color:var(--muted);line-height:1.4}
+  .gallery-error{display:none;position:absolute;inset:0;place-items:center;padding:24px;text-align:center;color:#fff;font-size:13px}
+  .gallery-error.show{display:grid}
+
+  .gallery-modal{
+    position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.94);display:none;
+    align-items:center;justify-content:center;padding:56px 14px 28px
+  }
+  .gallery-modal.open{display:flex}
+  .gallery-modal img{max-width:100%;max-height:calc(100vh - 92px);object-fit:contain;user-select:none;-webkit-user-drag:none}
+  .gallery-modal .gallery-btn{position:fixed}
+  .gallery-modal .gallery-btn.prev{left:max(12px,env(safe-area-inset-left))}
+  .gallery-modal .gallery-btn.next{right:max(12px,env(safe-area-inset-right))}
+  .gallery-close{
+    position:fixed;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:102;
+    width:44px;height:44px;border:0;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;
+    font-size:25px;display:grid;place-items:center;cursor:pointer
+  }
+  .gallery-modal-counter{
+    position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);
+    color:#fff;background:rgba(255,255,255,.14);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800
+  }
+  body.gallery-open{overflow:hidden}
+
   @media(min-width:620px){
+    .shell{padding-bottom:88px}
+    .sticky-inner{grid-template-columns:repeat(8,minmax(0,1fr))}
     main{padding:20px 20px 50px}
     header{padding-left:26px;padding-right:26px}
     .quick{grid-template-columns:repeat(5,1fr)}
@@ -317,7 +381,7 @@
           <div class="to">→</div>
           <div class="right"><div class="time">17:55</div><div class="place">Chania</div></div>
         </div>
-        <div class="tags"><span class="tag orange">Terminal 3</span><span class="tag">1 PC/person</span><span class="tag">lokala tider</span></div>
+        <div class="tags"><span class="tag orange">Terminal 3</span><span class="tag">Liten väska 40×30×15 cm</span><span class="tag">Handbagage 8 kg</span><span class="tag">Incheckat 23 kg</span><span class="tag">lokala tider</span></div>
       </div>
       <div class="notice"><b>Efter bagaget i Chania:</b> leta efter KAZAKOS TRAVEL i ankomsthallen. Representanten har en skylt med ditt namn eller en SUNHOTELS-skylt.</div>
     </div>
@@ -355,13 +419,28 @@
     </div>
     <div class="block">
       <div class="info-list">
-        <div class="info-row"><div class="k">Adress</div><div class="v">Kato Daratsos · 73100 Chania</div></div>
+        <div class="info-row"><div class="k">Adress</div><div class="v"><a href="https://www.google.com/maps/search/?api=1&amp;query=Zeus%20Village%20Resort%20Adults%20Only%20Kato%20Daratsos%2073100%20Chania" target="_blank" rel="noopener noreferrer" style="color:#175cd3;text-decoration:underline;text-underline-offset:2px">Kato Daratsos · 73100 Chania ↗</a></div></div>
         <div class="info-row"><div class="k">Telefon</div><div class="v">30-2821-0 31755 <span style="font-weight:500;color:#667085">(så angivet på vouchern)</span></div></div>
         <div class="info-row"><div class="k">Hotellreferens</div><div class="v">9019476116169</div></div>
         <div class="info-row"><div class="k">Rum</div><div class="v">Superior Double Room · 1 full bed · fri parkering · frukost ingår</div></div>
         <div class="info-row"><div class="k">Vistelse</div><div class="v">3–10 september · 7 nätter</div></div>
         <div class="info-row"><div class="k">Reception</div><div class="v">09:00–22:00</div></div>
         <div class="info-row"><div class="k">Skatt på plats</div><div class="v">70 EUR enligt prisspecifikationen</div></div>
+      </div>
+
+      <div class="hotel-gallery" aria-label="Bildgalleri från Zeus Village Resort">
+        <div class="gallery-head">
+          <div class="gallery-title">Bildgalleri · 33 bilder</div>
+          <a class="gallery-source" href="https://www.ving.se/grekland/kreta/kato-daratso-agii-apostoli-chaniakusten/zeus-village-resort-adults-only" target="_blank" rel="noopener noreferrer">Bilder från Ving ↗</a>
+        </div>
+        <div class="gallery-frame" id="hotel-gallery-frame">
+          <img id="hotel-gallery-image" src="https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1019_2_30.jpg" alt="Zeus Village Resort – bild 1 av 33" draggable="false">
+          <button class="gallery-btn prev" id="hotel-gallery-prev" type="button" aria-label="Föregående bild">‹</button>
+          <button class="gallery-btn next" id="hotel-gallery-next" type="button" aria-label="Nästa bild">›</button>
+          <div class="gallery-counter" id="hotel-gallery-counter">1 / 33</div>
+          <div class="gallery-error" id="hotel-gallery-error">Bilden kunde inte hämtas. Bildgalleriet kräver internetanslutning.</div>
+        </div>
+        <div class="gallery-help">Svep på mobilen eller använd pilarna. Klicka på bilden för stor visning. Bilderna hämtas från Ving och kräver internet.</div>
       </div>
       <div class="notice">Vouchern anger att boendet ska kontaktas minst 48 timmar före ankomst för att arrangera incheckning. Incheckningsinstruktioner ska skickas inom 72 timmar före ankomst.</div>
       <div class="voucher-inline"><button class="voucher-btn" onclick="openVoucher('hotel')">Öppna hotellvoucher PDF</button></div>
@@ -385,7 +464,7 @@
           <div class="to">→</div>
           <div class="right"><div class="time">21:20</div><div class="place">Copenhagen</div></div>
         </div>
-        <div class="tags"><span class="tag">1 PC/person</span><span class="tag">lokala tider</span></div>
+        <div class="tags"><span class="tag">Liten väska 40×30×15 cm</span><span class="tag">Handbagage 8 kg</span><span class="tag">Incheckat 23 kg</span><span class="tag">lokala tider</span></div>
       </div>
       <div class="notice"><b>Transferns exakta hämtningstid står inte i PDF:n.</b> Transferföretaget ska kontakta er senast dagen före avresa. Fråga receptionen om informationen.</div>
     </div>
@@ -414,14 +493,69 @@
   <section id="bagage">
     <div class="section-head">
       <h2>Bagage</h2>
-      <div class="sub">Det som faktiskt framgår av resehandlingarna.</div>
+      <div class="sub">Exakta bagageregler för resan · gäller per person.</div>
     </div>
     <div class="block">
       <div class="info-list">
-        <div class="info-row"><div class="k">Flyg</div><div class="v">1 st incheckat bagage per person (1 PC)</div></div>
-        <div class="info-row"><div class="k">Exakt vikt</div><div class="v">Inte specificerad i biljetten; Ving anger generellt 18–23 kg beroende på flygbolag</div></div>
-        <div class="info-row"><div class="k">Transfer</div><div class="v">1 normalstor resväska + 1 handbagage per person</div></div>
+        <div class="info-row"><div class="k">Under sätet</div><div class="v">1 liten väska per person · max 40 × 30 × 15 cm</div></div>
+        <div class="info-row"><div class="k">Handbagage</div><div class="v">1 väska per person · max 55 × 40 × 23 cm · max 8 kg</div></div>
+        <div class="info-row"><div class="k">Incheckat</div><div class="v">1 bagage per person · max 23 kg</div></div>
+        <div class="info-row"><div class="k">Transfer</div><div class="v">Enligt transfervouchern: 1 normalstor resväska + 1 handbagage per person</div></div>
       </div>
+    </div>
+  </section>
+
+  <section id="strander">
+    <div class="section-head">
+      <h2>Stränder</h2>
+      <div class="sub">De starkaste strandvalen nära Zeus Village i Kato Daratso och Agii Apostoli.</div>
+    </div>
+    <div class="block">
+      <div class="places-grid">
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Iguana+Beach%2C+Daratsos%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Iguana Beach · Agii Apostoli</div><div class="place-meta">Skyddad sandvik · grunt och lugnt vatten · mycket omtyckt av både lokalbor och besökare.</div></div><span class="maps">Google Maps</span>
+        </a>
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Glaros+Beach%2C+Chania%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Glaros Beach</div><div class="place-meta">Sandstrand i Agii Apostoli-området · nära hotellen och mycket lättillgänglig.</div></div><span class="maps">Google Maps</span>
+        </a>
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Golden+Beach+Chrissi+Akti%2C+Chania%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Golden Beach · Chrissi Akti</div><div class="place-meta">Lång gyllene sandstrand · Blue Flag · klart vatten och ett av områdets säkraste toppval.</div></div><span class="maps">Google Maps</span>
+        </a>
+      </div>
+      <div class="places-note">Urval gjort i augusti 2026 utifrån närhet, strandkvalitet och aktuella omdömen. Google Maps-länkar kräver internetanslutning.</div>
+    </div>
+  </section>
+
+  <section id="restauranger">
+    <div class="section-head">
+      <h2>Restauranger</h2>
+      <div class="sub">Ett kort urval av de starkast omtyckta restaurangerna i och kring Kato Daratso – plus Olive Tree i Platanias.</div>
+    </div>
+    <div class="block">
+      <div class="places-grid">
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Talos+Restaurant%2C+Daratsos%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Talos Restaurant</div><div class="place-meta">Kato Daratso · grekiskt och medelhavsinspirerat · mycket starkt lokalt toppval.</div></div><span class="maps">Google Maps</span>
+        </a>
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Sterna+Authentic+Greek+Cuisine%2C+Daratsos%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Sterna Authentic Greek Cuisine</div><div class="place-meta">Daratsos · tydligt fokus på autentisk grekisk och kretensisk mat.</div></div><span class="maps">Google Maps</span>
+        </a>
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Taverna+Dimitris+and+Sakis%2C+Daratsos%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Taverna Dimitris &amp; Sakis</div><div class="place-meta">Kato Daratso · klassisk grekisk taverna · mycket stort antal starka omdömen.</div></div><span class="maps">Google Maps</span>
+        </a>
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Angelos+Restaurant%2C+Daratsos%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Angelos Restaurant</div><div class="place-meta">Daratsos · väl etablerat lokalt val med mycket stark respons från gäster.</div></div><span class="maps">Google Maps</span>
+        </a>
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Roots+Restaurant%2C+Daratsos%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Roots Restaurant</div><div class="place-meta">Daratsos · grekiskt och medelhavsinspirerat · särskilt uppskattat för traditionella rätter.</div></div><span class="maps">Google Maps</span>
+        </a>
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=Ambrosia+Wine+%26+Dine%2C+Zeus+Village+Resort%2C+Daratsos%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Ambrosia Wine &amp; Dine</div><div class="place-meta">På Zeus Village Resort · det närmaste alternativet och samtidigt mycket högt uppskattat.</div></div><span class="maps">Google Maps</span>
+        </a>
+        <a class="place-link" href="https://www.google.com/maps/search/?api=1&amp;query=The+Olive+Tree+Restaurant%2C+Platanias%2C+Chania%2C+Crete" target="_blank" rel="noopener">
+          <div><div class="place-name">Olive Tree Restaurant</div><div class="place-meta">Platanias · vid havet · kretensisk och medelhavsinspirerad mat · ligger längre västerut än de övriga.</div></div><span class="maps">Google Maps</span>
+        </a>
+      </div>
+      <div class="places-note">Urval gjort i augusti 2026 med tyngd på aktuell gästrespons, lokal profil och närhet. Öppettider och bokningsläge kan ändras.</div>
     </div>
   </section>
 
@@ -469,12 +603,24 @@
 </main>
 </div>
 
+
+<div class="gallery-modal" id="hotel-gallery-modal" role="dialog" aria-modal="true" aria-label="Stort bildgalleri" aria-hidden="true">
+  <button class="gallery-close" id="hotel-gallery-close" type="button" aria-label="Stäng bildgalleriet">×</button>
+  <button class="gallery-btn prev" id="hotel-modal-prev" type="button" aria-label="Föregående bild">‹</button>
+  <img id="hotel-modal-image" src="https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1019_2_30.jpg" alt="Zeus Village Resort – bild 1 av 33" draggable="false">
+  <button class="gallery-btn next" id="hotel-modal-next" type="button" aria-label="Nästa bild">›</button>
+  <div class="gallery-modal-counter" id="hotel-modal-counter">1 / 33</div>
+</div>
+
 <div class="sticky">
   <div class="sticky-inner">
     <a href="#checkin"><span class="sicon">✓</span>Check-in</a>
     <a id="journey-nav" href="#utresa" aria-label="Gå till utresa"><span class="sicon" id="journey-nav-icon">✈</span><span id="journey-nav-label">Utresa</span></a>
     <a href="#vouchers"><span class="sicon">▣</span>Vouchers</a>
     <a href="#hotell"><span class="sicon">⌂</span>Hotell</a>
+    <a href="#bagage"><span class="sicon">▤</span>Bagage</a>
+    <a href="#strander"><span class="sicon">≋</span>Stränder</a>
+    <a href="#restauranger"><span class="sicon">♨</span>Restaurang</a>
     <a href="#hjalp"><span class="sicon">☎</span>Hjälp</a>
   </div>
 </div>
@@ -575,6 +721,148 @@ document.querySelectorAll(".copy").forEach(btn => {
     }
   });
 });
+
+
+// Bildgalleri för Zeus Village Resort. Bilderna hämtas direkt från Ving.
+const hotelGalleryImages = [
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1019_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1022_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1033_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1002_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1020_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1021_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1006_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1008_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1005_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1009_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1010_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1003_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1001_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1011_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1032_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1028_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1027_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1029_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1026_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1035_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1037_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1023_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1024_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1025_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1013_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1014_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1018_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1012_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1030_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1031_2_29.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1034_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1036_2_30.jpg",
+  "https://img.ving.se/image/upload/images/Hotel/HCHQZEUS1038_2_30.jpg"
+];
+
+let hotelGalleryIndex = 0;
+const galleryImage = document.getElementById("hotel-gallery-image");
+const galleryCounter = document.getElementById("hotel-gallery-counter");
+const galleryError = document.getElementById("hotel-gallery-error");
+const galleryFrame = document.getElementById("hotel-gallery-frame");
+const galleryModal = document.getElementById("hotel-gallery-modal");
+const modalImage = document.getElementById("hotel-modal-image");
+const modalCounter = document.getElementById("hotel-modal-counter");
+
+function preloadHotelGallery(index) {
+  [-1, 1].forEach(offset => {
+    const i = (index + offset + hotelGalleryImages.length) % hotelGalleryImages.length;
+    const img = new Image();
+    img.src = hotelGalleryImages[i];
+  });
+}
+
+function showHotelGallery(index) {
+  hotelGalleryIndex = (index + hotelGalleryImages.length) % hotelGalleryImages.length;
+  const src = hotelGalleryImages[hotelGalleryIndex];
+  const alt = `Zeus Village Resort – bild ${hotelGalleryIndex + 1} av ${hotelGalleryImages.length}`;
+  if (galleryError) galleryError.classList.remove("show");
+  if (galleryImage) {
+    galleryImage.src = src;
+    galleryImage.alt = alt;
+  }
+  if (modalImage) {
+    modalImage.src = src;
+    modalImage.alt = alt;
+  }
+  const count = `${hotelGalleryIndex + 1} / ${hotelGalleryImages.length}`;
+  if (galleryCounter) galleryCounter.textContent = count;
+  if (modalCounter) modalCounter.textContent = count;
+  preloadHotelGallery(hotelGalleryIndex);
+}
+
+function stepHotelGallery(delta) {
+  showHotelGallery(hotelGalleryIndex + delta);
+}
+
+function openHotelGallery() {
+  if (!galleryModal) return;
+  galleryModal.classList.add("open");
+  galleryModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("gallery-open");
+  document.getElementById("hotel-gallery-close")?.focus();
+}
+
+function closeHotelGallery() {
+  if (!galleryModal) return;
+  galleryModal.classList.remove("open");
+  galleryModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("gallery-open");
+  galleryImage?.focus?.();
+}
+
+document.getElementById("hotel-gallery-prev")?.addEventListener("click", () => stepHotelGallery(-1));
+document.getElementById("hotel-gallery-next")?.addEventListener("click", () => stepHotelGallery(1));
+document.getElementById("hotel-modal-prev")?.addEventListener("click", () => stepHotelGallery(-1));
+document.getElementById("hotel-modal-next")?.addEventListener("click", () => stepHotelGallery(1));
+document.getElementById("hotel-gallery-close")?.addEventListener("click", closeHotelGallery);
+galleryImage?.addEventListener("click", openHotelGallery);
+galleryImage?.setAttribute("tabindex", "0");
+galleryImage?.setAttribute("role", "button");
+galleryImage?.setAttribute("aria-label", "Öppna bilden i stor visning");
+galleryImage?.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openHotelGallery(); }
+});
+galleryImage?.addEventListener("error", () => galleryError?.classList.add("show"));
+galleryImage?.addEventListener("load", () => galleryError?.classList.remove("show"));
+
+galleryModal?.addEventListener("click", e => {
+  if (e.target === galleryModal) closeHotelGallery();
+});
+
+document.addEventListener("keydown", e => {
+  const modalOpen = galleryModal?.classList.contains("open");
+  if (e.key === "Escape" && modalOpen) closeHotelGallery();
+  if (modalOpen && e.key === "ArrowLeft") stepHotelGallery(-1);
+  if (modalOpen && e.key === "ArrowRight") stepHotelGallery(1);
+});
+
+function addGallerySwipe(el) {
+  if (!el) return;
+  let startX = null;
+  let startY = null;
+  el.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  el.addEventListener("touchend", e => {
+    if (startX === null || startY === null || !e.changedTouches.length) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    startX = startY = null;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.25) stepHotelGallery(dx < 0 ? 1 : -1);
+  }, { passive: true });
+}
+
+addGallerySwipe(galleryFrame);
+addGallerySwipe(galleryModal);
+showHotelGallery(0);
 
 const saved = localStorage.getItem("traveller");
 if(saved && travellers[saved]) setTraveller(saved);
