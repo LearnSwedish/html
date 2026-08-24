@@ -1,0 +1,1425 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Övning: liknande ord – olika användning</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f5f3ef;
+  --panel:#ffffff;
+  --surface:#faf9f7;
+  --text:#1f2421;
+  --muted:#69706b;
+  --line:#e3e5e2;
+  --accent:#426b55;
+  --accent-strong:#315440;
+  --accent-soft:#edf4ef;
+  --hover-orange:#fff0db;
+  --hover-orange-line:#e9b46d;
+  --correct:#287848;
+  --correct-bg:#edf8f1;
+  --wrong:#b23b42;
+  --wrong-bg:#fff1f1;
+  --shadow:0 24px 64px rgba(38,47,41,.09),0 2px 8px rgba(38,47,41,.04);
+}
+body.dark{
+  color-scheme:dark;
+  --bg:#111714;
+  --panel:#19211d;
+  --surface:#202923;
+  --text:#f1f4f2;
+  --muted:#aab4ae;
+  --line:#334039;
+  --accent:#8fc5a5;
+  --accent-strong:#b2dcc1;
+  --accent-soft:#24382d;
+  --hover-orange:#3b2b1d;
+  --hover-orange-line:#c98c4d;
+  --correct:#85d6a3;
+  --correct-bg:#1d3828;
+  --wrong:#ff9da3;
+  --wrong-bg:#402428;
+  --shadow:0 28px 72px rgba(0,0,0,.32),0 2px 10px rgba(0,0,0,.2);
+}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 8% -8%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 34rem),
+    radial-gradient(circle at 96% 12%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 26rem),
+    var(--bg);
+  color:var(--text);
+  transition:background .25s ease,color .25s ease;
+}
+.wrapper{
+  width:min(900px,calc(100% - 32px));
+  margin:0 auto;
+  padding:clamp(28px,5vw,64px) 0 56px;
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+  margin-bottom:28px;
+}
+h1{
+  margin:0 0 7px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(2.15rem,5vw,3.35rem);
+  font-weight:500;
+  line-height:1.05;
+  letter-spacing:-.035em;
+}
+.subtitle{
+  margin:0;
+  color:var(--muted);
+  max-width:640px;
+  font-size:1rem;
+  line-height:1.6;
+}
+.theme-toggle{
+  flex:0 0 auto;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--text);
+  border-radius:999px;
+  min-height:42px;
+  padding:9px 15px;
+  cursor:pointer;
+  font-weight:600;
+  box-shadow:0 3px 12px rgba(0,0,0,.05);
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.theme-toggle:hover{transform:translateY(-1px);border-color:var(--accent);background:var(--accent-soft)}
+.theme-toggle:focus-visible,.reset:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 30%,transparent);outline-offset:2px}
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadow);
+  padding:clamp(12px,3vw,26px);
+}
+.quiz-controls{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:flex-end;
+  gap:12px;
+  margin-bottom:18px;
+  padding:17px 18px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:color-mix(in srgb,var(--panel) 94%,var(--accent) 6%);
+  box-shadow:0 8px 24px rgba(38,47,41,.04);
+}
+.control-field{min-width:0}
+.control-field[hidden]{display:none}
+.control-label{
+  display:block;
+  margin:0 0 7px;
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:750;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.control-select-wrap{position:relative}
+.control-select-wrap::after{
+  content:"";
+  pointer-events:none;
+  position:absolute;
+  right:14px;
+  top:50%;
+  width:16px;
+  height:16px;
+  color:var(--muted);
+  background-color:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6 8 10 12.5 6' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6 8 10 12.5 6' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+  transform:translateY(-50%);
+}
+.control-select{
+  appearance:none;
+  width:100%;
+  min-height:46px;
+  padding:10px 44px 10px 13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--surface);
+  color:var(--text);
+  font-family:inherit;
+  font-size:.95rem;
+  font-weight:600;
+  line-height:1.3;
+  cursor:pointer;
+  transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.control-select:hover{
+  border-color:var(--hover-orange-line);
+  background:var(--hover-orange);
+}
+.control-select:focus-visible{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent);
+}
+.question{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  gap:14px;
+  padding:22px 4px;
+  border-bottom:1px solid var(--line);
+}
+.question:last-child{border-bottom:0}
+.number{
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--accent-soft);
+  color:var(--accent);
+  font-size:.9rem;
+  font-weight:750;
+}
+.sentence{
+  margin:1px 0 5px;
+  font-size:1.075rem;
+  font-weight:550;
+  line-height:1.6;
+}
+.response-line{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  min-height:1.45em;
+  margin:8px 0 0;
+}
+.hint{
+  flex:1 1 auto;
+  min-width:0;
+  margin:0;
+  color:var(--muted);
+  font-size:.95rem;
+  line-height:1.45;
+  font-style:italic;
+}
+.hint.answered{visibility:hidden}
+.select-wrap{
+  position:relative;
+  width:min(380px,100%);
+}
+.choice-button{
+  width:100%;
+  min-height:48px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:11px 48px 11px 15px;
+  background:var(--surface);
+  color:var(--text);
+  font-size:1rem;
+  font-weight:600;
+  cursor:pointer;
+  text-align:left;
+  position:relative;
+  box-shadow:0 1px 2px rgba(0,0,0,.025);
+  transition:border-color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.choice-button:hover{
+  border-color:var(--hover-orange-line);
+  background:var(--hover-orange);
+}
+.choice-button:focus-visible{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent);
+}
+.choice-button::after{
+  content:"";
+  position:absolute;
+  right:15px;
+  top:50%;
+  width:16px;
+  height:16px;
+  color:var(--muted);
+  background-color:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6 8 10 12.5 6' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 6 8 10 12.5 6' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+  transform:translateY(-50%) rotate(0deg);
+  transform-origin:50% 50%;
+  transition:transform .22s cubic-bezier(.2,.8,.2,1),color .18s ease;
+}
+.select-wrap.open .choice-button::after{
+  color:var(--accent);
+  transform:translateY(-50%) rotate(180deg);
+}
+.choice-menu{
+  position:absolute;
+  z-index:30;
+  left:0;
+  right:0;
+  top:calc(100% + 8px);
+  display:none;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;
+  padding:8px 9px 10px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:var(--panel);
+  box-shadow:0 18px 44px rgba(25,36,29,.18),0 3px 10px rgba(25,36,29,.08);
+}
+.select-wrap.open .choice-menu{
+  display:grid;
+  animation:menuIn .14s ease both;
+}
+.choice-head{
+  padding:7px 10px 9px;
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  text-align:center;
+}
+.choice-option{
+  border:0;
+  background:transparent;
+  color:var(--text);
+  border-radius:10px;
+  min-height:42px;
+  padding:10px 12px;
+  cursor:pointer;
+  font-size:.98rem;
+  font-weight:600;
+  text-align:center;
+  transition:background .15s ease,color .15s ease,transform .12s ease;
+}
+.choice-option:hover,
+.choice-option:focus-visible{
+  outline:none;
+  background:var(--hover-orange);
+  color:var(--text);
+}
+.choice-option:active{
+  transform:scale(.98);
+}
+.select-wrap.correct .choice-button{
+  border-color:var(--correct);
+  background:var(--correct-bg);
+  color:var(--correct);
+}
+.select-wrap.wrong .choice-button{
+  border-color:var(--wrong);
+  background:var(--wrong-bg);
+  color:var(--wrong);
+}
+@keyframes menuIn{
+  from{opacity:0;transform:translateY(-4px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.feedback{
+  flex:0 0 auto;
+  margin:0 0 0 auto;
+  min-height:0;
+  font-size:.94rem;
+  font-weight:600;
+}
+.feedback.correct{color:var(--correct)}
+.feedback.wrong{color:var(--wrong)}
+.summary{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  margin-top:20px;
+  padding:16px 18px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:color-mix(in srgb,var(--panel) 92%,var(--accent) 8%);
+  box-shadow:0 8px 24px rgba(38,47,41,.04);
+}
+.score{font-weight:750;font-variant-numeric:tabular-nums}
+.reset{
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--text);
+  border-radius:11px;
+  min-height:42px;
+  padding:9px 14px;
+  cursor:pointer;
+  font-weight:600;
+}
+.reset{transition:border-color .18s ease,background .18s ease,transform .18s ease}
+.reset:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px)}
+@media (max-width:620px){
+  .wrapper{width:min(100% - 22px,900px);padding-top:24px}
+  .topbar{align-items:flex-start;margin-bottom:20px}
+  .theme-toggle{padding:8px 10px;font-size:.9rem}
+  .card{padding:9px 14px;border-radius:19px}
+  .quiz-controls{grid-template-columns:1fr;padding:14px}
+  .question{grid-template-columns:34px minmax(0,1fr);gap:9px;padding:19px 0}
+  .number{width:30px;height:30px;font-size:.8rem}
+  .sentence{font-size:1rem}
+  .hint{font-size:.9rem}
+  .summary{padding:13px 14px}
+}
+@media (max-width:430px){
+  .topbar{display:block}
+  .theme-toggle{margin-top:16px}
+  .choice-menu{position:relative;top:auto;margin-top:7px;box-shadow:none}
+  .summary{align-items:stretch;flex-direction:column}
+  .reset{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="topbar">
+    <div>
+      <h1>Liknande ord – olika användning</h1>
+      <p class="subtitle">Välj det uttryck som passar bäst.</p>
+    </div>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Växla mörkt läge">Mörkt läge</button>
+  </div>
+
+  <section class="quiz-controls" aria-label="Välj övning">
+    <div class="control-field">
+      <label class="control-label" for="quizMode">Övningsläge</label>
+      <div class="control-select-wrap">
+        <select class="control-select" id="quizMode">
+          <option value="random-10">10 slumpmässiga meningar</option>
+          <option value="random-20">20 slumpmässiga meningar</option>
+          <option value="random-50">50 slumpmässiga meningar</option>
+          <option value="group">En specifik ordgrupp</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-field" id="groupField" hidden>
+      <label class="control-label" for="groupSelect">Ordgrupp</label>
+      <div class="control-select-wrap">
+        <select class="control-select" id="groupSelect"></select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="quiz"></section>
+
+  <div class="summary">
+    <div class="score" id="score">0 av 10 rätt</div>
+    <button class="reset" id="resetBtn" type="button">Börja om</button>
+  </div>
+</div>
+
+<script>
+const baseQuestions = [
+  {
+    text:'Det var en ___ solnedgång över Öresund.',
+    en:'It was a beautiful sunset over the Öresund.',
+    answer:'vacker'
+  },
+  {
+    text:'Du är verkligen ___ i den nya kostymen.',
+    en:'You look really smart in the new suit.',
+    answer:'snygg'
+  },
+  {
+    text:'Vi hade en väldigt ___ kväll tillsammans.',
+    en:'We had a really lovely evening together.',
+    answer:'fin'
+  },
+  {
+    text:'Hon har en ovanligt ___ sångröst.',
+    en:'She has an exceptionally beautiful singing voice.',
+    answer:'vacker'
+  },
+  {
+    text:'Du fick ett mycket ___ resultat på provet.',
+    en:'You got a very good result in the test.',
+    answer:'fint'
+  },
+  {
+    text:'De har gjort om köket. Det blev riktigt ___.',
+    en:'They have redone the kitchen. It looks really stylish.',
+    answer:'snyggt'
+  },
+  {
+    text:'Det var ___ av dig att hjälpa henne med flytten.',
+    en:'It was very kind of you to help her move house.',
+    answer:'fint'
+  },
+  {
+    text:'Från berget hade vi en ___ utsikt över dalen.',
+    en:'From the mountain we had a beautiful view over the valley.',
+    answer:'vacker'
+  },
+  {
+    text:'Den nya affischen har en mycket ___ design.',
+    en:'The new poster has a very stylish design.',
+    answer:'snygg'
+  },
+  {
+    text:'Det var ett ___ initiativ att bjuda in de nya grannarna.',
+    en:'It was a thoughtful gesture to invite the new neighbours.',
+    answer:'fint'
+  },
+  {
+    text:'Det var en riktigt ___ dokumentär.',
+    en:'It was a really good documentary.',
+    answer:'bra'
+  },
+  {
+    text:'Vi fick ett ___ erbjudande från hotellet.',
+    en:'We received a good offer from the hotel.',
+    answer:'bra'
+  },
+  {
+    text:'Soppan på restaurangen var mycket ___.',
+    en:'The soup at the restaurant was very tasty.',
+    answer:'god'
+  },
+  {
+    text:'Det här brödet är riktigt ___.',
+    en:'This bread is really tasty.',
+    answer:'gott'
+  },
+  {
+    text:'Hon är en ___ vän som alltid lyssnar.',
+    en:'She is a good friend who always listens.',
+    answer:'god'
+  },
+  {
+    text:'Han har ___ kunskaper i engelska.',
+    en:'He has a good command of English.',
+    answer:'goda'
+  },
+  {
+    text:'Sara är en mycket ___ läkare.',
+    en:'Sara is a very skilled doctor.',
+    answer:'duktig'
+  },
+  {
+    text:'Du är ___ på att förklara svåra saker.',
+    en:'You are skilled at explaining difficult things.',
+    answer:'duktig'
+  },
+  {
+    text:'Barnen var mycket ___ under den långa resan.',
+    en:'The children behaved very well during the long journey.',
+    answer:'duktiga'
+  },
+  {
+    text:'Presentationen var mycket ___.',
+    en:'The presentation was very good.',
+    answer:'bra'
+  },
+  {
+    text:'Jag blev ___ när du ringde.',
+    en:'I was glad when you called.',
+    answer:'glad'
+  },
+  {
+    text:'Hon ser alltid så ___ ut.',
+    en:'She always looks so cheerful.',
+    answer:'glad'
+  },
+  {
+    text:'Barnen var ___ över presenterna.',
+    en:'The children were glad about the presents.',
+    answer:'glada'
+  },
+  {
+    text:'Hon kände sig ___ efter bröllopet.',
+    en:'She felt deeply happy after the wedding.',
+    answer:'lycklig'
+  },
+  {
+    text:'De har varit ___ tillsammans i många år.',
+    en:'They have been happy together for many years.',
+    answer:'lyckliga'
+  },
+  {
+    text:'Jag är ___ över att ha fått jobbet.',
+    en:'I am delighted to have got the job.',
+    answer:'lycklig'
+  },
+  {
+    text:'Jag är ___ med resultatet.',
+    en:'I am satisfied with the result.',
+    answer:'nöjd'
+  },
+  {
+    text:'Kunden verkade ___ med servicen.',
+    en:'The customer seemed satisfied with the service.',
+    answer:'nöjd'
+  },
+  {
+    text:'Är du ___ med ditt nya jobb?',
+    en:'Are you satisfied with your new job?',
+    answer:'nöjd'
+  },
+  {
+    text:'Det nygifta paret verkade ___.',
+    en:'The newly married couple seemed deeply happy.',
+    answer:'lyckligt'
+  },
+  {
+    text:'Hon blev ___ när hon hörde vad som hade hänt.',
+    en:'She became angry when she heard what had happened.',
+    answer:'arg'
+  },
+  {
+    text:'Pappa är ___ på mig.',
+    en:'Dad is angry with me.',
+    answer:'arg'
+  },
+  {
+    text:'Jag var verkligen ___ över beslutet.',
+    en:'I was really angry about the decision.',
+    answer:'arg'
+  },
+  {
+    text:'Jag blir ___ på det där ljudet.',
+    en:'That noise irritates me.',
+    answer:'irriterad'
+  },
+  {
+    text:'Hon såg ___ ut.',
+    en:'She looked irritated.',
+    answer:'irriterad'
+  },
+  {
+    text:'Han blev ___ över förseningen.',
+    en:'He became irritated by the delay.',
+    answer:'irriterad'
+  },
+  {
+    text:'Varför är du så ___ i dag?',
+    en:'Why are you so grumpy today?',
+    answer:'sur'
+  },
+  {
+    text:'Han blev ___ på mig när jag sa nej.',
+    en:'He got sulky with me when I said no.',
+    answer:'sur'
+  },
+  {
+    text:'Hon gick därifrån med en ___ min.',
+    en:'She walked away with a sour expression.',
+    answer:'sur'
+  },
+  {
+    text:'Barnet gav ett ___ svar.',
+    en:'The child gave an irritated reply.',
+    answer:'irriterat'
+  },
+  {
+    text:'Hon är ___ för hundar.',
+    en:'She is afraid of dogs.',
+    answer:'rädd'
+  },
+  {
+    text:'Jag blev ___ när jag hörde ljudet.',
+    en:'I became frightened when I heard the noise.',
+    answer:'rädd'
+  },
+  {
+    text:'Barnet var ___ för mörkret.',
+    en:'The child was afraid of the dark.',
+    answer:'rädd'
+  },
+  {
+    text:'Jag är ___ för min son.',
+    en:'I am worried about my son.',
+    answer:'orolig'
+  },
+  {
+    text:'Hon blev ___ när han inte svarade.',
+    en:'She became worried when he did not answer.',
+    answer:'orolig'
+  },
+  {
+    text:'Vi är ___ över utvecklingen.',
+    en:'We are worried about the developments.',
+    answer:'oroliga'
+  },
+  {
+    text:'Jag är alltid ___ inför en tenta.',
+    en:'I am always nervous before an exam.',
+    answer:'nervös'
+  },
+  {
+    text:'Hon såg ___ ut före intervjun.',
+    en:'She looked nervous before the interview.',
+    answer:'nervös'
+  },
+  {
+    text:'Han blev ___ när han skulle hålla tal.',
+    en:'He became nervous when he was about to give a speech.',
+    answer:'nervös'
+  },
+  {
+    text:'Det blev ett ___ dygn för familjen.',
+    en:'It was an anxious twenty-four hours for the family.',
+    answer:'oroligt'
+  },
+  {
+    text:'Filmen var väldigt ___.',
+    en:'The film was very funny.',
+    answer:'rolig'
+  },
+  {
+    text:'Han berättade en ___ historia.',
+    en:'He told a funny story.',
+    answer:'rolig'
+  },
+  {
+    text:'Det var ___ att träffa dig igen.',
+    en:'It was nice to see you again.',
+    answer:'roligt'
+  },
+  {
+    text:'Det var ___ på festen.',
+    en:'The party was fun.',
+    answer:'kul'
+  },
+  {
+    text:'Vilken ___ idé!',
+    en:'What a fun idea!',
+    answer:'kul'
+  },
+  {
+    text:'Barnen hade väldigt ___ tillsammans.',
+    en:'The children had a lot of fun together.',
+    answer:'kul'
+  },
+  {
+    text:'Han berättade en ___ historia.',
+    en:'He told an amusing and slightly peculiar story.',
+    answer:'lustig'
+  },
+  {
+    text:'Det luktar ___ här inne.',
+    en:'It smells strange in here.',
+    answer:'lustigt'
+  },
+  {
+    text:'Det var en ___ situation.',
+    en:'It was a peculiar situation.',
+    answer:'lustig'
+  },
+  {
+    text:'Barnet gjorde ett ___ ljud.',
+    en:'The child made a peculiar sound.',
+    answer:'lustigt'
+  },
+  { text:'Hon är alltid ___ mot sina barn.', en:'She is always kind to her children.', answer:'snäll' },
+  { text:'Kan du vara ___ och hjälpa mig?', en:'Could you be kind and help me?', answer:'snäll' },
+  { text:'Det var ___ av dig att komma.', en:'It was kind of you to come.', answer:'snällt' },
+  { text:'Personalen var mycket ___.', en:'The staff were very courteous.', answer:'vänlig' },
+  { text:'Han hälsade ___ på oss.', en:'He greeted us in a friendly manner.', answer:'vänligt' },
+  { text:'Hon gav mig ett ___ svar.', en:'She gave me a polite and friendly reply.', answer:'vänligt' },
+  { text:'Han verkar vara en ___ person.', en:'He seems like a pleasant person.', answer:'trevlig' },
+  { text:'Vi hade en ___ kväll.', en:'We had a pleasant evening.', answer:'trevlig' },
+  { text:'Det är ett ___ café.', en:'It is a pleasant café.', answer:'trevligt' },
+  { text:'De nya grannarna är mycket ___.', en:'The new neighbours are very pleasant.', answer:'trevliga' },
+
+  { text:'Mjölken hade fått en ___ grön färg.', en:'The milk had turned an abnormally green colour.', answer:'konstig' },
+  { text:'Han bar vinterstövlar på stranden, vilket såg mycket ___ ut.', en:'He wore winter boots on the beach, which looked very abnormal.', answer:'konstigt' },
+  { text:'Robotens hackiga rörelser såg ___ ut.', en:'The robot’s jerky movements looked noticeably abnormal.', answer:'konstiga' },
+  { text:'Forskarna hittade en ___ växt som lyser i mörkret.', en:'The researchers found an unusual plant that glows in the dark.', answer:'märklig' },
+  { text:'Stenen hade ett ___ mönster som inte liknade något känt.', en:'The stone had an unusual pattern unlike anything known.', answer:'märkligt' },
+  { text:'Den nya arten har flera ___ egenskaper.', en:'The new species has several unusual properties.', answer:'märkliga' },
+  { text:'Han gav ett ___ svar som ingen lyckades tolka.', en:'He gave a puzzling answer that nobody managed to interpret.', answer:'underligt' },
+  { text:'Det var ett ___ resonemang som var svårt att följa.', en:'It was a puzzling line of reasoning that was hard to follow.', answer:'underligt' },
+  { text:'Hon är ___; jag förstår aldrig hur hon tänker.', en:'She is hard to understand; I never understand how she thinks.', answer:'underlig' },
+  { text:'Instruktionerna var ___ och svåra att förstå sig på.', en:'The instructions were puzzling and difficult to make sense of.', answer:'underliga' },
+
+  { text:'Provet var ganska ___.', en:'The test was fairly easy.', answer:'lätt' },
+  { text:'Det är ___ att hitta dit.', en:'It is easy to find the place.', answer:'lätt' },
+  { text:'Den här texten är ___ att förstå.', en:'This text is easy to understand.', answer:'lätt' },
+  { text:'Det finns en ___ lösning på problemet.', en:'There is a simple, uncomplicated solution to the problem.', answer:'enkel' },
+  { text:'Hon lagade en ___ middag.', en:'She prepared a simple meal.', answer:'enkel' },
+  { text:'Instruktionerna är tydliga och ___.', en:'The instructions are clear and simple.', answer:'enkla' },
+  { text:'Det var ett ___ trick.', en:'It was a cheap, low-grade trick.', answer:'simpelt' },
+  { text:'Han bodde i ett ___ rum.', en:'He lived in a very basic, low-quality room.', answer:'simpelt' },
+  { text:'Filmen hade en ganska ___ handling.', en:'The film had a rather banal plot.', answer:'simpel' },
+  { text:'Det var ett ___ recept med få steg.', en:'It was a simple recipe with few steps.', answer:'enkelt' },
+
+  { text:'Det var en ___ fråga.', en:'It was a difficult question.', answer:'svår' },
+  { text:'Svenska uttal kan vara ___.', en:'Swedish pronunciation can be difficult.', answer:'svårt' },
+  { text:'Hon fattade ett ___ beslut.', en:'She made a difficult decision.', answer:'svårt' },
+  { text:'Jag hade en ___ dag på jobbet.', en:'I had an exhausting day at work.', answer:'jobbig' },
+  { text:'Resan blev väldigt ___.', en:'The journey became very tiring and unpleasant.', answer:'jobbig' },
+  { text:'Han kan vara ganska ___ ibland.', en:'He can be rather difficult to deal with sometimes.', answer:'jobbig' },
+  { text:'Det är en ___ situation.', en:'It is a complicated situation with many factors.', answer:'komplicerad' },
+  { text:'Reglerna är ganska ___.', en:'The rules are fairly complicated.', answer:'komplicerade' },
+  { text:'Hon har en ___ relation till sin familj.', en:'She has a complicated relationship with her family.', answer:'komplicerad' },
+  { text:'Det var ett ___ ärende med många detaljer.', en:'It was a complicated matter with many details.', answer:'komplicerat' },
+
+  { text:'Är du ___ på att tåget går klockan åtta?', en:'Are you certain that the train leaves at eight?', answer:'säker' },
+  { text:'Hon känner sig ___ när hon talar inför publik.', en:'She feels confident when speaking in public.', answer:'säker' },
+  { text:'Det här är en ___ plats för barn.', en:'This is a safe place for children.', answer:'säker' },
+  { text:'Barnet känner sig ___ hemma.', en:'The child feels safe and secure at home.', answer:'tryggt' },
+  { text:'Jag känner mig ___ med henne.', en:'I feel secure with her.', answer:'trygg' },
+  { text:'Hon är ___ i sin yrkesroll.', en:'She feels secure in her professional role.', answer:'trygg' },
+  { text:'Jag är ___ om att hon har rätt.', en:'I am convinced that she is right.', answer:'övertygad' },
+  { text:'Han var helt ___ om sin sak.', en:'He was completely convinced of his position.', answer:'övertygad' },
+  { text:'Vi är ___ om att planen kommer att fungera.', en:'We are convinced that the plan will work.', answer:'övertygade' },
+  { text:'De kände sig ___ i det nya området.', en:'They felt safe and secure in the new neighbourhood.', answer:'trygga' },
+
+  { text:'Det är ett ___ problem.', en:'It is a common problem.', answer:'vanligt' },
+  { text:'Hon har ett ganska ___ namn.', en:'She has a fairly common name.', answer:'vanligt' },
+  { text:'Kaffe är en ___ dryck i Sverige.', en:'Coffee is a common drink in Sweden.', answer:'vanlig' },
+  { text:'Temperaturen är ___ för årstiden.', en:'The temperature is normal for the season.', answer:'normal' },
+  { text:'Det är helt ___ att känna sig nervös.', en:'It is completely normal to feel nervous.', answer:'normalt' },
+  { text:'Efter några dagar fungerade allt ___ igen.', en:'After a few days everything functioned normally again.', answer:'normalt' },
+  { text:'Det är en ___ svensk sommar.', en:'It is a typical Swedish summer.', answer:'typisk' },
+  { text:'Det där är ___ honom.', en:'That is typical of him.', answer:'typiskt' },
+  { text:'Huset är ___ för 1800-talet.', en:'The house is typical of the nineteenth century.', answer:'typiskt' },
+  { text:'Det här är ett ___ värde för en vuxen.', en:'This is a normal value for an adult.', answer:'normalt' },
+
+  { text:'Vad ___ hon till dig?', en:'What did she say to you?', answer:'sa' },
+  { text:'Jag måste ___ en sak.', en:'I have to say something.', answer:'säga' },
+  { text:'Han ___ att han skulle komma senare.', en:'He said that he would come later.', answer:'sa' },
+  { text:'Kan du ___ vad som hände?', en:'Can you tell me what happened?', answer:'berätta' },
+  { text:'Hon ___ en rolig historia för oss.', en:'She told us a funny story.', answer:'berättade' },
+  { text:'Jag har inte ___ för honom ännu.', en:'I have not told him yet.', answer:'berättat' },
+  { text:'Vi behöver ___.', en:'We need to talk.', answer:'prata' },
+  { text:'Hon ___ med sin chef.', en:'She talked to her manager.', answer:'pratade' },
+  { text:'De satt och ___ om resan hela kvällen.', en:'They sat talking about the journey all evening.', answer:'pratade' },
+  { text:'Vi har ___ om problemet flera gånger.', en:'We have talked about the problem several times.', answer:'pratat' },
+
+  { text:'Jag ___ henne på stan i går.', en:'I saw her in town yesterday.', answer:'såg' },
+  { text:'Kan du ___ huset där borta?', en:'Can you see the house over there?', answer:'se' },
+  { text:'Vi ___ en bra film i går kväll.', en:'We saw a good film last night.', answer:'såg' },
+  { text:'___ på den här bilden.', en:'Look at this picture.', answer:'titta' },
+  { text:'Barnen ___ på tv efter middagen.', en:'The children watched television after dinner.', answer:'tittade' },
+  { text:'Hon stod vid fönstret och ___ ut.', en:'She stood by the window and looked outside.', answer:'tittade' },
+  { text:'Jag ska ___ vilken tid tåget går.', en:'I will check what time the train leaves.', answer:'kolla' },
+  { text:'Kan du ___ mejlen?', en:'Can you check the email?', answer:'kolla' },
+  { text:'Vi ___ på en serie hela kvällen.', en:'We watched a series all evening.', answer:'kollade' },
+  { text:'Jag har ___ den filmen flera gånger.', en:'I have seen that film several times.', answer:'sett' },
+
+  { text:'Jag ___ ett konstigt ljud.', en:'I heard a strange sound.', answer:'hörde' },
+  { text:'Kan du ___ vad hon säger?', en:'Can you hear what she is saying?', answer:'höra' },
+  { text:'Jag ___ musiken från grannens lägenhet.', en:'I can hear the music from the neighbour’s flat.', answer:'hör' },
+  { text:'Jag brukar ___ på musik på kvällen.', en:'I usually listen to music in the evening.', answer:'lyssna' },
+  { text:'___ på vad jag säger!', en:'Listen to what I am saying!', answer:'lyssna' },
+  { text:'Hon satt och ___ på fåglarna.', en:'She sat listening to the birds.', answer:'lyssnade' },
+  { text:'Vi ___ tydligt någon ropa utanför.', en:'We clearly heard someone shouting outside.', answer:'hörde' },
+  { text:'Han ___ aldrig när jag pratar.', en:'He never listens when I speak.', answer:'lyssnar' },
+  { text:'Jag kan inte ___ dig i allt oväsen.', en:'I cannot hear you over all the noise.', answer:'höra' },
+  { text:'De ___ uppmärksamt på guiden.', en:'They listened attentively to the guide.', answer:'lyssnade' },
+
+  { text:'Jag ___ att hon kommer i morgon.', en:'I think she will come tomorrow.', answer:'tror' },
+  { text:'___ du att det blir regn?', en:'Do you think it will rain?', answer:'tror' },
+  { text:'Han ___ att mötet började klockan nio.', en:'He believed the meeting started at nine.', answer:'trodde' },
+  { text:'Jag ___ att filmen är bra.', en:'I think the film is good.', answer:'tycker' },
+  { text:'Vad ___ du om maten?', en:'What do you think of the food?', answer:'tycker' },
+  { text:'Hon ___ inte om att flyga.', en:'She does not like flying.', answer:'tycker' },
+  { text:'Jag ___ att beslutet är felaktigt.', en:'I consider the decision incorrect.', answer:'anser' },
+  { text:'Många ___ honom vara en skicklig författare.', en:'Many consider him a skilled writer.', answer:'anser' },
+  { text:'Styrelsen ___ att förslaget behövde ändras.', en:'The board considered that the proposal needed changing.', answer:'ansåg' },
+  { text:'Personligen ___ jag att priset är för högt.', en:'Personally, I think the price is too high.', answer:'tycker' },
+
+  { text:'Jag ___ var hon bor.', en:'I know where she lives.', answer:'vet' },
+  { text:'___ du när tåget går?', en:'Do you know when the train leaves?', answer:'vet' },
+  { text:'Hon ___ att han skulle komma.', en:'She knew that he would come.', answer:'visste' },
+  { text:'Jag ___ den författaren.', en:'I am familiar with that author.', answer:'känner till' },
+  { text:'___ du någon bra restaurang här?', en:'Do you know of a good restaurant here?', answer:'känner till' },
+  { text:'Polisen ___ problemet sedan tidigare.', en:'The police already knew about the problem.', answer:'kände till' },
+  { text:'Hon ___ tala svenska.', en:'She can speak Swedish.', answer:'kan' },
+  { text:'Jag ___ inte simma.', en:'I cannot swim.', answer:'kan' },
+  { text:'Han ___ mycket om svensk historia.', en:'He knows a great deal about Swedish history.', answer:'kan' },
+  { text:'Vi ___ inte lösa uppgiften i går.', en:'We could not solve the task yesterday.', answer:'kunde' },
+
+  { text:'Jag ___ inte frågan.', en:'I do not understand the question.', answer:'förstår' },
+  { text:'Hon ___ varför han var ledsen.', en:'She understood why he was sad.', answer:'förstod' },
+  { text:'___ du hur maskinen fungerar?', en:'Do you understand how the machine works?', answer:'förstår' },
+  { text:'Jag ___ inte vad du menar.', en:'I do not get what you mean.', answer:'fattar' },
+  { text:'Nu ___ jag!', en:'Now I get it!', answer:'fattar' },
+  { text:'Han ___ genast vad som hade hänt.', en:'He immediately grasped what had happened.', answer:'fattade' },
+  { text:'Jag ___ inte hur det är möjligt.', en:'I cannot comprehend how it is possible.', answer:'begriper' },
+  { text:'Kan du ___ varför hon gjorde så?', en:'Can you comprehend why she did that?', answer:'begripa' },
+  { text:'Han kunde inte ___ instruktionerna.', en:'He could not comprehend the instructions.', answer:'begripa' },
+  { text:'Till slut ___ alla hur systemet fungerade.', en:'Eventually everyone understood how the system worked.', answer:'förstod' },
+
+  { text:'Jag ska ___ henne när hon kommer.', en:'I will ask her when she arrives.', answer:'fråga' },
+  { text:'Han ___ om vägen.', en:'He asked for directions.', answer:'frågade' },
+  { text:'Får jag ___ en sak?', en:'May I ask something?', answer:'fråga' },
+  { text:'Jag ___ var hon är.', en:'I wonder where she is.', answer:'undrar' },
+  { text:'Vi ___ om tåget skulle komma i tid.', en:'We wondered whether the train would arrive on time.', answer:'undrade' },
+  { text:'Jag ___ varför han inte svarar.', en:'I wonder why he is not answering.', answer:'undrar' },
+  { text:'Jag ska ___ honom om hjälp.', en:'I will ask him for help.', answer:'be' },
+  { text:'Hon ___ mig att vänta.', en:'She asked me to wait.', answer:'bad' },
+  { text:'Kan jag ___ om ett glas vatten?', en:'May I ask for a glass of water?', answer:'be' },
+  { text:'Eleven ___ läraren om provdatumet.', en:'The student asked the teacher about the test date.', answer:'frågade' },
+
+  { text:'Lektionen ___ klockan nio.', en:'The lesson begins at nine.', answer:'börjar' },
+  { text:'Hon ___ arbeta här förra året.', en:'She began working here last year.', answer:'började' },
+  { text:'Det ___ regna under promenaden.', en:'It began to rain during the walk.', answer:'började' },
+  { text:'Kan du ___ bilen?', en:'Can you start the car?', answer:'starta' },
+  { text:'De ska ___ ett nytt företag.', en:'They are going to start a new company.', answer:'starta' },
+  { text:'Kursen ___ i september.', en:'The course starts in September.', answer:'startar' },
+  { text:'Ordföranden ___ mötet.', en:'The chair opened the meeting.', answer:'inledde' },
+  { text:'Länderna ___ förhandlingar förra veckan.', en:'The countries initiated negotiations last week.', answer:'inledde' },
+  { text:'Hon ___ sitt tal med en fråga.', en:'She opened her speech with a question.', answer:'inledde' },
+  { text:'Vi ska ___ ett nytt samarbete i höst.', en:'We will initiate a new collaboration this autumn.', answer:'inleda' },
+
+  { text:'Jag ___ jobbet klockan fem.', en:'I finish work at five.', answer:'slutar' },
+  { text:'Det ___ regna vid lunch.', en:'It stopped raining at lunchtime.', answer:'slutade' },
+  { text:'Han måste ___ röka.', en:'He must stop smoking.', answer:'sluta' },
+  { text:'Vi ___ mötet klockan fyra.', en:'We concluded the meeting at four.', answer:'avslutade' },
+  { text:'Hon ___ brevet med sitt namn.', en:'She ended the letter with her name.', answer:'avslutade' },
+  { text:'Han vill ___ sina studier först.', en:'He wants to complete his studies first.', answer:'avsluta' },
+  { text:'Företaget ___ med verksamheten.', en:'The company ceased operations.', answer:'upphörde' },
+  { text:'Reglerna ___ att gälla nästa år.', en:'The rules will cease to apply next year.', answer:'upphör' },
+  { text:'Striderna måste ___ omedelbart.', en:'The fighting must cease immediately.', answer:'upphöra' },
+  { text:'Läraren ___ lektionen med en sammanfattning.', en:'The teacher concludes the lesson with a summary.', answer:'avslutar' },
+
+  { text:'Kan jag ___ den här jackan?', en:'May I try on this jacket?', answer:'prova' },
+  { text:'Du borde ___ den här maträtten.', en:'You should try this dish.', answer:'prova' },
+  { text:'Vi ska ___ en ny metod.', en:'We are going to try a new method.', answer:'prova' },
+  { text:'Jag ska ___ den nya datorn.', en:'I will test the new computer.', answer:'testa' },
+  { text:'De ___ hans kunskaper i svenska.', en:'They tested his knowledge of Swedish.', answer:'testade' },
+  { text:'___ att starta om telefonen.', en:'Try restarting the phone as a test.', answer:'testa' },
+  { text:'Jag ska ___ komma i tid.', en:'I will try to arrive on time.', answer:'försöka' },
+  { text:'Hon ___ öppna dörren.', en:'She tried to open the door.', answer:'försökte' },
+  { text:'Vi måste ___ hitta en lösning.', en:'We must try to find a solution.', answer:'försöka' },
+  { text:'Teknikern ___ alla funktioner före lanseringen.', en:'The technician tested every function before launch.', answer:'testade' },
+
+  { text:'Jag kan inte ___ mina nycklar.', en:'I cannot find my keys.', answer:'hitta' },
+  { text:'Hon ___ ett bra hotell.', en:'She found a good hotel.', answer:'hittade' },
+  { text:'Vi måste ___ en lösning.', en:'We must find a solution.', answer:'hitta' },
+  { text:'Jag ___ efter mina glasögon.', en:'I am looking for my glasses.', answer:'letar' },
+  { text:'Polisen ___ efter den försvunna bilen.', en:'The police looked for the missing car.', answer:'letade' },
+  { text:'Vi gick runt och ___ i flera timmar.', en:'We walked around searching for several hours.', answer:'letade' },
+  { text:'Jag ___ efter information om ämnet.', en:'I am searching for information about the subject.', answer:'söker' },
+  { text:'Hon ___ ett nytt jobb förra veckan.', en:'She applied for a new job last week.', answer:'sökte' },
+  { text:'Du kan ___ på internet.', en:'You can search on the internet.', answer:'söka' },
+  { text:'Till slut ___ vi rätt adress.', en:'Eventually we found the correct address.', answer:'hittade' },
+
+  { text:'Jag har fått ett nytt ___.', en:'I have got a new job.', answer:'jobb' },
+  { text:'Hon är på ___ i dag.', en:'She is at work today.', answer:'jobbet' },
+  { text:'Det här var ett svårt ___.', en:'This was a difficult job.', answer:'jobb' },
+  { text:'Hon söker ___.', en:'She is looking for employment.', answer:'arbete' },
+  { text:'Projektet kräver mycket ___.', en:'The project requires a lot of work.', answer:'arbete' },
+  { text:'Han utförde ett mycket noggrant ___.', en:'He carried out a very thorough piece of work.', answer:'arbete' },
+  { text:'Vad har du för ___?', en:'What is your occupation?', answer:'yrke' },
+  { text:'Läraryrket är ett krävande ___.', en:'Teaching is a demanding profession.', answer:'yrke' },
+  { text:'Hon vill byta ___.', en:'She wants to change profession.', answer:'yrke' },
+  { text:'Många praktiska ___ kräver erfarenhet.', en:'Many practical jobs require experience.', answer:'arbeten' },
+
+  { text:'Hon är en nära ___ till mig.', en:'She is a close friend of mine.', answer:'vän' },
+  { text:'Vi har varit ___ sedan barndomen.', en:'We have been friends since childhood.', answer:'vänner' },
+  { text:'En ___ hjälpte mig att flytta.', en:'A friend helped me move.', answer:'vän' },
+  { text:'Jag ska träffa några ___ i kväll.', en:'I am meeting some mates tonight.', answer:'kompisar' },
+  { text:'Han är en gammal ___ från skolan.', en:'He is an old mate from school.', answer:'kompis' },
+  { text:'Min dotter tog med en ___ hem.', en:'My daughter brought a friend home.', answer:'kompis' },
+  { text:'Vi är inte vänner, bara ___.', en:'We are not friends, only acquaintances.', answer:'bekanta' },
+  { text:'Jag träffade en gammal ___ på stan.', en:'I met an old acquaintance in town.', answer:'bekant' },
+  { text:'Hon är en ___ till min kollega.', en:'She is an acquaintance of my colleague.', answer:'bekant' },
+  { text:'Mina närmaste ___ kom på besök.', en:'My closest friends came to visit.', answer:'vänner' }
+];
+
+const wordGroups = [
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['vacker','vackert','vackra'],
+    ['snygg','snyggt','snygga'],
+    ['fin','fint','fina']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['bra','bra','bra'],
+    ['god','gott','goda'],
+    ['duktig','duktigt','duktiga']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['glad','glatt','glada'],
+    ['lycklig','lyckligt','lyckliga'],
+    ['nöjd','nöjt','nöjda']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['arg','argt','arga'],
+    ['irriterad','irriterat','irriterade'],
+    ['sur','surt','sura']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['rädd','rädd','rädda'],
+    ['orolig','oroligt','oroliga'],
+    ['nervös','nervöst','nervösa']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['rolig','roligt','roliga'],
+    ['kul','kul','kul'],
+    ['lustig','lustigt','lustiga']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['snäll','snällt','snälla'],
+    ['vänlig','vänligt','vänliga'],
+    ['trevlig','trevligt','trevliga']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['konstig','konstigt','konstiga'],
+    ['märklig','märkligt','märkliga'],
+    ['underlig','underligt','underliga']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['lätt','lätt','lätta'],
+    ['enkel','enkelt','enkla'],
+    ['simpel','simpelt','simpla']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['svår','svårt','svåra'],
+    ['jobbig','jobbigt','jobbiga'],
+    ['komplicerad','komplicerat','komplicerade']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['säker','säkert','säkra'],
+    ['trygg','tryggt','trygga'],
+    ['övertygad','övertygat','övertygade']
+  ]},
+  { headers:['Utrum','Neutrum','Plural'], rows:[
+    ['vanlig','vanligt','vanliga'],
+    ['normal','normalt','normala'],
+    ['typisk','typiskt','typiska']
+  ]},
+  { headers:['Infinitiv','Preteritum','Supinum'], rows:[
+    ['säga','sa','sagt'],
+    ['berätta','berättade','berättat'],
+    ['prata','pratade','pratat']
+  ]},
+  { headers:['Infinitiv','Preteritum','Supinum'], rows:[
+    ['se','såg','sett'],
+    ['titta','tittade','tittat'],
+    ['kolla','kollade','kollat']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['höra','hör','hörde'],
+    ['lyssna','lyssnar','lyssnade']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['tro','tror','trodde'],
+    ['tycka','tycker','tyckte'],
+    ['anse','anser','ansåg']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['veta','vet','visste'],
+    ['känna till','känner till','kände till'],
+    ['kunna','kan','kunde']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['förstå','förstår','förstod'],
+    ['fatta','fattar','fattade'],
+    ['begripa','begriper','begrep']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['fråga','frågar','frågade'],
+    ['undra','undrar','undrade'],
+    ['be','ber','bad']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['börja','börjar','började'],
+    ['starta','startar','startade'],
+    ['inleda','inleder','inledde']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['sluta','slutar','slutade'],
+    ['avsluta','avslutar','avslutade'],
+    ['upphöra','upphör','upphörde']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['prova','provar','provade'],
+    ['testa','testar','testade'],
+    ['försöka','försöker','försökte']
+  ]},
+  { headers:['Infinitiv','Presens','Preteritum'], rows:[
+    ['hitta','hittar','hittade'],
+    ['leta','letar','letade'],
+    ['söka','söker','sökte']
+  ]},
+  { headers:['Obestämd','Bestämd','Plural'], rows:[
+    ['jobb','jobbet','jobb'],
+    ['arbete','arbetet','arbeten'],
+    ['yrke','yrket','yrken']
+  ]},
+  { headers:['Obestämd','Bestämd','Plural'], rows:[
+    ['vän','vännen','vänner'],
+    ['kompis','kompisen','kompisar'],
+    ['bekant','bekanten','bekanta']
+  ]}
+];
+
+const groupHints = [
+  [
+    'Tänk på estetisk skönhet, särskilt hos natur, konst eller en person.',
+    'Tänk på ett stilrent eller attraktivt utseende, ofta hos kläder, design eller en person.',
+    'Tänk på något positivt, behagligt eller omtänksamt snarare än enbart utseende.'
+  ],
+  [
+    'Välj det breda och neutrala kvalitetsordet som kan beskriva nästan vad som helst.',
+    'Tänk på smak, karaktär, relationer eller ett mer formellt och fast uttryck.',
+    'Tänk på en persons skicklighet, förmåga eller goda prestation.'
+  ],
+  [
+    'Tänk på en positiv känsla som kan vara tillfällig eller allmänt munter.',
+    'Tänk på en starkare och djupare känsla av välbefinnande.',
+    'Tänk på att något motsvarar förväntningarna; känslan behöver inte vara starkt positiv.'
+  ],
+  [
+    'Tänk på en tydlig och relativt stark negativ känsla riktad mot någon eller något.',
+    'Tänk på en mildare störning: något retar eller går en på nerverna.',
+    'Tänk på ett vardagligt ord där missnöjet märks i humör, ton eller beteende.'
+  ],
+  [
+    'Tänk på rädsla inför något som uppfattas som farligt eller hotfullt.',
+    'Tänk på bekymmer och osäkerhet inför något som kan ha hänt eller kan hända.',
+    'Tänk på spänning inför en prestation, bedömning eller ett bestämt ögonblick.'
+  ],
+  [
+    'Tänk på något underhållande som får människor att skratta.',
+    'Välj det vardagliga ordet för något roande, trevligt eller lustfyllt.',
+    'Tänk på något märkligt eller egendomligt; ordet kan även betyda underhållande.'
+  ],
+  [
+    'Tänk på omtanke, hjälpsamhet och att behandla andra väl.',
+    'Tänk på ett gott och artigt bemötande, ofta i en neutral eller formell situation.',
+    'Tänk på någon eller något som är behagligt att umgås med eller uppleva.'
+  ],
+  [
+    'Tänk på något som på ett påfallande sätt avviker från det normala.',
+    'Tänk på någon eller något som har ovanliga egenskaper.',
+    'Tänk på någon eller något som är svårt att förstå sig på.'
+  ],
+  [
+    'Tänk på att uppgiften kräver liten ansträngning och inte är svår att utföra.',
+    'Tänk på att något är okomplicerat till sin struktur, form eller lösning.',
+    'Tänk på enkelhet med negativ ton: banalt, ovärdigt eller av låg kvalitet.'
+  ],
+  [
+    'Tänk på något som kräver mycket kunskap, skicklighet eller ansträngning.',
+    'Tänk på något ansträngande, besvärligt eller obehagligt; ordet är vardagligt.',
+    'Tänk på många delar eller samband som gör något svårt att förstå eller hantera.'
+  ],
+  [
+    'Tänk på frånvaro av fara, självförtroende eller att inte tvivla på ett faktum.',
+    'Tänk på den inre känslan av skydd, stabilitet och frånvaro av oro.',
+    'Tänk på en stark visshet om att en uppfattning eller ett påstående är riktigt.'
+  ],
+  [
+    'Tänk på något som förekommer ofta och därför inte är ovanligt.',
+    'Tänk på något som ligger inom det förväntade eller accepterade intervallet.',
+    'Tänk på något som är särskilt kännetecknande för en person, grupp eller situation.'
+  ],
+  [
+    'Tänk på att uttrycka ord eller ett kort budskap; fokus ligger på vad som yttras.',
+    'Tänk på att förmedla information, en händelse eller en historia till någon.',
+    'Tänk på själva aktiviteten eller samtalet, ofta med någon och om något.'
+  ],
+  [
+    'Synintrycket uppfattas, ofta utan att blicken medvetet riktas mot det.',
+    'Blicken riktas aktivt och medvetet mot något.',
+    'Välj det vardagliga ordet för att kontrollera, undersöka eller se efter.'
+  ],
+  [
+    'Ljudet når öronen utan att personen nödvändigtvis anstränger sig.',
+    'Uppmärksamheten riktas aktivt mot ett ljud eller någon som talar; ofta används prepositionen på.'
+  ],
+  [
+    'Tänk på en bedömning av vad som förmodligen är sant, utan säker kunskap.',
+    'Tänk på personlig smak, värdering eller uppfattning.',
+    'Tänk på en mer formell och genomtänkt ståndpunkt.'
+  ],
+  [
+    'Tänk på kunskap om ett faktum eller ett sakförhållande.',
+    'Tänk på viss kännedom eller bekantskap med en person, sak eller företeelse.',
+    'Tänk på en färdighet, förmåga eller behärskning av ett område.'
+  ],
+  [
+    'Välj det neutrala och mest allmänna ordet för att uppfatta innebörden.',
+    'Välj den tydligt vardagligare motsvarigheten för att uppfatta eller inse något.',
+    'Tänk på något som är särskilt svårt att få grepp om, ofta i en fråga eller nekande mening.'
+  ],
+  [
+    'Målet är att få information genom att rikta en fråga till någon.',
+    'Tänk på en önskan att få veta, även när ingen direkt tillfrågas.',
+    'Målet är att någon ska göra eller ge något; det är en begäran, inte en informationsfråga.'
+  ],
+  [
+    'Välj det breda vardagsordet för att något tar sin början.',
+    'Tänk på en aktivitet, verksamhet, process eller maskin som sätts i gång.',
+    'Tänk på ett mer formellt påbörjande av exempelvis ett möte, tal eller samarbete.'
+  ],
+  [
+    'Välj det vanliga ordet för att något tar slut eller att någon inte längre gör något.',
+    'Tänk på att någon aktivt för en aktivitet, text eller ett möte till sitt slut.',
+    'Tänk på ett formellt och fullständigt slut för en verksamhet, regel eller företeelse.'
+  ],
+  [
+    'Tänk på att göra eller använda något för att se hur det passar eller fungerar.',
+    'Tänk på att kontrollera funktion, kvalitet eller förmåga, ofta på ett vardagligt sätt.',
+    'Tänk på en ansträngning att lyckas när resultatet ännu är osäkert.'
+  ],
+  [
+    'Tänk på det lyckade resultatet: föremålet, platsen eller lösningen upptäcks.',
+    'Tänk på själva aktiviteten att försöka finna något konkret.',
+    'Tänk på ett mer formellt letande eller på information, anställning och utbildning.'
+  ],
+  [
+    'Välj vardagsordet för en anställning eller en avgränsad arbetsuppgift.',
+    'Tänk på den neutrala eller formella arbetsinsatsen och själva verksamheten.',
+    'Tänk på typen av arbete som någon utbildat sig för eller regelbundet försörjer sig på.'
+  ],
+  [
+    'Tänk på en personlig och vanligtvis nära relation.',
+    'Välj det vardagliga ordet för en vänskapsrelation som också kan vara mindre nära.',
+    'Tänk på någon man känner men inte har en nära vänskapsrelation med.'
+  ]
+];
+let questions = [];
+let currentSelection = {type:'random',count:10};
+
+const quiz = document.getElementById('quiz');
+const scoreEl = document.getElementById('score');
+const resetBtn = document.getElementById('resetBtn');
+const themeToggle = document.getElementById('themeToggle');
+const quizMode = document.getElementById('quizMode');
+const groupField = document.getElementById('groupField');
+const groupSelect = document.getElementById('groupSelect');
+
+function shuffledCopy(items){
+  const a=[...items];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function belongsToGroup(question,group){
+  return group.rows.some(forms=>forms.includes(question.answer));
+}
+
+function hintFor(question){
+  const groupIndex=wordGroups.findIndex(group=>belongsToGroup(question,group));
+  if(groupIndex<0) return 'Läs sammanhanget och välj det ord och den form som passar bäst.';
+
+  const group=wordGroups[groupIndex];
+  const rowIndex=group.rows.findIndex(forms=>forms.includes(question.answer));
+  const baseHint=groupHints[groupIndex]?.[rowIndex] || 'Tänk på ordens betydelseskillnad i sammanhanget.';
+
+  if(!group.headers.includes('Infinitiv')) return baseHint;
+
+  const formIndex=group.rows[rowIndex].findIndex(form=>form===question.answer);
+  const formName=group.headers[formIndex];
+  const formHints={
+    Infinitiv:'Verbform: infinitiv, ofta efter att eller ett hjälpverb.',
+    Presens:'Tempus: nutid (presens).',
+    Preteritum:'Tempus: dåtid (preteritum).',
+    Supinum:'Verbform: supinum, efter har eller hade.'
+  };
+  return `${baseHint} ${formHints[formName] || ''}`.trim();
+}
+
+function selectedQuestions(){
+  if(currentSelection.type==='group'){
+    const group=wordGroups[currentSelection.groupIndex];
+    return shuffledCopy(baseQuestions.filter(q=>belongsToGroup(q,group))).slice(0,10);
+  }
+  return shuffledCopy(baseQuestions).slice(0,currentSelection.count);
+}
+
+function setupQuizControls(){
+  wordGroups.forEach((group,index)=>{
+    const option=document.createElement('option');
+    const label=group.rows.map(forms=>forms[0]).join(' – ');
+    option.value=String(index);
+    option.textContent=label.charAt(0).toUpperCase()+label.slice(1);
+    groupSelect.appendChild(option);
+  });
+
+  function applySelection(){
+    if(quizMode.value==='group'){
+      currentSelection={type:'group',groupIndex:Number(groupSelect.value)};
+    }else{
+      currentSelection={type:'random',count:Number(quizMode.value.split('-')[1])};
+    }
+    renderQuiz();
+  }
+
+  quizMode.addEventListener('change',()=>{
+    groupField.hidden=quizMode.value!=='group';
+    applySelection();
+  });
+
+  groupSelect.addEventListener('change',applySelection);
+}
+
+function renderQuiz(){
+  questions=selectedQuestions();
+  quiz.innerHTML='';
+
+  questions.forEach((q,i)=>{
+    const row=document.createElement('div');
+    row.className='question';
+
+    const num=document.createElement('div');
+    num.className='number';
+    num.textContent=i+1;
+
+    const content=document.createElement('div');
+
+    const sentence=document.createElement('div');
+    sentence.className='sentence';
+    sentence.textContent=q.text;
+
+    const hint=document.createElement('div');
+    hint.className='hint';
+    hint.textContent=`Ledtråd: ${hintFor(q)}`;
+
+    const wrap=document.createElement('div');
+    wrap.className='select-wrap';
+    wrap.dataset.value='';
+
+    const choiceButton=document.createElement('button');
+    choiceButton.type='button';
+    choiceButton.className='choice-button';
+    choiceButton.textContent='Välj uttryck';
+    choiceButton.setAttribute('aria-haspopup','listbox');
+    choiceButton.setAttribute('aria-expanded','false');
+
+    const menu=document.createElement('div');
+    menu.className='choice-menu';
+    menu.setAttribute('role','listbox');
+
+    const activeGroup=wordGroups.find(group=>
+      group.rows.some(forms=>forms.includes(q.answer))
+    );
+
+    (activeGroup?.headers || []).forEach(label=>{
+      const head=document.createElement('div');
+      head.className='choice-head';
+      head.textContent=label;
+      menu.appendChild(head);
+    });
+
+    const groupRows=activeGroup?.rows || [];
+
+    groupRows.forEach(forms=>{
+      forms.forEach(value=>{
+        const option=document.createElement('button');
+        option.type='button';
+        option.className='choice-option';
+        option.textContent=value;
+        option.setAttribute('role','option');
+        option.dataset.value=value;
+
+        option.addEventListener('click',()=>{
+          wrap.dataset.value=value;
+          choiceButton.textContent=value;
+          wrap.classList.remove('open','correct','wrong');
+          choiceButton.setAttribute('aria-expanded','false');
+          feedback.className='feedback';
+
+          if(value===q.answer){
+            hint.classList.add('answered');
+            wrap.classList.add('correct');
+            feedback.classList.add('correct');
+            feedback.textContent='Rätt';
+          }else{
+            hint.classList.remove('answered');
+            wrap.classList.add('wrong');
+            feedback.classList.add('wrong');
+            feedback.textContent='Fel';
+          }
+          updateScore();
+          choiceButton.focus();
+        });
+
+        menu.appendChild(option);
+      });
+    });
+
+    choiceButton.addEventListener('click',()=>{
+      document.querySelectorAll('.select-wrap.open').forEach(other=>{
+        if(other!==wrap){
+          other.classList.remove('open');
+          const btn=other.querySelector('.choice-button');
+          if(btn) btn.setAttribute('aria-expanded','false');
+        }
+      });
+      const open=!wrap.classList.contains('open');
+      wrap.classList.toggle('open',open);
+      choiceButton.setAttribute('aria-expanded',String(open));
+    });
+
+    const feedback=document.createElement('div');
+    feedback.className='feedback';
+
+    const responseLine=document.createElement('div');
+    responseLine.className='response-line';
+    responseLine.appendChild(hint);
+    responseLine.appendChild(feedback);
+
+    wrap.appendChild(choiceButton);
+    wrap.appendChild(menu);
+    content.appendChild(sentence);
+    content.appendChild(wrap);
+    content.appendChild(responseLine);
+    row.appendChild(num);
+    row.appendChild(content);
+    quiz.appendChild(row);
+  });
+
+  updateScore();
+}
+
+function updateScore(){
+  let correct=0;
+  document.querySelectorAll('.select-wrap').forEach((wrap,i)=>{
+    if(wrap.dataset.value===questions[i].answer) correct++;
+  });
+  scoreEl.textContent=`${correct} av ${questions.length} rätt`;
+}
+
+resetBtn.addEventListener('click',renderQuiz);
+
+themeToggle.addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+  themeToggle.textContent=document.body.classList.contains('dark') ? 'Ljust läge' : 'Mörkt läge';
+});
+
+
+document.addEventListener('click',event=>{
+  document.querySelectorAll('.select-wrap.open').forEach(wrap=>{
+    if(!wrap.contains(event.target)){
+      wrap.classList.remove('open');
+      const btn=wrap.querySelector('.choice-button');
+      if(btn) btn.setAttribute('aria-expanded','false');
+    }
+  });
+});
+
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){
+    document.querySelectorAll('.select-wrap.open').forEach(wrap=>{
+      wrap.classList.remove('open');
+      const btn=wrap.querySelector('.choice-button');
+      if(btn) btn.setAttribute('aria-expanded','false');
+    });
+  }
+});
+
+setupQuizControls();
+renderQuiz();
+</script>
+</body>
+</html>

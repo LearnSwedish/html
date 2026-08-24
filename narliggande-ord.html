@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Närliggande svenska ord</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f3efe7;
+  --bg-top: #f7f3eb;
+  --paper: #fffdf8;
+  --ink: #24231f;
+  --muted: #6c685f;
+  --line: #d9d1c4;
+  --accent: #7b3f2b;
+  --accent-dark: #5f2f21;
+  --accent-border: rgba(123,63,43,.45);
+  --glow: rgba(123,63,43,.07);
+  --card-bg: rgba(255,253,248,.92);
+  --card-hover: #fffaf2;
+  --card-shadow: 0 6px 18px rgba(54,45,34,.06);
+  --card-hover-shadow: 0 12px 28px rgba(54,45,34,.12);
+  --theory: #302e29;
+  --modal-border: rgba(255,255,255,.35);
+  --close-hover: rgba(123,63,43,.09);
+  --icon-bg: rgba(123,63,43,.08);
+  --icon-open-bg: rgba(123,63,43,.14);
+  --shadow: 0 18px 50px rgba(42, 34, 25, .18);
+}
+body.dark {
+  color-scheme: dark;
+  --bg: #111713;
+  --bg-top: #18201b;
+  --paper: #1c241f;
+  --ink: #f0f3f1;
+  --muted: #abb5af;
+  --line: #354139;
+  --accent: #e8a978;
+  --accent-dark: #f2c29d;
+  --accent-border: rgba(232,169,120,.55);
+  --glow: rgba(232,169,120,.09);
+  --card-bg: rgba(28,36,31,.94);
+  --card-hover: #273129;
+  --card-shadow: 0 7px 20px rgba(0,0,0,.18);
+  --card-hover-shadow: 0 14px 34px rgba(0,0,0,.3);
+  --theory: #d8dfda;
+  --modal-border: rgba(255,255,255,.1);
+  --close-hover: rgba(232,169,120,.12);
+  --icon-bg: rgba(232,169,120,.1);
+  --icon-open-bg: rgba(232,169,120,.18);
+  --shadow: 0 22px 60px rgba(0,0,0,.42);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 15% 10%, var(--glow), transparent 22rem),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 100%);
+  transition: color .22s ease, background .22s ease;
+}
+main {
+  width: min(1480px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 46px 0 70px;
+}
+header {
+  margin-bottom: 28px;
+}
+.header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.header-copy { min-width: 0; }
+.header-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-action {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 650 .92rem/1.2 Inter, "Segoe UI", Arial, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,.05);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+}
+.header-action:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent-border);
+}
+.header-action:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: 2px;
+}
+.exercise-link {
+  border-color: var(--accent-dark);
+  background: var(--accent-dark);
+  color: var(--paper);
+}
+body.dark .exercise-link { color: var(--bg); }
+.exercise-link:hover { background: var(--accent); }
+h1 {
+  margin: 0 0 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 3vw, 3.35rem);
+  font-weight: 600;
+  letter-spacing: -.025em;
+}
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+.card {
+  min-height: 118px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card-bg);
+  color: var(--ink);
+  padding: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.16rem;
+  line-height: 1.28;
+  box-shadow: var(--card-shadow);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.card:hover, .card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--accent-border);
+  background: var(--card-hover);
+  box-shadow: var(--card-hover-shadow);
+  outline: none;
+}
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  place-items: center;
+  padding: 24px;
+  background: rgba(24, 21, 18, .58);
+  backdrop-filter: blur(5px);
+}
+.backdrop.open {
+  display: grid;
+  animation: fadeIn .18s ease both;
+}
+.modal {
+  width: min(760px, 100%);
+  max-height: min(86vh, 900px);
+  overflow: auto;
+  background: var(--paper);
+  border: 1px solid var(--modal-border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: 34px 34px 30px;
+  position: relative;
+  transform-origin: center;
+  animation: modalIn .22s cubic-bezier(.2,.75,.25,1) both;
+}
+.modal.closing {
+  animation: modalOut .16s ease both;
+}
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  color: var(--accent);
+  transition: background .18s ease, transform .22s ease;
+}
+.close:hover {
+  background: var(--close-hover);
+  transform: rotate(90deg);
+}
+.close::before, .close::after {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.close::before { transform: rotate(45deg); }
+.close::after { transform: rotate(-45deg); }
+.modal h2 {
+  margin: 0 52px 18px 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.65rem, 3vw, 2.4rem);
+  font-weight: 600;
+}
+.theory {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--theory);
+}
+.examples-title {
+  margin: 28px 0 10px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.28rem;
+}
+.accordion {
+  border-top: 1px solid var(--line);
+}
+.acc-item {
+  border-bottom: 1px solid var(--line);
+}
+.acc-button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 15px 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  font: 600 1rem/1.3 Inter, "Segoe UI", Arial, sans-serif;
+  text-align: left;
+}
+.acc-button::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--accent);
+  background:
+    linear-gradient(currentColor, currentColor) center / 12px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 2px 12px no-repeat,
+    var(--icon-bg);
+  transform-origin: 50% 50%;
+  transition: transform .18s ease, background .18s ease;
+}
+.acc-item.open .acc-button::after {
+  transform: rotate(180deg);
+  background:
+    linear-gradient(currentColor, currentColor) center / 12px 2px no-repeat,
+    linear-gradient(transparent, transparent) center / 2px 12px no-repeat,
+    var(--icon-open-bg);
+}
+.acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .24s ease;
+}
+.acc-item.open .acc-panel {
+  grid-template-rows: 1fr;
+}
+.acc-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+.acc-inner ol {
+  margin: 0 0 16px 24px;
+  padding: 0;
+  line-height: 1.6;
+}
+.acc-inner li {
+  padding-left: 4px;
+  margin: 6px 0;
+}
+body.modal-open {
+  overflow: hidden;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(16px) scale(.975); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes modalOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(8px) scale(.985); }
+}
+@media (max-width: 1100px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  main { width: min(100% - 28px, 1480px); padding-top: 26px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .card { min-height: 96px; padding: 14px 10px; font-size: 1rem; }
+  .backdrop { padding: 10px; place-items: end center; }
+  .modal {
+    width: 100%;
+    max-height: 91vh;
+    border-radius: 20px 20px 0 0;
+    padding: 28px 22px 24px;
+  }
+}
+@media (max-width: 560px) {
+  .header-row { display: block; }
+  .header-actions { margin-top: 17px; }
+}
+@media (max-width: 420px) {
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="header-row">
+      <div class="header-copy">
+        <h1>Närliggande svenska ord</h1>
+        <p class="subtitle">Klicka på en ordgrupp för att se skillnader och exempel.</p>
+      </div>
+      <div class="header-actions">
+        <button class="header-action" id="themeToggle" type="button" aria-label="Växla mörkt läge">Mörkt läge</button>
+        <a class="header-action exercise-link" href="https://learnswedish.github.io/html/ovning-narliggande-ord.html" target="_blank" rel="noopener noreferrer">Övning <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </header>
+  <section class="grid" id="grid" aria-label="25 ordgrupper"></section>
+</main>
+
+<div class="backdrop" id="backdrop" aria-hidden="true">
+  <article class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="close" id="closeButton" type="button" aria-label="Stäng"></button>
+    <h2 id="modalTitle"></h2>
+    <div class="theory" id="theory"></div>
+    <h3 class="examples-title">Exempel</h3>
+    <div class="accordion" id="accordion"></div>
+  </article>
+</div>
+
+<script>
+const groups = [{"title": "Vacker – fin – snygg", "theory": "<strong>Vacker</strong> beskriver framför allt något som ger en stark estetisk upplevelse och används ofta om människor, natur, konst och musik. <strong>Snygg</strong> handlar också om utseende, men är vardagligare och används ofta om personer, kläder, föremål och design. <strong>Fin</strong> är betydligt bredare och kan betyda både vacker, bra, trevlig, värdefull eller av hög kvalitet. Därför kan <strong>fin</strong> ofta användas där <em>vacker</em> eller <em>snygg</em> fungerar, men orden är långt ifrån alltid utbytbara.", "examples": {"Vacker": ["Det var en <strong>vacker</strong> solnedgång över havet.", "Hon har en mycket <strong>vacker</strong> sångröst.", "Det är en <strong>vacker</strong> gammal kyrka."], "Fin": ["Vi hade en <strong>fin</strong> kväll tillsammans.", "Hon fick ett <strong>fint</strong> resultat på provet.", "Det var en <strong>fin</strong> present."], "Snygg": ["Du är <strong>snygg</strong> i den där jackan.", "De har köpt ett <strong>snyggt</strong> köksbord.", "Han gjorde en <strong>snygg</strong> presentation."]}}, {"title": "Bra – god – duktig", "theory": "<strong>Bra</strong> är det bredaste ordet och kan beskriva nästan allt som fungerar väl eller har hög kvalitet. <strong>God</strong> används främst om smak, egenskaper, relationer och mer formella eller fasta uttryck. <strong>Duktig</strong> beskriver en person som är skicklig eller presterar väl. Man kan alltså säga att någon är <strong>bra på</strong> något eller <strong>duktig på</strong> något, men inte normalt att personen är <em>god på</em> något.", "examples": {"Bra": ["Det var en <strong>bra</strong> film.", "Hon är <strong>bra på</strong> svenska.", "Vi hade en <strong>bra</strong> dag."], "God": ["Maten var mycket <strong>god</strong>.", "De är <strong>goda</strong> vänner.", "Han har <strong>goda</strong> kunskaper i engelska."], "Duktig": ["Hon är en <strong>duktig</strong> läkare.", "Du är <strong>duktig på</strong> att förklara.", "Barnen var mycket <strong>duktiga</strong> under resan."]}}, {"title": "Glad – lycklig – nöjd", "theory": "<strong>Glad</strong> beskriver en positiv känsla och kan vara både tillfällig och mer allmän. <strong>Lycklig</strong> är starkare och uttrycker en djupare känsla av lycka eller välbefinnande. <strong>Nöjd</strong> betyder att man tycker att något är tillräckligt bra eller motsvarar ens förväntningar. Man kan därför vara <strong>nöjd</strong> utan att vara särskilt <strong>glad</strong> eller <strong>lycklig</strong>.", "examples": {"Glad": ["Jag blev <strong>glad</strong> när du ringde.", "Hon ser alltid så <strong>glad</strong> ut.", "Barnen var <strong>glada</strong> över presenterna."], "Lycklig": ["Hon kände sig <strong>lycklig</strong> efter bröllopet.", "De har varit <strong>lyckliga</strong> tillsammans i många år.", "Jag är <strong>lycklig</strong> över att ha fått jobbet."], "Nöjd": ["Jag är <strong>nöjd</strong> med resultatet.", "Kunden verkade <strong>nöjd</strong> med servicen.", "Är du <strong>nöjd</strong> med ditt nya jobb?"]}}, {"title": "Arg – irriterad – sur", "theory": "<strong>Arg</strong> uttrycker en tydlig och ofta stark negativ känsla mot någon eller något. <strong>Irriterad</strong> är vanligtvis svagare och handlar ofta om att något stör eller retar en. <strong>Sur</strong> kan betyda arg eller missnöjd, men antyder ofta att personen visar det genom sitt humör eller beteende. <strong>Sur</strong> är också mer vardagligt än de andra två orden.", "examples": {"Arg": ["Hon blev <strong>arg</strong> när hon hörde vad som hade hänt.", "Pappa är <strong>arg på</strong> mig.", "Jag var verkligen <strong>arg över</strong> beslutet."], "Irriterad": ["Jag blir <strong>irriterad på</strong> det där ljudet.", "Hon såg <strong>irriterad</strong> ut.", "Han blev <strong>irriterad över</strong> förseningen."], "Sur": ["Varför är du så <strong>sur</strong> i dag?", "Han blev <strong>sur på</strong> mig när jag sa nej.", "Hon gick därifrån med en <strong>sur</strong> min."]}}, {"title": "Rädd – orolig – nervös", "theory": "<strong>Rädd</strong> betyder att man känner rädsla inför något man uppfattar som hotfullt eller farligt. <strong>Orolig</strong> handlar mer om bekymmer och osäkerhet, ofta inför något som kan hända. <strong>Nervös</strong> används när man känner spänning eller osäkerhet inför en situation där man ska prestera eller bli bedömd. Man kan alltså vara <strong>orolig</strong> länge, men <strong>nervös</strong> särskilt inför ett visst ögonblick.", "examples": {"Rädd": ["Hon är <strong>rädd för</strong> hundar.", "Jag blev <strong>rädd</strong> när jag hörde ljudet.", "Barnet var <strong>rädd för</strong> mörkret."], "Orolig": ["Jag är <strong>orolig för</strong> min son.", "Hon blev <strong>orolig</strong> när han inte svarade.", "Vi är <strong>oroliga över</strong> utvecklingen."], "Nervös": ["Jag är alltid <strong>nervös inför</strong> en tenta.", "Hon såg <strong>nervös</strong> ut före intervjun.", "Han blev <strong>nervös</strong> när han skulle hålla tal."]}}, {"title": "Rolig – kul – lustig", "theory": "<strong>Rolig</strong> betyder oftast underhållande eller något som får en att skratta. <strong>Kul</strong> betyder ungefär samma sak men är mer vardagligt och kan också betyda trevligt eller lustfyllt. <strong>Lustig</strong> kan betyda rolig, men används ofta också i betydelsen märklig eller egendomlig. Därför är <strong>rolig</strong> och <strong>kul</strong> oftare utbytbara än <strong>lustig</strong>.", "examples": {"Rolig": ["Filmen var väldigt <strong>rolig</strong>.", "Han berättade en <strong>rolig</strong> historia.", "Det var <strong>roligt</strong> att träffa dig igen."], "Kul": ["Det var <strong>kul</strong> på festen.", "Vilken <strong>kul</strong> idé!", "Barnen hade väldigt <strong>kul</strong> tillsammans."], "Lustig": ["Han berättade en <strong>lustig</strong> historia.", "Det luktar <strong>lustigt</strong> här inne.", "Det var en <strong>lustig</strong> situation."]}}, {"title": "Snäll – vänlig – trevlig", "theory": "<strong>Snäll</strong> beskriver oftast en person som är omtänksam, hjälpsam eller behandlar andra väl. <strong>Vänlig</strong> handlar framför allt om hur någon bemöter andra och är något mer neutralt och formellt. <strong>Trevlig</strong> beskriver någon eller något som är behagligt att umgås med eller uppleva. En person kan alltså vara <strong>trevlig</strong> utan att man vet om personen faktiskt är <strong>snäll</strong>.", "examples": {"Snäll": ["Hon är alltid <strong>snäll mot</strong> sina barn.", "Kan du vara <strong>snäll och</strong> hjälpa mig?", "Det var <strong>snällt av</strong> dig att komma."], "Vänlig": ["Personalen var mycket <strong>vänlig</strong>.", "Han hälsade <strong>vänligt</strong> på oss.", "Hon gav mig ett <strong>vänligt</strong> svar."], "Trevlig": ["Han verkar vara en <strong>trevlig</strong> person.", "Vi hade en <strong>trevlig</strong> kväll.", "Det är ett <strong>trevligt</strong> café."]}}, {"title": "Konstig – märklig – underlig", "theory": "<strong>Konstig</strong> beskriver någon eller något som på ett påfallande sätt avviker från det normala. <strong>Märklig</strong> beskriver någon eller något som har ovanliga egenskaper. <strong>Underlig</strong> används om någon eller något som är svårt att förstå sig på. Orden kan överlappa, men fokus skiljer sig: <strong>konstig</strong> betonar normavvikelsen, <strong>märklig</strong> de ovanliga egenskaperna och <strong>underlig</strong> svårbegripligheten.", "examples": {"Konstig": ["Det var en <strong>konstig</strong> fråga.", "Hon betedde sig <strong>konstigt</strong> hela kvällen.", "Maten smakar <strong>konstigt</strong>."], "Märklig": ["Det var en <strong>märklig</strong> händelse.", "Jag tycker att beslutet är <strong>märkligt</strong>.", "Han berättade en <strong>märklig</strong> historia."], "Underlig": ["Jag hade en <strong>underlig</strong> dröm.", "Det hördes ett <strong>underligt</strong> ljud från vinden.", "Hon fick en <strong>underlig</strong> känsla av att någon följde efter henne."]}}, {"title": "Lätt – enkel – simpel", "theory": "<strong>Lätt</strong> betyder att något inte kräver stor ansträngning eller är svårt att göra. <strong>Enkel</strong> betyder att något inte är komplicerat och kan också beskriva något okomplicerat i form eller utförande. <strong>Simpel</strong> kan också betyda enkel, men har ofta en negativ betydelse: låg kvalitet, banal eller ovärdig. Därför kan <strong>enkel</strong> ofta vara positivt, medan <strong>simpel</strong> lätt blir nedsättande.", "examples": {"Lätt": ["Provet var ganska <strong>lätt</strong>.", "Det är <strong>lätt</strong> att hitta dit.", "Den här texten är <strong>lätt</strong> att förstå."], "Enkel": ["Det finns en <strong>enkel</strong> lösning på problemet.", "Hon lagade en <strong>enkel</strong> middag.", "Instruktionerna är tydliga och <strong>enkla</strong>."], "Simpel": ["Det var ett <strong>simpelt</strong> trick.", "Han bodde i ett <strong>simpelt</strong> rum.", "Filmen hade en ganska <strong>simpel</strong> handling."]}}, {"title": "Svår – jobbig – komplicerad", "theory": "<strong>Svår</strong> betyder att något kräver mycket kunskap, skicklighet eller ansträngning. <strong>Jobbig</strong> är mer vardagligt och beskriver något som är ansträngande, besvärligt eller obehagligt. <strong>Komplicerad</strong> betyder att något består av många delar eller samband och därför är svårt att förstå eller hantera. Något kan alltså vara <strong>jobbigt</strong> utan att vara <strong>komplicerat</strong>.", "examples": {"Svår": ["Det var en <strong>svår</strong> fråga.", "Svenska uttal kan vara <strong>svårt</strong>.", "Hon fattade ett <strong>svårt</strong> beslut."], "Jobbig": ["Jag hade en <strong>jobbig</strong> dag på jobbet.", "Resan blev väldigt <strong>jobbig</strong>.", "Han kan vara ganska <strong>jobbig</strong> ibland."], "Komplicerad": ["Det är en <strong>komplicerad</strong> situation.", "Reglerna är ganska <strong>komplicerade</strong>.", "Hon har en <strong>komplicerad</strong> relation till sin familj."]}}, {"title": "Säker – trygg – övertygad", "theory": "<strong>Säker</strong> kan betyda att något inte innebär fara, att man känner självförtroende eller att man inte tvivlar. <strong>Trygg</strong> beskriver framför allt en känsla av säkerhet och frånvaro av oro eller rädsla. <strong>Övertygad</strong> betyder att man är mycket säker på att en uppfattning eller ett påstående är riktigt. Man är därför oftast <strong>övertygad om</strong> något, men <strong>trygg med</strong> eller <strong>trygg i</strong> något.", "examples": {"Säker": ["Är du <strong>säker på</strong> att tåget går klockan åtta?", "Hon känner sig <strong>säker</strong> när hon talar inför publik.", "Det här är en <strong>säker</strong> plats för barn."], "Trygg": ["Barnet känner sig <strong>tryggt</strong> hemma.", "Jag känner mig <strong>trygg med</strong> henne.", "Hon är <strong>trygg i</strong> sin yrkesroll."], "Övertygad": ["Jag är <strong>övertygad om</strong> att hon har rätt.", "Han var helt <strong>övertygad</strong> om sin sak.", "Vi är <strong>övertygade om</strong> att planen kommer att fungera."]}}, {"title": "Vanlig – normal – typisk", "theory": "<strong>Vanlig</strong> betyder att något förekommer ofta eller inte är ovanligt. <strong>Normal</strong> betyder att något ligger inom det som betraktas som normalt eller förväntat. <strong>Typisk</strong> betyder att något har egenskaper som är särskilt kännetecknande för en person, grupp eller situation. Det som är <strong>typiskt</strong> behöver alltså inte vara det som är allra <strong>vanligast</strong>.", "examples": {"Vanlig": ["Det är ett <strong>vanligt</strong> problem.", "Hon har ett ganska <strong>vanligt</strong> namn.", "Kaffe är en <strong>vanlig</strong> dryck i Sverige."], "Normal": ["Temperaturen är <strong>normal</strong> för årstiden.", "Det är helt <strong>normalt</strong> att känna sig nervös.", "Efter några dagar fungerade allt <strong>normalt</strong> igen."], "Typisk": ["Det är en <strong>typisk</strong> svensk sommar.", "Det där är <strong>typiskt</strong> honom.", "Huset är <strong>typiskt</strong> för 1800-talet."]}}, {"title": "Säga – berätta – prata", "theory": "<strong>Säga</strong> används när man återger ord eller ett kortare budskap och följs ofta av vad någon säger. <strong>Berätta</strong> innebär att man förmedlar information, en händelse eller en berättelse till någon. <strong>Prata</strong> beskriver själva aktiviteten att tala och behöver inte ange exakt vad som sägs. Man <strong>säger något</strong>, <strong>berättar något för någon</strong> och <strong>pratar med någon om något</strong>.", "examples": {"Säga": ["Vad <strong>sa</strong> hon till dig?", "Jag måste <strong>säga</strong> en sak.", "Han <strong>sade</strong> att han skulle komma senare."], "Berätta": ["Kan du <strong>berätta</strong> vad som hände?", "Hon <strong>berättade</strong> en rolig historia för oss.", "Jag har inte <strong>berättat för</strong> honom ännu."], "Prata": ["Vi behöver <strong>prata</strong>.", "Hon <strong>pratade med</strong> sin chef.", "De satt och <strong>pratade om</strong> resan hela kvällen."]}}, {"title": "Se – titta – kolla", "theory": "<strong>Se</strong> beskriver främst att något uppfattas med synen, ofta utan att man aktivt försöker. <strong>Titta</strong> innebär att man medvetet riktar blicken mot något. <strong>Kolla</strong> är vardagligt och betyder ofta att titta på, kontrollera eller undersöka något. Därför <strong>ser</strong> man något av en tillfällighet, <strong>tittar på</strong> något medvetet och <strong>kollar</strong> något för att få information.", "examples": {"Se": ["Jag <strong>såg</strong> henne på stan i går.", "Kan du <strong>se</strong> huset där borta?", "Vi <strong>såg</strong> en bra film i går kväll."], "Titta": ["<strong>Titta på</strong> den här bilden.", "Barnen <strong>tittar på</strong> tv.", "Hon stod vid fönstret och <strong>tittade ut</strong>."], "Kolla": ["Jag ska <strong>kolla</strong> vilken tid tåget går.", "Kan du <strong>kolla</strong> mejlen?", "Vi <strong>kollade på</strong> en serie hela kvällen."]}}, {"title": "Höra – lyssna", "theory": "<strong>Höra</strong> betyder att ljud når öronen, ofta utan att man aktivt försöker. <strong>Lyssna</strong> innebär att man medvetet riktar uppmärksamheten mot ett ljud eller någon som talar. Man <strong>hör något</strong>, men <strong>lyssnar på något</strong>. Skillnaden motsvarar ungefär skillnaden mellan <em>se</em> och <em>titta</em>.", "examples": {"Höra": ["Jag <strong>hörde</strong> ett konstigt ljud.", "Kan du <strong>höra</strong> vad hon säger?", "Jag <strong>hör</strong> musiken från grannens lägenhet."], "Lyssna": ["Jag brukar <strong>lyssna på</strong> musik på kvällen.", "<strong>Lyssna på</strong> vad jag säger!", "Hon satt och <strong>lyssnade på</strong> fåglarna."]}}, {"title": "Tro – tycka – anse", "theory": "<strong>Tro</strong> används när man bedömer att något förmodligen är sant utan att veta säkert. <strong>Tycka</strong> uttrycker en personlig uppfattning, smak eller värdering. <strong>Anse</strong> betyder också att ha en uppfattning men är mer formellt och används ofta om genomtänkta ståndpunkter. Man <strong>tror att</strong> något är så, men <strong>tycker/anser att</strong> något är bra, dåligt, viktigt osv.", "examples": {"Tro": ["Jag <strong>tror att</strong> hon kommer i morgon.", "<strong>Tror</strong> du att det blir regn?", "Han <strong>trodde</strong> att mötet började klockan nio."], "Tycka": ["Jag <strong>tycker att</strong> filmen är bra.", "Vad <strong>tycker</strong> du om maten?", "Hon <strong>tycker inte om</strong> att flyga."], "Anse": ["Jag <strong>anser att</strong> beslutet är felaktigt.", "Många <strong>anser</strong> honom vara en skicklig författare.", "Styrelsen <strong>ansåg att</strong> förslaget behövde ändras."]}}, {"title": "Veta – känna till – kunna", "theory": "<strong>Veta</strong> betyder att man har kunskap om ett faktum eller ett förhållande. <strong>Känna till</strong> betyder att man har viss kunskap om eller är bekant med något. <strong>Kunna</strong> handlar främst om att ha en färdighet eller behärska ett kunskapsområde. Man <strong>vet att</strong>, <strong>känner till något</strong> och <strong>kan göra något</strong>.", "examples": {"Veta": ["Jag <strong>vet</strong> var hon bor.", "<strong>Vet</strong> du när tåget går?", "Hon <strong>visste</strong> att han skulle komma."], "Känna till": ["Jag <strong>känner till</strong> den författaren.", "Känner du <strong>till</strong> någon bra restaurang här?", "Polisen <strong>kände till</strong> problemet sedan tidigare."], "Kunna": ["Hon <strong>kan</strong> tala svenska.", "Jag <strong>kan</strong> inte simma.", "Han <strong>kan</strong> mycket om svensk historia."]}}, {"title": "Förstå – fatta – begripa", "theory": "<strong>Förstå</strong> är det neutrala och mest allmänna ordet för att uppfatta innebörden av något. <strong>Fatta</strong> betyder i stort sett samma sak men är tydligt vardagligare. <strong>Begripa</strong> används ofta när något är svårt att förstå och förekommer särskilt i nekande eller frågande uttryck. De kan ofta ersätta varandra, men stil och ton skiljer dem åt.", "examples": {"Förstå": ["Jag <strong>förstår</strong> inte frågan.", "Hon <strong>förstod</strong> varför han var ledsen.", "Förstår du hur maskinen fungerar?"], "Fatta": ["Jag <strong>fattar</strong> inte vad du menar.", "Nu <strong>fattar</strong> jag!", "Han <strong>fattade</strong> genast vad som hade hänt."], "Begripa": ["Jag <strong>begriper</strong> inte hur det är möjligt.", "Kan du <strong>begripa</strong> varför hon gjorde så?", "Han kunde inte <strong>begripa</strong> instruktionerna."]}}, {"title": "Fråga – undra – be", "theory": "<strong>Fråga</strong> betyder att man riktar en fråga till någon för att få information. <strong>Undra</strong> uttrycker att man vill veta något och kan användas även utan att frågan riktas direkt till någon. <strong>Be</strong> betyder att man vill att någon ska göra eller ge något, alltså en begäran snarare än en fråga efter information. Man <strong>frågar om något</strong>, <strong>undrar om något</strong> och <strong>ber någon om något</strong>.", "examples": {"Fråga": ["Jag ska <strong>fråga</strong> henne när hon kommer.", "Han <strong>frågade om</strong> vägen.", "Får jag <strong>fråga</strong> en sak?"], "Undra": ["Jag <strong>undrar</strong> var hon är.", "Vi <strong>undrade om</strong> tåget skulle komma i tid.", "Jag <strong>undrar varför</strong> han inte svarar."], "Be": ["Jag ska <strong>be honom om</strong> hjälp.", "Hon <strong>bad mig att</strong> vänta.", "Kan jag <strong>be om</strong> ett glas vatten?"]}}, {"title": "Börja – starta – inleda", "theory": "<strong>Börja</strong> är det vanligaste och bredaste ordet för att något tar sin början. <strong>Starta</strong> används särskilt om aktiviteter, verksamheter, processer och maskiner. <strong>Inleda</strong> är mer formellt och betyder att påbörja något, ofta ett samtal, samarbete, möte eller en process. I många sammanhang fungerar flera av orden, men stil och typiska kombinationer skiljer dem åt.", "examples": {"Börja": ["Lektionen <strong>börjar</strong> klockan nio.", "Hon <strong>började</strong> arbeta här förra året.", "Det har <strong>börjat</strong> regna."], "Starta": ["Kan du <strong>starta</strong> bilen?", "De ska <strong>starta</strong> ett nytt företag.", "Kursen <strong>startar</strong> i september."], "Inleda": ["Ordföranden <strong>inledde</strong> mötet.", "Länderna har <strong>inlett</strong> förhandlingar.", "Hon <strong>inledde</strong> sitt tal med en fråga."]}}, {"title": "Sluta – avsluta – upphöra", "theory": "<strong>Sluta</strong> är det vanligaste ordet och betyder att något tar slut eller att någon inte längre gör något. <strong>Avsluta</strong> innebär ofta att någon aktivt för något till ett slut. <strong>Upphöra</strong> är formellt och används när en verksamhet, företeelse eller handling helt slutar förekomma. Man <strong>slutar arbeta</strong>, <strong>avslutar ett möte</strong> och en verksamhet <strong>upphör</strong>.", "examples": {"Sluta": ["Jag <strong>slutar</strong> jobbet klockan fem.", "Det har <strong>slutat</strong> regna.", "Han måste <strong>sluta röka</strong>."], "Avsluta": ["Vi <strong>avslutade</strong> mötet klockan fyra.", "Hon <strong>avslutade</strong> brevet med sitt namn.", "Han vill <strong>avsluta</strong> sina studier först."], "Upphöra": ["Företaget <strong>upphörde</strong> med verksamheten.", "Reglerna <strong>upphör</strong> att gälla nästa år.", "Striderna måste <strong>upphöra</strong> omedelbart."]}}, {"title": "Prova – testa – försöka", "theory": "<strong>Prova</strong> betyder att man gör något för att se hur det fungerar eller passar. <strong>Testa</strong> ligger nära <em>prova</em> men betonar ofta att man kontrollerar funktion, kvalitet eller förmåga och är något vardagligare. <strong>Försöka</strong> betyder att man gör ett försök att lyckas med något, utan att resultatet är säkert. Man kan alltså <strong>prova/testa en metod</strong>, men <strong>försöka lösa ett problem</strong>.", "examples": {"Prova": ["Kan jag <strong>prova</strong> den här jackan?", "Du borde <strong>prova</strong> den här maträtten.", "Vi ska <strong>prova</strong> en ny metod."], "Testa": ["Jag ska <strong>testa</strong> den nya datorn.", "De <strong>testade</strong> hans kunskaper i svenska.", "<strong>Testa</strong> att starta om telefonen."], "Försöka": ["Jag ska <strong>försöka</strong> komma i tid.", "Hon <strong>försökte</strong> öppna dörren.", "Vi måste <strong>försöka</strong> hitta en lösning."]}}, {"title": "Hitta – leta – söka", "theory": "<strong>Hitta</strong> betyder att man lyckas upptäcka eller få tag på något. <strong>Leta</strong> beskriver själva aktiviteten att försöka hitta något konkret. <strong>Söka</strong> kan också betyda leta men är mer formellt och används dessutom om exempelvis information, arbete och utbildningar. Man <strong>letar/söker efter</strong> något men <strong>hittar</strong> det när sökandet lyckas.", "examples": {"Hitta": ["Jag kan inte <strong>hitta</strong> mina nycklar.", "Hon <strong>hittade</strong> ett bra hotell.", "Vi måste <strong>hitta</strong> en lösning."], "Leta": ["Jag <strong>letar efter</strong> mina glasögon.", "Polisen <strong>letade efter</strong> den försvunna bilen.", "Vi gick runt och <strong>letade</strong> i flera timmar."], "Söka": ["Jag <strong>söker efter</strong> information om ämnet.", "Hon har <strong>sökt</strong> ett nytt jobb.", "Du kan <strong>söka</strong> på internet."]}}, {"title": "Jobb – arbete – yrke", "theory": "<strong>Jobb</strong> är det vanligaste vardagsordet och kan betyda både en anställning och en arbetsuppgift. <strong>Arbete</strong> är mer neutralt och formellt och kan också beteckna själva verksamheten eller arbetsinsatsen. <strong>Yrke</strong> betyder den typ av arbete som någon är utbildad för eller regelbundet försörjer sig på. Man kan alltså byta <strong>jobb</strong> utan att byta <strong>yrke</strong>.", "examples": {"Jobb": ["Jag har fått ett nytt <strong>jobb</strong>.", "Hon är på <strong>jobbet</strong> i dag.", "Det här var ett svårt <strong>jobb</strong>."], "Arbete": ["Hon söker <strong>arbete</strong>.", "Projektet kräver mycket <strong>arbete</strong>.", "Han utförde ett mycket noggrant <strong>arbete</strong>."], "Yrke": ["Vad har du för <strong>yrke</strong>?", "Läraryrket är ett krävande <strong>yrke</strong>.", "Hon vill byta <strong>yrke</strong>."]}}, {"title": "Vän – kompis – bekant", "theory": "<strong>Vän</strong> beskriver någon som man har en personlig och vanligtvis nära relation till. <strong>Kompis</strong> betyder ungefär samma sak men är mer vardagligt och kan också användas om mindre nära relationer. <strong>Bekant</strong> är någon man känner men inte har en nära vänskapsrelation med. Skillnaden handlar därför främst om graden av närhet och stilnivån.", "examples": {"Vän": ["Hon är en nära <strong>vän</strong> till mig.", "Vi har varit <strong>vänner</strong> sedan barndomen.", "En <strong>vän</strong> hjälpte mig att flytta."], "Kompis": ["Jag ska träffa några <strong>kompisar</strong> i kväll.", "Han är en gammal <strong>kompis</strong> från skolan.", "Min dotter tog med en <strong>kompis</strong> hem."], "Bekant": ["Vi är inte vänner, bara <strong>bekanta</strong>.", "Jag träffade en gammal <strong>bekant</strong> på stan.", "Hon är en <strong>bekant</strong> till min kollega."]}}];
+
+const grid = document.getElementById('grid');
+const backdrop = document.getElementById('backdrop');
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modalTitle');
+const theory = document.getElementById('theory');
+const accordion = document.getElementById('accordion');
+const closeButton = document.getElementById('closeButton');
+const themeToggle = document.getElementById('themeToggle');
+
+function applyTheme(dark){
+  document.body.classList.toggle('dark',dark);
+  themeToggle.textContent=dark ? 'Ljust läge' : 'Mörkt läge';
+  themeToggle.setAttribute('aria-label',dark ? 'Växla till ljust läge' : 'Växla till mörkt läge');
+}
+
+let savedTheme=null;
+try { savedTheme=localStorage.getItem('narliggande-ord-theme'); } catch (_) {}
+applyTheme(savedTheme==='dark');
+
+themeToggle.addEventListener('click',()=>{
+  const dark=!document.body.classList.contains('dark');
+  applyTheme(dark);
+  try { localStorage.setItem('narliggande-ord-theme',dark ? 'dark' : 'light'); } catch (_) {}
+});
+
+groups.forEach((group, index) => {
+  const button = document.createElement('button');
+  button.className = 'card';
+  button.type = 'button';
+  button.textContent = group.title;
+  button.addEventListener('click', () => openModal(index));
+  grid.appendChild(button);
+});
+
+function openModal(index) {
+  const group = groups[index];
+  modalTitle.textContent = group.title;
+  theory.innerHTML = group.theory;
+  accordion.innerHTML = '';
+
+  Object.entries(group.examples).forEach(([word, sentences]) => {
+    const item = document.createElement('div');
+    item.className = 'acc-item';
+
+    const button = document.createElement('button');
+    button.className = 'acc-button';
+    button.type = 'button';
+    button.setAttribute('aria-expanded', 'false');
+    button.textContent = word;
+
+    const panel = document.createElement('div');
+    panel.className = 'acc-panel';
+    const inner = document.createElement('div');
+    inner.className = 'acc-inner';
+    const list = document.createElement('ol');
+
+    sentences.forEach(sentence => {
+      const li = document.createElement('li');
+      li.innerHTML = sentence;
+      list.appendChild(li);
+    });
+
+    inner.appendChild(list);
+    panel.appendChild(inner);
+    item.appendChild(button);
+    item.appendChild(panel);
+    accordion.appendChild(item);
+
+    button.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      accordion.querySelectorAll('.acc-item.open').forEach(openItem => {
+        openItem.classList.remove('open');
+        openItem.querySelector('.acc-button').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        button.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  backdrop.classList.add('open');
+  backdrop.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  setTimeout(() => closeButton.focus(), 0);
+}
+
+function closeModal() {
+  if (!backdrop.classList.contains('open')) return;
+  modal.classList.add('closing');
+  setTimeout(() => {
+    modal.classList.remove('closing');
+    backdrop.classList.remove('open');
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+  }, 150);
+}
+
+closeButton.addEventListener('click', closeModal);
+
+backdrop.addEventListener('click', event => {
+  if (event.target === backdrop) closeModal();
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
