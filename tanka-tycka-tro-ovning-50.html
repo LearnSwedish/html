@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="sv">
 
@@ -257,11 +255,56 @@
 
 			.speech-button.speaking {
 				background: #2b6cb0;
+				box-shadow: 0 0 0 4px rgba(43, 108, 176, 0.16);
+			}
+
+			.speech-button.speaking::before,
+			.speech-button.speaking::after {
+				content: '';
+				position: absolute;
+				inset: -5px;
+				border: 2px solid rgba(49, 130, 206, 0.7);
+				border-radius: 50%;
+				pointer-events: none;
+				animation: speech-wave 1.4s ease-out infinite;
+			}
+
+			.speech-button.speaking::after {
+				animation-delay: 0.7s;
+			}
+
+			.speech-button.speaking i {
+				animation: speaker-pulse 0.7s ease-in-out infinite alternate;
+			}
+
+			@keyframes speech-wave {
+				0% { opacity: 0.8; transform: scale(0.78); }
+				75%, 100% { opacity: 0; transform: scale(1.55); }
+			}
+
+			@keyframes speaker-pulse {
+				from { transform: scale(0.92); }
+				to { transform: scale(1.12); }
 			}
 
 			body.dark-mode .speech-button {
 				background: #68d391;
 				color: #1a202c;
+			}
+
+			body.dark-mode .speech-button.speaking::before,
+			body.dark-mode .speech-button.speaking::after {
+				border-color: rgba(104, 211, 145, 0.78);
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				.speech-button,
+				.speech-button.speaking::before,
+				.speech-button.speaking::after,
+				.speech-button.speaking i {
+					animation: none;
+					transition: none;
+				}
 			}
         	
         	/* Select Element Styling */
