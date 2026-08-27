@@ -178,6 +178,7 @@
         		background-color: #f7fafc;
         		padding: 20px;
         		padding-bottom: 5px;
+				padding-right: 66px;
         		border-radius: 8px;
         		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         		position: relative;
@@ -223,6 +224,45 @@
         	body.dark-mode .sentence p {
         		color: #edf2f7;
         	}
+
+			.speech-button {
+				position: absolute;
+				top: 50%;
+				right: 14px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 36px;
+				height: 36px;
+				margin-left: 0;
+				border: 0;
+				border-radius: 50%;
+				background: #2f855a;
+				color: #fff;
+				cursor: pointer;
+				transform: translateY(-50%);
+				box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+				transition: transform 0.15s ease, background-color 0.15s ease;
+			}
+
+			.speech-button:hover {
+				background: #276749;
+				transform: translateY(-50%) scale(1.06);
+			}
+
+			.speech-button:focus-visible {
+				outline: 3px solid #3182ce;
+				outline-offset: 2px;
+			}
+
+			.speech-button.speaking {
+				background: #2b6cb0;
+			}
+
+			body.dark-mode .speech-button {
+				background: #68d391;
+				color: #1a202c;
+			}
         	
         	/* Select Element Styling */
         	.sentence select {
@@ -1347,6 +1387,77 @@ body.dark-mode a:visited {
     }
 
     // Evaluates the user's answer and updates the score and UI accordingly.
+	function getSwedishSentence(sentenceElement) {
+		const original = sentenceElement.querySelector('p');
+		const selectedVerbs = [...original.querySelectorAll('select')].map(select => select.value);
+		const copy = original.cloneNode(true);
+		copy.querySelectorAll('.tooltip, .speech-button').forEach(element => element.remove());
+		copy.querySelectorAll('select').forEach((select, index) => {
+			select.replaceWith(document.createTextNode(selectedVerbs[index] || select.dataset.correct || ''));
+		});
+		return copy.textContent
+			.replace(/\s+([,.;:!?])/g, '$1')
+			.replace(/\s+/g, ' ')
+			.trim();
+	}
+
+	function getBestSwedishVoice() {
+		const voices = window.speechSynthesis.getVoices()
+			.filter(voice => /^sv(?:-|_)/i.test(voice.lang));
+
+		const scoreVoice = voice => {
+			const name = voice.name.toLowerCase();
+			let quality = voice.lang.toLowerCase() === 'sv-se' ? 30 : 0;
+			if (/natural|neural/.test(name)) quality += 100;
+			if (/google/.test(name)) quality += 80;
+			if (/microsoft/.test(name)) quality += 70;
+			if (/siri/.test(name)) quality += 60;
+			if (/alva/.test(name)) quality += 50;
+			if (voice.default) quality += 10;
+			return quality;
+		};
+
+		return voices.sort((a, b) => scoreVoice(b) - scoreVoice(a))[0] || null;
+	}
+
+	function speakSwedish(sentenceElement, button) {
+		if (!('speechSynthesis' in window)) return;
+		const synth = window.speechSynthesis;
+		const utterance = new SpeechSynthesisUtterance(getSwedishSentence(sentenceElement));
+		const voice = getBestSwedishVoice();
+		if (voice) utterance.voice = voice;
+		utterance.lang = voice ? voice.lang : 'sv-SE';
+		utterance.rate = 0.9;
+		utterance.pitch = 1;
+
+		synth.cancel();
+		button.classList.add('speaking');
+		button.setAttribute('aria-label', 'Playing the Swedish sentence');
+		utterance.onend = utterance.onerror = () => {
+			button.classList.remove('speaking');
+			button.setAttribute('aria-label', 'Listen to the Swedish sentence');
+		};
+		synth.speak(utterance);
+	}
+
+	function updateSpeechButton(sentenceElement, show) {
+		let button = sentenceElement.querySelector('.speech-button');
+		if (!show) {
+			if (button) button.remove();
+			return;
+		}
+		if (button || !('speechSynthesis' in window)) return;
+
+		button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'speech-button';
+		button.title = 'Listen to the Swedish sentence';
+		button.setAttribute('aria-label', 'Listen to the Swedish sentence');
+		button.innerHTML = '<i class="fas fa-volume-high" aria-hidden="true"></i>';
+		button.addEventListener('click', () => speakSwedish(sentenceElement, button));
+		sentenceElement.querySelector('p').append(button);
+	}
+
 	function evaluateAnswer(selectElement) {
 	    const correctAnswers = selectElement.getAttribute('data-correct').split(',').map(answer => answer.trim());
 	    const selectedValue = selectElement.value.trim();
@@ -1378,6 +1489,7 @@ body.dark-mode a:visited {
 	    parent.classList.remove('correct', 'incorrect');
 	    parent.classList.add(newState);
 	    parent.setAttribute('data-state', newState);
+	    updateSpeechButton(parent, newState === 'correct');
 	
 	    checkAllCorrect();
 	}
@@ -1469,6 +1581,7 @@ body.dark-mode a:visited {
 	
     // Resets the quiz and score, then re-renders sentences.
     function startOver() {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         renderSentences();
         resetScore();
         closeModal('congratulationsModal');
