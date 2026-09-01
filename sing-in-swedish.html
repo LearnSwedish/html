@@ -1,0 +1,804 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sealed with a Kiss – Interaktiv Sångtext & Glosor</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #1e293b;
+      --accent: #e11d48;
+      --accent-soft: #ffe4e6;
+      --text: #334155;
+      --border: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text);
+      line-height: 1.8;
+      margin: 0;
+      padding: 32px 14px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 2px 24px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      margin-bottom: 28px;
+      border: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0 0 8px 0;
+      color: var(--primary);
+      font-size: 2.4rem;
+    }
+
+    p.subtitle {
+      margin: 0;
+      color: #64748b;
+      font-size: 1.1rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 40px 48px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--border);
+    }
+
+    .instruction {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .song-container {
+      font-family: Georgia, serif;
+      font-size: 1.25rem;
+      color: #0f172a;
+    }
+
+    .song-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background-color 0.15s ease;
+    }
+
+    .song-line:hover {
+      background-color: #f1f5f9;
+    }
+
+    .line-text {
+      flex-grow: 1;
+    }
+
+    .audio-controls {
+      display: flex;
+      gap: 10px;
+      margin-left: 16px;
+      flex-shrink: 0;
+    }
+
+    .audio-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+    }
+
+    .audio-btn:hover {
+      border-color: var(--accent);
+      transform: scale(1.08);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+      font-family: -apple-system, sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-top: 28px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .section-title:first-child {
+      margin-top: 0;
+    }
+
+    /* Interaktiv glos-styling */
+    .gloss {
+      position: relative;
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      padding: 0 3px;
+      border-radius: 3px;
+    }
+
+    .gloss:hover {
+      background-color: var(--accent-soft);
+    }
+
+    /* Tooltip för hovring */
+    .gloss::after {
+      content: attr(data-title);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-family: -apple-system, sans-serif;
+      font-weight: normal;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      pointer-events: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      z-index: 10;
+    }
+
+    .gloss::before {
+      content: '';
+      position: absolute;
+      bottom: 105%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: #0f172a transparent transparent transparent;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .gloss:hover::after,
+    .gloss:hover::before {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.85em;
+      color: #94a3b8;
+      margin-top: 36px;
+    }
+
+    /* Ny visuell riktning: varm skivomslagskänsla möter tydligt läromedel */
+    :root {
+      --ink: #241c1b;
+      --muted: #786b67;
+      --paper: #fffaf2;
+      --paper-deep: #f4eadb;
+      --berry: #9e2743;
+      --berry-dark: #721a32;
+      --gold: #d5a64c;
+      --sage: #48685d;
+      --line: rgba(78, 53, 45, .14);
+      --shadow-lg: 0 32px 80px rgba(70, 39, 32, .16);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      padding: clamp(18px, 4vw, 56px) 20px 72px;
+	  padding-top: max(8px, calc(clamp(18px, 4vw, 56px) - 30px));
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 8% 4%, rgba(213, 166, 76, .22), transparent 26rem),
+        radial-gradient(circle at 92% 18%, rgba(158, 39, 67, .16), transparent 30rem),
+        linear-gradient(145deg, #f4e8d6 0%, #fbf5eb 48%, #ead9cf 100%);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .24;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+    }
+
+    .container { max-width: 1080px; }
+
+    header {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      padding: clamp(38px, 7vw, 76px) clamp(24px, 7vw, 80px);
+      margin-bottom: 22px;
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 30px;
+      background:
+        linear-gradient(120deg, rgba(39, 21, 24, .96), rgba(110, 25, 49, .94)),
+        #241c1b;
+      box-shadow: var(--shadow-lg);
+      color: #fffaf2;
+      text-align: left;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      right: -95px;
+      top: -165px;
+      z-index: -1;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 50%;
+      box-shadow: 0 0 0 34px rgba(255,255,255,.035), 0 0 0 78px rgba(255,255,255,.025);
+    }
+
+    header::after {
+      content: "♪";
+      position: absolute;
+      right: clamp(25px, 8vw, 90px);
+      bottom: -34px;
+      z-index: -1;
+      color: rgba(255,255,255,.08);
+      font: 700 170px/1 Georgia, serif;
+      transform: rotate(-8deg);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 16px;
+      color: #f1cf89;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      color: inherit;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.35rem, 6vw, 4.7rem);
+      font-weight: 500;
+      line-height: .98;
+      letter-spacing: -.045em;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      max-width: 650px;
+      margin-top: 22px !important;
+      color: rgba(255,250,242,.72) !important;
+      font-size: clamp(.98rem, 2vw, 1.12rem) !important;
+      line-height: 1.65;
+    }
+
+    .lesson-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .lesson-meta span {
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,.07);
+      color: rgba(255,255,255,.82);
+      font-size: 12px;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+    }
+
+    .card {
+      position: relative;
+      padding: clamp(22px, 5vw, 54px);
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 30px;
+      background: rgba(255,250,242,.88);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(16px);
+    }
+
+    .instruction {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 16px 18px;
+      border: 1px solid rgba(158, 39, 67, .16);
+      border-radius: 15px;
+      background: linear-gradient(110deg, rgba(158,39,67,.09), rgba(213,166,76,.11));
+      color: var(--ink);
+      font-size: .94rem;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .instruction-icon {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--berry);
+      color: white;
+      box-shadow: 0 7px 18px rgba(158,39,67,.24);
+    }
+
+    .audio-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 39px;
+      margin-bottom: 20px;
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,.55);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #b7aaa5;
+      box-shadow: 0 0 0 4px rgba(183,170,165,.14);
+    }
+
+    .audio-status.playing .status-dot {
+      background: var(--berry);
+      box-shadow: 0 0 0 5px rgba(158,39,67,.13);
+      animation: pulse 1.35s ease-in-out infinite;
+    }
+
+    @keyframes pulse { 50% { transform: scale(.72); opacity: .65; } }
+
+    .song-container {
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.18rem, 2.2vw, 1.42rem);
+      line-height: 1.6;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 34px 0 11px;
+      color: var(--berry);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: .2em;
+    }
+
+    .section-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
+
+    .song-line {
+      position: relative;
+      gap: 18px;
+      min-height: 64px;
+      padding: 12px 12px 12px 16px;
+      border-bottom: 1px solid var(--line);
+      border-radius: 12px;
+      transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+    }
+
+    .song-line::before {
+      content: attr(data-line);
+      width: 22px;
+      flex: 0 0 22px;
+      color: #ad9f99;
+      font: 700 12px/1 Inter, sans-serif;
+      text-align: center;
+    }
+
+    .song-line:hover {
+      background: rgba(255,255,255,.72);
+      transform: translateX(4px);
+      box-shadow: -4px 0 0 var(--gold);
+    }
+
+    .song-line.is-playing {
+      background: #fff;
+      box-shadow: -4px 0 0 var(--berry), 0 10px 30px rgba(81,48,39,.08);
+    }
+
+    .line-text { min-width: 0; }
+    .audio-controls { gap: 7px; margin-left: auto; }
+
+    .audio-btn {
+      min-width: 66px;
+      height: 38px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.72);
+      color: var(--ink);
+      font-family: Inter, sans-serif;
+      font-size: 0;
+      font-weight: 800;
+      letter-spacing: .04em;
+      box-shadow: none;
+    }
+
+    .audio-btn::before { font-size: 12px; }
+    .music-btn::before { content: "▶ EN"; }
+    .se-btn::before { content: "▶ SV"; }
+
+    .audio-btn:hover,
+    .audio-btn.is-playing {
+      border-color: var(--berry);
+      background: var(--berry);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(158,39,67,.2);
+    }
+
+    .audio-btn:focus-visible,
+    .gloss:focus-visible {
+      outline: 3px solid rgba(213,166,76,.55);
+      outline-offset: 3px;
+    }
+
+    .gloss {
+      padding: 1px 3px;
+      border-radius: 4px;
+      color: var(--berry-dark);
+      text-decoration-color: rgba(158,39,67,.45);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 4px;
+    }
+
+    .gloss:hover,
+    .gloss:focus { background: #f4dce1; }
+
+    .gloss::after {
+      bottom: calc(100% + 10px);
+      padding: 10px 15px;
+      border-radius: 9px;
+      background: var(--ink);
+      font-size: 15px;
+      box-shadow: 0 10px 28px rgba(36,28,27,.22);
+    }
+
+    .gloss::before { bottom: calc(100% + 1px); border-color: var(--ink) transparent transparent; }
+    .song-container > br { display: block; content: ""; height: 12px; }
+
+    footer { color: var(--muted); }
+
+    @media (max-width: 720px) {
+      body { padding-inline: 12px; }
+      header, .card { border-radius: 22px; }
+      header { text-align: center; }
+      .eyebrow { justify-content: center; }
+      .lesson-meta { justify-content: center; }
+      .song-line { align-items: flex-start; flex-wrap: wrap; padding-block: 13px; }
+      .song-line::before { margin-top: 6px; }
+      .line-text { flex: 1 1 calc(100% - 40px); }
+      .audio-controls { width: 100%; margin: 3px 0 0 34px; }
+      .audio-btn { flex: 1; }
+      .gloss::after { white-space: normal; width: max-content; max-width: 210px; text-align: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <header>
+      <div class="eyebrow">Listen · Learn · Sing</div>
+      <h1>How would you sing this song in Swedish?</h1>
+      <div class="lesson-meta" aria-label="Lektionsinformation">
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <div class="instruction">
+          <span class="instruction-icon" aria-hidden="true">✦</span>
+          <span>Hover over underlined words or expressions to see how to sing it in Swedish.<br />Click the button <strong>EN</strong> to hear the English line, or <strong>SV</strong> to hear a Swedish version.</span>
+        </div>
+
+        <div class="song-container">
+          <span class="section-title">Verse</span>
+          
+          <div class="song-line" data-line="1">
+            <span class="line-text"><span class="gloss" data-title="fastän, öven om">Though</span> we <span class="gloss" data-title="måste, är tvungna (att)">gotta</span> say goodbye for the summer</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-01.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-01.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="2">
+            <span class="line-text">Darling, I <span class="gloss" data-title="lovar">promise</span> you this</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-02.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-02.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="3">
+            <span class="line-text">I'll send you all my love every day in a <span class="gloss" data-title="brev">letter</span></span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-03.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-03.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="4">
+            <span class="line-text"><span class="gloss" data-title="förseglat, bekräftat, konfirmerat">Sealed</span> with a kiss</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-04.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-04.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+<br />
+          <div class="song-line" data-line="5">
+            <span class="line-text">Yes, it's gonna be a cold, <span class="gloss" data-title="ensam, ödslig">lonely</span> summer</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-05.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-05.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="6">
+            <span class="line-text">But I'll <span class="gloss" data-title="fylla tomheten">fill the emptiness</span></span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-06.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-06.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="7">
+            <span class="line-text">I'll send you all my dreams every day in a <span class="gloss" data-title="brev">letter</span></span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-07.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-07.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="8">
+            <span class="line-text"><span class="gloss" data-title="förseglat, bekräftat, konfirmerat">Sealed</span> with a kiss</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-08.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-08.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <span class="section-title">Bridge</span>
+
+          <div class="song-line" data-line="9">
+            <span class="line-text">I'll see you in <span class="gloss" data-title="solljuset">the sunlight</span></span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-09.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-09.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="10">
+            <span class="line-text">I'll hear your <span class="gloss" data-title="röst">voice</span> everywhere</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-10.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-10.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="11">
+            <span class="line-text">I'll run to <span class="gloss" data-title="ömt, kärleksfullt">tenderly</span> hold you</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-11.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-11.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="12">
+            <span class="line-text">But, darlin', you <span class="gloss" data-title="kommer inte att vara">won't be</span> there</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-12.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-12.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <span class="section-title">Verse</span>
+
+          <div class="song-line" data-line="13">
+            <span class="line-text">I <span class="gloss" data-title="vill inte">don't wanna</span> say goodbye for the summer</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-13.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-13.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="14">
+            <span class="line-text"><span class="gloss" data-title="När jag vet vilken / den kärlek">Knowing the love</span> we'll <span class="gloss" data-title="sakna">miss</span></span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-14.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-14.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="15">
+            <span class="line-text">Oh, <span class="gloss" data-title="låt">let</span> us <span class="gloss" data-title="avlägga ett löfte om (något), lova (varandra)">make a pledge</span> to <span class="gloss" data-title="ses, mötas, träffas">meet</span> in September</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-15.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-15.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="16">
+            <span class="line-text">And <span class="gloss" data-title="försegla, bekräfta, konfirmera">seal</span> it with a kiss</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-16.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-16.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+<br />
+          <div class="song-line" data-line="17">
+            <span class="line-text">Yes, it's gonna be a cold, <span class="gloss" data-title="You know this">lonely</span> summer</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-17.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-17.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="18">
+            <span class="line-text">But I'll <span class="gloss" data-title="You should know this"> fill the emptiness</span></span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-18.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-18.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="19">
+            <span class="line-text">I'll send you all my love every day in a <span class="gloss" data-title="No hint is given here">letter</span></span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-19.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-19.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="20">
+            <span class="line-text"><span class="gloss" data-title="You know this">Sealed</span> with a kiss</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-20.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-20.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <span class="section-title">Outro</span>
+
+          <div class="song-line" data-line="21">
+            <span class="line-text"><span class="gloss" data-title="You should know this">Sealed</span> with a kiss</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-21.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-21.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+          <div class="song-line" data-line="22">
+            <span class="line-text"><span class="gloss" data-title="You should know this">Sealed</span> with a kiss</span>
+            <div class="audio-controls">
+              <button class="audio-btn music-btn" onclick="playAudio('part-22.mp3')" title="Play Enghlish audio">🎵</button>
+              <button class="audio-btn se-btn" onclick="playAudio('del-22.mp3')" title="Play Swedish audio">🇸🇪</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <script>
+    let currentAudio = null;
+
+    function playAudio(filename) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      document.querySelectorAll('.audio-btn.is-playing, .song-line.is-playing').forEach(el => el.classList.remove('is-playing'));
+      const clickedButton = event.currentTarget;
+      const activeLine = clickedButton.closest('.song-line');
+      const language = clickedButton.classList.contains('music-btn') ? 'English song' : 'Swedish reading';
+      const lineNumber = activeLine?.dataset.line || '';
+      const status = document.getElementById('audioStatus');
+      const statusText = document.getElementById('audioStatusText');
+
+      clickedButton.classList.add('is-playing');
+      activeLine?.classList.add('is-playing');
+      status?.classList.add('playing');
+      if (statusText) statusText.textContent = `${language} · line ${lineNumber}`;
+
+      currentAudio = new Audio(`song-audio/${filename}`);
+      currentAudio.addEventListener('ended', () => {
+        clickedButton.classList.remove('is-playing');
+        activeLine?.classList.remove('is-playing');
+        status?.classList.remove('playing');
+        if (statusText) statusText.textContent = 'Choose a line to start listening';
+      }, { once: true });
+      currentAudio.play().catch(error => {
+        console.error("Kunde inte spela ljudfilen:", filename, error);
+        clickedButton.classList.remove('is-playing');
+        activeLine?.classList.remove('is-playing');
+        status?.classList.remove('playing');
+        if (statusText) statusText.textContent = 'The audio could not be played';
+      });
+    }
+
+    document.querySelectorAll('.gloss').forEach(gloss => {
+      gloss.tabIndex = 0;
+      gloss.setAttribute('role', 'note');
+      gloss.setAttribute('aria-label', `${gloss.textContent}: ${gloss.dataset.title}`);
+    });
+  </script>
+
+</body>
+</html>
