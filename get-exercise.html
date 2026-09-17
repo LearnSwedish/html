@@ -1,0 +1,1725 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GET in Swedish — 42 sentences</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        	*,
+        	*::before,
+        	*::after {
+        		box-sizing: border-box;
+        		margin: 0;
+        		padding: 0;
+        	}
+        	
+        	body {
+        		font-family: Arial, sans-serif;
+        		background-color: #f9fafb;
+        		color: #2d3748;
+        		line-height: 1.6;
+        		font-size: 16px;
+        		display: flex;
+        		flex-direction: column;
+        		justify-content: flex-start;
+        		align-items: center;
+        		min-height: 100vh;
+        		padding: 20px;
+        		overflow-y: auto;
+        		position: relative;
+        		transition: background-color 0.3s, color 0.3s;
+        	}
+        	
+        	body.dark-mode {
+        		background-color: #121212;
+        		color: #e2e8f0;
+        	}
+        	
+        	/* Close Button Styling */
+        	.close-button {
+        		float: right;
+        		padding: 5px;
+        		cursor: pointer;
+        		font-size: 18px;
+        		background-color: #ccc;
+        		border: none; 
+        		border-radius: 50%;
+        		line-height: 20px;
+        		width: 30px;
+        		height: 30px;
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s, transform 0.3s;
+        	}
+        	
+        	body.dark-mode .close-button {
+        		background-color: #555;
+        		color: #ffcccc;
+        	}
+        	
+        	.close-button:hover {
+        		background-color: #f44336;
+        		transform: scale(1.2) rotate(90deg);
+        		color: white;
+        	}
+        	
+        	body.dark-mode .close-button:hover {
+        		background-color: #ff6666;
+        		color: white;
+        		transform: scale(1.2) rotate(90deg);
+        	}
+        	
+        	/* Container */
+        	.container {
+        		background-color: #ffffff;
+        		padding: 40px 30px;
+        		border-radius: 12px;
+        		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        		max-width: 790px;
+        		width: 100%;
+        		text-align: center;
+        		position: relative;
+        		transition: background-color 0.3s, box-shadow 0.3s;
+        		margin-top: 20px;
+        	}
+        	
+        	body.dark-mode .container {
+        		background-color: #1a202c;
+        		box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        	}
+        	
+        	/* Dark Mode Toggle */
+        	.dark-mode-toggle {
+        		justify-content: flex-start;
+        		padding: 0 10px;
+        		gap: 10px;
+        		cursor: default;
+        	}
+        	
+        	/* Modal */
+        	.modal {
+        		display: none;
+        		position: fixed;
+        		left: 0;
+        		top: 0;
+        		width: 100%;
+        		height: 100%;
+        		background: rgba(0, 0, 0, 0.5);
+        		z-index: 1000;
+        		justify-content: center;
+        		align-items: center;
+        		opacity: 0;
+        		transition: opacity 0.3s ease-in-out;
+        	}
+        	
+        	.modal-content {
+        		background: white;
+        		color: black;
+        		padding: 20px;
+        		border-radius: 8px;
+        		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        		text-align: center;
+        		max-width: 600px;
+        		width: 80%;
+        		transform: translateY(-50px);
+        		transition: transform 0.3s ease-in-out;
+        	}
+        	
+        	body.dark-mode .modal-content {
+        		background-color: #1a202c;
+        		color: #edf2f7;
+        		border-color: #2d3748;
+        	}
+        	
+        	.modal.show {
+        		display: flex;
+        		opacity: 1;
+        	}
+        	
+        	/* Page Title */
+        	.page-title {
+        		text-align: center;
+        		color: #333333;
+        		font-size: 28px;
+        		margin-bottom: 20px;
+        		line-height: 1.4;
+        		padding-top: 10px;
+        		position: relative;
+        		z-index: 1;
+        		transition: color 0.3s ease, background-color 0.3s ease;
+        	}
+        	
+        	body.dark-mode .page-title {
+        		color: #ffffff;
+        	}
+        	
+        	/* Score, Start Over, and Dark Mode Toggle Container */
+        	.score-container {
+        		position: fixed;
+        		top: 20px;
+        		right: 40px;
+        		display: flex;
+        		flex-direction: column;
+        		align-items: stretch;
+        		width: 150px;
+        		z-index: 1001;
+        		gap: 10px;
+        		transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        	}
+        	
+        	/* Sentence Styling */
+        	.sentence {
+        		background-color: #f7fafc;
+        		padding: 20px;
+        		padding-bottom: 5px;
+				padding-right: 66px;
+        		border-radius: 8px;
+        		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        		position: relative;
+        		transition: background-color 0.3s, border 0.3s;
+        		border-left: 6px solid transparent;
+        		text-align: left;
+        		data-state: "none";
+        	}
+        	
+        	body.dark-mode .sentence {
+        		background-color: #2d3748;
+        		box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+        	}
+        	
+        	.sentence.correct {
+        		border-left: 6px solid #38a169;
+        		background-color: #cdffcd;
+        		transition: border 0.3s, background-color 0.3s;
+        	}
+        	
+        	body.dark-mode .sentence.correct {
+        		border-left: 6px solid #38a169;
+        		background-color: #22543d;
+        	}
+        	
+        	.sentence.incorrect {
+        		border-left: 6px solid #e53e3e;
+        		background-color: #FFADB0;
+        		transition: border 0.3s, background-color 0.3s;
+        	}
+        	
+        	body.dark-mode .sentence.incorrect {
+        		border-left: 6px solid #e53e3e;
+        		background-color: #742a2a;
+        	}
+        	
+        	.sentence p {
+        		font-size: 1.1rem;
+        		margin-bottom: 10px;
+        		transition: color 0.3s;
+        	}
+        	
+        	body.dark-mode .sentence p {
+        		color: #edf2f7;
+        	}
+
+			.speech-button {
+				position: absolute;
+				top: 50%;
+				right: 14px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 36px;
+				height: 36px;
+				margin-left: 0;
+				border: 0;
+				border-radius: 50%;
+				background: #2f855a;
+				color: #fff;
+				cursor: pointer;
+				transform: translateY(-50%);
+				box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+				transition: transform 0.15s ease, background-color 0.15s ease;
+			}
+
+			.speech-button:hover {
+				background: #276749;
+				transform: translateY(-50%) scale(1.06);
+			}
+
+			.speech-button:focus-visible {
+				outline: 3px solid #3182ce;
+				outline-offset: 2px;
+			}
+
+			.speech-button.speaking {
+				background: #2b6cb0;
+				box-shadow: 0 0 0 4px rgba(43, 108, 176, 0.16);
+			}
+
+			.speech-button.speaking::before,
+			.speech-button.speaking::after {
+				content: '';
+				position: absolute;
+				inset: -5px;
+				border: 2px solid rgba(49, 130, 206, 0.7);
+				border-radius: 50%;
+				pointer-events: none;
+				animation: speech-wave 1.4s ease-out infinite;
+			}
+
+			.speech-button.speaking::after {
+				animation-delay: 0.7s;
+			}
+
+			.speech-button.speaking i {
+				animation: speaker-pulse 0.7s ease-in-out infinite alternate;
+			}
+
+			@keyframes speech-wave {
+				0% { opacity: 0.8; transform: scale(0.78); }
+				75%, 100% { opacity: 0; transform: scale(1.55); }
+			}
+
+			@keyframes speaker-pulse {
+				from { transform: scale(0.92); }
+				to { transform: scale(1.12); }
+			}
+
+			body.dark-mode .speech-button {
+				background: #68d391;
+				color: #1a202c;
+			}
+
+			body.dark-mode .speech-button.speaking::before,
+			body.dark-mode .speech-button.speaking::after {
+				border-color: rgba(104, 211, 145, 0.78);
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				.speech-button,
+				.speech-button.speaking::before,
+				.speech-button.speaking::after,
+				.speech-button.speaking i {
+					animation: none;
+					transition: none;
+				}
+			}
+        	
+        	/* Select Element Styling */
+        	.sentence select {
+        		padding: 4px 4px;
+        		font-size: inherit;
+        		border: 1px solid #cbd5e0;
+        		border-radius: 6px;
+        		background-color: #edf2f7;
+        		cursor: pointer;
+        		transition: border-color 0.3s, background-color 0.3s;
+        		width: auto;
+        		appearance: auto;
+        		-webkit-appearance: auto;
+        		-moz-appearance: auto;
+        		background-image: initial;
+        	}
+        	
+        	body.dark-mode .sentence select {
+        		background-color: #4a5568;
+        		color: #edf2f7;
+        		border: 1px solid #718096;
+        	}
+        	
+        	.sentence select:focus {
+        		border-color: #3182ce;
+        		outline: none;
+        		box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+        	}
+        	
+        	body.dark-mode .sentence select:focus {
+        		border-color: #63b3ed;
+        		box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
+        	}
+        	
+        	/* Sentences */
+        	.sentences {
+        		display: grid;
+        		grid-template-columns: 1fr;
+        		gap: 20px;
+        	}
+        	
+        	/* Slider Container */
+        	.switch {
+        		position: relative;
+        		width: 40px;
+        		height: 20px;
+        		display: inline-block;
+        	}
+        	
+        	/* Hide Default Checkbox */
+        	.switch input {
+        		display: none;
+        	}
+        	
+        	/* Slider Appearance */
+        	.slider {
+        		position: absolute;
+        		cursor: pointer;
+        		top: 0;
+        		left: 0;
+        		right: 0;
+        		bottom: 0;
+        		background-color: #ccc;
+        		transition: 0.4s;
+        		border-radius: 20px;
+        	}
+        	
+        	.slider::before {
+        		position: absolute;
+        		content: "";
+        		height: 14px;
+        		width: 14px;
+        		left: 3px;
+        		bottom: 3px;
+        		background-color: white;
+        		transition: 0.4s;
+        		border-radius: 50%;
+        	}
+        	
+        	/* Slider Active State */
+        	.switch input:checked+.slider {
+        		background-color: #007BFF;
+        	}
+        	
+        	.switch input:checked+.slider::before {
+        		transform: translateX(20px);
+        	}
+        	
+        	/* Start Over Button */
+        	.start-over {
+        		background-color: #007BFF;
+        		color: white;
+        		cursor: pointer;
+        		border: none;
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s ease;
+        	}
+        	
+        	.start-over:hover {
+        		background-color: #0056b3;
+        		color: white;
+        	}
+        	
+        	/* Tooltip Styling */
+        	.tooltip {
+        		position: absolute;
+        		bottom: 125%;
+        		left: 50%;
+        		transform: translateX(-50%);
+        		background-color: #333;
+        		color: #fff;
+        		padding: 6px 10px;
+        		border-radius: 4px;
+        		white-space: nowrap;
+        		font-size: 0.9rem;
+        		opacity: 0;
+        		visibility: hidden;
+        		transition: opacity 0.3s, visibility 0.3s;
+        		z-index: 10;
+        	}
+        	
+        	body.dark-mode .tooltip {
+        		background-color: #555;
+        		color: #fff;
+        	}
+        	
+        	.tooltip::after {
+        		content: '';
+        		position: absolute;
+        		top: 100%;
+        		left: 50%;
+        		transform: translateX(-50%);
+        		border-width: 5px;
+        		border-style: solid;
+        		border-color: #333 transparent transparent transparent;
+        	}
+        	
+        	body.dark-mode .tooltip::after {
+        		border-color: #555 transparent transparent transparent;
+        	}
+        	
+        	.word:hover .tooltip {
+        		opacity: 1;
+        		visibility: visible;
+        	}
+        	
+        	/* Word Styling */
+        	.word {
+        		position: relative;
+        		cursor: pointer;
+        		color: #2d3748;
+        		transition: color 0.3s, background-color 0.3s;
+        		display: inline-block;
+        		border-radius: 4px;
+        	}
+        	
+        	body.dark-mode .word {
+        		color: #edf2f7;
+        	}
+        	
+        	.word::after {
+        		content: '';
+        		position: absolute;
+        		left: 50%;
+        		bottom: -2px;
+        		width: 100%;
+        		height: 3px;
+        		background-color: currentColor;
+        		transform: translateX(-50%) scaleX(0);
+        		transform-origin: center;
+        		transition: transform 0.3s ease;
+        	}
+        	
+        	.word:hover::after,
+        	.word:focus::after {
+        		transform: translateX(-50%) scaleX(1);
+        	}
+        	
+        	.word:hover,
+        	.word:focus {
+        		background-color: rgba(45, 55, 72, 0.1);
+        	}
+        	
+        	body.dark-mode .word:hover,
+        	body.dark-mode .word:focus {
+        		background-color: rgba(226, 232, 240, 0.1);
+        	}
+        	
+        	/* Unified Button Styling */
+        	.score,
+        	.dark-mode-toggle,
+        	.start-over {
+        		width: 100%;
+        		height: 40px;
+        		padding: 0 10px;
+        		box-sizing: border-box;
+        		font-size: 16px;
+        		text-align: center;
+        		background-color: #fff;
+        		color: #333;
+        		border-radius: 5px;
+        		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s, color 0.3s;
+        		cursor: pointer;
+        		border: none;
+        	}
+        	
+        	        /* Hamburger Menu */
+                .hamburger-menu {
+                    display: none;
+                    font-size: 24px;
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    cursor: pointer;
+                    z-index: 1002;
+                }
+        
+		/* Menu Overlay - Slide Animation */
+		.menu-overlay {
+			position: fixed;
+			top: 0;
+			right: 0;
+			width: 250px;
+			height: 100%;
+			background: #fff;
+			color: #333;
+			box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+			z-index: 1003;
+			transform: translateX(100%); /* Start off-screen to the right */
+			transition: transform 0.4s ease; /* Smooth slide effect */
+		}
+			
+		/* Show the Menu Overlay by Sliding In */
+		.menu-overlay.active {
+			transform: translateX(0); /* Slide into view */
+		}
+					
+		/* Hide elements on mobile */
+		@media (max-width: 600px) {
+			.score-container {
+				display: none;
+			}
+			
+			.hamburger-menu {
+				display: block;
+			}
+		}
+			
+		/* Menu item styling */
+		.menu-overlay .menu-item {
+			padding: 15px;
+			font-size: 18px;
+			border-bottom: 1px solid #ccc;
+			text-align: left;
+			cursor: pointer;
+		}
+					
+		/* Close Button styling */
+		.menu-overlay .close-button {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			font-size: 24px;
+			cursor: pointer;
+		}
+			
+		/* Apply Dark Mode to Menu */
+		.dark-mode-menu {
+			background-color: #333;
+			color: #fff;
+		}
+		.dark-mode-menu .menu-item {
+			border-bottom: 1px solid #555;
+		}
+			
+		#darkModeIcon {
+			font-size: 20px;
+			color: #333; /* Default color for light mode */
+			cursor: pointer;
+		}
+			
+		.dark-mode #darkModeIcon {
+			color: #ffeb3b; /* Bright color for dark mode */
+		}
+			
+            /* Responsive Design */
+            @media (max-width: 600px) {
+                .score-container {
+                    top: 10px;
+                    right: 10px;
+                    width: 120px;
+                    gap: 10px;
+                    /* Reduced gap for smaller screens */
+                }
+
+		.sentence p {
+        		line-height: 1.8;
+    		}
+        
+                .score,
+                .start-over,
+                .dark-mode-toggle {
+                    font-size: 14px;
+                    height: 45px;
+                    /* Slightly smaller height for smaller screens */
+                    padding: 0 10px;
+                    /* Reduced horizontal padding */
+                }
+        		
+            	.modal-content {
+               		margin-top: 50px; /* Adjust this value as needed */
+            	}		
+        
+                .start-over {
+                    padding: 0 12px;
+                }
+        
+                .dark-mode-toggle {
+                    padding: 0 8px;
+                    gap: 8px;
+                }
+        
+                /* Adjust switch size for smaller screens */
+                .switch {
+                    width: 35px;
+                    height: 18px;
+                }
+        
+                .slider::before {
+                    height: 12px;
+                    width: 12px;
+                    left: 3px;
+                    bottom: 3px;
+                }
+        
+                .switch input:checked+.slider::before {
+                    transform: translateX(18px);
+                }
+            }
+
+/* Standard linkfärg i ljust läge */
+a,
+a:visited {
+  color: black;
+  text-decoration: underline;
+}
+
+/* Länkar i mörkt läge */
+body.dark-mode a,
+body.dark-mode a:visited {
+  color: white;
+  text-decoration: underline;
+}
+
+
+		/* Specific styles for the dynamic-link */
+		.dynamic-link,
+		.dynamic-link:visited {
+		    color: black; /* Black text in light mode */
+		    text-decoration: underline; /* Always underlined */
+		}
+		
+		/* Styles when dark mode is enabled */
+		body.dark-mode .dynamic-link,
+		body.dark-mode .dynamic-link:visited {
+		    color: white; /* White text in dark mode */
+		    text-decoration: underline; /* Always underlined */
+		}
+		
+		/* Optional: Hover and Focus States */
+		.dynamic-link:hover,
+		.dynamic-link:focus {
+		    /* If you want to maintain the underline and perhaps add other effects */
+		    text-decoration: underline; /* Ensures underline remains on hover/focus */
+		    /* You can add additional styles here if desired */
+		}</style>
+
+<style>
+    #infoModal .modal-content {
+        text-align: left;
+    }
+</style>
+	
+    <script>
+
+        const sentences = [
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="får" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "ofta mejl från min chef sent på eftermiddagen.", translation: "often get emails from my manager late in the afternoon." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "She" },
+    { word: `<select data-correct="får" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "alltid ett kort från sin moster på födelsedagen.", translation: "always gets a card from her aunt on her birthday." }
+  ]
+},
+{
+  words: [
+    { word: "Vi", translation: "We" },
+    { word: `<select data-correct="får" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "svar från banken inom ett par dagar.", translation: "get a reply from the bank within a couple of days." }
+  ]
+},
+{
+  words: [
+    { word: "Barnen", translation: "The children" },
+    { word: `<select data-correct="får" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "varsin biljett när de går in på museet.", translation: "each get a ticket when they enter the museum." }
+  ]
+},
+{
+  words: [
+    { word: "Du", translation: "You" },
+    { word: `<select data-correct="får" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "rabatt om du visar studentkortet i kassan.", translation: "get a discount if you show your student card at the till." }
+  ]
+},
+{
+  words: [
+    { word: "Han", translation: "He" },
+    { word: `<select data-correct="får" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "ofta beröm för sina presentationer på jobbet.", translation: "often gets praise for his presentations at work." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="får" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "en kopia av rapporten varje månad.", translation: "get a copy of the report every month." }
+  ]
+},
+{
+  words: [
+    { word: "Kaffet", translation: "The coffee" },
+    { word: `<select data-correct="blir" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "kallt om det står här för länge.", translation: "gets cold if it sits here for too long." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="blir" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "trött efter långa möten.", translation: "get tired after long meetings." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "She" },
+    { word: `<select data-correct="blir" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "lätt nervös när telefonen ringer sent.", translation: "gets nervous easily when the phone rings late." }
+  ]
+},
+{
+  words: [
+    { word: "Vägen", translation: "The road" },
+    { word: `<select data-correct="blir" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "smalare efter bron.", translation: "gets narrower after the bridge." }
+  ]
+},
+{
+  words: [
+    { word: "Det", translation: "It" },
+    { word: `<select data-correct="blir" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "mörkt redan vid fyratiden i december.", translation: "gets dark as early as four o’clock in December." }
+  ]
+},
+{
+  words: [
+    { word: "Barnen", translation: "The children" },
+    { word: `<select data-correct="blir" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "hungriga på vägen hem från träningen.", translation: "get hungry on the way home from training." }
+  ]
+},
+{
+  words: [
+    { word: "Stämningen", translation: "The atmosphere" },
+    { word: `<select data-correct="blir" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "bättre när musiken börjar.", translation: "gets better when the music starts." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="kommer" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "hem strax efter sex de flesta vardagar.", translation: "get home just after six on most weekdays." }
+  ]
+},
+{
+  words: [
+    { word: "Tåget", translation: "The train" },
+    { word: `<select data-correct="kommer" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "till Lund några minuter före nio.", translation: "gets to Lund a few minutes before nine." }
+  ]
+},
+{
+  words: [
+    { word: "Vi", translation: "We" },
+    { word: `<select data-correct="kommer" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "dit med bussen vid lunchtid.", translation: "get there by bus around lunchtime." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "She" },
+    { word: `<select data-correct="kommer" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "till kontoret före de andra nästan varje morgon.", translation: "gets to the office before the others almost every morning." }
+  ]
+},
+{
+  words: [
+    { word: "Bussen", translation: "The bus" },
+    { word: `<select data-correct="kommer" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "hit var tjugonde minut.", translation: "gets here every twenty minutes." }
+  ]
+},
+{
+  words: [
+    { word: "De", translation: "They" },
+    { word: `<select data-correct="kommer" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "fram till hotellet strax före middagen.", translation: "get to the hotel just before dinner." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="kommer" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "till stationen i god tid när jag tar cykeln.", translation: "get to the station in good time when I cycle." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="förstår" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "inte riktigt varför dörren alltid låser sig här.", translation: "don’t quite get why the door always locks itself here." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "She" },
+    { word: `<select data-correct="förstår" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "skämtet först när någon förklarar sista raden.", translation: "only gets the joke when someone explains the last line." }
+  ]
+},
+{
+  words: [
+    { word: "Vi", translation: "We" },
+    { word: `<select data-correct="förstår" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "vad läraren menar, även om exemplet är lite oklart.", translation: "get what the teacher means, even though the example is a little unclear." }
+  ]
+},
+{
+  words: [
+    { word: "Du", translation: "You" },
+    { word: `<select data-correct="förstår" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "nog poängen när du ser hela diagrammet.", translation: "will probably get the point when you see the whole diagram." }
+  ]
+},
+{
+  words: [
+    { word: "Han", translation: "He" },
+    { word: `<select data-correct="förstår" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "instruktionerna bättre när han ser bilderna.", translation: "gets the instructions better when he sees the pictures." }
+  ]
+},
+{
+  words: [
+    { word: "Barnen", translation: "The children" },
+    { word: `<select data-correct="förstår" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "snabbt reglerna när de börjar spela.", translation: "quickly get the rules when they start playing." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="förstår" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "hur du tänker, men jag håller inte riktigt med.", translation: "get your reasoning, but I don’t quite agree." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "She" },
+    { word: `<select data-correct="tjänar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "38 000 kronor i månaden före skatt.", translation: "gets 38,000 kronor a month before tax." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="tjänar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "lite extra när jag arbetar på helger.", translation: "get a little extra when I work at weekends." }
+  ]
+},
+{
+  words: [
+    { word: "Han", translation: "He" },
+    { word: `<select data-correct="tjänar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "mer på det nya jobbet än på det gamla.", translation: "gets more in his new job than in his old one." }
+  ]
+},
+{
+  words: [
+    { word: "De", translation: "They" },
+    { word: `<select data-correct="tjänar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "bra på sin lilla restaurang under sommaren.", translation: "make good money from their small restaurant during the summer." }
+  ]
+},
+{
+  words: [
+    { word: "Du", translation: "You" },
+    { word: `<select data-correct="tjänar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "ungefär lika mycket som jag gör.", translation: "get roughly the same as I do." }
+  ]
+},
+{
+  words: [
+    { word: "Företagets mest erfarna tekniker", translation: "The company’s most experienced technician" },
+    { word: `<select data-correct="tjänar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "mest av alla i gruppen.", translation: "earns the most in the whole group." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "She" },
+    { word: `<select data-correct="tjänar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "tillräckligt för att klara hyran utan problem.", translation: "earns enough to cover the rent without difficulty." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="skaffar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "en ny telefon ungefär vart tredje år.", translation: "get a new phone about every three years." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "She" },
+    { word: `<select data-correct="skaffar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "ofta böcker second hand i stället för nya.", translation: "often gets books second-hand instead of buying new ones." }
+  ]
+},
+{
+  words: [
+    { word: "Vi", translation: "We" },
+    { word: `<select data-correct="skaffar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "ett större bord innan gästerna kommer.", translation: "get a bigger table before the guests arrive." }
+  ]
+},
+{
+  words: [
+    { word: "Han", translation: "He" },
+    { word: `<select data-correct="skaffar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "hund när han får mer tid hemma.", translation: "gets a dog when he has more time at home." }
+  ]
+},
+{
+  words: [
+    { word: "De", translation: "They" },
+    { word: `<select data-correct="skaffar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "bil när kollektivtrafiken inte räcker till.", translation: "get a car when public transport is not enough." }
+  ]
+},
+{
+  words: [
+    { word: "Du", translation: "You" },
+    { word: `<select data-correct="skaffar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "lätt ett nytt busskort i appen.", translation: "can easily get a new bus pass in the app." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "I" },
+    { word: `<select data-correct="skaffar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="får">får</option>
+      <option value="blir">blir</option>
+      <option value="kommer">kommer</option>
+      <option value="förstår">förstår</option>
+      <option value="tjänar">tjänar</option>
+      <option value="skaffar">skaffar</option>
+    </select>`, translation: "get" },
+    { word: "nya glasögon ungefär vartannat år.", translation: "get new glasses about every other year." }
+  ]
+}
+];
+
+    </script>
+
+</head>
+
+<body>
+
+    <!-- Menu Items for Desktop -->
+    <div class="score-container">
+        <!-- Score Display for Desktop -->
+        <div class="score">Score:&nbsp;<span class="score-value">0</span>&nbsp;/&nbsp;<span class="score-max">42</span></div>
+        <!-- Dark Mode Toggle for Desktop -->
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <!-- Info Button for Desktop -->
+<button class="start-over" id="info-button" onclick="openModal('infoModal')">
+    <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+</button>
+
+<button class="start-over"
+        onclick="window.open('https://learnswedish.github.io/html/get-explained.html', '_blank', 'noopener,noreferrer')">
+    <i class="fas fa-link" style="margin-right: 8px;"></i> Theory
+</button>
+<button class="start-over"
+        onclick="window.open('https://learnswedish.github.io/html/get-in-swedish.html', '_blank', 'noopener,noreferrer')">
+    <i class="fas fa-link" style="margin-right: 8px;"></i> Train verbs
+</button>
+<button class="start-over" onclick="startOver()">
+    <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+</button>
+    </div>
+
+    <!-- Hamburger Menu Icon for Mobile -->
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Menu for Mobile-->
+    <div class="menu-overlay" id="menuOverlay">
+        <!-- Close Button -->
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <!-- Score Display in Menu -->
+        <div class="menu-item">Score:&nbsp; <span class="score-value">0</span> / <span class="score-max">42</span></div>
+        <!-- Dark Mode Toggle -->
+        <div class="menu-item" onclick="toggleDarkMode()">
+			<i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+		</div>
+        <!-- Info Button -->
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>	
+        <div class="menu-item" onclick="openMenuURL()">
+            <i class="fas fa-book"></i> Key
+        </div>
+        <!-- Start Over Button -->
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+
+    <!-- Page Title -->
+    <h1 class="page-title"><i class="fas fa-question" aria-hidden="true" style="margin-right: 8px;"></i> Choose the correct verb: få | bli | komma | förstå | tjäna | skaffa</h1>
+    <p>Use the context to decide which Swedish verb fits. Hover over the sentence to see the British English translation.</p>
+	
+    <!-- Main Content Container -->
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">&times;</button>
+            <h2 id="infoModalTitle">Which Swedish verb fits?</h2>
+  <p>English <em>get</em> can correspond to several different Swedish verbs.<p><br />
+  <p>Choose between <strong>får, blir, kommer, förstår, tjänar</strong> and <strong>skaffar</strong>. The context in each Swedish sentence points to one intended meaning.</p><br />
+  <p>The semantic context in every sentence points to one intended answer.</p><br/>
+			<p>Good luck!</p>
+        </div>
+    </div>
+	
+    <!-- Congratulations Modal -->
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="close-button" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">&times;</button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all 42 sentences correctly! Did you manage to do it without making any mistakes?</p>
+        </div>
+    </div>
+
+<script>
+
+    let score = 0;
+		
+	function generateSentenceHTML(sentence, sentenceIndex) {
+        const processedWords = sentence.words.map((item, wordIndex) => {
+            const {
+                word,
+                translation
+            } = item;
+		return word.includes('<select') ? word : translation ?
+			`<span class="word" aria-describedby="tooltip-${sentenceIndex}-${wordIndex}">
+					${word}
+					<span class="tooltip" id="tooltip-${sentenceIndex}-${wordIndex}">${translation}</span>
+				</span>` :
+			word;
+        });
+
+        const sentenceWithTooltips = processedWords.join(' ');
+        const sentenceHTML = sentenceWithTooltips.replace('__.', `<select data-correct="${sentence.correct}" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+            <option value="">...</option>
+            <option value="får">får</option>
+            <option value="blir">blir</option>
+            <option value="kommer">kommer</option>
+            <option value="förstår">förstår</option>
+            <option value="tjänar">tjänar</option>
+            <option value="skaffar">skaffar</option>
+        </select>.`);
+
+        return `<div class="sentence" data-state="none"><p>${sentenceHTML}</p></div>`;
+    }
+
+    // Fisher-Yates shuffle algorithm to shuffle an array.
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Render sentences in a shuffled order.
+    function renderSentences() {
+        const shuffledSentences = shuffleArray([...sentences]);
+        const sentencesHTML = shuffledSentences.map((sentence, index) => generateSentenceHTML(sentence, index)).join('');
+        document.getElementById('sentences').innerHTML = sentencesHTML;
+    }
+
+    // Evaluates the user's answer and updates the score and UI accordingly.
+	function getSwedishSentence(sentenceElement) {
+		const original = sentenceElement.querySelector('p');
+		const selectedVerbs = [...original.querySelectorAll('select')].map(select => select.value);
+		const copy = original.cloneNode(true);
+		copy.querySelectorAll('.tooltip, .speech-button').forEach(element => element.remove());
+		copy.querySelectorAll('select').forEach((select, index) => {
+			select.replaceWith(document.createTextNode(selectedVerbs[index] || select.dataset.correct || ''));
+		});
+		return copy.textContent
+			.replace(/\s+([,.;:!?])/g, '$1')
+			.replace(/\s+/g, ' ')
+			.trim();
+	}
+
+	function getBestSwedishVoice() {
+		const voices = window.speechSynthesis.getVoices()
+			.filter(voice => /^sv(?:-|_)/i.test(voice.lang));
+
+		const scoreVoice = voice => {
+			const name = voice.name.toLowerCase();
+			let quality = voice.lang.toLowerCase() === 'sv-se' ? 30 : 0;
+			if (/natural|neural/.test(name)) quality += 100;
+			if (/google/.test(name)) quality += 80;
+			if (/microsoft/.test(name)) quality += 70;
+			if (/siri/.test(name)) quality += 60;
+			if (/alva/.test(name)) quality += 50;
+			if (voice.default) quality += 10;
+			return quality;
+		};
+
+		return voices.sort((a, b) => scoreVoice(b) - scoreVoice(a))[0] || null;
+	}
+
+	function speakSwedish(sentenceElement, button) {
+		if (!('speechSynthesis' in window)) return;
+		const synth = window.speechSynthesis;
+		const utterance = new SpeechSynthesisUtterance(getSwedishSentence(sentenceElement));
+		const voice = getBestSwedishVoice();
+		if (voice) utterance.voice = voice;
+		utterance.lang = voice ? voice.lang : 'sv-SE';
+		utterance.rate = 0.9;
+		utterance.pitch = 1;
+
+		synth.cancel();
+		button.classList.add('speaking');
+		button.setAttribute('aria-label', 'Playing the Swedish sentence');
+		utterance.onend = utterance.onerror = () => {
+			button.classList.remove('speaking');
+			button.setAttribute('aria-label', 'Listen to the Swedish sentence');
+		};
+		synth.speak(utterance);
+	}
+
+	function updateSpeechButton(sentenceElement, show) {
+		let button = sentenceElement.querySelector('.speech-button');
+		if (!show) {
+			if (button) button.remove();
+			return;
+		}
+		if (button || !('speechSynthesis' in window)) return;
+
+		button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'speech-button';
+		button.title = 'Listen to the Swedish sentence';
+		button.setAttribute('aria-label', 'Listen to the Swedish sentence');
+		button.innerHTML = '<i class="fas fa-volume-high" aria-hidden="true"></i>';
+		button.addEventListener('click', () => speakSwedish(sentenceElement, button));
+		sentenceElement.querySelector('p').append(button);
+	}
+
+	function evaluateAnswer(selectElement) {
+	    const correctAnswers = selectElement.getAttribute('data-correct').split(',').map(answer => answer.trim());
+	    const selectedValue = selectElement.value.trim();
+	    const parent = selectElement.closest('.sentence');
+	
+	    // Get the previous state to ensure points are adjusted correctly
+	    const priorState = parent.getAttribute('data-state') || 'none';
+	    let newState;
+	
+	    // Check if the selected value matches any of the correct answers
+	    if (correctAnswers.includes(selectedValue)) {
+	        newState = 'correct';
+	        if (priorState !== 'correct') {
+	            updateScore(1);
+	        }
+	    } else if (selectedValue !== "") {
+	        newState = 'incorrect';
+	        if (priorState === 'correct') {
+	            updateScore(-1);
+	        }
+	    } else {
+	        newState = 'none';
+	        if (priorState === 'correct') {
+	            updateScore(-1);
+	        }
+	    }
+	
+	    // Update the UI with the new state
+	    parent.classList.remove('correct', 'incorrect');
+	    parent.classList.add(newState);
+	    parent.setAttribute('data-state', newState);
+	    updateSpeechButton(parent, newState === 'correct');
+	
+	    checkAllCorrect();
+	}
+
+    // Updates the score display based on value change.
+	function updateScore(value) {
+		score += value;
+	
+		// Update both the desktop and mobile score displays.
+		document.querySelectorAll('.score-value').forEach((element) => {
+			element.textContent = score;
+		});
+	
+		checkForMaxScore(score);
+	}
+
+    // Check if the score has reached max and opens the congratulations modal if so.
+    function checkForMaxScore(currentScore) {
+        if (currentScore >= sentences.length) {
+            openModal('congratulationsModal');
+        }
+    }
+
+    // Checks if all sentences are correctly answered.
+    function checkAllCorrect() {
+        const allCorrect = Array.from(document.querySelectorAll('.sentence')).every(sentence => sentence.classList.contains('correct'));
+        if (allCorrect) {
+            openModal('congratulationsModal');
+        }
+    }
+
+    // Opens a modal by its ID.
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'flex';
+            modal.classList.add('show');
+        }
+    }
+
+    // Closes a modal by its ID.
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        }
+    }
+
+    // Close modal when clicking outside of the modal content
+    window.addEventListener('click', (event) => {
+        const infoModal = document.getElementById('infoModal');
+        const congratulationsModal = document.getElementById('congratulationsModal');
+
+        if (event.target === infoModal) {
+            closeModal('infoModal');
+        } else if (event.target === congratulationsModal) {
+            closeModal('congratulationsModal');
+        }
+    });
+
+	// Function to toggle mobile menu	
+	function toggleMenu() {
+		const menuOverlay = document.getElementById('menuOverlay');
+		menuOverlay.classList.toggle('active');
+	}
+	
+	// Toggle dark mode from the mobile menu.
+	function toggleDarkMode() {
+		setDarkMode(!document.body.classList.contains('dark-mode'));
+	}
+
+    // Function to open MenuURL
+    function openMenuURL() {
+        window.open('get-in-swedish.html', '_blank', 'noopener,noreferrer');
+    }
+
+	// Open the Info modal and close the menu
+	function showInfo() {
+		openModal('infoModal');
+		toggleMenu(); // Close the menu after showing info
+	}
+	
+	// Start over and close the menu
+	function startOverAndCloseMenu() {
+		startOver();
+		toggleMenu(); // Close the menu after starting over
+	}
+	
+    // Resets the quiz and score, then re-renders sentences.
+    function startOver() {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        renderSentences();
+        resetScore();
+        closeModal('congratulationsModal');
+    }
+
+    // Resets the score to zero.
+    function resetScore() {
+        score = 0;
+        document.querySelectorAll('.score-value').forEach((element) => {
+            element.textContent = score;
+        });
+    }
+
+    function setDarkMode(enabled) {
+        document.body.classList.toggle('dark-mode', enabled);
+        document.getElementById('menuOverlay').classList.toggle('dark-mode-menu', enabled);
+        document.getElementById('darkModeSwitch').checked = enabled;
+        document.getElementById('darkModeText').textContent = enabled ? "Light mode" : "Dark mode";
+        localStorage.setItem('darkMode', enabled ? 'enabled' : 'disabled');
+    }
+
+    // Initializes modals and dark mode toggle.
+    function initializeModalsAndDarkMode() {
+        const darkModeToggle = document.getElementById('darkModeSwitch');
+        const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+        setDarkMode(isDarkModeEnabled);
+        darkModeToggle.checked = isDarkModeEnabled;
+
+        darkModeToggle.addEventListener('change', function() {
+            setDarkMode(this.checked);
+        });
+    }
+	
+	// Function to update the maximum score in the HTML
+	function updateMaxScore() {
+		const maxScore = sentences.length;
+		document.querySelectorAll('.score-max').forEach((element) => {
+			element.textContent = maxScore;
+		});
+	}
+
+    // Initialize the application once the DOM is fully loaded.
+	document.addEventListener('DOMContentLoaded', () => {
+		renderSentences();
+		initializeModalsAndDarkMode();
+		resetScore();
+		updateMaxScore();
+	});
+
+</script>
+</body>
+
+</html>
