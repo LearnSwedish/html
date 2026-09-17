@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GET in Swedish — six different verbs</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --panel:#ffffff;
+      --ink:#1f2937;
+      --muted:#64748b;
+      --line:#dbe4ee;
+      --accent:#173b67;
+      --accent-soft:#eaf2fb;
+      --green:#1f7a52;
+      --green-soft:#eaf7f0;
+      --amber:#9a6415;
+      --amber-soft:#fff7e8;
+      --shadow:0 18px 50px rgba(25,55,90,.09);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(23,59,103,.08), transparent 34rem),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.6;
+    }
+    .page{
+      max-width:1180px;
+      margin:0 auto;
+      padding:34px 24px 70px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#173b67 0%,#244f82 62%,#315d90 100%);
+      color:#fff;
+      border-radius:28px;
+      padding:48px 52px;
+      box-shadow:var(--shadow);
+      margin-bottom:26px;
+    }
+    .eyebrow{
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:800;
+      font-size:.78rem;
+      opacity:.75;
+      margin-bottom:8px;
+    }
+    h1{
+      margin:0 0 14px;
+      font-size:clamp(2.1rem,5vw,4.3rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+    .hero p{
+      margin:0;
+      max-width:900px;
+      font-size:1.15rem;
+      color:#e7eef7;
+    }
+    .hero strong{color:white}
+    .principle{
+      margin-top:22px;
+      display:inline-block;
+      padding:11px 14px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(255,255,255,.09);
+      border-radius:12px;
+      font-weight:700;
+    }
+    .top-grid{
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:24px;
+      margin-bottom:26px;
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-size:1.5rem;
+      letter-spacing:-.02em;
+    }
+    .panel p{margin:0 0 12px}
+    .formula{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .formula span{
+      background:var(--accent-soft);
+      color:var(--accent);
+      border:1px solid #cbdcf0;
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight:800;
+    }
+    .decision{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .decision div{
+      border-left:4px solid var(--accent);
+      background:#f8fbff;
+      padding:10px 12px;
+      border-radius:8px;
+    }
+    .decision b{color:var(--accent)}
+    .section-title{
+      margin:44px 0 10px;
+      font-size:2rem;
+      letter-spacing:-.03em;
+    }
+    .section-intro{
+      color:var(--muted);
+      max-width:850px;
+      margin-bottom:20px;
+    }
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:22px;
+    }
+    .verb-card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    .verb-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      padding:22px 24px 18px;
+      background:linear-gradient(180deg,#f9fbfe,#f3f7fb);
+      border-bottom:1px solid var(--line);
+    }
+    .verb{
+      font-size:2.1rem;
+      font-weight:900;
+      line-height:1;
+      color:var(--accent);
+    }
+    .gloss{
+      color:var(--muted);
+      font-weight:750;
+      text-align:right;
+    }
+    .verb-body{padding:22px 24px 24px}
+    .meaning{
+      margin:0 0 16px;
+      font-size:1.02rem;
+    }
+    .example{
+      border-top:1px solid var(--line);
+      padding:13px 0;
+    }
+    .example:first-of-type{border-top:0;padding-top:0}
+    .en{
+      font-weight:800;
+      margin-bottom:3px;
+    }
+    .sv{
+      color:var(--green);
+      font-weight:800;
+    }
+    .note{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:11px;
+      background:var(--amber-soft);
+      color:#6f4a12;
+      border:1px solid #f0ddb8;
+      font-size:.94rem;
+    }
+    .contrast{
+      background:var(--green-soft);
+      border-color:#c9e8d8;
+      color:#245d43;
+    }
+    .comparison{
+      margin-top:28px;
+      overflow:auto;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+    th,td{
+      padding:15px 18px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{
+      background:#edf4fb;
+      color:#173b67;
+      font-size:.92rem;
+    }
+    tr:last-child td{border-bottom:0}
+    td:first-child{
+      font-weight:900;
+      color:var(--accent);
+      white-space:nowrap;
+    }
+    .warning{
+      margin-top:24px;
+      padding:18px 20px;
+      border-radius:14px;
+      background:#fff8e8;
+      border:1px solid #ecd9a9;
+      color:#6b4d0f;
+    }
+    .summary{
+      margin-top:28px;
+      background:#172a43;
+      color:#fff;
+      border-radius:20px;
+      padding:26px 28px;
+      box-shadow:var(--shadow);
+    }
+    .summary h2{margin:0 0 8px}
+    .summary p{margin:0;color:#dce7f4}
+    .summary-grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .summary-grid div{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:12px;
+      padding:12px 14px;
+    }
+    .summary-grid b{
+      display:block;
+      font-size:1.2rem;
+      margin-bottom:2px;
+    }
+    .mini{
+      color:#cbd8e8;
+      font-size:.91rem;
+    }
+    @media (max-width:850px){
+      .top-grid,.cards{grid-template-columns:1fr}
+      .summary-grid{grid-template-columns:1fr 1fr}
+      .hero{padding:36px 28px}
+    }
+    @media (max-width:560px){
+      .page{padding:18px 14px 50px}
+      .summary-grid{grid-template-columns:1fr}
+      .verb-head{align-items:flex-start;flex-direction:column}
+      .gloss{text-align:left}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">English → Swedish</div>
+      <h1>One English verb.<br>Six Swedish choices.</h1>
+      <p>
+        English <strong>get</strong> is unusually broad. In ordinary speech it can cover receiving something,
+        changing state, arriving somewhere, understanding something, earning money, or obtaining something deliberately.
+        Swedish normally makes those distinctions explicit by choosing a different verb.
+      </p>
+      <div class="principle">The key question is not “What does <em>get</em> mean?” but “What is happening in this sentence?”</div>
+    </section>
+
+    <section class="top-grid">
+      <div class="panel">
+        <h2>Why this is difficult for English speakers</h2>
+        <p>
+          In English, <em>get</em> can replace several more specific verbs in informal or neutral everyday language:
+          <em>receive, become, arrive, understand, earn, obtain</em>.
+        </p>
+        <p>
+          Swedish does not usually keep one equally broad verb for all these meanings. You therefore have to identify the
+          <strong>semantic role</strong> of <em>get</em> before choosing the Swedish verb.
+        </p>
+        <div class="formula">
+          <span>få</span><span>bli</span><span>komma</span><span>förstå</span><span>tjäna</span><span>skaffa</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>A quick decision guide</h2>
+        <div class="decision">
+          <div><b>Receive?</b> → <strong>få</strong></div>
+          <div><b>Change state?</b> → <strong>bli</strong></div>
+          <div><b>Arrive / reach?</b> → <strong>komma</strong></div>
+          <div><b>Understand?</b> → <strong>förstå</strong></div>
+          <div><b>Earn money?</b> → <strong>tjäna</strong></div>
+          <div><b>Obtain deliberately?</b> → <strong>skaffa</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="section-title">The six Swedish verbs</h2>
+    <p class="section-intro">
+      Each verb below expresses a different type of event. The examples deliberately use natural British English with
+      <em>get</em>, followed by the Swedish sentence that an English speaker would actually need.
+    </p>
+
+    <section class="cards">
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">få</div>
+          <div class="gloss">receive · be given · get</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">
+            Use <strong>få</strong> when something comes to you: a message, a present, an answer, permission, a chance.
+            The focus is on <strong>receiving</strong>, not on actively acquiring.
+          </p>
+          <div class="example">
+            <div class="en">I get a lot of emails at work.</div>
+            <div class="sv">Jag får många mejl på jobbet.</div>
+          </div>
+          <div class="example">
+            <div class="en">She gets a present every year.</div>
+            <div class="sv">Hon får en present varje år.</div>
+          </div>
+          <div class="example">
+            <div class="en">Do we get another chance?</div>
+            <div class="sv">Får vi en chans till?</div>
+          </div>
+          <div class="note contrast">
+            <strong>Contrast with skaffa:</strong> <em>få</em> is typically receptive; <em>skaffa</em> is typically deliberate.
+          </div>
+        </div>
+      </article>
+
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">bli</div>
+          <div class="gloss">become · get + adjective/state</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">
+            Use <strong>bli</strong> when somebody or something changes from one state to another.
+            English very often uses <em>get + adjective</em> here.
+          </p>
+          <div class="example">
+            <div class="en">I get tired after lunch.</div>
+            <div class="sv">Jag blir trött efter lunch.</div>
+          </div>
+          <div class="example">
+            <div class="en">It gets dark early in winter.</div>
+            <div class="sv">Det blir mörkt tidigt på vintern.</div>
+          </div>
+          <div class="example">
+            <div class="en">He gets angry very easily.</div>
+            <div class="sv">Han blir arg väldigt lätt.</div>
+          </div>
+          <div class="note">
+            English <em>getting tired</em> may sometimes be translated as <em>börjar bli trött</em> when the change is explicitly gradual.
+            The core Swedish verb is still <strong>bli</strong>.
+          </div>
+        </div>
+      </article>
+
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">komma</div>
+          <div class="gloss">come · arrive · reach</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">
+            Use <strong>komma</strong> when <em>get</em> refers to arriving at a place or reaching a destination.
+            The important idea is <strong>movement towards an endpoint</strong>.
+          </p>
+          <div class="example">
+            <div class="en">I get home at six.</div>
+            <div class="sv">Jag kommer hem klockan sex.</div>
+          </div>
+          <div class="example">
+            <div class="en">What time do you get to work?</div>
+            <div class="sv">Vilken tid kommer du till jobbet?</div>
+          </div>
+          <div class="example">
+            <div class="en">We get there just before nine.</div>
+            <div class="sv">Vi kommer dit strax före nio.</div>
+          </div>
+          <div class="note">
+            English <em>get to</em> can also mean “have the opportunity to”, as in <em>I get to meet her</em>. That is a different meaning and does not use <strong>komma</strong>.
+          </div>
+        </div>
+      </article>
+
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">förstå</div>
+          <div class="gloss">understand · grasp · get</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">
+            Use <strong>förstå</strong> when <em>get</em> means mentally grasping a meaning, explanation, joke, point or situation.
+          </p>
+          <div class="example">
+            <div class="en">I get the joke now.</div>
+            <div class="sv">Jag förstår skämtet nu.</div>
+          </div>
+          <div class="example">
+            <div class="en">Do you get what I mean?</div>
+            <div class="sv">Förstår du vad jag menar?</div>
+          </div>
+          <div class="example">
+            <div class="en">I still don't get the question.</div>
+            <div class="sv">Jag förstår fortfarande inte frågan.</div>
+          </div>
+          <div class="note">
+            In informal Swedish, <strong>fatta</strong> is also common: <em>Jag fattar</em> = “I get it.”
+            <strong>Förstå</strong> is the neutral standard choice.
+          </div>
+        </div>
+      </article>
+
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">tjäna</div>
+          <div class="gloss">earn · make (money)</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">
+            Use <strong>tjäna</strong> when <em>get</em> describes money received as pay or income.
+            Unlike <em>få</em>, the money is understood as <strong>earned through work or activity</strong>.
+          </p>
+          <div class="example">
+            <div class="en">I get £25 an hour.</div>
+            <div class="sv">Jag tjänar 25 pund i timmen.</div>
+          </div>
+          <div class="example">
+            <div class="en">She gets £3,000 a month.</div>
+            <div class="sv">Hon tjänar 3 000 pund i månaden.</div>
+          </div>
+          <div class="example">
+            <div class="en">How much do you get a year?</div>
+            <div class="sv">Hur mycket tjänar du om året?</div>
+          </div>
+          <div class="note contrast">
+            If the point is simply that money is received — for example a grant or gift — Swedish may use <strong>få</strong> instead.
+          </div>
+        </div>
+      </article>
+
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">skaffa</div>
+          <div class="gloss">obtain · acquire · get hold of</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">
+            Use <strong>skaffa</strong> when someone actively makes sure they obtain something:
+            a new phone, a job, a ticket, a dog, new equipment.
+          </p>
+          <div class="example">
+            <div class="en">I get a new phone every three years.</div>
+            <div class="sv">Jag skaffar en ny telefon vart tredje år.</div>
+          </div>
+          <div class="example">
+            <div class="en">We need to get a bigger table.</div>
+            <div class="sv">Vi måste skaffa ett större bord.</div>
+          </div>
+          <div class="example">
+            <div class="en">He wants to get a dog.</div>
+            <div class="sv">Han vill skaffa hund.</div>
+          </div>
+          <div class="note">
+            <strong>Skaffa</strong> is broader than “buy”. You can <em>skaffa</em> something by buying it, borrowing it,
+            arranging it, finding it or otherwise obtaining it.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <h2 class="section-title">The most important contrasts</h2>
+    <p class="section-intro">
+      These are the distinctions that matter most when choosing the Swedish verb.
+    </p>
+
+    <div class="comparison">
+      <table>
+        <thead>
+          <tr>
+            <th>Swedish verb</th>
+            <th>Core meaning</th>
+            <th>What the subject is doing</th>
+            <th>Typical English GET pattern</th>
+            <th>Diagnostic question</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>få</td>
+            <td>receive</td>
+            <td>receiving something that comes to them</td>
+            <td>get an email / get a present</td>
+            <td>Does something come to the person?</td>
+          </tr>
+          <tr>
+            <td>bli</td>
+            <td>become</td>
+            <td>changing state</td>
+            <td>get tired / get angry / get dark</td>
+            <td>Is there a change from one state to another?</td>
+          </tr>
+          <tr>
+            <td>komma</td>
+            <td>come / arrive</td>
+            <td>reaching a place</td>
+            <td>get home / get there</td>
+            <td>Is the subject arriving somewhere?</td>
+          </tr>
+          <tr>
+            <td>förstå</td>
+            <td>understand</td>
+            <td>grasping meaning</td>
+            <td>get the joke / get the point</td>
+            <td>Is the issue comprehension?</td>
+          </tr>
+          <tr>
+            <td>tjäna</td>
+            <td>earn</td>
+            <td>receiving money as income</td>
+            <td>get £25 an hour</td>
+            <td>Is the money earned?</td>
+          </tr>
+          <tr>
+            <td>skaffa</td>
+            <td>obtain / acquire</td>
+            <td>actively obtaining something</td>
+            <td>get a phone / get a dog</td>
+            <td>Is the subject deliberately making sure they obtain it?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warning">
+      <strong>Important:</strong> English has the more specific verbs too: <em>receive, become, arrive, understand, earn, obtain</em>.
+      The challenge is that everyday English often allows <em>get</em> in all six situations, whereas Swedish normally requires the speaker
+      to choose the semantic category more explicitly.
+    </div>
+
+    <section class="summary">
+      <h2>A useful mental shortcut</h2>
+      <p>When you see <em>get</em>, do not translate the word. Identify the event.</p>
+      <div class="summary-grid">
+        <div><b>få</b><span class="mini">something comes to you</span></div>
+        <div><b>bli</b><span class="mini">you change state</span></div>
+        <div><b>komma</b><span class="mini">you reach a place</span></div>
+        <div><b>förstå</b><span class="mini">you grasp the meaning</span></div>
+        <div><b>tjäna</b><span class="mini">you earn money</span></div>
+        <div><b>skaffa</b><span class="mini">you obtain something deliberately</span></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
