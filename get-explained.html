@@ -59,6 +59,21 @@
       line-height:1.02;
       letter-spacing:-.04em;
     }
+    .focus-word{
+      display:block;
+      font-size:clamp(4.8rem,14vw,9.5rem);
+      line-height:.82;
+      letter-spacing:-.075em;
+      text-transform:uppercase;
+      text-shadow:0 5px 22px rgba(0,0,0,.16);
+    }
+    .focus-subtitle{
+      display:block;
+      margin-top:18px;
+      font-size:clamp(1.9rem,4.5vw,3.5rem);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
     .hero p{
       margin:0;
       max-width:900px;
@@ -136,6 +151,8 @@
       gap:22px;
     }
     .verb-card{
+      display:flex;
+      flex-direction:column;
       background:var(--panel);
       border:1px solid var(--line);
       border-radius:20px;
@@ -162,7 +179,12 @@
       font-weight:750;
       text-align:right;
     }
-    .verb-body{padding:22px 24px 24px}
+    .verb-body{
+      display:flex;
+      flex:1;
+      flex-direction:column;
+      padding:22px 24px 24px;
+    }
     .meaning{
       margin:0 0 16px;
       font-size:1.02rem;
@@ -172,6 +194,9 @@
       padding:13px 0;
     }
     .example:first-of-type{border-top:0;padding-top:0}
+    .verb-body > .example:nth-last-child(2){
+      margin-bottom:auto;
+    }
     .en{
       font-weight:800;
       margin-bottom:3px;
@@ -181,7 +206,7 @@
       font-weight:800;
     }
     .note{
-      margin-top:14px;
+      margin-top:12px;
       padding:12px 14px;
       border-radius:11px;
       background:var(--amber-soft);
@@ -376,19 +401,22 @@
   </nav>
   <main class="page">
     <section class="hero">
-      <div class="eyebrow">English → Swedish</div>
-      <h1>One English verb.<br>Six Swedish choices.</h1>
+      <div class="eyebrow">English verb in focus</div>
+      <h1>
+        <span class="focus-word">GET</span>
+        <span class="focus-subtitle">in Swedish</span>
+      </h1>
       <p>
-        English <strong>get</strong> is unusually broad. In ordinary speech it can cover receiving something,
+        The English verb <strong>GET</strong> is unusually broad. In ordinary speech it can cover receiving something,
         changing state, arriving somewhere, understanding something, earning money, or obtaining something deliberately.
         Swedish normally makes those distinctions explicit by choosing a different verb.
       </p>
-      <div class="principle">The key question is not “What does <em>get</em> mean?” but “What is happening in this sentence?”</div>
+      <div class="principle">GET does not have one fixed Swedish equivalent. First identify what GET means in the sentence.</div>
     </section>
 
     <section class="top-grid">
       <div class="panel">
-        <h2>Why this is difficult for English speakers</h2>
+        <h2>Why GET is difficult in Swedish</h2>
         <p>
           In English, <em>get</em> can replace several more specific verbs in informal or neutral everyday language:
           <em>receive, become, arrive, understand, earn, obtain</em>.
@@ -403,7 +431,7 @@
       </div>
 
       <div class="panel">
-        <h2>A quick decision guide</h2>
+        <h2>What does GET mean here?</h2>
         <div class="decision">
           <div><b>Receive?</b> → <strong>få</strong></div>
           <div><b>Change state?</b> → <strong>bli</strong></div>
@@ -415,7 +443,7 @@
       </div>
     </section>
 
-    <h2 class="section-title">The six Swedish verbs</h2>
+    <h2 class="section-title">Six Swedish ways to translate GET</h2>
     <p class="section-intro">
       Each verb below expresses a different type of event. The examples deliberately use natural British English with
       <em>get</em>, followed by the Swedish sentence that an English speaker would actually need.
@@ -593,7 +621,7 @@
       </article>
     </section>
 
-    <h2 class="section-title">The most important contrasts</h2>
+    <h2 class="section-title">How GET divides into six meanings</h2>
     <p class="section-intro">
       These are the distinctions that matter most when choosing the Swedish verb.
     </p>
@@ -663,8 +691,8 @@
     </div>
 
     <section class="summary">
-      <h2>A useful mental shortcut</h2>
-      <p>When you see <em>get</em>, do not translate the word. Identify the event.</p>
+      <h2>When you meet GET</h2>
+      <p>Do not translate GET automatically. Identify the event, then choose the Swedish verb.</p>
       <div class="summary-grid">
         <div><b>få</b><span class="mini">something comes to you</span></div>
         <div><b>bli</b><span class="mini">you change state</span></div>
@@ -675,5 +703,32 @@
       </div>
     </section>
   </main>
+  <script>
+    (() => {
+      const desktop = window.matchMedia('(min-width: 851px)');
+      let resizeTimer;
+
+      function alignExampleStarts() {
+        const meanings = [...document.querySelectorAll('.verb-card .meaning')];
+        meanings.forEach((meaning) => { meaning.style.minHeight = ''; });
+
+        if (!desktop.matches) return;
+
+        for (let i = 0; i < meanings.length; i += 2) {
+          const pair = meanings.slice(i, i + 2);
+          const height = Math.max(...pair.map((meaning) => meaning.getBoundingClientRect().height));
+          pair.forEach((meaning) => { meaning.style.minHeight = `${height}px`; });
+        }
+      }
+
+      window.addEventListener('load', alignExampleStarts);
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(alignExampleStarts, 120);
+      });
+
+      if (document.fonts?.ready) document.fonts.ready.then(alignExampleStarts);
+    })();
+  </script>
 </body>
 </html>
