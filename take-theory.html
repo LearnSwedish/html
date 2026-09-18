@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAKE in Swedish — six different choices</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --panel:#ffffff;
+      --ink:#1f2937;
+      --muted:#64748b;
+      --line:#dbe4ee;
+      --accent:#173b67;
+      --accent-soft:#eaf2fb;
+      --green:#1f7a52;
+      --green-soft:#eaf7f0;
+      --amber:#9a6415;
+      --amber-soft:#fff7e8;
+      --shadow:0 18px 50px rgba(25,55,90,.09);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(23,59,103,.08), transparent 34rem),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.6;
+    }
+    .page{
+      max-width:1180px;
+      margin:0 auto;
+      padding:34px 24px 70px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#173b67 0%,#244f82 62%,#315d90 100%);
+      color:#fff;
+      border-radius:28px;
+      padding:48px 52px;
+      box-shadow:var(--shadow);
+      margin-bottom:26px;
+    }
+    .eyebrow{
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:800;
+      font-size:.78rem;
+      opacity:.75;
+      margin-bottom:8px;
+    }
+    h1{
+      margin:0 0 14px;
+      font-size:clamp(2.1rem,5vw,4.3rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+    .focus-word{
+      display:block;
+      font-size:clamp(4.8rem,14vw,9.5rem);
+      line-height:.82;
+      letter-spacing:-.075em;
+      text-transform:uppercase;
+      text-shadow:0 5px 22px rgba(0,0,0,.16);
+    }
+    .focus-subtitle{
+      display:block;
+      margin-top:18px;
+      font-size:clamp(1.9rem,4.5vw,3.5rem);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+    .hero p{
+      margin:0;
+      max-width:900px;
+      font-size:1.15rem;
+      color:#e7eef7;
+    }
+    .hero strong{color:white}
+    .principle{
+      margin-top:22px;
+      display:inline-block;
+      padding:11px 14px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(255,255,255,.09);
+      border-radius:12px;
+      font-weight:700;
+    }
+    .top-grid{
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:24px;
+      margin-bottom:26px;
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-size:1.5rem;
+      letter-spacing:-.02em;
+    }
+    .panel p{margin:0 0 12px}
+    .formula{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .formula span{
+      background:var(--accent-soft);
+      color:var(--accent);
+      border:1px solid #cbdcf0;
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight:800;
+    }
+    .decision{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .decision div{
+      border-left:4px solid var(--accent);
+      background:#f8fbff;
+      padding:10px 12px;
+      border-radius:8px;
+    }
+    .decision b{color:var(--accent)}
+    .section-title{
+      margin:44px 0 10px;
+      font-size:2rem;
+      letter-spacing:-.03em;
+    }
+    .section-intro{
+      color:var(--muted);
+      max-width:850px;
+      margin-bottom:20px;
+    }
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:22px;
+    }
+    .verb-card{
+      display:flex;
+      flex-direction:column;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    .verb-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      padding:22px 24px 18px;
+      background:linear-gradient(180deg,#f9fbfe,#f3f7fb);
+      border-bottom:1px solid var(--line);
+    }
+    .verb{
+      font-size:2.1rem;
+      font-weight:900;
+      line-height:1;
+      color:var(--accent);
+    }
+    .gloss{
+      color:var(--muted);
+      font-weight:750;
+      text-align:right;
+    }
+    .verb-body{
+      display:flex;
+      flex:1;
+      flex-direction:column;
+      padding:22px 24px 24px;
+    }
+    .meaning{
+      margin:0 0 16px;
+      font-size:1.02rem;
+    }
+    .example{
+      border-top:1px solid var(--line);
+      padding:13px 0;
+    }
+    .example:first-of-type{border-top:0;padding-top:0}
+    .verb-body > .example:nth-last-child(2){
+      margin-bottom:auto;
+    }
+    .en{
+      font-weight:800;
+      margin-bottom:3px;
+    }
+    .sv{
+      color:var(--green);
+      font-weight:800;
+    }
+    .note{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:11px;
+      background:var(--amber-soft);
+      color:#6f4a12;
+      border:1px solid #f0ddb8;
+      font-size:.94rem;
+    }
+    .contrast{
+      background:var(--green-soft);
+      border-color:#c9e8d8;
+      color:#245d43;
+    }
+    .comparison{
+      margin-top:28px;
+      overflow:auto;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+    th,td{
+      padding:15px 18px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{
+      background:#edf4fb;
+      color:#173b67;
+      font-size:.92rem;
+    }
+    tr:last-child td{border-bottom:0}
+    td:first-child{
+      font-weight:900;
+      color:var(--accent);
+      white-space:nowrap;
+    }
+    .warning{
+      margin-top:24px;
+      padding:18px 20px;
+      border-radius:14px;
+      background:#fff8e8;
+      border:1px solid #ecd9a9;
+      color:#6b4d0f;
+    }
+    .summary{
+      margin-top:28px;
+      background:#172a43;
+      color:#fff;
+      border-radius:20px;
+      padding:26px 28px;
+      box-shadow:var(--shadow);
+    }
+    .summary h2{margin:0 0 8px}
+    .summary p{margin:0;color:#dce7f4}
+    .summary-grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .summary-grid div{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:12px;
+      padding:12px 14px;
+    }
+    .summary-grid b{
+      display:block;
+      font-size:1.2rem;
+      margin-bottom:2px;
+    }
+    .mini{
+      color:#cbd8e8;
+      font-size:.91rem;
+    }
+    @media (max-width:850px){
+      .top-grid,.cards{grid-template-columns:1fr}
+      .summary-grid{grid-template-columns:1fr 1fr}
+      .hero{padding:36px 28px}
+    }
+    @media (max-width:560px){
+      .page{padding:18px 14px 50px}
+      .summary-grid{grid-template-columns:1fr}
+      .verb-head{align-items:flex-start;flex-direction:column}
+      .gloss{text-align:left}
+    }
+
+    /* Floating navigation buttons */
+    .floating-links{
+      position:fixed;
+      top:24px;
+      right:24px;
+      z-index:1000;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      width:152px;
+    }
+    .floating-link{
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:9px;
+      width:100%;
+      min-height:42px;
+      padding:9px 14px;
+      border:1px solid rgba(23,59,103,.16);
+      border-radius:10px;
+      background:rgba(255,255,255,.96);
+      color:var(--accent);
+      box-shadow:0 8px 22px rgba(25,55,90,.14);
+      font-size:.95rem;
+      font-weight:750;
+      line-height:1.2;
+      text-decoration:none;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      transition:transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+    .floating-link:visited{
+      color:var(--accent);
+    }
+    .floating-link:hover,
+    .floating-link:focus-visible{
+      background:#fff;
+      color:#102f54;
+      transform:translateY(-1px);
+      box-shadow:0 11px 26px rgba(25,55,90,.19);
+      text-decoration:none;
+    }
+    .floating-link:focus-visible{
+      outline:3px solid rgba(49,93,144,.28);
+      outline-offset:2px;
+    }
+    .floating-link i{
+      width:18px;
+      text-align:center;
+      font-size:.9rem;
+      opacity:.8;
+    }
+
+    @media (max-width:760px){
+      .floating-links{
+        position:static;
+        width:auto;
+        max-width:100%;
+        margin:0 0 16px auto;
+        flex-direction:row;
+        justify-content:flex-end;
+      }
+      .floating-link{
+        width:auto;
+      }
+    }
+
+    @media (max-width:480px){
+      .floating-links{
+        justify-content:stretch;
+      }
+      .floating-link{
+        flex:1 1 0;
+        justify-content:center;
+        padding:9px 10px;
+        font-size:.9rem;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <nav class="floating-links" aria-label="Related pages">
+    <a class="floating-link" href="https://learnswedish.github.io/html/take-in-swedish.html" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-link" aria-hidden="true"></i><span>What verb?</span>
+    </a>
+    <a class="floating-link" href="https://learnswedish.github.io/html/take-exercise.html" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-link" aria-hidden="true"></i><span>Exercise</span>
+    </a>
+  </nav>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">English verb in focus</div>
+      <h1><span class="focus-word">TAKE</span><span class="focus-subtitle">in Swedish</span></h1>
+      <p>The English verb <strong>TAKE</strong> appears in many everyday combinations involving transport, photographs, medicine, events, participation and sitting down. Swedish divides these uses between several distinct verbs and verb phrases.</p>
+      <div class="principle">With TAKE, look at the noun that follows: it usually identifies the Swedish verb you need.</div>
+    </section>
+
+    <section class="top-grid">
+      <div class="panel">
+        <h2>Why TAKE is difficult in Swedish</h2>
+        <p>English uses <em>take</em> in numerous established combinations: <em>take the bus, take a photo, take medicine, take place, take part, take a seat</em>.</p>
+        <p>These combinations cannot normally be translated by repeating Swedish <em>ta</em>. Each expression has its own natural Swedish equivalent.</p>
+        <div class="formula"><span>åka</span><span>fotografera</span><span>ta</span><span>äga rum</span><span>delta</span><span>sätta sig</span></div>
+      </div>
+      <div class="panel">
+        <h2>What does TAKE mean here?</h2>
+        <div class="decision"><div><b>Is somebody travelling by bus or train?</b> → <strong>åka</strong></div>
+          <div><b>Is somebody taking a photograph?</b> → <strong>fotografera</strong></div>
+          <div><b>Is somebody consuming medicine?</b> → <strong>ta</strong></div>
+          <div><b>Is the subject an event occurring?</b> → <strong>äga rum</strong></div>
+          <div><b>Is somebody participating?</b> → <strong>delta</strong></div>
+          <div><b>Is somebody being invited to sit?</b> → <strong>sätta sig</strong></div></div>
+      </div>
+    </section>
+
+    <h2 class="section-title">Six Swedish ways to translate TAKE</h2>
+    <p class="section-intro">Each choice below expresses a different type of event. The English examples use ordinary British English, followed by the natural Swedish equivalent.</p>
+    <section class="cards">
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">åka</div>
+          <div class="gloss">travel · take transport</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>åka</strong> when <em>take</em> means travelling by bus, train, underground or another form of transport.</p>
+          <div class="example">
+            <div class="en">I take the bus to work.</div>
+            <div class="sv">Jag åker buss till jobbet.</div>
+          </div>
+          <div class="example">
+            <div class="en">We took the train to Stockholm.</div>
+            <div class="sv">Vi åkte tåg till Stockholm.</div>
+          </div>
+          <div class="example">
+            <div class="en">Do you usually take the underground?</div>
+            <div class="sv">Brukar du åka tunnelbana?</div>
+          </div>
+          <div class="note">Swedish can also say <strong>ta bussen</strong> or <strong>ta tåget</strong>. <strong>Åka</strong> makes the travel meaning explicit.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">fotografera</div>
+          <div class="gloss">photograph · take a photo</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>fotografera</strong> when <em>take</em> refers to producing a photograph.</p>
+          <div class="example">
+            <div class="en">She takes a lot of photos.</div>
+            <div class="sv">Hon fotograferar mycket.</div>
+          </div>
+          <div class="example">
+            <div class="en">May I take a photo of you?</div>
+            <div class="sv">Får jag fotografera dig?</div>
+          </div>
+          <div class="example">
+            <div class="en">He took photos of the building from several angles.</div>
+            <div class="sv">Han fotograferade byggnaden ur flera vinklar.</div>
+          </div>
+          <div class="note">The equally natural phrase <strong>ta ett foto</strong> is common, but <strong>fotografera</strong> provides the distinct Swedish verb represented here.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">ta</div>
+          <div class="gloss">take · consume medicine</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>ta</strong> when the object is medicine, tablets or another prescribed dose.</p>
+          <div class="example">
+            <div class="en">I take this medicine twice a day.</div>
+            <div class="sv">Jag tar den här medicinen två gånger om dagen.</div>
+          </div>
+          <div class="example">
+            <div class="en">Have you taken your tablets?</div>
+            <div class="sv">Har du tagit dina tabletter?</div>
+          </div>
+          <div class="example">
+            <div class="en">Take one tablet with food.</div>
+            <div class="sv">Ta en tablett i samband med måltid.</div>
+          </div>
+          <div class="note">This is one of the contexts in which English <em>take</em> and Swedish <strong>ta</strong> correspond directly.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">äga rum</div>
+          <div class="gloss">happen · take place</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>äga rum</strong> when <em>take place</em> means that an event happens at a particular time or place.</p>
+          <div class="example">
+            <div class="en">The meeting takes place on Monday.</div>
+            <div class="sv">Mötet äger rum på måndag.</div>
+          </div>
+          <div class="example">
+            <div class="en">The ceremony took place outdoors.</div>
+            <div class="sv">Ceremonin ägde rum utomhus.</div>
+          </div>
+          <div class="example">
+            <div class="en">Where will the conference take place?</div>
+            <div class="sv">Var ska konferensen äga rum?</div>
+          </div>
+          <div class="note contrast">Do not translate the individual words <em>take</em> and <em>place</em>. The whole expression corresponds to Swedish <strong>äga rum</strong>.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">delta</div>
+          <div class="gloss">participate · take part</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>delta</strong> when <em>take part</em> means participating in an activity, event or discussion.</p>
+          <div class="example">
+            <div class="en">She took part in the meeting.</div>
+            <div class="sv">Hon deltog i mötet.</div>
+          </div>
+          <div class="example">
+            <div class="en">Would you like to take part?</div>
+            <div class="sv">Vill du delta?</div>
+          </div>
+          <div class="example">
+            <div class="en">Over a hundred people took part in the race.</div>
+            <div class="sv">Över hundra personer deltog i loppet.</div>
+          </div>
+          <div class="note">Swedish <strong>delta</strong> is followed by <em>i</em> when the activity is stated: <em>delta i mötet</em>.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">sätta sig</div>
+          <div class="gloss">sit down · take a seat</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>sätta sig</strong> when <em>take a seat</em> means sitting down.</p>
+          <div class="example">
+            <div class="en">Please take a seat.</div>
+            <div class="sv">Var så god och sätt dig.</div>
+          </div>
+          <div class="example">
+            <div class="en">He took a seat by the window.</div>
+            <div class="sv">Han satte sig vid fönstret.</div>
+          </div>
+          <div class="example">
+            <div class="en">We took our seats at the back.</div>
+            <div class="sv">Vi satte oss längst bak.</div>
+          </div>
+          <div class="note">Swedish normally describes the movement into a seated position with <strong>sätta sig</strong>.</div>
+        </div>
+      </article></section>
+
+    <h2 class="section-title">How TAKE divides into six meanings</h2>
+    <p class="section-intro">Use the meaning of the complete expression — not the English verb by itself — to choose the Swedish equivalent.</p>
+    <div class="comparison">
+      <table>
+        <thead><tr><th>Swedish choice</th><th>Core meaning</th><th>Typical English TAKE pattern</th><th>Diagnostic question</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>åka</td>
+            <td>travelling by public transport</td>
+            <td>I take the bus to work.</td>
+            <td>Is somebody travelling by bus or train?</td>
+          </tr>
+          <tr>
+            <td>fotografera</td>
+            <td>producing a photograph</td>
+            <td>She takes a lot of photos.</td>
+            <td>Is somebody taking a photograph?</td>
+          </tr>
+          <tr>
+            <td>ta</td>
+            <td>taking medicine</td>
+            <td>I take this medicine twice a day.</td>
+            <td>Is somebody consuming medicine?</td>
+          </tr>
+          <tr>
+            <td>äga rum</td>
+            <td>an event happening</td>
+            <td>The meeting takes place on Monday.</td>
+            <td>Is the subject an event occurring?</td>
+          </tr>
+          <tr>
+            <td>delta</td>
+            <td>participating in an activity</td>
+            <td>She took part in the meeting.</td>
+            <td>Is somebody participating?</td>
+          </tr>
+          <tr>
+            <td>sätta sig</td>
+            <td>sitting down</td>
+            <td>Please take a seat.</td>
+            <td>Is somebody being invited to sit?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warning"><strong>Important:</strong> English also has more specific verbs and expressions. The difficulty is that everyday English allows <em>take</em> in all six situations, whereas Swedish normally makes the semantic category more explicit.</div>
+
+    <section class="summary">
+      <h2>When you meet TAKE</h2>
+      <p>Do not translate TAKE automatically. Identify the event, then choose the Swedish verb or verb phrase.</p>
+      <div class="summary-grid"><div><b>åka</b><span class="mini">travel by transport</span></div>
+        <div><b>fotografera</b><span class="mini">take a photograph</span></div>
+        <div><b>ta</b><span class="mini">consume medicine</span></div>
+        <div><b>äga rum</b><span class="mini">an event happens</span></div>
+        <div><b>delta</b><span class="mini">participate</span></div>
+        <div><b>sätta sig</b><span class="mini">sit down</span></div></div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const desktop = window.matchMedia('(min-width: 851px)');
+      let resizeTimer;
+      function alignExampleStarts() {
+        const meanings = [...document.querySelectorAll('.verb-card .meaning')];
+        meanings.forEach((meaning) => { meaning.style.minHeight = ''; });
+        if (!desktop.matches) return;
+        for (let i = 0; i < meanings.length; i += 2) {
+          const pair = meanings.slice(i, i + 2);
+          const height = Math.max(...pair.map((meaning) => meaning.getBoundingClientRect().height));
+          pair.forEach((meaning) => { meaning.style.minHeight = height + 'px'; });
+        }
+      }
+      window.addEventListener('load', alignExampleStarts);
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(alignExampleStarts, 120);
+      });
+      if (document.fonts?.ready) document.fonts.ready.then(alignExampleStarts);
+    })();
+  </script>
+</body>
+</html>

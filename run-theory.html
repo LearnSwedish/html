@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUN in Swedish — six different choices</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --panel:#ffffff;
+      --ink:#1f2937;
+      --muted:#64748b;
+      --line:#dbe4ee;
+      --accent:#173b67;
+      --accent-soft:#eaf2fb;
+      --green:#1f7a52;
+      --green-soft:#eaf7f0;
+      --amber:#9a6415;
+      --amber-soft:#fff7e8;
+      --shadow:0 18px 50px rgba(25,55,90,.09);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(23,59,103,.08), transparent 34rem),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.6;
+    }
+    .page{
+      max-width:1180px;
+      margin:0 auto;
+      padding:34px 24px 70px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#173b67 0%,#244f82 62%,#315d90 100%);
+      color:#fff;
+      border-radius:28px;
+      padding:48px 52px;
+      box-shadow:var(--shadow);
+      margin-bottom:26px;
+    }
+    .eyebrow{
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:800;
+      font-size:.78rem;
+      opacity:.75;
+      margin-bottom:8px;
+    }
+    h1{
+      margin:0 0 14px;
+      font-size:clamp(2.1rem,5vw,4.3rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+    .focus-word{
+      display:block;
+      font-size:clamp(4.8rem,14vw,9.5rem);
+      line-height:.82;
+      letter-spacing:-.075em;
+      text-transform:uppercase;
+      text-shadow:0 5px 22px rgba(0,0,0,.16);
+    }
+    .focus-subtitle{
+      display:block;
+      margin-top:18px;
+      font-size:clamp(1.9rem,4.5vw,3.5rem);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+    .hero p{
+      margin:0;
+      max-width:900px;
+      font-size:1.15rem;
+      color:#e7eef7;
+    }
+    .hero strong{color:white}
+    .principle{
+      margin-top:22px;
+      display:inline-block;
+      padding:11px 14px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(255,255,255,.09);
+      border-radius:12px;
+      font-weight:700;
+    }
+    .top-grid{
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:24px;
+      margin-bottom:26px;
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-size:1.5rem;
+      letter-spacing:-.02em;
+    }
+    .panel p{margin:0 0 12px}
+    .formula{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .formula span{
+      background:var(--accent-soft);
+      color:var(--accent);
+      border:1px solid #cbdcf0;
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight:800;
+    }
+    .decision{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .decision div{
+      border-left:4px solid var(--accent);
+      background:#f8fbff;
+      padding:10px 12px;
+      border-radius:8px;
+    }
+    .decision b{color:var(--accent)}
+    .section-title{
+      margin:44px 0 10px;
+      font-size:2rem;
+      letter-spacing:-.03em;
+    }
+    .section-intro{
+      color:var(--muted);
+      max-width:850px;
+      margin-bottom:20px;
+    }
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:22px;
+    }
+    .verb-card{
+      display:flex;
+      flex-direction:column;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    .verb-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      padding:22px 24px 18px;
+      background:linear-gradient(180deg,#f9fbfe,#f3f7fb);
+      border-bottom:1px solid var(--line);
+    }
+    .verb{
+      font-size:2.1rem;
+      font-weight:900;
+      line-height:1;
+      color:var(--accent);
+    }
+    .gloss{
+      color:var(--muted);
+      font-weight:750;
+      text-align:right;
+    }
+    .verb-body{
+      display:flex;
+      flex:1;
+      flex-direction:column;
+      padding:22px 24px 24px;
+    }
+    .meaning{
+      margin:0 0 16px;
+      font-size:1.02rem;
+    }
+    .example{
+      border-top:1px solid var(--line);
+      padding:13px 0;
+    }
+    .example:first-of-type{border-top:0;padding-top:0}
+    .verb-body > .example:nth-last-child(2){
+      margin-bottom:auto;
+    }
+    .en{
+      font-weight:800;
+      margin-bottom:3px;
+    }
+    .sv{
+      color:var(--green);
+      font-weight:800;
+    }
+    .note{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:11px;
+      background:var(--amber-soft);
+      color:#6f4a12;
+      border:1px solid #f0ddb8;
+      font-size:.94rem;
+    }
+    .contrast{
+      background:var(--green-soft);
+      border-color:#c9e8d8;
+      color:#245d43;
+    }
+    .comparison{
+      margin-top:28px;
+      overflow:auto;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+    th,td{
+      padding:15px 18px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{
+      background:#edf4fb;
+      color:#173b67;
+      font-size:.92rem;
+    }
+    tr:last-child td{border-bottom:0}
+    td:first-child{
+      font-weight:900;
+      color:var(--accent);
+      white-space:nowrap;
+    }
+    .warning{
+      margin-top:24px;
+      padding:18px 20px;
+      border-radius:14px;
+      background:#fff8e8;
+      border:1px solid #ecd9a9;
+      color:#6b4d0f;
+    }
+    .summary{
+      margin-top:28px;
+      background:#172a43;
+      color:#fff;
+      border-radius:20px;
+      padding:26px 28px;
+      box-shadow:var(--shadow);
+    }
+    .summary h2{margin:0 0 8px}
+    .summary p{margin:0;color:#dce7f4}
+    .summary-grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .summary-grid div{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:12px;
+      padding:12px 14px;
+    }
+    .summary-grid b{
+      display:block;
+      font-size:1.2rem;
+      margin-bottom:2px;
+    }
+    .mini{
+      color:#cbd8e8;
+      font-size:.91rem;
+    }
+    @media (max-width:850px){
+      .top-grid,.cards{grid-template-columns:1fr}
+      .summary-grid{grid-template-columns:1fr 1fr}
+      .hero{padding:36px 28px}
+    }
+    @media (max-width:560px){
+      .page{padding:18px 14px 50px}
+      .summary-grid{grid-template-columns:1fr}
+      .verb-head{align-items:flex-start;flex-direction:column}
+      .gloss{text-align:left}
+    }
+
+    /* Floating navigation buttons */
+    .floating-links{
+      position:fixed;
+      top:24px;
+      right:24px;
+      z-index:1000;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      width:152px;
+    }
+    .floating-link{
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:9px;
+      width:100%;
+      min-height:42px;
+      padding:9px 14px;
+      border:1px solid rgba(23,59,103,.16);
+      border-radius:10px;
+      background:rgba(255,255,255,.96);
+      color:var(--accent);
+      box-shadow:0 8px 22px rgba(25,55,90,.14);
+      font-size:.95rem;
+      font-weight:750;
+      line-height:1.2;
+      text-decoration:none;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      transition:transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+    .floating-link:visited{
+      color:var(--accent);
+    }
+    .floating-link:hover,
+    .floating-link:focus-visible{
+      background:#fff;
+      color:#102f54;
+      transform:translateY(-1px);
+      box-shadow:0 11px 26px rgba(25,55,90,.19);
+      text-decoration:none;
+    }
+    .floating-link:focus-visible{
+      outline:3px solid rgba(49,93,144,.28);
+      outline-offset:2px;
+    }
+    .floating-link i{
+      width:18px;
+      text-align:center;
+      font-size:.9rem;
+      opacity:.8;
+    }
+
+    @media (max-width:760px){
+      .floating-links{
+        position:static;
+        width:auto;
+        max-width:100%;
+        margin:0 0 16px auto;
+        flex-direction:row;
+        justify-content:flex-end;
+      }
+      .floating-link{
+        width:auto;
+      }
+    }
+
+    @media (max-width:480px){
+      .floating-links{
+        justify-content:stretch;
+      }
+      .floating-link{
+        flex:1 1 0;
+        justify-content:center;
+        padding:9px 10px;
+        font-size:.9rem;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <nav class="floating-links" aria-label="Related pages">
+    <a class="floating-link" href="https://learnswedish.github.io/html/run-in-swedish.html" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-link" aria-hidden="true"></i><span>What verb?</span>
+    </a>
+    <a class="floating-link" href="https://learnswedish.github.io/html/run-exercise.html" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-link" aria-hidden="true"></i><span>Exercise</span>
+    </a>
+  </nav>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">English verb in focus</div>
+      <h1><span class="focus-word">RUN</span><span class="focus-subtitle">in Swedish</span></h1>
+      <p>The English verb <strong>RUN</strong> can describe managing an organisation, executing software, a machine functioning, liquid flowing, a supply ending or exposure to danger. Swedish normally chooses a separate verb for each meaning.</p>
+      <div class="principle">RUN is not always about movement on foot. Identify what is operating, flowing, ending or being managed.</div>
+    </section>
+
+    <section class="top-grid">
+      <div class="panel">
+        <h2>Why RUN is difficult in Swedish</h2>
+        <p>English extends <em>run</em> far beyond physical running: businesses, programs, engines, water, supplies and risks can all involve <em>run</em>.</p>
+        <p>Swedish normally states the exact process and therefore distributes these meanings across several verbs and verb phrases.</p>
+        <div class="formula"><span>driva</span><span>köra</span><span>fungera</span><span>rinna</span><span>ta slut</span><span>riskera</span></div>
+      </div>
+      <div class="panel">
+        <h2>What does RUN mean here?</h2>
+        <div class="decision"><div><b>Is somebody managing an organisation?</b> → <strong>driva</strong></div>
+          <div><b>Is software or a test being executed?</b> → <strong>köra</strong></div>
+          <div><b>Is a machine or system operational?</b> → <strong>fungera</strong></div>
+          <div><b>Is liquid flowing?</b> → <strong>rinna</strong></div>
+          <div><b>Is there none of something left?</b> → <strong>ta slut</strong></div>
+          <div><b>Is there a danger of an unwanted result?</b> → <strong>riskera</strong></div></div>
+      </div>
+    </section>
+
+    <h2 class="section-title">Six Swedish ways to translate RUN</h2>
+    <p class="section-intro">Each choice below expresses a different type of event. The English examples use ordinary British English, followed by the natural Swedish equivalent.</p>
+    <section class="cards">
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">driva</div>
+          <div class="gloss">manage · run a business</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>driva</strong> when <em>run</em> means managing or operating a company, shop, organisation or project.</p>
+          <div class="example">
+            <div class="en">She runs a small company.</div>
+            <div class="sv">Hon driver ett litet företag.</div>
+          </div>
+          <div class="example">
+            <div class="en">They run a restaurant in Malmö.</div>
+            <div class="sv">De driver en restaurang i Malmö.</div>
+          </div>
+          <div class="example">
+            <div class="en">Who runs the organisation?</div>
+            <div class="sv">Vem driver organisationen?</div>
+          </div>
+          <div class="note">Swedish <strong>driva</strong> focuses on operating and taking responsibility for the activity.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">köra</div>
+          <div class="gloss">execute · run a program</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>köra</strong> when <em>run</em> refers to starting or executing a computer program, test, update or technical procedure.</p>
+          <div class="example">
+            <div class="en">Run the program again.</div>
+            <div class="sv">Kör programmet igen.</div>
+          </div>
+          <div class="example">
+            <div class="en">We need to run a test.</div>
+            <div class="sv">Vi måste köra ett test.</div>
+          </div>
+          <div class="example">
+            <div class="en">The system is running an update.</div>
+            <div class="sv">Systemet kör en uppdatering.</div>
+          </div>
+          <div class="note contrast">In British English, computer software is a <strong>program</strong>. The spelling <em>programme</em> is used for television, radio and organised events.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">fungera</div>
+          <div class="gloss">work · be operational</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>fungera</strong> when <em>run</em> means that a machine, engine or system is operating.</p>
+          <div class="example">
+            <div class="en">The machine is running normally.</div>
+            <div class="sv">Maskinen fungerar normalt.</div>
+          </div>
+          <div class="example">
+            <div class="en">Is the engine still running?</div>
+            <div class="sv">Fungerar motorn fortfarande?</div>
+          </div>
+          <div class="example">
+            <div class="en">Everything was running perfectly.</div>
+            <div class="sv">Allt fungerade perfekt.</div>
+          </div>
+          <div class="note">Swedish <strong>gå</strong> is also common for machines: <em>Motorn går</em>. <strong>Fungera</strong> makes successful operation explicit.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">rinna</div>
+          <div class="gloss">flow · run</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>rinna</strong> when <em>run</em> describes water or another liquid flowing.</p>
+          <div class="example">
+            <div class="en">The water is running.</div>
+            <div class="sv">Vattnet rinner.</div>
+          </div>
+          <div class="example">
+            <div class="en">Tears ran down her face.</div>
+            <div class="sv">Tårarna rann nerför hennes ansikte.</div>
+          </div>
+          <div class="example">
+            <div class="en">Leave the tap running.</div>
+            <div class="sv">Låt kranen stå och rinna.</div>
+          </div>
+          <div class="note">English often makes the container or source the subject, as in <em>the tap is running</em>. Swedish commonly focuses on the liquid or uses <em>stå och rinna</em>.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">ta slut</div>
+          <div class="gloss">be used up · run out</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>ta slut</strong> when <em>run out</em> means that a supply of milk, money, time or another resource is exhausted.</p>
+          <div class="example">
+            <div class="en">The milk has run out.</div>
+            <div class="sv">Mjölken har tagit slut.</div>
+          </div>
+          <div class="example">
+            <div class="en">Our money ran out.</div>
+            <div class="sv">Våra pengar tog slut.</div>
+          </div>
+          <div class="example">
+            <div class="en">Time is running out.</div>
+            <div class="sv">Tiden håller på att ta slut.</div>
+          </div>
+          <div class="note contrast">English commonly uses a person as subject: <em>We have run out of milk.</em> Natural Swedish often makes the missing resource the subject: <em>Mjölken har tagit slut.</em></div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">riskera</div>
+          <div class="gloss">run the risk · risk</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>riskera</strong> when <em>run</em> occurs in the expression <em>run the risk of</em>.</p>
+          <div class="example">
+            <div class="en">You run the risk of losing everything.</div>
+            <div class="sv">Du riskerar att förlora allt.</div>
+          </div>
+          <div class="example">
+            <div class="en">We run the risk of being late.</div>
+            <div class="sv">Vi riskerar att komma för sent.</div>
+          </div>
+          <div class="example">
+            <div class="en">He ran the risk of being discovered.</div>
+            <div class="sv">Han riskerade att bli upptäckt.</div>
+          </div>
+          <div class="note">The English noun phrase <em>run the risk of</em> normally becomes the single Swedish verb <strong>riskera</strong>.</div>
+        </div>
+      </article></section>
+
+    <h2 class="section-title">How RUN divides into six meanings</h2>
+    <p class="section-intro">Use the meaning of the complete expression — not the English verb by itself — to choose the Swedish equivalent.</p>
+    <div class="comparison">
+      <table>
+        <thead><tr><th>Swedish choice</th><th>Core meaning</th><th>Typical English RUN pattern</th><th>Diagnostic question</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>driva</td>
+            <td>managing an organisation or business</td>
+            <td>She runs a small company.</td>
+            <td>Is somebody managing an organisation?</td>
+          </tr>
+          <tr>
+            <td>köra</td>
+            <td>executing software or a procedure</td>
+            <td>Run the program again.</td>
+            <td>Is software or a test being executed?</td>
+          </tr>
+          <tr>
+            <td>fungera</td>
+            <td>a machine operating correctly</td>
+            <td>The machine is running normally.</td>
+            <td>Is a machine or system operational?</td>
+          </tr>
+          <tr>
+            <td>rinna</td>
+            <td>liquid flowing</td>
+            <td>The water is running.</td>
+            <td>Is liquid flowing?</td>
+          </tr>
+          <tr>
+            <td>ta slut</td>
+            <td>a supply becoming exhausted</td>
+            <td>The milk has run out.</td>
+            <td>Is there none of something left?</td>
+          </tr>
+          <tr>
+            <td>riskera</td>
+            <td>being exposed to a possible danger</td>
+            <td>You run the risk of losing everything.</td>
+            <td>Is there a danger of an unwanted result?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warning"><strong>Important:</strong> English also has more specific verbs and expressions. The difficulty is that everyday English allows <em>run</em> in all six situations, whereas Swedish normally makes the semantic category more explicit.</div>
+
+    <section class="summary">
+      <h2>When you meet RUN</h2>
+      <p>Do not translate RUN automatically. Identify the event, then choose the Swedish verb or verb phrase.</p>
+      <div class="summary-grid"><div><b>driva</b><span class="mini">manage a business</span></div>
+        <div><b>köra</b><span class="mini">execute software</span></div>
+        <div><b>fungera</b><span class="mini">operate correctly</span></div>
+        <div><b>rinna</b><span class="mini">liquid flows</span></div>
+        <div><b>ta slut</b><span class="mini">a supply ends</span></div>
+        <div><b>riskera</b><span class="mini">face a risk</span></div></div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const desktop = window.matchMedia('(min-width: 851px)');
+      let resizeTimer;
+      function alignExampleStarts() {
+        const meanings = [...document.querySelectorAll('.verb-card .meaning')];
+        meanings.forEach((meaning) => { meaning.style.minHeight = ''; });
+        if (!desktop.matches) return;
+        for (let i = 0; i < meanings.length; i += 2) {
+          const pair = meanings.slice(i, i + 2);
+          const height = Math.max(...pair.map((meaning) => meaning.getBoundingClientRect().height));
+          pair.forEach((meaning) => { meaning.style.minHeight = height + 'px'; });
+        }
+      }
+      window.addEventListener('load', alignExampleStarts);
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(alignExampleStarts, 120);
+      });
+      if (document.fonts?.ready) document.fonts.ready.then(alignExampleStarts);
+    })();
+  </script>
+</body>
+</html>

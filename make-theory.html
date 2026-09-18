@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAKE in Swedish — six different choices</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --panel:#ffffff;
+      --ink:#1f2937;
+      --muted:#64748b;
+      --line:#dbe4ee;
+      --accent:#173b67;
+      --accent-soft:#eaf2fb;
+      --green:#1f7a52;
+      --green-soft:#eaf7f0;
+      --amber:#9a6415;
+      --amber-soft:#fff7e8;
+      --shadow:0 18px 50px rgba(25,55,90,.09);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(23,59,103,.08), transparent 34rem),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.6;
+    }
+    .page{
+      max-width:1180px;
+      margin:0 auto;
+      padding:34px 24px 70px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#173b67 0%,#244f82 62%,#315d90 100%);
+      color:#fff;
+      border-radius:28px;
+      padding:48px 52px;
+      box-shadow:var(--shadow);
+      margin-bottom:26px;
+    }
+    .eyebrow{
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      font-weight:800;
+      font-size:.78rem;
+      opacity:.75;
+      margin-bottom:8px;
+    }
+    h1{
+      margin:0 0 14px;
+      font-size:clamp(2.1rem,5vw,4.3rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+    }
+    .focus-word{
+      display:block;
+      font-size:clamp(4.8rem,14vw,9.5rem);
+      line-height:.82;
+      letter-spacing:-.075em;
+      text-transform:uppercase;
+      text-shadow:0 5px 22px rgba(0,0,0,.16);
+    }
+    .focus-subtitle{
+      display:block;
+      margin-top:18px;
+      font-size:clamp(1.9rem,4.5vw,3.5rem);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+    .hero p{
+      margin:0;
+      max-width:900px;
+      font-size:1.15rem;
+      color:#e7eef7;
+    }
+    .hero strong{color:white}
+    .principle{
+      margin-top:22px;
+      display:inline-block;
+      padding:11px 14px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(255,255,255,.09);
+      border-radius:12px;
+      font-weight:700;
+    }
+    .top-grid{
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:24px;
+      margin-bottom:26px;
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-size:1.5rem;
+      letter-spacing:-.02em;
+    }
+    .panel p{margin:0 0 12px}
+    .formula{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+    .formula span{
+      background:var(--accent-soft);
+      color:var(--accent);
+      border:1px solid #cbdcf0;
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight:800;
+    }
+    .decision{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .decision div{
+      border-left:4px solid var(--accent);
+      background:#f8fbff;
+      padding:10px 12px;
+      border-radius:8px;
+    }
+    .decision b{color:var(--accent)}
+    .section-title{
+      margin:44px 0 10px;
+      font-size:2rem;
+      letter-spacing:-.03em;
+    }
+    .section-intro{
+      color:var(--muted);
+      max-width:850px;
+      margin-bottom:20px;
+    }
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:22px;
+    }
+    .verb-card{
+      display:flex;
+      flex-direction:column;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    .verb-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      padding:22px 24px 18px;
+      background:linear-gradient(180deg,#f9fbfe,#f3f7fb);
+      border-bottom:1px solid var(--line);
+    }
+    .verb{
+      font-size:2.1rem;
+      font-weight:900;
+      line-height:1;
+      color:var(--accent);
+    }
+    .gloss{
+      color:var(--muted);
+      font-weight:750;
+      text-align:right;
+    }
+    .verb-body{
+      display:flex;
+      flex:1;
+      flex-direction:column;
+      padding:22px 24px 24px;
+    }
+    .meaning{
+      margin:0 0 16px;
+      font-size:1.02rem;
+    }
+    .example{
+      border-top:1px solid var(--line);
+      padding:13px 0;
+    }
+    .example:first-of-type{border-top:0;padding-top:0}
+    .verb-body > .example:nth-last-child(2){
+      margin-bottom:auto;
+    }
+    .en{
+      font-weight:800;
+      margin-bottom:3px;
+    }
+    .sv{
+      color:var(--green);
+      font-weight:800;
+    }
+    .note{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:11px;
+      background:var(--amber-soft);
+      color:#6f4a12;
+      border:1px solid #f0ddb8;
+      font-size:.94rem;
+    }
+    .contrast{
+      background:var(--green-soft);
+      border-color:#c9e8d8;
+      color:#245d43;
+    }
+    .comparison{
+      margin-top:28px;
+      overflow:auto;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+    th,td{
+      padding:15px 18px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{
+      background:#edf4fb;
+      color:#173b67;
+      font-size:.92rem;
+    }
+    tr:last-child td{border-bottom:0}
+    td:first-child{
+      font-weight:900;
+      color:var(--accent);
+      white-space:nowrap;
+    }
+    .warning{
+      margin-top:24px;
+      padding:18px 20px;
+      border-radius:14px;
+      background:#fff8e8;
+      border:1px solid #ecd9a9;
+      color:#6b4d0f;
+    }
+    .summary{
+      margin-top:28px;
+      background:#172a43;
+      color:#fff;
+      border-radius:20px;
+      padding:26px 28px;
+      box-shadow:var(--shadow);
+    }
+    .summary h2{margin:0 0 8px}
+    .summary p{margin:0;color:#dce7f4}
+    .summary-grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .summary-grid div{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:12px;
+      padding:12px 14px;
+    }
+    .summary-grid b{
+      display:block;
+      font-size:1.2rem;
+      margin-bottom:2px;
+    }
+    .mini{
+      color:#cbd8e8;
+      font-size:.91rem;
+    }
+    @media (max-width:850px){
+      .top-grid,.cards{grid-template-columns:1fr}
+      .summary-grid{grid-template-columns:1fr 1fr}
+      .hero{padding:36px 28px}
+    }
+    @media (max-width:560px){
+      .page{padding:18px 14px 50px}
+      .summary-grid{grid-template-columns:1fr}
+      .verb-head{align-items:flex-start;flex-direction:column}
+      .gloss{text-align:left}
+    }
+
+    /* Floating navigation buttons */
+    .floating-links{
+      position:fixed;
+      top:24px;
+      right:24px;
+      z-index:1000;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      width:152px;
+    }
+    .floating-link{
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:9px;
+      width:100%;
+      min-height:42px;
+      padding:9px 14px;
+      border:1px solid rgba(23,59,103,.16);
+      border-radius:10px;
+      background:rgba(255,255,255,.96);
+      color:var(--accent);
+      box-shadow:0 8px 22px rgba(25,55,90,.14);
+      font-size:.95rem;
+      font-weight:750;
+      line-height:1.2;
+      text-decoration:none;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      transition:transform .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+    .floating-link:visited{
+      color:var(--accent);
+    }
+    .floating-link:hover,
+    .floating-link:focus-visible{
+      background:#fff;
+      color:#102f54;
+      transform:translateY(-1px);
+      box-shadow:0 11px 26px rgba(25,55,90,.19);
+      text-decoration:none;
+    }
+    .floating-link:focus-visible{
+      outline:3px solid rgba(49,93,144,.28);
+      outline-offset:2px;
+    }
+    .floating-link i{
+      width:18px;
+      text-align:center;
+      font-size:.9rem;
+      opacity:.8;
+    }
+
+    @media (max-width:760px){
+      .floating-links{
+        position:static;
+        width:auto;
+        max-width:100%;
+        margin:0 0 16px auto;
+        flex-direction:row;
+        justify-content:flex-end;
+      }
+      .floating-link{
+        width:auto;
+      }
+    }
+
+    @media (max-width:480px){
+      .floating-links{
+        justify-content:stretch;
+      }
+      .floating-link{
+        flex:1 1 0;
+        justify-content:center;
+        padding:9px 10px;
+        font-size:.9rem;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <nav class="floating-links" aria-label="Related pages">
+    <a class="floating-link" href="https://learnswedish.github.io/html/make-in-swedish.html" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-link" aria-hidden="true"></i><span>What verb?</span>
+    </a>
+    <a class="floating-link" href="https://learnswedish.github.io/html/make-exercise.html" target="_blank" rel="noopener noreferrer">
+      <i class="fa-solid fa-link" aria-hidden="true"></i><span>Exercise</span>
+    </a>
+  </nav>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">English verb in focus</div>
+      <h1><span class="focus-word">MAKE</span><span class="focus-subtitle">in Swedish</span></h1>
+      <p>The English verb <strong>MAKE</strong> covers creating, cooking, earning, deciding, causing a reaction, reaching transport and preparing a bed. Swedish normally identifies the particular action and chooses a more specific verb.</p>
+      <div class="principle">MAKE does not have one fixed Swedish equivalent. Ask what is actually being produced, caused or achieved.</div>
+    </section>
+
+    <section class="top-grid">
+      <div class="panel">
+        <h2>Why MAKE is difficult in Swedish</h2>
+        <p>English uses <em>make</em> for many kinds of creation and achievement: <em>make dinner, make money, make a decision, make someone laugh</em>.</p>
+        <p>Swedish normally names the activity more precisely. Before translating <em>make</em>, decide whether somebody is cooking, earning, deciding, causing, catching transport or preparing a bed.</p>
+        <div class="formula"><span>laga</span><span>tjäna</span><span>fatta</span><span>få</span><span>hinna med</span><span>bädda</span></div>
+      </div>
+      <div class="panel">
+        <h2>What does MAKE mean here?</h2>
+        <div class="decision"><div><b>Is somebody preparing a meal?</b> → <strong>laga</strong></div>
+          <div><b>Is the result income or profit?</b> → <strong>tjäna</strong></div>
+          <div><b>Is somebody deciding something?</b> → <strong>fatta</strong></div>
+          <div><b>Does one thing cause somebody to act or react?</b> → <strong>få</strong></div>
+          <div><b>Is somebody reaching transport in time?</b> → <strong>hinna med</strong></div>
+          <div><b>Is somebody preparing a bed?</b> → <strong>bädda</strong></div></div>
+      </div>
+    </section>
+
+    <h2 class="section-title">Six Swedish ways to translate MAKE</h2>
+    <p class="section-intro">Each choice below expresses a different type of event. The English examples use ordinary British English, followed by the natural Swedish equivalent.</p>
+    <section class="cards">
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">laga</div>
+          <div class="gloss">cook · prepare food</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>laga</strong> when <em>make</em> means preparing cooked food or a meal.</p>
+          <div class="example">
+            <div class="en">I make dinner every evening.</div>
+            <div class="sv">Jag lagar middag varje kväll.</div>
+          </div>
+          <div class="example">
+            <div class="en">She is making soup.</div>
+            <div class="sv">Hon lagar soppa.</div>
+          </div>
+          <div class="example">
+            <div class="en">Who made dinner?</div>
+            <div class="sv">Vem lagade middagen?</div>
+          </div>
+          <div class="note">Use <strong>baka</strong>, not <em>laga</em>, when the activity is specifically baking bread, cakes or biscuits.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">tjäna</div>
+          <div class="gloss">earn · make money</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>tjäna</strong> when <em>make</em> refers to money earned through work, business or investment.</p>
+          <div class="example">
+            <div class="en">She makes £3,000 a month.</div>
+            <div class="sv">Hon tjänar 3 000 pund i månaden.</div>
+          </div>
+          <div class="example">
+            <div class="en">They made a lot of money last year.</div>
+            <div class="sv">De tjänade mycket pengar förra året.</div>
+          </div>
+          <div class="example">
+            <div class="en">How much do you make?</div>
+            <div class="sv">Hur mycket tjänar du?</div>
+          </div>
+          <div class="note contrast">Swedish <strong>göra pengar</strong> is normally an anglicism. The ordinary verb for earning money is <strong>tjäna</strong>.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">fatta</div>
+          <div class="gloss">make · reach a decision</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>fatta</strong> with <em>beslut</em> when a person or organisation formally or deliberately makes a decision.</p>
+          <div class="example">
+            <div class="en">We need to make a decision today.</div>
+            <div class="sv">Vi måste fatta ett beslut i dag.</div>
+          </div>
+          <div class="example">
+            <div class="en">She made the right decision.</div>
+            <div class="sv">Hon fattade rätt beslut.</div>
+          </div>
+          <div class="example">
+            <div class="en">The board has not made a final decision.</div>
+            <div class="sv">Styrelsen har inte fattat något slutgiltigt beslut.</div>
+          </div>
+          <div class="note">In everyday Swedish, <strong>bestämma sig</strong> is also common when the emphasis is on a person making up their mind.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">få</div>
+          <div class="gloss">cause · make someone do</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>få + object + att + infinitive</strong> when <em>make</em> means causing somebody to do something.</p>
+          <div class="example">
+            <div class="en">You always make me laugh.</div>
+            <div class="sv">Du får mig alltid att skratta.</div>
+          </div>
+          <div class="example">
+            <div class="en">The question made me think.</div>
+            <div class="sv">Frågan fick mig att tänka.</div>
+          </div>
+          <div class="example">
+            <div class="en">The noise made the dog bark.</div>
+            <div class="sv">Ljudet fick hunden att skälla.</div>
+          </div>
+          <div class="note contrast">English <em>make someone do</em> normally becomes <strong>få någon att göra</strong>. Swedish requires <em>att</em> before the infinitive.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">hinna med</div>
+          <div class="gloss">catch · reach in time</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>hinna med</strong> when <em>make</em> means arriving in time for a train, bus, flight or other departure.</p>
+          <div class="example">
+            <div class="en">I think we can make the train.</div>
+            <div class="sv">Jag tror att vi hinner med tåget.</div>
+          </div>
+          <div class="example">
+            <div class="en">Did you make your flight?</div>
+            <div class="sv">Hann du med flyget?</div>
+          </div>
+          <div class="example">
+            <div class="en">Leave now if you want to make the bus.</div>
+            <div class="sv">Gå nu om du vill hinna med bussen.</div>
+          </div>
+          <div class="note">The central idea in <strong>hinna med</strong> is having enough time before something departs or begins.</div>
+        </div>
+      </article>
+      <article class="verb-card">
+        <div class="verb-head">
+          <div class="verb">bädda</div>
+          <div class="gloss">make the bed</div>
+        </div>
+        <div class="verb-body">
+          <p class="meaning">Use <strong>bädda</strong> when <em>make</em> refers to arranging the sheets, duvet and pillows on a bed.</p>
+          <div class="example">
+            <div class="en">I make the bed every morning.</div>
+            <div class="sv">Jag bäddar sängen varje morgon.</div>
+          </div>
+          <div class="example">
+            <div class="en">Have you made your bed?</div>
+            <div class="sv">Har du bäddat sängen?</div>
+          </div>
+          <div class="example">
+            <div class="en">The children make their own beds.</div>
+            <div class="sv">Barnen bäddar sina egna sängar.</div>
+          </div>
+          <div class="note">Swedish uses the specific verb <strong>bädda</strong>; a literal translation with <em>göra</em> is not idiomatic.</div>
+        </div>
+      </article></section>
+
+    <h2 class="section-title">How MAKE divides into six meanings</h2>
+    <p class="section-intro">Use the meaning of the complete expression — not the English verb by itself — to choose the Swedish equivalent.</p>
+    <div class="comparison">
+      <table>
+        <thead><tr><th>Swedish choice</th><th>Core meaning</th><th>Typical English MAKE pattern</th><th>Diagnostic question</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>laga</td>
+            <td>preparing cooked food</td>
+            <td>I make dinner every evening.</td>
+            <td>Is somebody preparing a meal?</td>
+          </tr>
+          <tr>
+            <td>tjäna</td>
+            <td>earning money</td>
+            <td>She makes £3,000 a month.</td>
+            <td>Is the result income or profit?</td>
+          </tr>
+          <tr>
+            <td>fatta</td>
+            <td>making a decision</td>
+            <td>We need to make a decision today.</td>
+            <td>Is somebody deciding something?</td>
+          </tr>
+          <tr>
+            <td>få</td>
+            <td>causing a reaction or action</td>
+            <td>You always make me laugh.</td>
+            <td>Does one thing cause somebody to act or react?</td>
+          </tr>
+          <tr>
+            <td>hinna med</td>
+            <td>reaching transport before departure</td>
+            <td>I think we can make the train.</td>
+            <td>Is somebody reaching transport in time?</td>
+          </tr>
+          <tr>
+            <td>bädda</td>
+            <td>arranging bedding</td>
+            <td>I make the bed every morning.</td>
+            <td>Is somebody preparing a bed?</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warning"><strong>Important:</strong> English also has more specific verbs and expressions. The difficulty is that everyday English allows <em>make</em> in all six situations, whereas Swedish normally makes the semantic category more explicit.</div>
+
+    <section class="summary">
+      <h2>When you meet MAKE</h2>
+      <p>Do not translate MAKE automatically. Identify the event, then choose the Swedish verb or verb phrase.</p>
+      <div class="summary-grid"><div><b>laga</b><span class="mini">prepare cooked food</span></div>
+        <div><b>tjäna</b><span class="mini">earn money</span></div>
+        <div><b>fatta</b><span class="mini">make a decision</span></div>
+        <div><b>få</b><span class="mini">cause an action</span></div>
+        <div><b>hinna med</b><span class="mini">reach it in time</span></div>
+        <div><b>bädda</b><span class="mini">prepare a bed</span></div></div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const desktop = window.matchMedia('(min-width: 851px)');
+      let resizeTimer;
+      function alignExampleStarts() {
+        const meanings = [...document.querySelectorAll('.verb-card .meaning')];
+        meanings.forEach((meaning) => { meaning.style.minHeight = ''; });
+        if (!desktop.matches) return;
+        for (let i = 0; i < meanings.length; i += 2) {
+          const pair = meanings.slice(i, i + 2);
+          const height = Math.max(...pair.map((meaning) => meaning.getBoundingClientRect().height));
+          pair.forEach((meaning) => { meaning.style.minHeight = height + 'px'; });
+        }
+      }
+      window.addEventListener('load', alignExampleStarts);
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(alignExampleStarts, 120);
+      });
+      if (document.fonts?.ready) document.fonts.ready.then(alignExampleStarts);
+    })();
+  </script>
+</body>
+</html>
