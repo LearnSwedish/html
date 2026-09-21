@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GET in Swedish — 42 sentences</title>
+    <title>GET exercise</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
         /* Reset and Base Styles */
@@ -359,39 +359,154 @@
 					transition: none;
 				}
 			}
-        	
-        	/* Select Element Styling */
-        	.sentence select {
-        		padding: 4px 4px;
-        		font-size: inherit;
-        		border: 1px solid #cbd5e0;
-        		border-radius: 6px;
-        		background-color: #edf2f7;
-        		cursor: pointer;
-        		transition: border-color 0.3s, background-color 0.3s;
-        		width: auto;
-        		appearance: auto;
-        		-webkit-appearance: auto;
-        		-moz-appearance: auto;
-        		background-image: initial;
-        	}
-        	
-        	body.dark-mode .sentence select {
-        		background-color: #4a5568;
-        		color: #edf2f7;
-        		border: 1px solid #718096;
-        	}
-        	
-        	.sentence select:focus {
-        		border-color: #3182ce;
-        		outline: none;
-        		box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
-        	}
-        	
-        	body.dark-mode .sentence select:focus {
-        		border-color: #63b3ed;
-        		box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2);
-        	}
+
+        /* Custom verb dropdown — same interaction and visual effect as the What verb? exercise */
+        .verb-select {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            width: 142px;
+            user-select: none;
+            margin: 0 2px;
+        }
+
+        .verb-select-trigger {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 9px 11px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            background: #edf2f7;
+            color: #1a202c;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s;
+        }
+
+        .verb-select-trigger:hover,
+        .verb-select.open .verb-select-trigger {
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.16);
+        }
+
+        .verb-select-chevron {
+            width: 16px;
+            height: 16px;
+            flex: 0 0 auto;
+            transition: transform 0.2s ease;
+        }
+
+        .verb-select.open .verb-select-chevron {
+            transform: rotate(180deg);
+        }
+
+        .verb-select-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 50%;
+            width: max-content;
+            max-width: calc(100vw - 32px);
+            padding: 8px;
+            border: 1px solid #d7dee8;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .verb-select.open .verb-select-dropdown {
+            display: block;
+            animation: verb-dropdown-in 0.16s ease-out;
+        }
+
+        @keyframes verb-dropdown-in {
+            from { opacity: 0; transform: translate(-50%, -4px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .verb-select-options {
+            display: grid;
+            grid-template-columns: repeat(3, max-content);
+            grid-template-rows: repeat(2, auto);
+            grid-auto-flow: column;
+            gap: 4px;
+        }
+
+        .verb-select-option {
+            min-width: 40px;
+            max-width: min(180px, 24vw);
+            padding: 8px 10px;
+            border: 0;
+            border-radius: 6px;
+            background: transparent;
+            color: #1a202c;
+            font: inherit;
+            overflow-wrap: anywhere;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .verb-select-option:hover,
+        .verb-select-option:focus-visible {
+            background: #edf2f7;
+            outline: none;
+        }
+
+        .verb-select-option.selected {
+            background: #1769aa;
+            color: #ffffff;
+        }
+
+        .sentence.dropdown-open { z-index: 20; }
+        .sentence.correct .verb-select-trigger { border-color: #38a169; }
+        .sentence.incorrect .verb-select-trigger { border-color: #e53e3e; }
+
+        body.dark-mode .verb-select-trigger {
+            border-color: #718096;
+            background: #4a5568;
+            color: #edf2f7;
+        }
+
+        body.dark-mode .verb-select-trigger:hover,
+        body.dark-mode .verb-select.open .verb-select-trigger {
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+        }
+
+        body.dark-mode .verb-select-dropdown {
+            border-color: #4a5568;
+            background: #252f3f;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.42);
+        }
+
+        body.dark-mode .verb-select-option { color: #edf2f7; }
+        body.dark-mode .verb-select-option:hover,
+        body.dark-mode .verb-select-option:focus-visible { background: #3b4759; }
+        body.dark-mode .verb-select-option.selected { background: #3182ce; }
+
+        @media (max-width: 600px) {
+            .verb-select { width: 118px; }
+            .verb-select-trigger { font-size: 0.95rem; }
+            .verb-select-dropdown { max-width: calc(100vw - 24px); }
+            .verb-select-option { padding: 8px 7px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .verb-select-chevron,
+            .verb-select.open .verb-select-dropdown {
+                animation: none;
+                transition: none;
+            }
+        }
+
+
+
         	
         	/* Sentences */
         	.sentences {
@@ -1411,7 +1526,7 @@ body.dark-mode a:visited {
     <i class="fa-solid fa-graduation-cap" style="margin-right: 8px;"></i> Theory
 </button>
 <button class="start-over"
-        onclick="window.open('https://learnswedish.github.io/html/get-what-verb', '_blank', 'noopener,noreferrer')">
+        onclick="window.open('https://learnswedish.github.io/html/get-in-swedish.html', '_blank', 'noopener,noreferrer')">
     <i class="fa-solid fa-check" style="margin-right: 8px;"></i> What verb?
 </button>
 <button class="start-over" onclick="startOver()">
@@ -1492,32 +1607,85 @@ body.dark-mode a:visited {
 
     let score = 0;
 		
+	const verbOptions = ['får', 'blir', 'kommer', 'förstår', 'tjänar', 'skaffar'];
+
+	function generateVerbSelect(correctAnswer) {
+		const options = verbOptions.map(verb => `
+			<button type="button" class="verb-select-option" role="option" aria-selected="false"
+				data-value="${verb}" onclick="selectVerb(this, event)">${verb}</button>`).join('');
+
+		return `<span class="verb-select" data-correct="${correctAnswer}" data-value="">
+			<button type="button" class="verb-select-trigger" aria-haspopup="listbox"
+				aria-expanded="false" aria-label="Choose the correct Swedish verb"
+				onclick="toggleVerbSelect(this, event)">
+				<span class="verb-select-label">...</span>
+				<svg class="verb-select-chevron" viewBox="0 0 24 24" fill="none"
+					stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<path d="M6 9l6 6 6-6"></path>
+				</svg>
+			</button>
+			<span class="verb-select-dropdown" role="listbox">
+				<span class="verb-select-options">${options}</span>
+			</span>
+		</span>`;
+	}
+
 	function generateSentenceHTML(sentence, sentenceIndex) {
         const processedWords = sentence.words.map((item, wordIndex) => {
-            const {
-                word,
-                translation
-            } = item;
-		return word.includes('<select') ? word : translation ?
-			`<span class="word" aria-describedby="tooltip-${sentenceIndex}-${wordIndex}">
-					${word}
-					<span class="tooltip" id="tooltip-${sentenceIndex}-${wordIndex}">${translation}</span>
-				</span>` :
-			word;
+            const { word, translation } = item;
+
+            if (word.includes('<select')) {
+                const correctMatch = word.match(/data-correct="([^"]+)"/);
+                return generateVerbSelect(correctMatch ? correctMatch[1] : '');
+            }
+
+            return translation ?
+                `<span class="word" aria-describedby="tooltip-${sentenceIndex}-${wordIndex}">
+                    ${word}
+                    <span class="tooltip" id="tooltip-${sentenceIndex}-${wordIndex}">${translation}</span>
+                </span>` :
+                word;
         });
 
-        const sentenceWithTooltips = processedWords.join(' ');
-        const sentenceHTML = sentenceWithTooltips.replace('__.', `<select data-correct="${sentence.correct}" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
-            <option value="">...</option>
-            <option value="får">får</option>
-            <option value="blir">blir</option>
-            <option value="kommer">kommer</option>
-            <option value="förstår">förstår</option>
-            <option value="tjänar">tjänar</option>
-            <option value="skaffar">skaffar</option>
-        </select>.`);
-
+        const sentenceHTML = processedWords.join(' ');
         return `<div class="sentence" data-state="none"><p>${sentenceHTML}</p></div>`;
+    }
+
+    function closeVerbSelects(except = null) {
+        document.querySelectorAll('.verb-select.open').forEach(wrapper => {
+            if (wrapper === except) return;
+            wrapper.classList.remove('open');
+            wrapper.querySelector('.verb-select-trigger').setAttribute('aria-expanded', 'false');
+            wrapper.closest('.sentence').classList.remove('dropdown-open');
+        });
+    }
+
+    function toggleVerbSelect(trigger, event) {
+        event.stopPropagation();
+        const wrapper = trigger.closest('.verb-select');
+        const shouldOpen = !wrapper.classList.contains('open');
+        closeVerbSelects();
+        wrapper.classList.toggle('open', shouldOpen);
+        trigger.setAttribute('aria-expanded', String(shouldOpen));
+        wrapper.closest('.sentence').classList.toggle('dropdown-open', shouldOpen);
+    }
+
+    function selectVerb(option, event) {
+        event.stopPropagation();
+        const wrapper = option.closest('.verb-select');
+        const selectedValue = option.dataset.value;
+
+        wrapper.dataset.value = selectedValue;
+        wrapper.querySelector('.verb-select-label').textContent = selectedValue;
+        wrapper.querySelectorAll('.verb-select-option').forEach(item => {
+            const isSelected = item === option;
+            item.classList.toggle('selected', isSelected);
+            item.setAttribute('aria-selected', String(isSelected));
+        });
+
+        closeVerbSelects();
+        evaluateAnswer(wrapper);
+        wrapper.querySelector('.verb-select-trigger').focus();
     }
 
     // Fisher-Yates shuffle algorithm to shuffle an array.
@@ -1539,11 +1707,11 @@ body.dark-mode a:visited {
     // Evaluates the user's answer and updates the score and UI accordingly.
 	function getSwedishSentence(sentenceElement) {
 		const original = sentenceElement.querySelector('p');
-		const selectedVerbs = [...original.querySelectorAll('select')].map(select => select.value);
 		const copy = original.cloneNode(true);
 		copy.querySelectorAll('.tooltip, .speech-button').forEach(element => element.remove());
-		copy.querySelectorAll('select').forEach((select, index) => {
-			select.replaceWith(document.createTextNode(selectedVerbs[index] || select.dataset.correct || ''));
+		copy.querySelectorAll('.verb-select').forEach(wrapper => {
+			const value = wrapper.dataset.value || wrapper.dataset.correct || '';
+			wrapper.replaceWith(document.createTextNode(value));
 		});
 		return copy.textContent
 			.replace(/\s+([,.;:!?])/g, '$1')
@@ -1609,38 +1777,27 @@ body.dark-mode a:visited {
 	}
 
 	function evaluateAnswer(selectElement) {
-	    const correctAnswers = selectElement.getAttribute('data-correct').split(',').map(answer => answer.trim());
-	    const selectedValue = selectElement.value.trim();
+	    const correctAnswers = (selectElement.dataset.correct || '').split(',').map(answer => answer.trim());
+	    const selectedValue = (selectElement.dataset.value || '').trim();
 	    const parent = selectElement.closest('.sentence');
-	
-	    // Get the previous state to ensure points are adjusted correctly
 	    const priorState = parent.getAttribute('data-state') || 'none';
 	    let newState;
-	
-	    // Check if the selected value matches any of the correct answers
+
 	    if (correctAnswers.includes(selectedValue)) {
 	        newState = 'correct';
-	        if (priorState !== 'correct') {
-	            updateScore(1);
-	        }
-	    } else if (selectedValue !== "") {
+	        if (priorState !== 'correct') updateScore(1);
+	    } else if (selectedValue !== '') {
 	        newState = 'incorrect';
-	        if (priorState === 'correct') {
-	            updateScore(-1);
-	        }
+	        if (priorState === 'correct') updateScore(-1);
 	    } else {
 	        newState = 'none';
-	        if (priorState === 'correct') {
-	            updateScore(-1);
-	        }
+	        if (priorState === 'correct') updateScore(-1);
 	    }
-	
-	    // Update the UI with the new state
+
 	    parent.classList.remove('correct', 'incorrect');
-	    parent.classList.add(newState);
+	    if (newState !== 'none') parent.classList.add(newState);
 	    parent.setAttribute('data-state', newState);
 	    updateSpeechButton(parent, newState === 'correct');
-	
 	    checkAllCorrect();
 	}
 
@@ -1691,6 +1848,7 @@ body.dark-mode a:visited {
 
     // Close modal when clicking outside of the modal content
     window.addEventListener('click', event => {
+        closeVerbSelects();
         ['infoModal', 'congratulationsModal'].forEach(id => {
             const modal = document.getElementById(id);
             if (event.target === modal) closeModal(id);
