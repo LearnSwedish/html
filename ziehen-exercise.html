@@ -867,49 +867,637 @@ body.dark-mode a:visited {
 	
     <script>
         const sentences = [
-            { before: "Han", after: "vagnen.", correct: "drar", beforeTranslation: "Er", afterTranslation: "den Wagen." },
-            { before: "Hästen", after: "vagnen.", correct: "drar", beforeTranslation: "Das Pferd", afterTranslation: "den Wagen." },
-            { before: "Hon", after: "resväskan efter sig.", correct: "drar", beforeTranslation: "Sie", afterTranslation: "den Koffer hinter sich her." },
-            { before: "Barnet", after: "pulkan genom snön.", correct: "drar", beforeTranslation: "Das Kind", afterTranslation: "den Schlitten durch den Schnee." },
-            { before: "Vi", after: "bordet närmare väggen.", correct: "drar", beforeTranslation: "Wir", afterTranslation: "den Tisch näher an die Wand." },
-            { before: "Han", after: "lådan över golvet.", correct: "drar", beforeTranslation: "Er", afterTranslation: "die Kiste über den Boden." },
-            { before: "De", after: "båten upp på stranden.", correct: "drar", beforeTranslation: "Sie", afterTranslation: "das Boot an den Strand." },
-            { before: "Hon", after: "till Berlin.", correct: "flyttar", beforeTranslation: "Sie", afterTranslation: "nach Berlin." },
-            { before: "Vi", after: "till Hamburg nästa år.", correct: "flyttar", beforeTranslation: "Wir", afterTranslation: "nächstes Jahr nach Hamburg." },
-            { before: "Han", after: "till München av arbetsskäl.", correct: "flyttar", beforeTranslation: "Er", afterTranslation: "aus beruflichen Gründen nach München." },
-            { before: "Familjen", after: "till landet i vår.", correct: "flyttar", beforeTranslation: "Die Familie", afterTranslation: "im Frühjahr aufs Land." },
-            { before: "De", after: "till en större lägenhet.", correct: "flyttar", beforeTranslation: "Sie", afterTranslation: "in eine größere Wohnung." },
-            { before: "Jag", after: "till Köln i augusti.", correct: "flyttar", beforeTranslation: "Ich", afterTranslation: "im August nach Köln." },
-            { before: "Min syster", after: "utomlands nästa månad.", correct: "flyttar", beforeTranslation: "Meine Schwester", afterTranslation: "nächsten Monat ins Ausland." },
-            { before: "Molnen", after: "österut.", correct: "driver", beforeTranslation: "Die Wolken", afterTranslation: "nach Osten." },
-            { before: "Dimman", after: "över dalen.", correct: "driver", beforeTranslation: "Der Nebel", afterTranslation: "über das Tal." },
-            { before: "Röken", after: "över taken.", correct: "driver", beforeTranslation: "Der Rauch", afterTranslation: "über die Dächer." },
-            { before: "Mörka moln", after: "över kusten från havet.", correct: "driver", beforeTranslation: "Dunkle Wolken", afterTranslation: "vom Meer über die Küste." },
-            { before: "Dimman", after: "långsamt mot skogen.", correct: "driver", beforeTranslation: "Der Nebel", afterTranslation: "langsam zum Wald." },
-            { before: "Röken", after: "genom gatan.", correct: "driver", beforeTranslation: "Der Rauch", afterTranslation: "durch die Straße." },
-            { before: "Molnen", after: "söderut.", correct: "driver", beforeTranslation: "Die Wolken", afterTranslation: "nach Süden." },
-            { before: "Fukten", after: "in i väggen.", correct: "tränger", beforeTranslation: "Die Feuchtigkeit", afterTranslation: "in die Wand." },
-            { before: "Röken", after: "in i rummet.", correct: "tränger", beforeTranslation: "Der Rauch", afterTranslation: "ins Zimmer." },
-            { before: "Kylan", after: "in genom fönstren.", correct: "tränger", beforeTranslation: "Die Kälte", afterTranslation: "durch die Fenster." },
-            { before: "Lukten", after: "in i huset.", correct: "tränger", beforeTranslation: "Der Geruch", afterTranslation: "ins Haus." },
-            { before: "Röken", after: "in genom dörrspringan.", correct: "tränger", beforeTranslation: "Der Rauch", afterTranslation: "durch den Türspalt." },
-            { before: "Fukten", after: "in i träet.", correct: "tränger", beforeTranslation: "Die Feuchtigkeit", afterTranslation: "ins Holz." },
-            { before: "Kylan", after: "in i huset på natten.", correct: "tränger", beforeTranslation: "Die Kälte", afterTranslation: "nachts ins Haus." },
-            { before: "Hon", after: "rosor i trädgården.", correct: "odlar", beforeTranslation: "Sie", afterTranslation: "Rosen im Garten." },
-            { before: "Han", after: "tomater i växthuset.", correct: "odlar", beforeTranslation: "Er", afterTranslation: "Tomaten im Gewächshaus." },
-            { before: "Vi", after: "örter på balkongen.", correct: "odlar", beforeTranslation: "Wir", afterTranslation: "Kräuter auf dem Balkon." },
-            { before: "De", after: "jordgubbar i stora krukor.", correct: "odlar", beforeTranslation: "Sie", afterTranslation: "Erdbeeren in großen Töpfen." },
-            { before: "Jag", after: "chili i köksfönstret.", correct: "odlar", beforeTranslation: "Ich", afterTranslation: "Chili am Küchenfenster." },
-            { before: "Grannen", after: "pelargoner i sitt växthus.", correct: "odlar", beforeTranslation: "Der Nachbar", afterTranslation: "Geranien in seinem Gewächshaus." },
-            { before: "Hon", after: "sallad på terrassen.", correct: "odlar", beforeTranslation: "Sie", afterTranslation: "Salat auf der Terrasse." },
-            { before: "Filmen", after: "många åskådare.", correct: "lockar", beforeTranslation: "Der Film", afterTranslation: "viele Zuschauer." },
-            { before: "Museet", after: "många besökare varje år.", correct: "lockar", beforeTranslation: "Das Museum", afterTranslation: "jedes Jahr viele Besucher." },
-            { before: "Marknaden", after: "turister från hela regionen.", correct: "lockar", beforeTranslation: "Der Markt", afterTranslation: "Touristen aus der ganzen Region." },
-            { before: "Festivalen", after: "tusentals människor.", correct: "lockar", beforeTranslation: "Das Festival", afterTranslation: "Tausende Menschen." },
-            { before: "Utställningen", after: "en ung publik.", correct: "lockar", beforeTranslation: "Die Ausstellung", afterTranslation: "ein junges Publikum." },
-            { before: "Stranden", after: "många familjer på sommaren.", correct: "lockar", beforeTranslation: "Der Strand", afterTranslation: "im Sommer viele Familien." },
-            { before: "Konserten", after: "besökare från hela landet.", correct: "lockar", beforeTranslation: "Das Konzert", afterTranslation: "Besucher aus dem ganzen Land." }
-        ];
+{
+  words: [
+    { word: "Han", translation: "Er" },
+    { word: `<select data-correct="drar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "vagnen.", translation: "zieht den Wagen." }
+  ]
+},
+{
+  words: [
+    { word: "Hästen", translation: "Das Pferd" },
+    { word: `<select data-correct="drar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "vagnen.", translation: "zieht den Wagen." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "Sie" },
+    { word: `<select data-correct="drar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "resväskan efter sig.", translation: "zieht den Koffer hinter sich her." }
+  ]
+},
+{
+  words: [
+    { word: "Barnet", translation: "Das Kind" },
+    { word: `<select data-correct="drar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "pulkan genom snön.", translation: "zieht den Schlitten durch den Schnee." }
+  ]
+},
+{
+  words: [
+    { word: "Vi", translation: "Wir" },
+    { word: `<select data-correct="drar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "bordet närmare väggen.", translation: "ziehen den Tisch näher an die Wand." }
+  ]
+},
+{
+  words: [
+    { word: "Han", translation: "Er" },
+    { word: `<select data-correct="drar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "lådan över golvet.", translation: "zieht die Kiste über den Boden." }
+  ]
+},
+{
+  words: [
+    { word: "De", translation: "Sie" },
+    { word: `<select data-correct="drar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "båten upp på stranden.", translation: "ziehen das Boot an den Strand." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "Sie" },
+    { word: `<select data-correct="flyttar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "till Berlin.", translation: "zieht nach Berlin." }
+  ]
+},
+{
+  words: [
+    { word: "Vi", translation: "Wir" },
+    { word: `<select data-correct="flyttar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "till Hamburg nästa år.", translation: "ziehen nächstes Jahr nach Hamburg." }
+  ]
+},
+{
+  words: [
+    { word: "Han", translation: "Er" },
+    { word: `<select data-correct="flyttar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "till München av arbetsskäl.", translation: "zieht aus beruflichen Gründen nach München." }
+  ]
+},
+{
+  words: [
+    { word: "Familjen", translation: "Die Familie" },
+    { word: `<select data-correct="flyttar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "till landet i vår.", translation: "zieht im Frühjahr aufs Land." }
+  ]
+},
+{
+  words: [
+    { word: "De", translation: "Sie" },
+    { word: `<select data-correct="flyttar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "till en större lägenhet.", translation: "ziehen in eine größere Wohnung." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "Ich" },
+    { word: `<select data-correct="flyttar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "till Köln i augusti.", translation: "ziehe im August nach Köln." }
+  ]
+},
+{
+  words: [
+    { word: "Min syster", translation: "Meine Schwester" },
+    { word: `<select data-correct="flyttar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "utomlands nästa månad.", translation: "zieht nächsten Monat ins Ausland." }
+  ]
+},
+{
+  words: [
+    { word: "Molnen", translation: "Die Wolken" },
+    { word: `<select data-correct="driver" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "österut.", translation: "ziehen nach Osten." }
+  ]
+},
+{
+  words: [
+    { word: "Dimman", translation: "Der Nebel" },
+    { word: `<select data-correct="driver" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "över dalen.", translation: "zieht über das Tal." }
+  ]
+},
+{
+  words: [
+    { word: "Röken", translation: "Der Rauch" },
+    { word: `<select data-correct="driver" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "över taken.", translation: "zieht über die Dächer." }
+  ]
+},
+{
+  words: [
+    { word: "Mörka moln", translation: "Dunkle Wolken" },
+    { word: `<select data-correct="driver" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "över kusten från havet.", translation: "ziehen vom Meer über die Küste." }
+  ]
+},
+{
+  words: [
+    { word: "Dimman", translation: "Der Nebel" },
+    { word: `<select data-correct="driver" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "långsamt mot skogen.", translation: "zieht langsam zum Wald." }
+  ]
+},
+{
+  words: [
+    { word: "Röken", translation: "Der Rauch" },
+    { word: `<select data-correct="driver" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "genom gatan.", translation: "zieht durch die Straße." }
+  ]
+},
+{
+  words: [
+    { word: "Molnen", translation: "Die Wolken" },
+    { word: `<select data-correct="driver" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "söderut.", translation: "ziehen nach Süden." }
+  ]
+},
+{
+  words: [
+    { word: "Fukten", translation: "Die Feuchtigkeit" },
+    { word: `<select data-correct="tränger" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "in i väggen.", translation: "zieht in die Wand." }
+  ]
+},
+{
+  words: [
+    { word: "Röken", translation: "Der Rauch" },
+    { word: `<select data-correct="tränger" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "in i rummet.", translation: "zieht ins Zimmer." }
+  ]
+},
+{
+  words: [
+    { word: "Kylan", translation: "Die Kälte" },
+    { word: `<select data-correct="tränger" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "in genom fönstren.", translation: "zieht durch die Fenster." }
+  ]
+},
+{
+  words: [
+    { word: "Lukten", translation: "Der Geruch" },
+    { word: `<select data-correct="tränger" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "in i huset.", translation: "zieht ins Haus." }
+  ]
+},
+{
+  words: [
+    { word: "Röken", translation: "Der Rauch" },
+    { word: `<select data-correct="tränger" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "in genom dörrspringan.", translation: "zieht durch den Türspalt." }
+  ]
+},
+{
+  words: [
+    { word: "Fukten", translation: "Die Feuchtigkeit" },
+    { word: `<select data-correct="tränger" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "in i träet.", translation: "zieht ins Holz." }
+  ]
+},
+{
+  words: [
+    { word: "Kylan", translation: "Die Kälte" },
+    { word: `<select data-correct="tränger" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "in i huset på natten.", translation: "zieht nachts ins Haus." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "Sie" },
+    { word: `<select data-correct="odlar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "rosor i trädgården.", translation: "zieht Rosen im Garten." }
+  ]
+},
+{
+  words: [
+    { word: "Han", translation: "Er" },
+    { word: `<select data-correct="odlar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "tomater i växthuset.", translation: "zieht Tomaten im Gewächshaus." }
+  ]
+},
+{
+  words: [
+    { word: "Vi", translation: "Wir" },
+    { word: `<select data-correct="odlar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "örter på balkongen.", translation: "ziehen Kräuter auf dem Balkon." }
+  ]
+},
+{
+  words: [
+    { word: "De", translation: "Sie" },
+    { word: `<select data-correct="odlar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "jordgubbar i stora krukor.", translation: "ziehen Erdbeeren in großen Töpfen." }
+  ]
+},
+{
+  words: [
+    { word: "Jag", translation: "Ich" },
+    { word: `<select data-correct="odlar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "chili i köksfönstret.", translation: "ziehe Chili am Küchenfenster." }
+  ]
+},
+{
+  words: [
+    { word: "Grannen", translation: "Der Nachbar" },
+    { word: `<select data-correct="odlar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "pelargoner i sitt växthus.", translation: "zieht Geranien in seinem Gewächshaus." }
+  ]
+},
+{
+  words: [
+    { word: "Hon", translation: "Sie" },
+    { word: `<select data-correct="odlar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "sallad på terrassen.", translation: "zieht Salat auf der Terrasse." }
+  ]
+},
+{
+  words: [
+    { word: "Filmen", translation: "Der Film" },
+    { word: `<select data-correct="lockar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "många åskådare.", translation: "zieht viele Zuschauer." }
+  ]
+},
+{
+  words: [
+    { word: "Museet", translation: "Das Museum" },
+    { word: `<select data-correct="lockar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "många besökare varje år.", translation: "zieht jedes Jahr viele Besucher." }
+  ]
+},
+{
+  words: [
+    { word: "Marknaden", translation: "Der Markt" },
+    { word: `<select data-correct="lockar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "turister från hela regionen.", translation: "zieht Touristen aus der ganzen Region." }
+  ]
+},
+{
+  words: [
+    { word: "Festivalen", translation: "Das Festival" },
+    { word: `<select data-correct="lockar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "tusentals människor.", translation: "zieht Tausende Menschen." }
+  ]
+},
+{
+  words: [
+    { word: "Utställningen", translation: "Die Ausstellung" },
+    { word: `<select data-correct="lockar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "en ung publik.", translation: "zieht ein junges Publikum." }
+  ]
+},
+{
+  words: [
+    { word: "Stranden", translation: "Der Strand" },
+    { word: `<select data-correct="lockar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "många familjer på sommaren.", translation: "zieht im Sommer viele Familien." }
+  ]
+},
+{
+  words: [
+    { word: "Konserten", translation: "Das Konzert" },
+    { word: `<select data-correct="lockar" onchange="evaluateAnswer(this)" aria-label="Choose the correct Swedish verb">
+      <option value="">...</option>
+      <option value="drar">drar</option>
+      <option value="flyttar">flyttar</option>
+      <option value="driver">driver</option>
+      <option value="tränger">tränger</option>
+      <option value="odlar">odlar</option>
+      <option value="lockar">lockar</option>
+    </select>`, translation: "ziehen" },
+    { word: "besökare från hela landet.", translation: "zieht Besucher aus dem ganzen Land." }
+  ]
+}
+];
 
     </script>
 
@@ -1050,17 +1638,23 @@ body.dark-mode a:visited {
     }
 
     function generateSentenceHTML(sentence, sentenceIndex) {
-        const before = `<span class="word" aria-describedby="tooltip-${sentenceIndex}-0">
-                    ${escapeHTML(sentence.before)}
-                    <span class="tooltip" id="tooltip-${sentenceIndex}-0">${escapeHTML(sentence.beforeTranslation)}</span>
-                </span>`;
-        const selector = generateVerbSelect(sentence.correct);
-        const after = `<span class="word" aria-describedby="tooltip-${sentenceIndex}-2">
-                    ${escapeHTML(sentence.after)}
-                    <span class="tooltip" id="tooltip-${sentenceIndex}-2">${escapeHTML(sentence.afterTranslation)}</span>
-                </span>`;
+        const processedWords = sentence.words.map((item, wordIndex) => {
+            const { word, translation } = item;
 
-        const sentenceHTML = [before, selector, after].join(' ');
+            if (word.includes('<select')) {
+                const correctMatch = word.match(/data-correct="([^"]+)"/);
+                return generateVerbSelect(correctMatch ? correctMatch[1] : '');
+            }
+
+            return translation ?
+                `<span class="word" aria-describedby="tooltip-${sentenceIndex}-${wordIndex}">
+                    ${word}
+                    <span class="tooltip" id="tooltip-${sentenceIndex}-${wordIndex}">${translation}</span>
+                </span>` :
+                word;
+        });
+
+        const sentenceHTML = processedWords.join(' ');
         return `<div class="sentence" data-state="none"><p>${sentenceHTML}</p></div>`;
     }
 
