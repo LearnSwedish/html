@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZIEHEN theory</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+--bg: #f4f7fb;
+--panel: #ffffff;
+--ink: #1f2937;
+--muted: #64748b;
+--line: #dbe4ee;
+--accent: #173b67;
+--accent-soft: #eaf2fb;
+--green: #1f7a52;
+--green-soft: #eaf7f0;
+--amber: #9a6415;
+--amber-soft: #fff7e8;
+--shadow: 0 18px 50px rgba(25, 55, 90, .09);
+--radius: 18px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+margin: 0;
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+background: radial-gradient(circle at top left, rgba(23, 59, 103, .08), transparent 34rem), var(--bg);
+color: var(--ink);
+line-height: 1.6;
+}
+.page { max-width: 1180px; margin: 0 auto; padding: 34px 24px 70px; }
+.hero {
+background: linear-gradient(135deg, #173b67 0%, #244f82 62%, #315d90 100%);
+color: #fff;
+border-radius: 28px;
+padding: 48px 52px;
+box-shadow: var(--shadow);
+margin-bottom: 26px;
+}
+.eyebrow { text-transform: uppercase; letter-spacing: .14em; font-weight: 800; font-size: .78rem; opacity: .75; margin-bottom: 8px; }
+h1 { margin: 0 0 14px; font-size: clamp(2.1rem, 5vw, 4.3rem); line-height: 1.02; letter-spacing: -.04em; }
+.focus-word { display: block; font-size: clamp(4.8rem, 14vw, 9.5rem); line-height: .82; letter-spacing: -.075em; text-transform: uppercase; text-shadow: 0 5px 22px rgba(0,0,0,.16); }
+.focus-subtitle { display: block; margin-top: 18px; font-size: clamp(1.9rem, 4.5vw, 3.5rem); line-height: 1; letter-spacing: -.04em; }
+.hero p { margin: 0; max-width: 900px; font-size: 1.15rem; color: #e7eef7; }
+.hero strong { color: white; }
+.principle { margin-top: 22px; display: inline-block; padding: 11px 14px; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.09); border-radius: 12px; font-weight: 700; }
+.top-grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 24px; margin-bottom: 26px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px; }
+.panel h2 { margin: 0 0 10px; font-size: 1.5rem; letter-spacing: -.02em; }
+.panel p { margin: 0 0 12px; }
+.formula { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.formula span { background: var(--accent-soft); color: var(--accent); border: 1px solid #cbdcf0; border-radius: 999px; padding: 8px 12px; font-weight: 800; }
+.decision { display: grid; gap: 10px; margin-top: 12px; }
+.decision div { border-left: 4px solid var(--accent); background: #f8fbff; padding: 10px 12px; border-radius: 8px; }
+.decision b { color: var(--accent); }
+.section-title { margin: 44px 0 10px; font-size: 2rem; letter-spacing: -.03em; }
+.section-intro { color: var(--muted); max-width: 850px; margin-bottom: 20px; }
+.cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; }
+.verb-card { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
+.verb-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 22px 24px 18px; background: linear-gradient(180deg,#f9fbfe,#f3f7fb); border-bottom: 1px solid var(--line); }
+.verb { font-size: 2.1rem; font-weight: 900; line-height: 1; color: var(--accent); }
+.gloss { color: var(--muted); font-weight: 750; text-align: right; }
+.verb-body { display: flex; flex: 1; flex-direction: column; padding: 22px 24px 24px; }
+.meaning { margin: 0 0 16px; font-size: 1.02rem; }
+.example { border-top: 1px solid var(--line); padding: 13px 0; }
+.example:first-of-type { border-top: 0; padding-top: 0; }
+.verb-body > .example:nth-last-child(2) { margin-bottom: auto; }
+.de { font-weight: 800; margin-bottom: 3px; }
+.sv { color: var(--green); font-weight: 800; }
+.note { margin-top: 12px; padding: 12px 14px; border-radius: 11px; background: var(--amber-soft); color: #6f4a12; border: 1px solid #f0ddb8; font-size: .94rem; }
+.comparison { margin-top: 28px; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; min-width: 900px; }
+th,td { padding: 15px 18px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: #edf4fb; color: #173b67; font-size: .92rem; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 900; color: var(--accent); white-space: nowrap; }
+.warning { margin-top: 24px; padding: 18px 20px; border-radius: 14px; background: #fff8e8; border: 1px solid #ecd9a9; color: #6b4d0f; }
+.summary { margin-top: 28px; background: #172a43; color: #fff; border-radius: 20px; padding: 26px 28px; box-shadow: var(--shadow); }
+.summary h2 { margin: 0 0 8px; }
+.summary p { margin: 0; color: #dce7f4; }
+.summary-grid { margin-top: 18px; display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.summary-grid div { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 12px 14px; }
+.summary-grid b { display: block; font-size: 1.2rem; margin-bottom: 2px; }
+.mini { color: #cbd8e8; font-size: .91rem; }
+@media (max-width:850px){ .top-grid,.cards{grid-template-columns:1fr} .summary-grid{grid-template-columns:1fr 1fr} .hero{padding:36px 28px} }
+@media (max-width:560px){ .page{padding:18px 14px 50px} .summary-grid{grid-template-columns:1fr} .verb-head{align-items:flex-start;flex-direction:column} .gloss{text-align:left} }
+/* Floating navigation buttons — shared exercise style */
+.floating-links{ position:fixed; top:20px; right:40px; z-index:1000; display:flex; flex-direction:column; align-items:stretch; gap:10px; width:150px; }
+.floating-link{ width:100%; height:40px; padding:0 10px; box-sizing:border-box; font-family:Arial,sans-serif; font-size:16px; font-weight:400; text-align:center; background-color:#fff; color:#333; border-radius:5px; box-shadow:0 2px 4px rgba(0,0,0,.1); display:flex; align-items:center; justify-content:center; transition:background-color .3s,color .3s; cursor:pointer; border:none; text-decoration:none; }
+.floating-link:visited{color:#333}
+.floating-link:hover,.floating-link:focus-visible{background-color:#0056b3;color:white;text-decoration:none}
+.floating-link:focus-visible{outline:2px solid #3182ce;outline-offset:2px}
+.floating-link i{margin-right:8px}
+@media (max-width:760px){ .floating-links{position:static;width:150px;max-width:100%;margin:0 0 16px auto} }
+</style>
+</head>
+<body>
+<nav class="floating-links" aria-label="Related pages">
+  <a class="floating-link" href="https://learnswedish.github.io/html/ziehen-what-verb.html" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-check" aria-hidden="true"></i><span>What verb?</span></a>
+  <a class="floating-link" href="https://learnswedish.github.io/html/ziehen-exercise.html" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-person-running" aria-hidden="true"></i><span>SWExercise</span></a>
+</nav>
+<main class="page">
+<section class="hero">
+<div class="eyebrow">German verb in focus</div>
+<h1><span class="focus-word">ZIEHEN</span><span class="focus-subtitle">in Swedish</span></h1>
+<p>The German verb <strong>ZIEHEN</strong> has several common lexical meanings that Swedish normally divides between different verbs. It can describe pulling, moving house, drifting, penetrating, cultivating and attracting.</p>
+<div class="principle">With ZIEHEN, ask what kind of movement or effect is involved: physical pulling, relocation, drifting through the air, penetration, cultivation or attraction.</div>
+</section>
+<section class="top-grid">
+<div class="panel"><h2>Why ZIEHEN is difficult in Swedish</h2><p>German <strong>ziehen</strong> is not limited to the physical meaning ‘pull’. Clouds can <strong>ziehen</strong>, moisture can <strong>ziehen</strong> into a wall, people can <strong>ziehen</strong> to another city, and a film can <strong>ziehen</strong> an audience.</p><p>Swedish normally lexicalises these meanings separately.</p><div class="formula"><span>dra</span><span>flytta</span><span>driva</span><span>tränga</span><span>odla</span><span>locka</span></div></div>
+<div class="panel"><h2>What does ZIEHEN mean here?</h2><div class="decision"><div><b>Is something being pulled by force?</b> → <strong>dra</strong></div><div><b>Is somebody changing place of residence?</b> → <strong>flytta</strong></div><div><b>Is something moving slowly through the air?</b> → <strong>driva</strong></div><div><b>Is something penetrating into or through something?</b> → <strong>tränga</strong></div><div><b>Are plants being cultivated?</b> → <strong>odla</strong></div><div><b>Is something attracting people?</b> → <strong>locka</strong></div></div></div>
+</section>
+<h2 class="section-title">Six Swedish ways to translate ZIEHEN</h2>
+<p class="section-intro">Each Swedish verb below corresponds to a distinct lexical meaning of the German verb. The examples are in German, followed by the natural Swedish equivalent.</p>
+<section class="cards"><article class="verb-card">
+<div class="verb-head"><div class="verb">dra</div><div class="gloss">pull · move by force</div></div>
+<div class="verb-body">
+<p class="meaning">Use <strong>dra</strong> when <strong>ziehen</strong> means pulling something towards or behind the agent.</p>
+<div class="example"><div class="de">Er zieht den Wagen.</div><div class="sv">Han drar vagnen.</div></div><div class="example"><div class="de">Das Pferd zieht den Wagen.</div><div class="sv">Hästen drar vagnen.</div></div><div class="example"><div class="de">Er zieht den Koffer hinter sich her.</div><div class="sv">Han drar resväskan efter sig.</div></div>
+<div class="note">This is the most direct physical sense of <strong>ziehen</strong>: force is applied so that an object moves. Swedish uses <strong>dra</strong>.</div>
+</div>
+</article><article class="verb-card">
+<div class="verb-head"><div class="verb">flytta</div><div class="gloss">move · change residence</div></div>
+<div class="verb-body">
+<p class="meaning">Use <strong>flytta</strong> when <strong>ziehen</strong> means moving to a new home, town or country.</p>
+<div class="example"><div class="de">Sie zieht nach Berlin.</div><div class="sv">Hon flyttar till Berlin.</div></div><div class="example"><div class="de">Wir ziehen nächstes Jahr nach Hamburg.</div><div class="sv">Vi flyttar till Hamburg nästa år.</div></div><div class="example"><div class="de">Er zieht aus beruflichen Gründen nach München.</div><div class="sv">Han flyttar till München av arbetsskäl.</div></div>
+<div class="note">In this lexical sense, <strong>ziehen</strong> means changing residence. Swedish uses <strong>flytta</strong>, not <strong>dra</strong>.</div>
+</div>
+</article><article class="verb-card">
+<div class="verb-head"><div class="verb">driva</div><div class="gloss">drift · move through the air</div></div>
+<div class="verb-body">
+<p class="meaning">Use <strong>driva</strong> when <strong>ziehen</strong> describes clouds, fog, smoke or similar masses moving gradually through the air.</p>
+<div class="example"><div class="de">Die Wolken ziehen nach Osten.</div><div class="sv">Molnen driver österut.</div></div><div class="example"><div class="de">Nebel zieht über das Tal.</div><div class="sv">Dimman driver över dalen.</div></div><div class="example"><div class="de">Rauch zieht über die Dächer.</div><div class="sv">Rök driver över taken.</div></div>
+<div class="note">The movement is gradual and carried along rather than actively propelled. Swedish commonly uses <strong>driva</strong>.</div>
+</div>
+</article><article class="verb-card">
+<div class="verb-head"><div class="verb">tränga</div><div class="gloss">penetrate · pass into</div></div>
+<div class="verb-body">
+<p class="meaning">Use <strong>tränga</strong> when <strong>ziehen</strong> describes moisture, smoke, cold or similar phenomena entering or passing into something.</p>
+<div class="example"><div class="de">Die Feuchtigkeit zieht in die Wand.</div><div class="sv">Fukten tränger in i väggen.</div></div><div class="example"><div class="de">Der Rauch zieht ins Zimmer.</div><div class="sv">Röken tränger in i rummet.</div></div><div class="example"><div class="de">Die Kälte zieht durch die Fenster.</div><div class="sv">Kylan tränger in genom fönstren.</div></div>
+<div class="note">Here <strong>ziehen</strong> describes movement into or through a material or space. Swedish normally makes the penetrating movement explicit with <strong>tränga</strong>.</div>
+</div>
+</article><article class="verb-card">
+<div class="verb-head"><div class="verb">odla</div><div class="gloss">grow · cultivate</div></div>
+<div class="verb-body">
+<p class="meaning">Use <strong>odla</strong> when <strong>ziehen</strong> means cultivating or raising plants.</p>
+<div class="example"><div class="de">Sie zieht Rosen im Garten.</div><div class="sv">Hon odlar rosor i trädgården.</div></div><div class="example"><div class="de">Er zieht Tomaten im Gewächshaus.</div><div class="sv">Han odlar tomater i växthuset.</div></div><div class="example"><div class="de">Wir ziehen Kräuter auf dem Balkon.</div><div class="sv">Vi odlar örter på balkongen.</div></div>
+<div class="note">German can use <strong>ziehen</strong> for growing plants. Swedish normally uses the dedicated cultivation verb <strong>odla</strong>.</div>
+</div>
+</article><article class="verb-card">
+<div class="verb-head"><div class="verb">locka</div><div class="gloss">attract · draw an audience</div></div>
+<div class="verb-body">
+<p class="meaning">Use <strong>locka</strong> when <strong>ziehen</strong> means attracting people, visitors or an audience.</p>
+<div class="example"><div class="de">Der Film zieht viele Zuschauer.</div><div class="sv">Filmen lockar många åskådare.</div></div><div class="example"><div class="de">Das Museum zieht jedes Jahr viele Besucher.</div><div class="sv">Museet lockar många besökare varje år.</div></div><div class="example"><div class="de">Der Markt zieht Touristen aus der ganzen Region.</div><div class="sv">Marknaden lockar turister från hela regionen.</div></div>
+<div class="note">In this sense, <strong>ziehen</strong> expresses attraction rather than physical pulling. Swedish normally uses <strong>locka</strong>.</div>
+</div>
+</article></section>
+<h2 class="section-title">How ZIEHEN divides into six meanings</h2>
+<p class="section-intro">Choose the Swedish verb from the meaning of the German verb in the complete sentence, not from the German verb form alone.</p>
+<div class="comparison"><table><thead><tr><th>Swedish choice</th><th>Core meaning</th><th>Typical German ZIEHEN example</th><th>Diagnostic question</th></tr></thead><tbody><tr><td>dra</td><td>pull · move by force</td><td>Er zieht den Wagen.</td><td>Is something being pulled by force?</td></tr><tr><td>flytta</td><td>move · change residence</td><td>Sie zieht nach Berlin.</td><td>Is somebody changing place of residence?</td></tr><tr><td>driva</td><td>drift · move through the air</td><td>Die Wolken ziehen nach Osten.</td><td>Is something moving slowly through the air?</td></tr><tr><td>tränga</td><td>penetrate · pass into</td><td>Die Feuchtigkeit zieht in die Wand.</td><td>Is something penetrating into or through something?</td></tr><tr><td>odla</td><td>grow · cultivate</td><td>Sie zieht Rosen im Garten.</td><td>Are plants being cultivated?</td></tr><tr><td>locka</td><td>attract · draw an audience</td><td>Der Film zieht viele Zuschauer.</td><td>Is something attracting people?</td></tr></tbody></table></div>
+<div class="warning"><strong>Important:</strong> Do not assume that German <strong>ziehen</strong> always means Swedish <strong>dra</strong>. The verb itself has several common lexical meanings, and Swedish normally chooses a more specific verb.</div>
+<section class="summary"><h2>When you meet ZIEHEN</h2><p>Do not translate the German verb automatically. Identify its lexical meaning first, then choose the Swedish verb that expresses that meaning.</p><div class="summary-grid"><div><b>dra</b><span class="mini">pull · move by force</span></div><div><b>flytta</b><span class="mini">move · change residence</span></div><div><b>driva</b><span class="mini">drift · move through the air</span></div><div><b>tränga</b><span class="mini">penetrate · pass into</span></div><div><b>odla</b><span class="mini">grow · cultivate</span></div><div><b>locka</b><span class="mini">attract · draw an audience</span></div></div></section>
+</main>
+<script>
+(() => {
+  const desktop = window.matchMedia('(min-width: 851px)');
+  let resizeTimer;
+  function alignExampleStarts() {
+    const meanings = [...document.querySelectorAll('.verb-card .meaning')];
+    meanings.forEach((meaning) => { meaning.style.minHeight = ''; });
+    if (!desktop.matches) return;
+    for (let i = 0; i < meanings.length; i += 2) {
+      const pair = meanings.slice(i, i + 2);
+      const height = Math.max(...pair.map((meaning) => meaning.getBoundingClientRect().height));
+      pair.forEach((meaning) => { meaning.style.minHeight = height + 'px'; });
+    }
+  }
+  window.addEventListener('load', alignExampleStarts);
+  window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(alignExampleStarts, 120); });
+  if (document.fonts?.ready) document.fonts.ready.then(alignExampleStarts);
+})();
+</script>
+</body>
+</html>
