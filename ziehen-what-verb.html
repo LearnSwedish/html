@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZIEHEN – what verb?</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        	*,
+        	*::before,
+        	*::after {
+        		box-sizing: border-box;
+        		margin: 0;
+        		padding: 0;
+        	}
+
+        	body {
+        		font-family: Arial, sans-serif;
+        		background-color: #f9fafb;
+        		color: #2d3748;
+        		line-height: 1.6;
+        		font-size: 16px;
+        		display: flex;
+        		flex-direction: column;
+        		justify-content: flex-start;
+        		align-items: center;
+        		min-height: 100vh;
+        		padding: 20px;
+        		overflow-y: auto;
+        		position: relative;
+        		transition: background-color 0.3s, color 0.3s;
+        	}
+
+        	body.dark-mode {
+        		background-color: #121212;
+        		color: #e2e8f0;
+        	}
+
+        	/* Close Button Styling */
+        	.close-button {
+        		float: right;
+        		padding: 5px;
+        		cursor: pointer;
+        		font-size: 18px;
+        		background-color: #ccc;
+        		border: none;
+        		border-radius: 50%;
+        		line-height: 20px;
+        		width: 30px;
+        		height: 30px;
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s, transform 0.3s;
+        	}
+
+        	body.dark-mode .close-button {
+        		background-color: #555;
+        		color: #ffcccc;
+        	}
+
+        	.close-button:hover {
+        		background-color: #f44336;
+        		transform: scale(1.2) rotate(90deg);
+        		color: white;
+        	}
+
+	        	body.dark-mode .close-button:hover {
+	        		background-color: #ff6666;
+	        		color: white;
+	        		transform: scale(1.2) rotate(90deg);
+	        	}
+
+	        	.modal-close {
+	        		position: absolute;
+	        		top: 12px;
+	        		right: 12px;
+	        		width: 38px;
+	        		height: 38px;
+	        		padding: 0;
+	        		display: grid;
+	        		place-items: center;
+	        		border: 0;
+	        		border-radius: 10px;
+	        		background: transparent;
+	        		color: #64748b;
+	        		cursor: pointer;
+	        		transition: transform 0.15s, opacity 0.15s, background-color 0.15s, color 0.15s;
+	        	}
+
+	        	.modal-close:hover {
+	        		background: #eef2f4;
+	        		color: #1a202c;
+	        	}
+
+	        	.modal-close:active {
+	        		transform: translateY(1px);
+	        	}
+
+	        	.modal-close:focus-visible {
+	        		outline: 2px solid #3182ce;
+	        		outline-offset: 2px;
+	        	}
+
+	        	.modal-close svg {
+	        		width: 20px;
+	        		height: 20px;
+	        		display: block;
+	        		transition: transform 0.22s ease;
+	        	}
+
+	        	.modal-close:hover svg {
+	        		transform: rotate(90deg) scale(1.08);
+	        	}
+
+	        	body.dark-mode .modal-close {
+	        		color: #cbd5e0;
+	        	}
+
+	        	body.dark-mode .modal-close:hover {
+	        		background: #2d3748;
+	        		color: #ffffff;
+	        	}
+
+        	/* Container */
+        	.container {
+        		background-color: #ffffff;
+        		padding: 40px 30px;
+        		border-radius: 12px;
+        		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        		max-width: 790px;
+        		width: 100%;
+        		text-align: center;
+        		position: relative;
+        		transition: background-color 0.3s, box-shadow 0.3s;
+        		margin-top: 20px;
+        	}
+
+        	body.dark-mode .container {
+        		background-color: #1a202c;
+        		box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        	}
+
+        	/* Dark Mode Toggle */
+        	.dark-mode-toggle {
+        		justify-content: flex-start;
+        		padding: 0 10px;
+        		gap: 10px;
+        		cursor: default;
+        	}
+
+        	/* Modal */
+        	.modal {
+        		display: none;
+        		position: fixed;
+        		left: 0;
+        		top: 0;
+        		width: 100%;
+        		height: 100%;
+        		background: rgba(0, 0, 0, 0.5);
+        		z-index: 1000;
+        		justify-content: center;
+        		align-items: center;
+        		opacity: 0;
+        		transition: opacity 0.3s ease-in-out;
+        	}
+
+	        	.modal-content {
+	        		position: relative;
+	        		background: white;
+        		color: black;
+        		padding: 20px;
+        		border-radius: 8px;
+        		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        		text-align: center;
+        		max-width: 600px;
+        		width: 80%;
+        		transform: translateY(-50px);
+        		transition: transform 0.3s ease-in-out;
+        	}
+
+        	body.dark-mode .modal-content {
+        		background-color: #1a202c;
+        		color: #edf2f7;
+        		border-color: #2d3748;
+        	}
+
+        	.modal.show {
+        		display: flex;
+        		opacity: 1;
+        	}
+
+        	/* Page Title */
+        	.page-title {
+        		text-align: center;
+        		color: #333333;
+        		font-size: 28px;
+        		margin-bottom: 20px;
+        		line-height: 1.4;
+        		padding-top: 10px;
+        		position: relative;
+        		z-index: 1;
+        		transition: color 0.3s ease, background-color 0.3s ease;
+        	}
+
+	        	body.dark-mode .page-title {
+	        		color: #ffffff;
+	        	}
+
+	        	.page-title .focus-verb {
+	        		color: #0b6fd3;
+	        		font-family: "Arial Narrow", "Aptos Narrow", "Roboto Condensed", Arial, sans-serif;
+	        		font-size: 1.08em;
+	        		font-style: normal;
+	        		font-stretch: condensed;
+	        		font-weight: 400;
+	        		letter-spacing: 0.06em;
+	        		text-transform: uppercase;
+	        		transition: color 0.3s ease;
+	        	}
+
+	        	body.dark-mode .page-title .focus-verb {
+	        		color: #72c3ff;
+	        	}
+
+        	/* Score, Start Over, and Dark Mode Toggle Container */
+        	.score-container {
+        		position: fixed;
+        		top: 20px;
+        		right: 40px;
+        		display: flex;
+        		flex-direction: column;
+        		align-items: stretch;
+        		width: 150px;
+        		z-index: 1001;
+        		gap: 10px;
+        		transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        	}
+
+        	/* Sentence Styling */
+        	.sentence {
+        		background-color: #f7fafc;
+        		padding: 20px;
+        		padding-bottom: 5px;
+				padding-right: 66px;
+        		border-radius: 8px;
+        		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        		position: relative;
+        		transition: background-color 0.3s, border 0.3s;
+        		border-left: 6px solid transparent;
+        		text-align: left;
+        		data-state: "none";
+        	}
+
+        	body.dark-mode .sentence {
+        		background-color: #2d3748;
+        		box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+        	}
+
+        	.sentence.correct {
+        		border-left: 6px solid #38a169;
+        		background-color: #cdffcd;
+        		transition: border 0.3s, background-color 0.3s;
+        	}
+
+        	body.dark-mode .sentence.correct {
+        		border-left: 6px solid #38a169;
+        		background-color: #22543d;
+        	}
+
+        	.sentence.incorrect {
+        		border-left: 6px solid #e53e3e;
+        		background-color: #FFADB0;
+        		transition: border 0.3s, background-color 0.3s;
+        	}
+
+        	body.dark-mode .sentence.incorrect {
+        		border-left: 6px solid #e53e3e;
+        		background-color: #742a2a;
+        	}
+
+        	.sentence p {
+        		font-size: 1.1rem;
+        		margin-bottom: 10px;
+        		transition: color 0.3s;
+        	}
+
+        	body.dark-mode .sentence p {
+        		color: #edf2f7;
+        	}
+
+			.speech-button {
+				position: absolute;
+				top: 50%;
+				right: 14px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 36px;
+				height: 36px;
+				margin-left: 0;
+				border: 0;
+				border-radius: 50%;
+				background: #2f855a;
+				color: #fff;
+				cursor: pointer;
+				transform: translateY(-50%);
+				box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+				transition: transform 0.15s ease, background-color 0.15s ease;
+			}
+
+			.speech-button:hover {
+				background: #276749;
+				transform: translateY(-50%) scale(1.06);
+			}
+
+			.speech-button:focus-visible {
+				outline: 3px solid #3182ce;
+				outline-offset: 2px;
+			}
+
+			.speech-button.speaking {
+				background: #2b6cb0;
+				box-shadow: 0 0 0 4px rgba(43, 108, 176, 0.16);
+			}
+
+			.speech-button.speaking::before,
+			.speech-button.speaking::after {
+				content: '';
+				position: absolute;
+				inset: -5px;
+				border: 2px solid rgba(49, 130, 206, 0.7);
+				border-radius: 50%;
+				pointer-events: none;
+				animation: speech-wave 1.4s ease-out infinite;
+			}
+
+			.speech-button.speaking::after {
+				animation-delay: 0.7s;
+			}
+
+			.speech-button.speaking i {
+				animation: speaker-pulse 0.7s ease-in-out infinite alternate;
+			}
+
+			@keyframes speech-wave {
+				0% { opacity: 0.8; transform: scale(0.78); }
+				75%, 100% { opacity: 0; transform: scale(1.55); }
+			}
+
+			@keyframes speaker-pulse {
+				from { transform: scale(0.92); }
+				to { transform: scale(1.12); }
+			}
+
+			body.dark-mode .speech-button {
+				background: #68d391;
+				color: #1a202c;
+			}
+
+			body.dark-mode .speech-button.speaking::before,
+			body.dark-mode .speech-button.speaking::after {
+				border-color: rgba(104, 211, 145, 0.78);
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				.speech-button,
+				.speech-button.speaking::before,
+				.speech-button.speaking::after,
+				.speech-button.speaking i {
+					animation: none;
+					transition: none;
+				}
+			}
+
+	        	/* Sentences */
+        	.sentences {
+        		display: grid;
+        		grid-template-columns: 1fr;
+        		gap: 20px;
+        	}
+
+        	/* Slider Container */
+        	.switch {
+        		position: relative;
+        		width: 40px;
+        		height: 20px;
+        		display: inline-block;
+        	}
+
+        	/* Hide Default Checkbox */
+        	.switch input {
+        		display: none;
+        	}
+
+        	/* Slider Appearance */
+        	.slider {
+        		position: absolute;
+        		cursor: pointer;
+        		top: 0;
+        		left: 0;
+        		right: 0;
+        		bottom: 0;
+        		background-color: #ccc;
+        		transition: 0.4s;
+        		border-radius: 20px;
+        	}
+
+        	.slider::before {
+        		position: absolute;
+        		content: "";
+        		height: 14px;
+        		width: 14px;
+        		left: 3px;
+        		bottom: 3px;
+        		background-color: white;
+        		transition: 0.4s;
+        		border-radius: 50%;
+        	}
+
+        	/* Slider Active State */
+        	.switch input:checked+.slider {
+        		background-color: #007BFF;
+        	}
+
+        	.switch input:checked+.slider::before {
+        		transform: translateX(20px);
+        	}
+
+        	/* Start Over Button */
+        	.start-over {
+        		background-color: #007BFF;
+        		color: white;
+        		cursor: pointer;
+        		border: none;
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s ease;
+        	}
+
+        	.start-over:hover {
+        		background-color: #0056b3;
+        		color: white;
+        	}
+
+        	/* Tooltip Styling */
+        	.tooltip {
+        		position: absolute;
+        		bottom: 125%;
+        		left: 50%;
+        		transform: translateX(-50%);
+        		background-color: #333;
+        		color: #fff;
+        		padding: 6px 10px;
+        		border-radius: 4px;
+        		white-space: nowrap;
+        		font-size: 0.9rem;
+        		opacity: 0;
+        		visibility: hidden;
+        		transition: opacity 0.3s, visibility 0.3s;
+        		z-index: 10;
+        	}
+
+        	body.dark-mode .tooltip {
+        		background-color: #555;
+        		color: #fff;
+        	}
+
+        	.tooltip::after {
+        		content: '';
+        		position: absolute;
+        		top: 100%;
+        		left: 50%;
+        		transform: translateX(-50%);
+        		border-width: 5px;
+        		border-style: solid;
+        		border-color: #333 transparent transparent transparent;
+        	}
+
+        	body.dark-mode .tooltip::after {
+        		border-color: #555 transparent transparent transparent;
+        	}
+
+        	.word:hover .tooltip {
+        		opacity: 1;
+        		visibility: visible;
+        	}
+
+        	/* Word Styling */
+        	.word {
+        		position: relative;
+        		cursor: pointer;
+        		color: #2d3748;
+        		transition: color 0.3s, background-color 0.3s;
+        		display: inline-block;
+        		border-radius: 4px;
+        	}
+
+        	body.dark-mode .word {
+        		color: #edf2f7;
+        	}
+
+        	.word::after {
+        		content: '';
+        		position: absolute;
+        		left: 50%;
+        		bottom: -2px;
+        		width: 100%;
+        		height: 3px;
+        		background-color: currentColor;
+        		transform: translateX(-50%) scaleX(0);
+        		transform-origin: center;
+        		transition: transform 0.3s ease;
+        	}
+
+        	.word:hover::after,
+        	.word:focus::after {
+        		transform: translateX(-50%) scaleX(1);
+        	}
+
+        	.word:hover,
+        	.word:focus {
+        		background-color: rgba(45, 55, 72, 0.1);
+        	}
+
+        	body.dark-mode .word:hover,
+        	body.dark-mode .word:focus {
+        		background-color: rgba(226, 232, 240, 0.1);
+        	}
+
+        	/* Unified Button Styling */
+        	.score,
+        	.dark-mode-toggle,
+        	.start-over {
+        		width: 100%;
+        		height: 40px;
+        		padding: 0 10px;
+        		box-sizing: border-box;
+        		font-size: 16px;
+        		text-align: center;
+        		background-color: #fff;
+        		color: #333;
+        		border-radius: 5px;
+        		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        		display: flex;
+        		align-items: center;
+        		justify-content: center;
+        		transition: background-color 0.3s, color 0.3s;
+        		cursor: pointer;
+        		border: none;
+        	}
+
+        	        /* Hamburger Menu */
+                .hamburger-menu {
+                    display: none;
+                    font-size: 24px;
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    cursor: pointer;
+                    z-index: 1002;
+                }
+
+		/* Menu Overlay - Slide Animation */
+		.menu-overlay {
+			position: fixed;
+			top: 0;
+			right: 0;
+			width: 250px;
+			height: 100%;
+			background: #fff;
+			color: #333;
+			box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+			z-index: 1003;
+			transform: translateX(100%); /* Start off-screen to the right */
+			transition: transform 0.4s ease; /* Smooth slide effect */
+		}
+
+		/* Show the Menu Overlay by Sliding In */
+		.menu-overlay.active {
+			transform: translateX(0); /* Slide into view */
+		}
+
+		/* Hide elements on mobile */
+		@media (max-width: 600px) {
+			.score-container {
+				display: none;
+			}
+
+			.hamburger-menu {
+				display: block;
+			}
+		}
+
+		/* Menu item styling */
+		.menu-overlay .menu-item {
+			padding: 15px;
+			font-size: 18px;
+			border-bottom: 1px solid #ccc;
+			text-align: left;
+			cursor: pointer;
+		}
+
+		/* Close Button styling */
+		.menu-overlay .close-button {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			font-size: 24px;
+			cursor: pointer;
+		}
+
+		/* Apply Dark Mode to Menu */
+		.dark-mode-menu {
+			background-color: #333;
+			color: #fff;
+		}
+		.dark-mode-menu .menu-item {
+			border-bottom: 1px solid #555;
+		}
+
+		#darkModeIcon {
+			font-size: 20px;
+			color: #333; /* Default color for light mode */
+			cursor: pointer;
+		}
+
+		.dark-mode #darkModeIcon {
+			color: #ffeb3b; /* Bright color for dark mode */
+		}
+
+            /* Responsive Design */
+            @media (max-width: 600px) {
+                .score-container {
+                    top: 10px;
+                    right: 10px;
+                    width: 120px;
+                    gap: 10px;
+                    /* Reduced gap for smaller screens */
+                }
+
+		.sentence p {
+        		line-height: 1.8;
+    		}
+
+                .score,
+                .start-over,
+                .dark-mode-toggle {
+                    font-size: 14px;
+                    height: 45px;
+                    /* Slightly smaller height for smaller screens */
+                    padding: 0 10px;
+                    /* Reduced horizontal padding */
+                }
+
+            	.modal-content {
+               		margin-top: 50px; /* Adjust this value as needed */
+            	}
+
+                .start-over {
+                    padding: 0 12px;
+                }
+
+                .dark-mode-toggle {
+                    padding: 0 8px;
+                    gap: 8px;
+                }
+
+                /* Adjust switch size for smaller screens */
+                .switch {
+                    width: 35px;
+                    height: 18px;
+                }
+
+                .slider::before {
+                    height: 12px;
+                    width: 12px;
+                    left: 3px;
+                    bottom: 3px;
+                }
+
+                .switch input:checked+.slider::before {
+                    transform: translateX(18px);
+                }
+            }
+
+/* Standard linkfärg i ljust läge */
+a,
+a:visited {
+  color: black;
+  text-decoration: underline;
+}
+
+/* Länkar i mörkt läge */
+body.dark-mode a,
+body.dark-mode a:visited {
+  color: white;
+  text-decoration: underline;
+}
+
+
+		/* Specific styles for the dynamic-link */
+		.dynamic-link,
+		.dynamic-link:visited {
+		    color: black; /* Black text in light mode */
+		    text-decoration: underline; /* Always underlined */
+		}
+
+		/* Styles when dark mode is enabled */
+		body.dark-mode .dynamic-link,
+		body.dark-mode .dynamic-link:visited {
+		    color: white; /* White text in dark mode */
+		    text-decoration: underline; /* Always underlined */
+		}
+
+		/* Optional: Hover and Focus States */
+		.dynamic-link:hover,
+		.dynamic-link:focus {
+		    /* If you want to maintain the underline and perhaps add other effects */
+		    text-decoration: underline; /* Ensures underline remains on hover/focus */
+		    /* You can add additional styles here if desired */
+		}</style>
+
+<style>
+    #infoModal .modal-content {
+        text-align: left;
+    }
+
+    #infoModalTitle {
+        margin-bottom: 16px;
+    }
+</style>
+
+
+<style>
+    /* ZIEHEN exercise: sentence on the left, answer control flush right. */
+    .exercise-intro {
+        max-width: 790px;
+        width: 100%;
+        text-align: center;
+        margin: -8px auto 0;
+        padding: 0 12px;
+        color: #4a5568;
+    }
+
+    body.dark-mode .exercise-intro { color: #cbd5e0; }
+
+    .sentence {
+        padding: 16px 18px;
+        min-height: 66px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .sentence p {
+        margin: 0;
+        flex: 1 1 auto;
+        min-width: 0;
+        line-height: 1.5;
+    }
+
+    .answer-wrap {
+        margin-left: auto;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .verb-select {
+        position: relative;
+        width: 142px;
+        user-select: none;
+    }
+
+    .verb-select-trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 9px 11px;
+        border: 1px solid #cbd5e0;
+        border-radius: 8px;
+        background: #edf2f7;
+        color: #1a202c;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s;
+    }
+
+    .verb-select-trigger:hover,
+    .verb-select.open .verb-select-trigger {
+        border-color: #3182ce;
+        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.16);
+    }
+
+    .verb-select-chevron {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 auto;
+        transition: transform 0.2s ease;
+    }
+
+    .verb-select.open .verb-select-chevron {
+        transform: rotate(180deg);
+    }
+
+    .verb-select-dropdown {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 50%;
+        width: max-content;
+        max-width: calc(100vw - 32px);
+        padding: 8px;
+        border: 1px solid #d7dee8;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
+
+    .verb-select.open .verb-select-dropdown {
+        display: block;
+        animation: verb-dropdown-in 0.16s ease-out;
+    }
+
+    @keyframes verb-dropdown-in {
+        from { opacity: 0; transform: translate(-50%, -4px); }
+        to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .verb-select-options {
+        display: grid;
+        grid-template-columns: repeat(3, max-content);
+        grid-template-rows: repeat(2, auto);
+        grid-auto-flow: column;
+        gap: 4px;
+    }
+
+    .verb-select-option {
+        min-width: 40px;
+        max-width: min(180px, 24vw);
+        padding: 8px 10px;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #1a202c;
+        font: inherit;
+        overflow-wrap: anywhere;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .verb-select-option:hover,
+    .verb-select-option:focus-visible {
+        background: #edf2f7;
+        outline: none;
+    }
+
+    .verb-select-option.selected {
+        background: #1769aa;
+        color: #ffffff;
+    }
+
+    .sentence.dropdown-open { z-index: 20; }
+    .sentence.correct .verb-select-trigger { border-color: #38a169; }
+    .sentence.incorrect .verb-select-trigger { border-color: #e53e3e; }
+
+    body.dark-mode .verb-select-trigger {
+        border-color: #718096;
+        background: #4a5568;
+        color: #edf2f7;
+    }
+
+    body.dark-mode .verb-select-trigger:hover,
+    body.dark-mode .verb-select.open .verb-select-trigger {
+        border-color: #63b3ed;
+        box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+    }
+
+    body.dark-mode .verb-select-dropdown {
+        border-color: #4a5568;
+        background: #252f3f;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.42);
+    }
+
+    body.dark-mode .verb-select-option { color: #edf2f7; }
+    body.dark-mode .verb-select-option:hover,
+    body.dark-mode .verb-select-option:focus-visible { background: #3b4759; }
+    body.dark-mode .verb-select-option.selected { background: #3182ce; }
+
+    @media (max-width: 600px) {
+        .sentence {
+            padding: 14px 14px;
+            gap: 12px;
+        }
+        .sentence p { font-size: 1rem; }
+        .verb-select { width: 118px; }
+        .verb-select-trigger { font-size: 0.95rem; }
+        .verb-select-dropdown { max-width: calc(100vw - 24px); }
+        .verb-select-option { padding: 8px 7px; }
+        .exercise-intro { padding-right: 52px; padding-left: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .verb-select-chevron,
+        .verb-select.open .verb-select-dropdown {
+            animation: none;
+            transition: none;
+        }
+    }
+</style>
+
+</head>
+<body>
+    <div class="score-container">
+        <div class="score">Score:&nbsp;<span class="score-value">0</span>&nbsp;/&nbsp;<span class="score-max">30</span></div>
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="darkModeSwitch">
+                <span class="slider"></span>
+            </label>
+            <span>Dark mode</span>
+        </div>
+        <button class="start-over" id="info-button" onclick="openModal('infoModal')">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i> Info
+        </button>
+<button class="start-over"
+        onclick="window.open('https://learnswedish.github.io/html/ziehen-theory.html', '_blank', 'noopener,noreferrer')">
+    <i class="fa-solid fa-graduation-cap" style="margin-right: 8px;"></i>Theory
+</button>
+<button class="start-over"
+        onclick="window.open('https://learnswedish.github.io/html/ziehen-exercise.html', '_blank', 'noopener,noreferrer')">
+    <i class="fa-solid fa-person-running" style="margin-right: 8px;"></i>SWExercise
+</button>
+        <button class="start-over" onclick="startOver()">
+            <i class="fas fa-rotate-left" style="margin-right: 8px;"></i> Start over
+        </button>
+    </div>
+
+    <div class="hamburger-menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="close-button" onclick="toggleMenu()">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="menu-item">Score:&nbsp; <span class="score-value">0</span> / <span class="score-max">30</span></div>
+        <div class="menu-item" onclick="toggleDarkMode()">
+            <i id="darkModeIcon" class="fas fa-lightbulb"></i> <span id="darkModeText">Dark mode</span>
+        </div>
+        <div class="menu-item" onclick="showInfo()">
+            <i class="fas fa-info-circle"></i> Info
+        </div>
+        <div class="menu-item" onclick="startOverAndCloseMenu()">
+            <i class="fas fa-rotate-left"></i> Start over
+        </div>
+    </div>
+
+    <h1 class="page-title"><i class="fa-solid fa-language"></i> What is the Swedish equivalent of <span class="focus-verb">ZIEHEN</span> here?</h1>
+    <p class="exercise-intro">Choose the Swedish verb that most naturally expresses the meaning of <em>ziehen</em> in each German sentence. All choices are shown in the infinitive: this is an exercise in vocabulary and meaning, not in tense or verb forms.</p>
+
+    <div class="container">
+        <div class="sentences" id="sentences"></div>
+    </div>
+
+    <div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <button class="modal-close" type="button" onclick="closeModal('infoModal')" aria-label="Close modal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12"></path>
+                    <path d="M18 6L6 18"></path>
+                </svg>
+            </button>
+            <h2 id="infoModalTitle">Which Swedish verb fits <em>ziehen</em>?</h2>
+            <p>German <em>ziehen</em> has several distinct lexical meanings. Swedish normally chooses a different verb according to the meaning involved in the sentence.</p><br />
+            <p>For each German sentence, choose the Swedish verb that would most naturally correspond to <em>ziehen</em>: <strong>dra, flytta, driva, tränga, odla or locka</strong>.</p><br />
+            <p>Good luck!</p>
+        </div>
+    </div>
+
+    <div class="modal" id="congratulationsModal" role="dialog" aria-modal="true" aria-labelledby="congratulationsModalTitle">
+        <div class="modal-content">
+            <button class="modal-close" type="button" onclick="closeModal('congratulationsModal')" aria-label="Close modal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12"></path>
+                    <path d="M18 6L6 18"></path>
+                </svg>
+            </button>
+            <h2 id="congratulationsModalTitle">Congratulations!</h2>
+            <p>You have answered all 30 sentences correctly!</p>
+        </div>
+    </div>
+
+<script>
+    const sentences = [
+    {
+        "text": "Er zieht den Wagen.",
+        "correct": "dra"
+    },
+    {
+        "text": "Das Pferd zieht den schweren Karren.",
+        "correct": "dra"
+    },
+    {
+        "text": "Sie zieht den Koffer hinter sich her.",
+        "correct": "dra"
+    },
+    {
+        "text": "Das Kind zieht den Schlitten.",
+        "correct": "dra"
+    },
+    {
+        "text": "Wir ziehen den Tisch ein Stück nach links.",
+        "correct": "dra"
+    },
+    {
+        "text": "Sie zieht nach Berlin.",
+        "correct": "flytta"
+    },
+    {
+        "text": "Wir ziehen nächstes Jahr nach Hamburg.",
+        "correct": "flytta"
+    },
+    {
+        "text": "Er zieht im Herbst nach München.",
+        "correct": "flytta"
+    },
+    {
+        "text": "Meine Schwester zieht nach Schweden.",
+        "correct": "flytta"
+    },
+    {
+        "text": "Die Familie zieht bald in eine größere Stadt.",
+        "correct": "flytta"
+    },
+    {
+        "text": "Die Wolken ziehen nach Osten.",
+        "correct": "driva"
+    },
+    {
+        "text": "Nebel zieht über das Tal.",
+        "correct": "driva"
+    },
+    {
+        "text": "Rauch zieht über die Dächer.",
+        "correct": "driva"
+    },
+    {
+        "text": "Dunkle Wolken ziehen über das Meer.",
+        "correct": "driva"
+    },
+    {
+        "text": "Am Morgen zieht dichter Nebel durch die Landschaft.",
+        "correct": "driva"
+    },
+    {
+        "text": "Die Feuchtigkeit zieht in die Wand.",
+        "correct": "tränga"
+    },
+    {
+        "text": "Der Geruch zieht in die Kleidung.",
+        "correct": "tränga"
+    },
+    {
+        "text": "Rauch zieht in das Zimmer.",
+        "correct": "tränga"
+    },
+    {
+        "text": "Die Kälte zieht durch die Ritzen.",
+        "correct": "tränga"
+    },
+    {
+        "text": "Das Wasser zieht langsam in den Boden.",
+        "correct": "tränga"
+    },
+    {
+        "text": "Sie zieht Rosen im Garten.",
+        "correct": "odla"
+    },
+    {
+        "text": "Er zieht Tomaten aus Samen.",
+        "correct": "odla"
+    },
+    {
+        "text": "Wir ziehen Kräuter auf dem Balkon.",
+        "correct": "odla"
+    },
+    {
+        "text": "Die Gärtnerei zieht junge Pflanzen.",
+        "correct": "odla"
+    },
+    {
+        "text": "Meine Großmutter zieht Orchideen.",
+        "correct": "odla"
+    },
+    {
+        "text": "Der Film zieht viele Zuschauer.",
+        "correct": "locka"
+    },
+    {
+        "text": "Die Ausstellung zieht jedes Jahr viele Besucher.",
+        "correct": "locka"
+    },
+    {
+        "text": "Das Festival zieht Tausende Menschen.",
+        "correct": "locka"
+    },
+    {
+        "text": "Der Markt zieht Touristen aus der ganzen Region.",
+        "correct": "locka"
+    },
+    {
+        "text": "Die neue Attraktion zieht besonders viele Familien.",
+        "correct": "locka"
+    }
+];
+    const verbOptions = ["dra", "flytta", "driva", "tränga", "odla", "locka"];
+    let score = 0;
+
+    function generateSentenceHTML(sentence) {
+        const options = verbOptions.map(verb => `
+            <button type="button" class="verb-select-option" role="option" aria-selected="false"
+                    data-value="${verb}" onclick="selectVerb(this, event)">${verb}</button>`).join('');
+        return `
+            <div class="sentence" data-state="none">
+                <p>${sentence.text}</p>
+                <div class="answer-wrap">
+                    <div class="verb-select" data-correct="${sentence.correct}" data-value="">
+                        <button type="button" class="verb-select-trigger" aria-haspopup="listbox"
+                                aria-expanded="false" aria-label="Choose the Swedish verb that best matches ziehen"
+                                onclick="toggleVerbSelect(this, event)">
+                            <span class="verb-select-label">...</span>
+                            <svg class="verb-select-chevron" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M6 9l6 6 6-6"></path>
+                            </svg>
+                        </button>
+                        <div class="verb-select-dropdown" role="listbox">
+                            <div class="verb-select-options">${options}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    function closeVerbSelects(except = null) {
+        document.querySelectorAll('.verb-select.open').forEach(wrapper => {
+            if (wrapper === except) return;
+            wrapper.classList.remove('open');
+            wrapper.querySelector('.verb-select-trigger').setAttribute('aria-expanded', 'false');
+            wrapper.closest('.sentence').classList.remove('dropdown-open');
+        });
+    }
+
+    function toggleVerbSelect(trigger, event) {
+        event.stopPropagation();
+        const wrapper = trigger.closest('.verb-select');
+        const shouldOpen = !wrapper.classList.contains('open');
+        closeVerbSelects();
+        wrapper.classList.toggle('open', shouldOpen);
+        trigger.setAttribute('aria-expanded', String(shouldOpen));
+        wrapper.closest('.sentence').classList.toggle('dropdown-open', shouldOpen);
+    }
+
+    function selectVerb(option, event) {
+        event.stopPropagation();
+        const wrapper = option.closest('.verb-select');
+        const selectedValue = option.dataset.value;
+
+        wrapper.dataset.value = selectedValue;
+        wrapper.querySelector('.verb-select-label').textContent = selectedValue;
+        wrapper.querySelectorAll('.verb-select-option').forEach(item => {
+            const isSelected = item === option;
+            item.classList.toggle('selected', isSelected);
+            item.setAttribute('aria-selected', String(isSelected));
+        });
+
+        closeVerbSelects();
+        evaluateAnswer(wrapper);
+        wrapper.querySelector('.verb-select-trigger').focus();
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function renderSentences() {
+        const shuffledSentences = shuffleArray([...sentences]);
+        document.getElementById('sentences').innerHTML = shuffledSentences.map(generateSentenceHTML).join('');
+    }
+
+    function evaluateAnswer(selectElement) {
+        const selectedValue = selectElement.dataset.value || '';
+        const correctAnswer = selectElement.dataset.correct;
+        const parent = selectElement.closest('.sentence');
+        const priorState = parent.dataset.state || 'none';
+        let newState = 'none';
+
+        if (selectedValue === correctAnswer) {
+            newState = 'correct';
+            if (priorState !== 'correct') updateScore(1);
+        } else if (selectedValue !== '') {
+            newState = 'incorrect';
+            if (priorState === 'correct') updateScore(-1);
+        } else if (priorState === 'correct') {
+            updateScore(-1);
+        }
+
+        parent.classList.remove('correct', 'incorrect');
+        if (newState !== 'none') parent.classList.add(newState);
+        parent.dataset.state = newState;
+        checkAllCorrect();
+    }
+
+    function updateScore(value) {
+        score += value;
+        document.querySelectorAll('.score-value').forEach(el => el.textContent = score);
+    }
+
+    function checkAllCorrect() {
+        const allCorrect = [...document.querySelectorAll('.sentence')].every(el => el.classList.contains('correct'));
+        if (allCorrect && sentences.length) openModal('congratulationsModal');
+    }
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+    }
+
+    window.addEventListener('click', event => {
+        ['infoModal', 'congratulationsModal'].forEach(id => {
+            const modal = document.getElementById(id);
+            if (event.target === modal) closeModal(id);
+        });
+    });
+
+    document.addEventListener('click', () => closeVerbSelects());
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeVerbSelects();
+    });
+
+    function toggleMenu() {
+        document.getElementById('menuOverlay').classList.toggle('active');
+    }
+
+    function toggleDarkMode() {
+        setDarkMode(!document.body.classList.contains('dark-mode'));
+    }
+
+    function showInfo() {
+        openModal('infoModal');
+        toggleMenu();
+    }
+
+    function startOverAndCloseMenu() {
+        startOver();
+        toggleMenu();
+    }
+
+    function startOver() {
+        renderSentences();
+        resetScore();
+        closeModal('congratulationsModal');
+    }
+
+    function resetScore() {
+        score = 0;
+        document.querySelectorAll('.score-value').forEach(el => el.textContent = '0');
+    }
+
+    function setDarkMode(enabled) {
+        document.body.classList.toggle('dark-mode', enabled);
+        document.getElementById('menuOverlay').classList.toggle('dark-mode-menu', enabled);
+        document.getElementById('darkModeSwitch').checked = enabled;
+        document.getElementById('darkModeText').textContent = enabled ? 'Light mode' : 'Dark mode';
+        localStorage.setItem('darkMode', enabled ? 'enabled' : 'disabled');
+    }
+
+    function initializeModalsAndDarkMode() {
+        const darkModeToggle = document.getElementById('darkModeSwitch');
+        const isDarkModeEnabled = localStorage.getItem('darkMode') === 'enabled';
+        setDarkMode(isDarkModeEnabled);
+        darkModeToggle.addEventListener('change', function() { setDarkMode(this.checked); });
+    }
+
+    function updateMaxScore() {
+        document.querySelectorAll('.score-max').forEach(el => el.textContent = sentences.length);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderSentences();
+        initializeModalsAndDarkMode();
+        resetScore();
+        updateMaxScore();
+    });
+</script>
+</body>
+</html>
