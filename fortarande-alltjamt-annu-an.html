@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Continuity and ongoing states</title>
+<!-- Font Awesome Free Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+        :root { 
+            --bg: #f2f5f5;
+            --surface: #ffffff;
+            --ink: #172d40; 
+            --muted: #657785; 
+            --line: #dce5e9; 
+            --teal: #176f73; 
+            --tr-bg: #f8faf9;
+            --tr-hover: #f1f7f6;
+            --th-bg: #193c49;
+            --th-text: #fff;
+            --shadow: 0 8px 30px #18384708;
+        }
+
+        [data-theme="dark"] {
+            --bg: #111822;
+            --surface: #1a2332;
+            --ink: #e2e8f0;
+            --muted: #94a3b8;
+            --line: #2d3748;
+            --teal: #38bdf8;
+            --tr-bg: #1e293b;
+            --tr-hover: #263348;
+            --th-bg: #0f172a;
+            --th-text: #e2e8f0;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing:border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+        body { margin:0; padding:clamp(20px,3vw,48px); background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.65; }
+        .container { width:100%; max-width:1800px; margin:auto; }
+        
+        .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 32px; }
+        .title-area { flex: 1; }
+
+        /* Theme Toggle Switch */
+        .theme-switch {
+            width: 68px;
+            height: 36px;
+            padding: 3px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--surface) 92%, var(--bg));
+            box-shadow: 0 3px 10px rgba(23,45,64,.10), inset 0 1px 0 rgba(255,255,255,.45);
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            justify-items: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .theme-switch:hover { border-color: color-mix(in srgb, var(--teal) 45%, var(--line)); }
+        .theme-switch:focus-visible { outline: 3px solid color-mix(in srgb, var(--teal) 35%, transparent); outline-offset: 3px; }
+        .theme-switch i {
+            position: absolute;
+            top: 50%;
+            z-index: 2;
+            font-size: 13px;
+            line-height: 1;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: color .22s ease, opacity .22s ease;
+        }
+        .theme-switch .fa-sun { left: 17px; }
+        .theme-switch .fa-moon { left: 49px; }
+        .theme-switch .ball {
+            position: absolute;
+            z-index: 1;
+            top: 3px;
+            left: 3px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--teal);
+            border: 1px solid color-mix(in srgb, var(--teal) 82%, #000);
+            box-shadow: 0 2px 7px rgba(15,23,42,.22);
+            transform: translateX(0);
+            transition: transform .26s cubic-bezier(.2,.8,.2,1), background-color .22s ease;
+        }
+        [data-theme="dark"] .theme-switch .ball { transform: translateX(32px); }
+        :not([data-theme="dark"]) .theme-switch .fa-sun { color: #fff; }
+        :not([data-theme="dark"]) .theme-switch .fa-moon { color: var(--muted); opacity: .68; }
+        [data-theme="dark"] .theme-switch .fa-sun { color: var(--muted); opacity: .62; }
+        [data-theme="dark"] .theme-switch .fa-moon { color: #fff; }
+
+        .toggle-stack { display:flex; flex-direction:column; gap:10px; flex-shrink:0; }
+        .language-label { position:absolute; top:50%; transform:translate(-50%,-50%); z-index:2; font-family:inherit; font-size:10px; font-weight:750; line-height:1; pointer-events:none; }
+        .language-en { left:17px; }
+        .language-sv { left:49px; }
+        #languageToggle .ball { transform:translateX(0); }
+        html[lang="sv"] #languageToggle .ball { transform:translateX(32px); }
+        .language-en { color:#fff; }
+        .language-sv { color:var(--muted); opacity:.68; }
+        html[lang="sv"] .language-en { color:var(--muted); opacity:.68; }
+        html[lang="sv"] .language-sv { color:#fff; opacity:1; }
+
+        h1 { max-width:1600px; margin:0 0 12px; font-size:clamp(28px,2.6vw,44px); font-weight:650; letter-spacing:-.035em; line-height:1.2; }
+        h1::before { content:attr(data-guide); display:block; margin-bottom:18px; color:var(--teal); font-size:12px; font-weight:750; letter-spacing:.16em; }
+        .subtitle { margin:0; color:var(--muted); font-size:17px; }
+        .subtitle em { color:var(--teal); font-style:normal; font-weight:600; }
+        
+        .table-wrap { overflow-x:clip; background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); }
+        .table-wrap:focus-visible { outline:3px solid var(--teal); outline-offset:4px; }
+        table { width:100%; min-width:0; table-layout:fixed; border-collapse:collapse; }
+        th,td { padding:22px clamp(12px,1.4vw,24px); text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+        th { padding-top:18px; padding-bottom:18px; background:var(--th-bg); color:var(--th-text); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; }
+        th.col-category,td.col-category { width:20%; }
+        th.col-examples,td.col-examples { width:44%; }
+        th.col-explanation,td.col-explanation { width:36%; }
+        tbody tr:nth-child(even) { background:var(--tr-bg); }
+        tbody tr:hover { background:var(--tr-hover); }
+        tbody tr:last-child td { border-bottom:0; }
+        .category-title { display:block; font-size:18px; font-weight:650; color:var(--teal); white-space:normal; overflow-wrap:break-word; letter-spacing:-.02em; }
+        ul.examples { list-style:none; margin:0; padding:0; }
+        ul.examples li { margin:0 0 13px; white-space:normal; overflow-wrap:break-word; font-size:16px; display: flex; align-items: baseline; gap: 8px; }
+        ul.examples li:last-child { margin-bottom:0; }
+        
+        /* Fast bredd på alla badges för att tvinga fram rak justering av meningarna */
+        .badge-standard, .badge-formal, .badge-literary, .badge-colloquial, .badge-alt, .badge-special { 
+            display: inline-block; 
+            vertical-align: middle; 
+            padding: 3px 8px; 
+            border-radius: 5px; 
+            font-size: 10px; 
+            line-height: 1.5; 
+            font-weight: 750; 
+            text-transform: uppercase; 
+            letter-spacing: .035em; 
+            text-align: center;
+            min-width: 92px; /* Säkerställer att alla taggar tar samma horisontella utrymme */
+            flex-shrink: 0;
+        }
+
+        .badge-standard { background: var(--teal); color: #fff; }
+        .badge-formal { background: #2563eb; color: #fff; }
+        .badge-literary { background: #7c3aed; color: #fff; }
+        .badge-colloquial { background: #059669; color: #fff; }
+        .badge-alt { background:#f6eedb; color:#8a6521; min-width: auto; margin-left: 6px; }
+        .badge-special { background: #d97706; color: #fff; }
+        
+        [data-theme="dark"] .badge-formal { background: #3b82f6; }
+        [data-theme="dark"] .badge-literary { background: #8b5cf6; }
+        [data-theme="dark"] .badge-colloquial { background: #10b981; }
+        [data-theme="dark"] .badge-alt { background:#332711; color:#fde047; }
+        [data-theme="dark"] .badge-special { background: #f59e0b; color: #111822; }
+
+        .error-note { display:block; margin-top:6px; color:#a33e43; font-size:14px; white-space:normal; overflow-wrap:break-word; width: 100%; }
+        [data-theme="dark"] .error-note { color:#f87171; }
+        .explanation { font-size:15px; line-height:1.75; }
+        .explanation p { margin:0 0 14px; }
+        .explanation p:last-child { margin-bottom:0; }
+        .explanation strong { color:var(--ink); font-weight:650; }
+        @media(max-width:700px) { table,thead,tbody,tr,th,td { display:block; width:100% !important; } thead { display:none; } tbody tr { padding:16px; border-bottom:1px solid var(--line); } tbody tr:last-child { border-bottom:0; } td { padding:10px 0; border-bottom:0; } td.col-explanation { border-top:1px solid var(--line); margin-top:8px; padding-top:16px; } }
+        @media(max-width:900px) { body { padding:24px 16px; } .subtitle { font-size:16px; } .table-wrap { border-radius:10px; } }
+        @media print { body { padding:0; background:white; } .table-wrap { overflow:visible; box-shadow:none; } table { min-width:0; } th,td { padding:12px; } ul.examples li,.category-title,.error-note { white-space:normal; } .theme-switch { display: none; } @page { size:A3 landscape; margin:15mm; } }
+        .exercise-link { color:var(--teal); font-weight:650; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; border-radius:3px; transition:background-color .2s, text-decoration-thickness .2s; }
+        .exercise-link:hover { background:color-mix(in srgb,var(--teal) 12%,transparent); text-decoration-thickness:2px; }
+        .exercise-link:focus-visible { outline:2px solid var(--teal); outline-offset:3px; }
+    </style>
+</head>
+<body>
+<div class="container">
+<div class="header-row">
+<div class="title-area">
+<h1 data-guide="SWEDISH · GRAMMAR GUIDE" data-i18n="t0">Time expressions for continuity and ongoing states in Swedish</h1>
+<div class="subtitle" data-i18n="t1">An overview of <em>fortfarande</em>, <em>alltjämt</em>, <em>ännu</em>, <em>än</em> and <em>inte längre</em>, including word order and nuances. <a class="exercise-link" href="https://learnswedish.github.io/html/fortfarande-alltjamt-annu-an-exercise.html" target="_blank" rel="noopener noreferrer">Click here</a> when you are ready for an exercise.</div>
+</div>
+<div class="toggle-stack">
+<!-- Theme Toggle Switch -->
+<button aria-label="Toggle dark/light theme" class="theme-switch" id="themeToggle">
+<i class="fa-solid fa-sun"></i>
+<i class="fa-solid fa-moon"></i>
+<div class="ball"></div>
+</button>
+<button aria-label="Switch to Swedish" aria-pressed="false" class="theme-switch language-switch" id="languageToggle" title="Switch to Swedish" type="button">
+<span aria-hidden="true" class="language-label language-en">EN</span>
+<span aria-hidden="true" class="language-label language-sv">SV</span>
+<span aria-hidden="true" class="ball"></span>
+</button>
+</div>
+</div>
+<div aria-label="Swedish time expressions" class="table-wrap" role="region">
+<table>
+<thead>
+<tr>
+<th class="col-category" data-i18n="t2" scope="col">Category &amp; Logic</th>
+<th class="col-examples" data-i18n="t3" scope="col">Examples &amp; Word Order</th>
+<th class="col-explanation" data-i18n="t4" scope="col">Explanation &amp; Nuance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="col-category">
+<span class="category-title" data-i18n="t5">1. Something keeps going</span>
+</td>
+<td class="col-examples">
+<ul class="examples">
+<li><div><span class="badge-standard" data-i18n="t9">Standard</span> Han jobbar fortfarande där. <span class="badge-alt" data-i18n="t10">Alt</span> ... där fortfarande.</div></li>
+<li><div><span class="badge-formal" data-i18n="t11">Formal</span> Han jobbar alltjämt där. <span class="badge-alt" data-i18n="t12">Alt</span> ... där alltjämt.</div></li>
+<li><div><span class="badge-literary" data-i18n="t13">Literary</span> Han jobbar ännu där. <span class="badge-alt" data-i18n="t14">Alt</span> ... där ännu.</div></li>
+<li><div><span class="badge-colloquial" data-i18n="t15">Colloquial</span> Han jobbar där än.</div></li>
+<li><span class="error-note">❌ <em>Han jobbar än där</em></span></li>
+</ul>
+</td>
+<td class="col-explanation explanation">
+<p data-i18n="t30"><strong>Stylistic variations:</strong> <em>Fortfarande</em> is the modern standard choice. <em>Alltjämt</em> is more formal and written. Placing <em>ännu</em> in the middle field feels literary or archaic. Using the short form <em>än</em> in the end position is casual and colloquial.</p>
+<p data-i18n="t31"><strong>Alternative end-position:</strong> Placing the adverb at the end gives it stronger stress and focal weight, conveying surprise, admiration, or rhetorical emphasis (e.g. <em>"Va, jobbar han där fortfarande?!"</em>).</p>
+<p data-i18n="t32"><em>Note:</em> <strong>Än</strong> breaks the mid-position pattern and must go at the end of the clause.</p>
+<p data-i18n="t33"><strong>Än så länge:</strong> This is a separate expression meaning “so far” or “for the time being”. It often implies that the situation may change and can naturally begin a sentence: <em>Än så länge jobbar han där</em> = “For the time being, he still works there.”</p>
+</td>
+</tr>
+<tr>
+<td class="col-category">
+<span class="category-title" data-i18n="t6">2. Something has stopped</span>
+</td>
+<td class="col-examples">
+<ul class="examples">
+<li><div><span class="badge-standard" data-i18n="t16">Standard</span> Han jobbar inte längre där. <span class="badge-alt" data-i18n="t17">Alt</span> ... inte där längre.</div></li>
+</ul>
+</td>
+<td class="col-explanation explanation">
+<p data-i18n="t34">The ultimate counterpart to "still." It cleanly cuts the line: a previous state has officially ended and been interrupted ("no longer / not anymore").</p>
+<p data-i18n="t35"><em>Nuance note:</em> Be careful with the alternative placement (*"Han jobbar inte där längre"*). Because *längre* ends up right next to *där*, it can easily tilt the meaning toward a locative contrast—implying that he is still working, just not <em>there</em> anymore, but somewhere else.</p>
+</td>
+</tr>
+<tr>
+<td class="col-category">
+<span class="category-title" data-i18n="t7">3. Negative status quo</span>
+</td>
+<td class="col-examples">
+<ul class="examples">
+<li><div><span class="badge-standard" data-i18n="t18">Standard</span> Han jobbar inte där. </div></li>
+<li><div><span class="badge-special" data-i18n="t19">Special</span> Han jobbar fortfarande inte där. <span class="badge-alt" data-i18n="t20">Alt</span> ... inte där fortfarande.<br/><span data-i18n="t28" style="font-size: 0.8rem; color: var(--muted); white-space: normal; display: block; margin-top: 0.2rem; padding-left: 100px;">(can sound argumentative/impatient)</span></div></li>
+<li><div><span class="badge-formal" data-i18n="t21">Formal</span> Han jobbar alltjämt inte där. </div></li>
+<li><span class="error-note">❌ <em>Han jobbar inte där alltjämt</em></span></li>
+</ul>
+</td>
+<td class="col-explanation explanation">
+<p data-i18n="t36"><strong>Base variant:</strong> The standard, neutral way to state a negative fact is simply <em>"Han jobbar inte där"</em>.</p>
+<p data-i18n="t37"><strong>Special cases:</strong> Using <em>fortfarande inte</em> or <em>alltjämt inte</em> are marked variants used only in specific contexts—for instance, when <em>fortfarande inte</em> carries an impatient or argumentative undertone ("as I've already told you").</p>
+</td>
+</tr>
+<tr>
+<td class="col-category">
+<span class="category-title" data-i18n="t8">4. Not started yet, but expected</span>
+</td>
+<td class="col-examples">
+<ul class="examples">
+<li><div><span class="badge-literary" data-i18n="t22">Literary</span> Han jobbar ännu inte där. <span class="badge-alt" data-i18n="t23">Alt</span> ... inte där ännu.</div></li>
+<li><div><span class="badge-literary" data-i18n="t24">Literary</span> Han har ännu inte börjat jobba där. <span class="badge-alt" data-i18n="t25">Alt</span> ... inte börjat jobba där ännu.</div></li>
+<li><div><span class="badge-colloquial" data-i18n="t26">Colloquial</span> Han jobbar inte där än.</div></li>
+<li><span class="error-note">❌ <em>Han jobbar inte än där</em></span></li>
+</ul>
+</td>
+<td class="col-explanation explanation">
+<p data-i18n="t38"><strong>Standard form:</strong> <em>Ännu</em> is normally placed before the negation (<em>ännu inte</em>).</p>
+<p data-i18n="t39"><strong>Alternative end-position:</strong> Just like the positive forms, moving <em>ännu</em> to the end places extra emphasis on the waiting aspect, while the short form <strong>än</strong> is standard and colloquial in the end position.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<script>
+    const themeToggle = document.getElementById('themeToggle');
+    const languageToggle = document.getElementById('languageToggle');
+    const htmlElement = document.documentElement;
+    const translatedNodes = [...document.querySelectorAll('[data-i18n]')];
+    const english = Object.fromEntries(translatedNodes.map(node => [node.dataset.i18n, node.innerHTML]));
+    const swedish = {"t0": "Tidsuttryck för fortvaro och pågående i svenskan", "t1": "En översikt över <em>fortfarande</em>, <em>alltjämt</em>, <em>ännu</em>, <em>än</em> och <em>inte längre</em>, med ordföljd och nyanser. <a class=\"exercise-link\" href=\"https://learnswedish.github.io/html/fortfarande-alltjamt-annu-an-exercise.html\" target=\"_blank\" rel=\"noopener noreferrer\">Klicka här</a> när du är redo för en övning.", "t2": "Kategori & logik", "t3": "Exempel & ordföljd", "t4": "Förklaring & nyans", "t5": "1. Något fortsätter", "t6": "2. Något har upphört", "t7": "3. Ett negativt tillstånd består", "t8": "4. Ännu inte påbörjat, men förväntat", "t9": "Standard", "t10": "Alt", "t11": "Formellt", "t12": "Alt", "t13": "Litterärt", "t14": "Alt", "t15": "Vardagligt", "t16": "Standard", "t17": "Alt", "t18": "Standard", "t19": "Särskilt", "t20": "Alt", "t21": "Formellt", "t22": "Litterärt", "t23": "Alt", "t24": "Litterärt", "t25": "Alt", "t26": "Vardagligt", "t28": "(kan låta argumenterande eller otåligt)", "t30": "<strong>Stilistiska variationer:</strong> <em>Fortfarande</em> är det moderna standardvalet. <em>Alltjämt</em> är mer formellt och skriftspråkligt. <em>Ännu</em> i mittfältet känns litterärt eller ålderdomligt. Den korta formen <em>än</em> i slutposition är vardaglig och talspråklig.", "t31": "<strong>Alternativ slutposition:</strong> När adverbet placeras sist får det starkare betoning och större fokus. Det kan uttrycka förvåning, beundran eller retorisk emfas, till exempel <em>”Va, jobbar han där fortfarande?!”</em>.", "t32": "<em>Observera:</em> <strong>Än</strong> avviker från mönstret med mittposition och ska stå sist i dessa exempel.", "t33": "<strong>Än så länge:</strong> Detta är ett eget uttryck som betyder ”hittills” eller ”för närvarande”. Det antyder ofta att situationen kan förändras och kan naturligt stå först i meningen: <em>Än så länge jobbar han där</em> – han jobbar där nu, men det kan komma att ändras.", "t34": "Motsatsen till att något fortfarande pågår. Ett tidigare tillstånd har upphört: <em>inte längre</em>.", "t35": "<em>Nyans:</em> Var uppmärksam på den alternativa placeringen <em>”Han jobbar inte där längre”</em>. När <em>längre</em> står direkt efter <em>där</em> kan fokus lätt hamna på platsen: han arbetar fortfarande, men inte <em>där</em>, utan någon annanstans.", "t36": "<strong>Grundvariant:</strong> Det neutrala standardsättet att uttrycka ett negativt faktum är helt enkelt <em>”Han jobbar inte där”</em>.", "t37": "<strong>Särskilda fall:</strong> <em>Fortfarande inte</em> och <em>alltjämt inte</em> är markerade varianter som används i särskilda sammanhang. Exempelvis kan <em>fortfarande inte</em> ha en otålig eller argumenterande underton: ”som jag redan har sagt”.", "t38": "<strong>Standardform:</strong> <em>Ännu</em> placeras normalt före negationen: <em>ännu inte</em>.", "t39": "<strong>Alternativ slutposition:</strong> Precis som i de positiva uttrycken kan <em>ännu</em> flyttas till slutet för att ge väntandet större betoning. Den korta formen <strong>än</strong> är ett normalt, vardagligt alternativ i slutposition."};
+    const readPreference = key => { try { return localStorage.getItem(key); } catch { return null; } };
+    const savePreference = (key, value) => { try { localStorage.setItem(key, value); } catch {} };
+    function updateThemeLabel() {
+        const dark = htmlElement.getAttribute('data-theme') === 'dark';
+        themeToggle.setAttribute('aria-pressed', String(dark));
+        themeToggle.setAttribute('aria-label', htmlElement.lang === 'sv'
+            ? (dark ? 'Byt till ljust tema' : 'Byt till mörkt tema')
+            : (dark ? 'Switch to light theme' : 'Switch to dark theme'));
+    }
+    function setLanguage(language) {
+        const sv = language === 'sv';
+        htmlElement.lang = sv ? 'sv' : 'en-GB';
+        translatedNodes.forEach(node => { node.innerHTML = (sv ? swedish : english)[node.dataset.i18n]; });
+        document.querySelector('h1').dataset.guide = sv ? 'SVENSKA · GRAMMATIKGUIDE' : 'SWEDISH · GRAMMAR GUIDE';
+        document.title = sv ? 'Fortvaro och pågående tillstånd' : 'Continuity and ongoing states';
+        document.querySelector('.table-wrap').setAttribute('aria-label', sv ? 'Svenska tidsuttryck' : 'Swedish time expressions');
+        languageToggle.setAttribute('aria-pressed', String(sv));
+        const label = sv ? 'Byt till engelska' : 'Switch to Swedish';
+        languageToggle.setAttribute('aria-label', label);
+        languageToggle.title = label;
+        updateThemeLabel();
+    }
+    if (readPreference('theme') === 'dark') htmlElement.setAttribute('data-theme', 'dark');
+    setLanguage(readPreference('language') === 'sv' ? 'sv' : 'en-GB');
+    themeToggle.addEventListener('click', () => {
+        const dark = htmlElement.getAttribute('data-theme') === 'dark';
+        if (dark) htmlElement.removeAttribute('data-theme');
+        else htmlElement.setAttribute('data-theme', 'dark');
+        savePreference('theme', dark ? 'light' : 'dark');
+        updateThemeLabel();
+    });
+    languageToggle.addEventListener('click', () => {
+        const language = htmlElement.lang === 'sv' ? 'en-GB' : 'sv';
+        setLanguage(language);
+        savePreference('language', language);
+    });
+</script>
+</body>
+</html>
