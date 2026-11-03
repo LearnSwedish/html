@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Svenska Starka Verb - Preteritum & Supinum</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-book-open text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Svenska Starka Verb</h1>
+                    <p class="text-xs text-slate-500">Träna Preteritum & Supinum (Perfekt)</p>
+                </div>
+            </div>
+            
+            <!-- Mode Switcher Tabs -->
+            <nav class="flex bg-slate-100 p-1 rounded-xl shadow-inner text-sm font-medium">
+                <button onclick="switchMode('quiz')" id="nav-quiz" class="px-4 py-2 rounded-lg transition-all duration-200 bg-white text-indigo-600 shadow-sm">
+                    <i class="fa-solid fa-pen-to-square mr-1.5"></i> Träna
+                </button>
+                <button onclick="switchMode('list')" id="nav-list" class="px-4 py-2 rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900">
+                    <i class="fa-solid fa-list mr-1.5"></i> Alla verb
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-2xl w-full mx-auto px-4 py-8 flex flex-col justify-center">
+
+        <!-- Notification Banner / Message Box -->
+        <div id="message-box" class="hidden mb-6 p-4 rounded-xl text-sm font-medium transition-all duration-300 shadow-sm"></div>
+
+        <!-- ================= QUIZ MODE ================= -->
+        <section id="section-quiz" class="space-y-6">
+            <!-- Score & Progress Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                <div class="flex justify-between items-center text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <span id="quiz-progress-text">Fråga 1 av 17</span>
+                    <span class="text-indigo-600 font-bold bg-indigo-50 px-2.5 py-1 rounded-full" id="score-text">Poäng: 0</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-indigo-600 h-full transition-all duration-300 rounded-full" style="width: 5%;"></div>
+                </div>
+            </div>
+
+            <!-- Quiz Card -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 relative overflow-hidden">
+                <!-- Pattern Badge Top Right -->
+                <div class="absolute top-4 right-4 bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold tracking-wide border border-slate-200" id="quiz-pattern">
+                    Mönster: i – e – i
+                </div>
+
+                <div class="text-center my-6 space-y-2">
+                    <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Infinitiv</span>
+                    <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight" id="quiz-infinitive">skriva</h2>
+                    <div class="inline-block bg-slate-100 px-3 py-1 rounded-full text-slate-600 text-sm font-medium mt-1">
+                        Betydelse: <span id="quiz-meaning" class="text-slate-900 font-semibold">write</span>
+                    </div>
+                    <div class="text-xs text-slate-400 mt-1">Presens: <span id="quiz-present" class="font-medium text-slate-600">skriver</span></div>
+                </div>
+
+                <!-- Input Form -->
+                <form id="quiz-form" onsubmit="submitQuizAnswer(event)" class="space-y-4 pt-4 border-t border-slate-100">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Preteritum (Dåtid)</label>
+                            <input type="text" id="input-preterite" autocomplete="off" placeholder="" 
+                                   class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-800 font-medium transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">Supinum (Perfekt har...)</label>
+                            <input type="text" id="input-supine" autocomplete="off" placeholder="" 
+                                   class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-800 font-medium transition-all">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex items-center justify-between">
+                        <button type="button" onclick="skipQuestion()" class="text-sm font-semibold text-slate-500 hover:text-slate-800 px-4 py-2 transition-colors">
+                            Hoppa över <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                        <button type="submit" id="submit-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all flex items-center space-x-2">
+                            <span>Svara</span>
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Feedback Solution Box (Hidden initially) -->
+                <div id="quiz-feedback-box" class="hidden mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                    <div id="feedback-header" class="font-bold text-base"></div>
+                    <div class="grid grid-cols-2 gap-2 text-sm bg-white p-3 rounded-xl border border-slate-100">
+                        <div><span class="text-slate-400 text-xs block">Rätt Preteritum:</span> <strong id="correct-preterite" class="text-indigo-600"></strong></div>
+                        <div><span class="text-slate-400 text-xs block">Rätt Supinum:</span> <strong id="correct-supine" class="text-indigo-600"></strong></div>
+                    </div>
+                    <button type="button" onclick="nextQuestion()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl transition-all shadow-sm">
+                        Nästa fråga <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VERB LIST / GLOSSARY MODE ================= -->
+        <section id="section-list" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Komplett Verböversikt</h2>
+                        <p class="text-xs text-slate-500">Alla starka och oregelbundna verb i listan.</p>
+                    </div>
+                    <div class="relative w-full sm:w-64">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        </span>
+                        <input type="text" id="search-input" oninput="filterVerbList()" placeholder="Sök verb eller betydelse..." 
+                               class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="overflow-x-auto rounded-xl border border-slate-100">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="py-3 px-4">Infinitiv</th>
+                                <th class="py-3 px-4">Presens</th>
+                                <th class="py-3 px-4">Preteritum</th>
+                                <th class="py-3 px-4">Supinum</th>
+                                <th class="py-3 px-4">Mönster</th>
+                                <th class="py-3 px-4">Betydelse</th>
+                            </tr>
+                        </thead>
+                        <tbody id="verb-table-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Completion Screen (Hidden initially) -->
+        <div id="quiz-complete-card" class="hidden bg-white rounded-3xl border border-slate-200 shadow-xl p-8 text-center space-y-6">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl font-black text-slate-900">Bra jobbat! Övningen är klar.</h2>
+                <p class="text-sm text-slate-500">Du har gått igenom alla verb i listan.</p>
+            </div>
+            <div class="bg-slate-50 p-6 rounded-2xl max-w-xs mx-auto border border-slate-100 space-y-2">
+                <span class="text-xs uppercase font-bold text-slate-400 tracking-wider block">Slutresultat</span>
+                <div class="text-4xl font-extrabold text-indigo-600" id="final-score-display">0 / 17</div>
+            </div>
+            <div class="pt-4 flex justify-center gap-3">
+                <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Öva igen
+                </button>
+                <button onclick="switchMode('list')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-6 py-3 rounded-xl transition-all">
+                    Visa alla verb
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        <p>Svenska verb – konjugation 4 (starka verb)</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Exact verb dataset with patterns
+        const verbData = [
+            { infinitive: "skriva", present: "skriver", preterite: "skrev", supine: "skrivit", pattern: "i – e – i", meaning: "write" },
+            { infinitive: "skrika", present: "skriker", preterite: "skrek", supine: "skrikit", pattern: "i – e – i", meaning: "yell" },
+            { infinitive: "bli", present: "blir", preterite: "blev", supine: "blivit", pattern: "i – e – i", meaning: "be, become" },
+            { infinitive: "flyga", present: "flyger", preterite: "flög", supine: "flugit", pattern: "y – ö – u", meaning: "fly" },
+            { infinitive: "frysa", present: "fryser", preterite: "frös", supine: "frusit", pattern: "y – ö – u", meaning: "freeze, feel cold" },
+            { infinitive: "krypa", present: "kryper", preterite: "kröp", supine: "krupit", pattern: "y – ö – u", meaning: "creep" },
+            { infinitive: "bjuda", present: "bjuder", preterite: "bjöd", supine: "bjudit", pattern: "ju – ö – u", meaning: "invite" },
+            { infinitive: "sjunga", present: "sjunger", preterite: "sjöng", supine: "sjungit", pattern: "ju – ö – u", meaning: "sing" },
+            { infinitive: "njuta", present: "njuter", preterite: "njöt", supine: "njutit", pattern: "ju – ö – u", meaning: "enjoy" },
+            { infinitive: "sitta", present: "sitter", preterite: "satt", supine: "suttit", pattern: "i – a – u", meaning: "sit" },
+            { infinitive: "springa", present: "springer", preterite: "sprang", supine: "sprungit", pattern: "i – a – u", meaning: "run" },
+            { infinitive: "finnas", present: "finns", preterite: "fanns", supine: "funnits", pattern: "i – a – u", meaning: "be, exist" },
+            { infinitive: "dra", present: "drar", preterite: "drog", supine: "dragit", pattern: "Övriga mönster", meaning: "pull" },
+            { infinitive: "bära", present: "bär", preterite: "bar", supine: "burit", pattern: "Övriga mönster", meaning: "carry" },
+            { infinitive: "komma", present: "kommer", preterite: "kom", supine: "kommit", pattern: "Övriga mönster", meaning: "come" },
+            { infinitive: "äta", present: "äter", preterite: "åt", supine: "ätit", pattern: "Övriga mönster", meaning: "eat" },
+            { infinitive: "vara", present: "är", preterite: "var", supine: "varit", pattern: "Övriga mönster", meaning: "be" }
+        ];
+
+        // Quiz State variables
+        let currentQuizList = [];
+        let currentIndex = 0;
+        let score = 0;
+
+        // Initialization on window load
+        window.onload = function() {
+            initQuiz();
+            renderVerbTable();
+        };
+
+        // Navigation Mode Switcher
+        function switchMode(mode) {
+            document.getElementById('section-quiz').classList.add('hidden');
+            document.getElementById('section-list').classList.add('hidden');
+            document.getElementById('quiz-complete-card').classList.add('hidden');
+
+            document.getElementById('nav-quiz').className = "px-4 py-2 rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900";
+            document.getElementById('nav-list').className = "px-4 py-2 rounded-lg transition-all duration-200 text-slate-600 hover:text-slate-900";
+
+            if (mode === 'quiz') {
+                document.getElementById('section-quiz').classList.remove('hidden');
+                document.getElementById('nav-quiz').className = "px-4 py-2 rounded-lg transition-all duration-200 bg-white text-indigo-600 shadow-sm";
+            } else if (mode === 'list') {
+                document.getElementById('section-list').classList.remove('hidden');
+                document.getElementById('nav-list').className = "px-4 py-2 rounded-lg transition-all duration-200 bg-white text-indigo-600 shadow-sm";
+            }
+        }
+
+        // ================= QUIZ LOGIC =================
+        function initQuiz() {
+            currentQuizList = [...verbData].sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            score = 0;
+            document.getElementById('quiz-complete-card').classList.add('hidden');
+            document.getElementById('quiz-form').parentElement.classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            if (currentIndex >= currentQuizList.length) {
+                document.getElementById('quiz-form').parentElement.classList.add('hidden');
+                document.getElementById('quiz-complete-card').classList.remove('hidden');
+                document.getElementById('final-score-display').innerText = `${score} / ${currentQuizList.length}`;
+                return;
+            }
+
+            const currentVerb = currentQuizList[currentIndex];
+            document.getElementById('quiz-infinitive').innerText = currentVerb.infinitive;
+            document.getElementById('quiz-meaning').innerText = currentVerb.meaning;
+            document.getElementById('quiz-present').innerText = currentVerb.present;
+            document.getElementById('quiz-pattern').innerText = `Mönster: ${currentVerb.pattern}`;
+            
+            document.getElementById('quiz-progress-text').innerText = `Fråga ${currentIndex + 1} av ${currentQuizList.length}`;
+            const progressPercent = ((currentIndex) / currentQuizList.length) * 100;
+            document.getElementById('progress-bar').style.width = `${Math.max(5, progressPercent)}%`;
+            document.getElementById('score-text').innerText = `Poäng: ${score}`;
+
+            document.getElementById('input-preterite').value = '';
+            document.getElementById('input-supine').value = '';
+            document.getElementById('input-preterite').disabled = false;
+            document.getElementById('input-supine').disabled = false;
+            document.getElementById('submit-btn').disabled = false;
+            document.getElementById('submit-btn').classList.remove('opacity-50');
+            document.getElementById('quiz-feedback-box').classList.add('hidden');
+            document.getElementById('input-preterite').focus();
+        }
+
+        function submitQuizAnswer(event) {
+            event.preventDefault();
+            const userPreterite = document.getElementById('input-preterite').value.trim().toLowerCase();
+            const userSupine = document.getElementById('input-supine').value.trim().toLowerCase();
+
+            if (!userPreterite || !userSupine) {
+                showNotification("Vänligen fyll i både preteritum och supinum!", "warning");
+                return;
+            }
+
+            const currentVerb = currentQuizList[currentIndex];
+            const correctPreterite = currentVerb.preterite.toLowerCase();
+            const correctSupine = currentVerb.supine.toLowerCase();
+
+            const isPreteriteCorrect = (userPreterite === correctPreterite);
+            const isSupineCorrect = (userSupine === correctSupine);
+
+            document.getElementById('input-preterite').disabled = true;
+            document.getElementById('input-supine').disabled = true;
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('submit-btn').classList.add('opacity-50');
+
+            const feedbackHeader = document.getElementById('feedback-header');
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            
+            document.getElementById('correct-preterite').innerText = currentVerb.preterite;
+            document.getElementById('correct-supine').innerText = currentVerb.supine;
+
+            if (isPreteriteCorrect && isSupineCorrect) {
+                score++;
+                feedbackHeader.innerHTML = `<span class="text-emerald-600 flex items-center"><i class="fa-solid fa-circle-check text-lg mr-2"></i> Helt rätt! Utmärkt gjort.</span>`;
+                feedbackBox.className = "mt-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-3";
+            } else {
+                feedbackHeader.innerHTML = `<span class="text-amber-600 flex items-center"><i class="fa-solid fa-circle-exclamation text-lg mr-2"></i> Inte helt rätt. Se korrekta former nedan:</span>`;
+                feedbackBox.className = "mt-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-3";
+            }
+
+            document.getElementById('score-text').innerText = `Poäng: ${score}`;
+            feedbackBox.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            loadQuizQuestion();
+        }
+
+        function skipQuestion() {
+            const currentVerb = currentQuizList[currentIndex];
+            showNotification(`Hoppade över. Rätt svar var: Preteritum: ${currentVerb.preterite}, Supinum: ${currentVerb.supine}`, "info");
+            currentIndex++;
+            loadQuizQuestion();
+        }
+
+        function restartQuiz() {
+            initQuiz();
+        }
+
+        // ================= VERB LIST / GLOSSARY =================
+        function renderVerbTable(filteredData = verbData) {
+            const tbody = document.getElementById('verb-table-body');
+            tbody.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">Inga verb hittades.</td></tr>`;
+                return;
+            }
+
+            filteredData.forEach(verb => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-slate-900">${verb.infinitive}</td>
+                    <td class="py-3 px-4 text-slate-600">${verb.present}</td>
+                    <td class="py-3 px-4 font-semibold text-indigo-600">${verb.preterite}</td>
+                    <td class="py-3 px-4 font-semibold text-emerald-600">${verb.supine}</td>
+                    <td class="py-3 px-4 text-slate-500 font-mono text-xs">${verb.pattern}</td>
+                    <td class="py-3 px-4 text-slate-700">${verb.meaning}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterVerbList() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const filtered = verbData.filter(v => 
+                v.infinitive.toLowerCase().includes(query) || 
+                v.meaning.toLowerCase().includes(query) || 
+                v.preterite.toLowerCase().includes(query) ||
+                v.supine.toLowerCase().includes(query) ||
+                v.present.toLowerCase().includes(query) ||
+                v.pattern.toLowerCase().includes(query)
+            );
+            renderVerbTable(filtered);
+        }
+
+        // Helper Notification Toast
+        function showNotification(text, type = "info") {
+            const box = document.getElementById('message-box');
+            box.innerText = text;
+            box.classList.remove('hidden', 'bg-amber-50', 'text-amber-800', 'border-amber-200', 'bg-blue-50', 'text-blue-800', 'border-blue-200');
+            
+            if (type === "warning") {
+                box.className = "mb-6 p-4 rounded-xl text-sm font-medium bg-amber-50 text-amber-800 border border-amber-200 shadow-sm transition-all duration-300";
+            } else {
+                box.className = "mb-6 p-4 rounded-xl text-sm font-medium bg-blue-50 text-blue-800 border border-blue-200 shadow-sm transition-all duration-300";
+            }
+
+            setTimeout(() => {
+                box.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
