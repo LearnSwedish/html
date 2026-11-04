@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="sv"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arkeologens fynd</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#faf7f2;--fg:#2a2622;--card:#fff;--mut:#7a7268;--line:#e2dacd;--s:#b3402a;--a:#2b6f8a;--ov:rgba(20,15,10,.45)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1b19;--fg:#ece6dc;--card:#2a2724;--mut:#a39a8d;--line:#403b35;--s:#ef8a72;--a:#7cc0da;--ov:rgba(0,0,0,.6)}}
+:root[data-theme="dark"]{--bg:#1d1b19;--fg:#ece6dc;--card:#2a2724;--mut:#a39a8d;--line:#403b35;--s:#ef8a72;--a:#7cc0da;--ov:rgba(0,0,0,.6)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Georgia,'Times New Roman',serif;line-height:1.8;font-size:1.15rem}
+main{max-width:38rem;margin:0 auto;padding:2.5rem 1.4rem 4rem}
+h1{font-size:2rem;margin:0 0 1.5rem;line-height:1.2}
+p{margin:0 0 1.2rem}
+#ov{position:fixed;inset:0;background:var(--ov);display:none;align-items:center;justify-content:center;padding:1rem;z-index:5}
+#ov.on{display:flex}
+.m{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.5rem;max-width:26rem;width:100%;font-family:system-ui,sans-serif;text-align:center}
+.tr{color:var(--mut);margin:.2rem 0 1.2rem;font-size:.95rem}
+.syl{display:flex;justify-content:center;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.sy{border:2px solid var(--line);border-radius:10px;padding:.5rem .8rem;font-size:1.5rem;min-width:2rem}
+.sy.s{border-color:var(--s);background:color-mix(in srgb,var(--s) 18%,transparent);font-weight:700}
+.sy.a{border-color:var(--a);background:color-mix(in srgb,var(--a) 18%,transparent)}
+.lab{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;margin-top:.2rem;color:var(--mut)}
+.lg{font-size:.85rem;color:var(--mut);margin-bottom:1rem}
+.lg b{display:inline-block;width:.8rem;height:.8rem;border-radius:3px;vertical-align:middle;margin:0 .2rem 0 .6rem}
+button{font:inherit;font-size:1rem;padding:.55rem 1.1rem;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;margin:0 .25rem}
+</style></head><body>
+<main><h1>Arkeologens fynd</h1><div id="story"></div></main>
+<div id="ov"><div class="m" role="dialog" aria-modal="true">
+<div id="wd" style="font-size:1.1rem;font-weight:600"></div>
+<div class="tr" id="tr"></div>
+<div class="syl" id="syl"></div>
+<div class="lg"><b style="background:var(--s)"></b>huvudbetoning<b id="lga" style="background:var(--a)"></b><span id="lgat">accent 2</span></div>
+<button id="play">▶ Spela upp</button><button id="close">Stäng</button>
+</div></div>
+<script>
+// form: [stavelser, huvudbetoning (1-baserad), accent 2 (0 = ingen), översättning]
+const W={
+augusti:["au-gus-ti",2,0,"August"],
+anlände:["an-län-de",1,2,"arrived"],
+arkeologen:["ar-ke-o-lo-gen",4,0,"the archaeologist"],
+anläggning:["an-lägg-ning",1,2,"facility"],
+förslag:["för-slag",2,0,"proposal"],
+berömd:["be-römd",2,0,"famous"],
+förväntan:["för-vän-tan",2,0,"expectation"],
+arbete:["ar-be-te",1,2,"work"],
+besöka:["be-sö-ka",2,0,"visit"],
+annan:["an-nan",1,2,"another"],
+förmåga:["för-må-ga",2,0,"ability"],
+förstå:["för-stå",2,0,"understand"],
+beteckningar:["be-teck-ning-ar",2,0,"labels"],
+förtroende:["för-tro-en-de",2,0,"trust"],
+förmiddag:["för-mid-dag",1,3,"morning"],
+arkiv:["ar-kiv",2,0,"archive"],
+bevis:["be-vis",2,0,"proof"],
+förändra:["för-än-dra",2,0,"change"],
+antik:["an-tik",2,0,"antique"],
+artefakt:["ar-te-fakt",3,0,"artifact"],
+försökte:["för-sök-te",2,0,"tried"],
+beskriva:["be-skri-va",2,0,"describe"],
+föremålet:["fö-re-må-let",1,3,"the object"],
+förbluffande:["för-bluf-fan-de",2,0,"astonishingly"],
+bekant:["be-kant",2,0,"familiar"],
+förvånad:["för-vå-nad",2,0,"surprised"],
+föreläsa:["fö-re-lä-sa",1,3,"lecture"],
+teori:["te-o-ri",3,0,"theory"],
+förolämpad:["fö-ro-lämp-ad",1,3,"insulted"],
+förstås:["för-stås",2,0,"of course"],
+bevara:["be-va-ra",2,0,"preserve"],
+beskydda:["be-skyd-da",2,0,"protect"],
+förstörelse:["för-stö-rel-se",2,0,"destruction"],
+förlopp:["för-lopp",2,0,"process"],
+arrangemang:["ar-ran-ge-mang",4,0,"arrangement"],
+förhandling:["för-hand-ling",2,0,"negotiation"],
+befälhavare:["be-fäl-ha-va-re",2,3,"commander"],
+dynasti:["dy-na-sti",3,0,"dynasty"],
+arvinge:["ar-vin-ge",1,2,"heir"],
+förrädare:["för-rä-da-re",2,0,"traitor"],
+förtryck:["för-tryck",2,0,"oppression"],
+tragedi:["tra-ge-di",3,0,"tragedy"],
+besvikelse:["be-svi-kel-se",2,0,"disappointment"],
+förtjusande:["för-tju-san-de",2,0,"charming"],
+förälskad:["för-äl-skad",2,0,"in love"],
+arrangera:["ar-ran-ge-ra",3,0,"arrange"],
+betrakta:["be-trak-ta",2,0,"consider"],
+besökare:["be-sö-ka-re",2,0,"visitors"],
+anmälde:["an-mäl-de",1,2,"registered"],
+förväntningarna:["för-vänt-ning-ar-na",2,0,"the expectations"],
+förändring:["för-änd-ring",2,0,"change"],
+behövde:["be-höv-de",2,0,"needed"],
+bekymra:["be-kym-ra",2,0,"worry"],
+förtjänst:["för-tjänst",2,0,"merit"],
+januari:["ja-nu-a-ri",3,0,"January"],
+artikel:["ar-ti-kel",2,0,"article"],
+förresten:["för-res-ten",2,0,"by the way"],
+belöningen:["be-lö-ning-en",2,0,"the reward"]
+};
+const T=[
+"I {augusti|augusti} {anlände} {arkeologen|arkeologen} Anna till en gammal {anläggning}.",
+"Hon hade fått ett {förslag} av en {berömd} professor, och hennes {förväntan} var stor.",
+"Det var ett viktigt {arbete}, och hon ville {besöka} platsen innan någon {annan}.",
+"Hennes {förmåga} att {förstå} gamla {beteckningar} var ett stort {förtroende}.",
+"En {förmiddag} letade hon i ett {arkiv}.",
+"Där låg ett {bevis} som kunde {förändra} allt: en {antik} {artefakt}.",
+"Hon {försökte} {beskriva} {föremålet}, men det var {förbluffande} svårt.",
+"Hennes kollega Erik var en {bekant}, och han blev genast {förvånad}.",
+"Han började {föreläsa} om sin {teori}, men ingen ville bli {förolämpad}.",
+"Hon ville {förstås} {bevara} fyndet och {beskydda} det mot varje {förstörelse}.",
+"Det blev ett långt {förlopp} av {arrangemang} och {förhandling}.",
+"En mäktig {befälhavare} hade en gång styrt här, i en {dynasti} full av hemligheter.",
+"Hans {arvinge} blev {förrädare}, och hela riket föll i {förtryck}.",
+"Det var en {tragedi}, full av sorg och {besvikelse}.",
+"Ändå var fyndet {förtjusande}, och hon blev {förälskad} i historien.",
+"Hon ville {arrangera} en utställning, så att alla kunde {betrakta} föremålen.",
+"Hundratals {besökare} {anmälde} sig, och {förväntningarna} växte.",
+"Det blev en stor {förändring} i hennes liv.",
+"Hon {behövde} aldrig mer {bekymra} sig, för hon visste att kunskap är en {förtjänst}.",
+"I {januari} skrev hon en {artikel} om hela äventyret.",
+"Slutet blev {förresten} lyckligt, och Anna lärde sig att kunskap är den bästa {belöningen}."
+];
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+let html="";
+T.forEach((s,i)=>{html+=(i%4==0?(i?"</p>":"")+"<p>":" ")+s.replace(/\{([^}|]+)(?:\|([^}]+))?\}/g,(m,k,t)=>'<span data-w="'+k+'">'+esc(t||k)+'</span>');});
+document.getElementById("story").innerHTML=html+"</p>";
+const ov=document.getElementById("ov");let cur="";
+document.getElementById("story").addEventListener("click",e=>{
+ const k=e.target.dataset&&e.target.dataset.w;if(!k||!W[k])return;
+ const [syl,s,a,tr]=W[k];const p=syl.split("-");cur=p.join("");
+ document.getElementById("wd").textContent=cur;
+ document.getElementById("tr").textContent=tr;
+ document.getElementById("syl").innerHTML=p.map((x,i)=>{
+  const c=(i+1==s?" s":"")+(a&&i+1==a?" a":"");
+  const l=(i+1==s?"huvud":"")+(a&&i+1==a?"accent 2":"");
+  return '<div><div class="sy'+c+'">'+esc(x)+'</div><div class="lab">'+(l||"&nbsp;")+'</div></div>';}).join("");
+ document.getElementById("lga").style.display=document.getElementById("lgat").style.display=a?"":"none";
+ ov.classList.add("on");
+});
+function say(){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(cur);u.lang="sv-SE";u.rate=0.6;speechSynthesis.speak(u);}catch(e){}}
+document.getElementById("play").onclick=say;
+document.getElementById("close").onclick=()=>{ov.classList.remove("on");try{speechSynthesis.cancel()}catch(e){}};
+ov.addEventListener("click",e=>{if(e.target===ov)document.getElementById("close").click();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.getElementById("close").click();});
+</script></body></html>
