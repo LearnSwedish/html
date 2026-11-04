@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Den försvunna melodin</title>
+<style>
+:root { --ink:#262a2d; --paper:#fffcf6; --ground:#f5f1e9; --accent:#11616c; --accent-soft:#dceef0; --accent2:#b25b29; --accent2-soft:#ffeddd; --border:#dddcd4; --focus:#8d9c9f; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--ground); color:var(--ink); font-family:Georgia,"Times New Roman",serif; }
+.shell { max-width:810px; margin:0 auto; padding:clamp(40px,8vw,95px) clamp(22px,5vw,65px) 110px; }
+h1 { font-size:clamp(2.3rem,6vw,3.75rem); font-weight:400; letter-spacing:-.035em; line-height:1.15; margin:0 0 1.2em; }
+.story { font-size:clamp(1.13rem,1.65vw,1.31rem); line-height:1.94; }
+.story p { margin:0; }
+.story p+p { margin-top:1.32em; }
+/* Avsiktligt omöjligt att skilja interaktiva ord från vanlig text. */
+.word,.word:hover,.word:active { display:inline; appearance:none; -webkit-appearance:none; border:0; border-radius:0; margin:0; padding:0; background:none; box-shadow:none; outline:none; color:inherit; font:inherit; font-weight:inherit; letter-spacing:inherit; word-spacing:inherit; line-height:inherit; text-align:inherit; text-decoration:none; text-shadow:none; vertical-align:baseline; cursor:text; }
+.word:focus-visible { outline:1px solid var(--focus); outline-offset:2px; }
+[hidden] { display:none!important; }
+.modal-backdrop { position:fixed; inset:0; z-index:10; background:#172024b8; display:grid; place-items:center; padding:20px; backdrop-filter:blur(3px); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
+.modal { background:var(--paper); width:min(100%,540px); border-radius:16px; padding:clamp(22px,5vw,38px); box-shadow:0 30px 90px #0005; max-height:calc(100dvh - 40px); overflow:auto; }
+.modal-top { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; }
+.modal-kicker { font-size:.75rem; text-transform:uppercase; color:var(--accent); font-weight:750; letter-spacing:.12em; }
+h2 { font-family:Georgia,"Times New Roman",serif; font-size:clamp(2rem,6vw,2.7rem); font-weight:500; margin:6px 0 0; overflow-wrap:anywhere; }
+.icon-button { display:grid; place-items:center; border:1px solid var(--border); border-radius:999px; background:white; color:var(--ink); width:38px; height:38px; cursor:pointer; font-size:1.55rem; line-height:1; flex-shrink:0; }
+.icon-button:hover { background:#f3f1eb; }
+.base-form { font-size:.83rem; margin:7px 0 0; color:#677179; }
+.divider { height:1px; background:var(--border); margin:23px 0 24px; }
+.syllable-heading { color:#677179; font-size:.78rem; font-weight:700; margin:0 0 11px; text-transform:uppercase; letter-spacing:.07em; }
+.syllables { display:flex; flex-wrap:wrap; gap:7px; margin:0 0 22px; align-items:stretch; }
+.syllable { display:flex; flex-direction:column; justify-content:center; align-items:center; min-width:48px; min-height:63px; padding:9px 12px; background:#f1f1ec; border-radius:9px; color:#35454a; border:2px solid transparent; font-family:Georgia,"Times New Roman",serif; font-size:1.45rem; font-weight:600; }
+.syllable small { font-family:system-ui,sans-serif; font-size:.59rem; font-weight:800; letter-spacing:.045em; text-transform:uppercase; margin-top:3px; }
+.syllable.primary { background:var(--accent-soft); color:#0b5360; border-color:var(--accent); }
+.syllable.secondary { background:var(--accent2-soft); border-color:var(--accent2); color:#8d431d; }
+.legend { display:flex; flex-wrap:wrap; gap:15px 18px; margin-bottom:18px; font-size:.85rem; }
+.legend-item { display:flex; align-items:center; gap:8px; }
+.swatch { height:11px; width:11px; border-radius:3px; background:var(--accent); }
+.swatch.accent2 { background:var(--accent2); }
+.note { font-size:.82rem; color:#677179; line-height:1.5; margin:0 0 20px; }
+.audio-row { display:flex; align-items:center; gap:12px; }
+.play { background:var(--accent); color:white; border:0; border-radius:9px; display:flex; align-items:center; justify-content:center; gap:10px; padding:12px 18px; cursor:pointer; font-size:.94rem; font-weight:700; min-height:47px; }
+.play:hover { background:#0d4e57; }
+.play:disabled { opacity:.55; cursor:not-allowed; }
+.audio-status { min-height:1.2em; margin:12px 0 0; font-size:.8rem; color:#677179; }
+.modal button:focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
+@media (max-width:600px) { .shell { padding:48px 21px 70px; } .story { line-height:1.85; } .syllable { font-size:1.26rem; min-height:56px; padding:8px 10px; min-width:43px; } }
+</style>
+</head>
+<body>
+<main class="shell">
+  <h1>Den försvunna melodin</h1>
+  <article class="story" id="story"></article>
+</main>
+<div class="modal-backdrop" id="backdrop" hidden>
+ <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalNote">
+  <div class="modal-top"><div><div class="modal-kicker">Uttal och betoning</div><h2 id="modalTitle"></h2><p class="base-form" id="baseForm"></p></div><button type="button" class="icon-button" id="closeModal" aria-label="Stäng dialogrutan">×</button></div>
+  <div class="divider"></div>
+  <p class="syllable-heading">Stavelser</p><div class="syllables" id="syllables"></div>
+  <div class="legend" id="legend"></div><p id="modalNote" class="note"></p>
+  <div class="audio-row"><button class="play" type="button" id="playAudio"><span aria-hidden="true">▶</span> Spela upp ordet</button>
+
+  </div><p class="audio-status" id="audioStatus" role="status" aria-live="polite"></p>
+ </section>
+</div>
+<script>
+'use strict';
+
+const LEXICON = {"annonsera":[4,3,0],"annullering":[4,3,0],"arkiv":[2,2,0],"annons":[2,2,0],"antenn":[2,2,0],"antik":[2,2,0],"arab":[2,2,0],"armé":[2,2,0],"arrest":[2,2,0],"artist":[2,2,0],"bebo":[2,2,0],"bedra":[2,2,0],"bedrift":[2,2,0],"befäl":[2,2,0],"bege (sig av)":[2,2,0],"begravd":[2,2,0],"begrepp":[2,2,0],"begå":[2,2,0],"begär":[2,2,0],"behag":[2,2,0],"behov":[2,2,0],"bekant":[2,2,0],"bekväm":[2,2,0],"belopp":[2,2,0],"belägg":[2,2,0],"bensin":[2,2,0],"beredd":[2,2,0],"bero (på något)":[2,2,0],"beröm":[2,2,0],"berömd":[2,2,0],"berörd":[2,2,0],"besatt":[2,2,0],"besked":[2,2,0],"beskydd":[2,2,0],"beslag":[2,2,0],"beslut":[2,2,0],"bestick":[2,2,0],"bestå":[2,2,0],"bestånd":[2,2,0],"bestämd":[2,2,0],"besvär":[2,2,0],"besök":[2,2,0],"betong":[2,2,0],"betyg":[2,2,0],"bevis":[2,2,0],"förakt":[2,2,0],"förband":[2,2,0],"förbi":[2,2,0],"förbli":[2,2,0],"förbud":[2,2,0],"förbund":[2,2,0],"fördrag":[2,2,0],"fördärv":[2,2,0],"förfall":[2,2,0],"förföljd":[2,2,0],"förhör":[2,2,0],"förlag":[2,2,0],"förlopp":[2,2,0],"förlust":[2,2,0],"förlåt":[2,2,0],"förmå":[2,2,0],"förnuft":[2,2,0],"förråd":[2,2,0],"förse":[2,2,0],"förslag":[2,2,0],"förstå":[2,2,0],"förstånd":[2,2,0],"förstås":[2,2,0],"förstörd":[2,2,0],"försvar":[2,2,0],"försyn":[2,2,0],"försök":[2,2,0],"förtal":[2,2,0],"förtjust":[2,2,0],"förtjänst":[2,2,0],"förtryck":[2,2,0],"förut":[2,2,0],"förvärv":[2,2,0],"geni":[2,2,0],"kansli":[2,2,0],"kemi":[2,2,0],"logi":[2,2,0],"magi":[2,2,0],"parti":[2,2,0],"regi":[2,2,0],"remi":[2,2,0],"allergi":[3,3,0],"amnesti":[3,3,0],"analog":[3,3,0],"analys":[3,3,0],"antiken":[3,2,0],"arabisk":[3,2,0],"artikel":[3,2,0],"augusti":[3,2,0],"beakta":[3,2,0],"bedriva":[3,2,0],"bedrövad":[3,2,0],"bedöma":[3,2,0],"bedömning":[3,2,0],"befalla":[3,2,0],"befallning":[3,2,0],"befara":[3,2,0],"befattning":[3,2,0],"befinna":[3,2,0],"befintlig":[3,2,0],"befolkning":[3,2,0],"befordra":[3,2,0],"befordran":[3,2,0],"befria":[3,2,0],"befriad":[3,2,0],"befruktning":[3,2,0],"befästa":[3,2,0],"begagnad":[3,2,0],"begeistring":[3,2,0],"begrava":[3,2,0],"begraven":[3,2,0],"begravning":[3,2,0],"begripa":[3,2,0],"begriplig":[3,2,0],"begrunda":[3,2,0],"begränsa":[3,2,0],"begränsad":[3,2,0],"begränsning":[3,2,0],"begåvad":[3,2,0],"begåvning":[3,2,0],"begära":[3,2,0],"begäran":[3,2,0],"behaga":[3,2,0],"behaglig":[3,2,0],"behandla":[3,2,0],"behandling":[3,2,0],"behålla":[3,2,0],"behärska":[3,2,0],"behörig":[3,2,0],"behöva":[3,2,0],"behövas":[3,2,0],"bekanta (sig med ngt)":[3,2,0],"beklaga (sig över ngt)":[3,2,0],"beklaglig":[3,2,0],"bekostnad":[3,2,0],"bekräfta":[3,2,0],"bekräftad":[3,2,0],"bekymmer":[3,2,0],"bekymra (sig över ngt)":[3,2,0],"bekymrad":[3,2,0],"bekämpa":[3,2,0],"bekänna":[3,2,0],"belasta":[3,2,0],"belastning":[3,2,0],"belysa":[3,2,0],"belysning":[3,2,0],"belägen":[3,2,0],"belöna":[3,2,0],"belönad":[3,2,0],"belöning":[3,2,0],"bemanna":[3,2,0],"bemanning":[3,2,0],"bemästra":[3,2,0],"bemöta":[3,2,0],"benägen":[3,2,0],"benämna":[3,2,0],"benämning":[3,2,0],"beordra":[3,2,0],"bereda":[3,2,0],"beredning":[3,2,0],"beredskap":[3,2,0],"berika":[3,2,0],"berusad":[3,2,0],"beräkna":[3,2,0],"beräknad":[3,2,0],"beräkning":[3,2,0],"berätta":[3,2,0],"berömma":[3,2,0],"beröra":[3,2,0],"beröring":[3,2,0],"beröva":[3,2,0],"besannas":[3,2,0],"besegra":[3,2,0],"besegrad":[3,2,0],"besiktning":[3,2,0],"besitta":[3,2,0],"besittning":[3,2,0],"beskatta":[3,2,0],"beskattning":[3,2,0],"beskriva":[3,2,0],"beskrivning":[3,2,0],"beskydda":[3,2,0],"beskylla":[3,2,0],"beskåda":[3,2,0],"besluta":[3,2,0],"besläktad":[3,2,0],"besparing":[3,2,0],"bestiga":[3,2,0],"bestraffa":[3,2,0],"bestraffning":[3,2,0],"bestrida":[3,2,0],"beställa":[3,2,0],"beställning":[3,2,0],"bestämma (sig för ngt)":[3,2,0],"besvara":[3,2,0],"besviken":[3,2,0],"besvära":[3,2,0],"besvärad":[3,2,0],"besvärlig":[3,2,0],"besätta":[3,2,0],"besättning":[3,2,0],"besöka":[3,2,0],"betala":[3,2,0],"betalning":[3,2,0],"beteckna":[3,2,0],"beteckning":[3,2,0],"betinga":[3,2,0],"betjäna":[3,2,0],"betjäning":[3,2,0],"betona":[3,2,0],"betoning":[3,2,0],"betrakta":[3,2,0],"betvivla":[3,2,0],"betyda":[3,2,0],"betydlig":[3,2,0],"betydligt":[3,2,0],"betäckning":[3,2,0],"beundra":[3,2,0],"beundran":[3,2,0],"bevaka":[3,2,0],"bevakad":[3,2,0],"bevakning":[3,2,0],"bevara":[3,2,0],"bevilja":[3,2,0],"bevisa":[3,2,0],"bevittna":[3,2,0],"beväpna":[3,2,0],"beväpnad":[3,2,0],"beväpning":[3,2,0],"förakta":[3,2,0],"förankring":[3,2,0],"förbanna":[3,2,0],"förbannad":[3,2,0],"förbannat":[3,2,0],"förbinda":[3,2,0],"förbittring":[3,2,0],"förbjuda":[3,2,0],"förbjuden":[3,2,0],"förbluffa":[3,2,0],"förblöda":[3,2,0],"förbruka":[3,2,0],"förbrukning":[3,2,0],"förbrylla":[3,2,0],"förbränning":[3,2,0],"förbättra":[3,2,0],"förbättring":[3,2,0],"fördela":[3,2,0],"fördelad":[3,2,0],"fördelning":[3,2,0],"fördjupa":[3,2,0],"fördjupning":[3,2,0],"fördriva":[3,2,0],"fördubbla":[3,2,0],"fördärva":[3,2,0],"fördärvad":[3,2,0],"fördöma":[3,2,0],"förena":[3,2,0],"förening":[3,2,0],"förenkla":[3,2,0],"förenkling":[3,2,0],"förenlig":[3,2,0],"förfalla":[3,2,0],"förfalskning":[3,2,0],"författa":[3,2,0],"författning":[3,2,0],"förfluten":[3,2,0],"förflyta":[3,2,0],"förflytta":[3,2,0],"förflyttning":[3,2,0],"förfoga (över ngt)":[3,2,0],"förfrågan":[3,2,0],"förfärlig":[3,2,0],"förfärligt":[3,2,0],"förfölja":[3,2,0],"förföra":[3,2,0],"förgifta":[3,2,0],"förgiftad":[3,2,0],"förgäves":[3,2,0],"förgöra":[3,2,0],"förhandla":[3,2,0],"förhandling":[3,2,0],"förhasta":[3,2,0],"förhindra":[3,2,0],"förhoppning":[3,2,0],"förhålla (sig)":[3,2,0],"förhöra":[3,2,0],"förinta":[3,2,0],"förkasta":[3,2,0],"förklara":[3,2,0],"förklaring":[3,2,0],"förknippa":[3,2,0],"förkorta":[3,2,0],"förkortning":[3,2,0],"förkunna":[3,2,0],"förkylning":[3,2,0],"förlamad":[3,2,0],"förlikning":[3,2,0],"förlita (sig på ngt)":[3,2,0],"förlora":[3,2,0],"förlorad":[3,2,0],"förlossning":[3,2,0],"förlova (sig med ngn)":[3,2,0],"förlovning":[3,2,0],"förlåta":[3,2,0],"förlåten":[3,2,0],"förlägga":[3,2,0],"förlänga":[3,2,0],"förlängning":[3,2,0],"förmedla":[3,2,0],"förmedling":[3,2,0],"förmoda":[3,2,0],"förmåga":[3,2,0],"förmögen":[3,2,0],"förneka":[3,2,0],"förnuftig":[3,2,0],"förnya":[3,2,0],"förnybar":[3,2,0],"förordna":[3,2,0],"förordning":[3,2,0],"förpackning":[3,2,0],"förplikta (sig till ngt)":[3,2,0],"förresten":[3,2,0],"förråda":[3,2,0],"församling":[3,2,0],"försegla":[3,2,0],"försena":[3,2,0],"försenad":[3,2,0],"försening":[3,2,0],"försiktig":[3,2,0],"försiktigt":[3,2,0],"förskräcklig":[3,2,0],"försona":[3,2,0],"försoning":[3,2,0],"förstora":[3,2,0],"förstärka":[3,2,0],"förstärkning":[3,2,0],"förstöra":[3,2,0],"försumma":[3,2,0],"försvaga":[3,2,0],"försvara":[3,2,0],"försvinna":[3,2,0],"försvunnen":[3,2,0],"försvåra":[3,2,0],"försäkra":[3,2,0],"försäkrad":[3,2,0],"försäkring":[3,2,0],"försäljning":[3,2,0],"försämra":[3,2,0],"försämring":[3,2,0],"försätta":[3,2,0],"försöka":[3,2,0],"försörja":[3,2,0],"försörjning":[3,2,0],"förteckning":[3,2,0],"förtjäna":[3,2,0],"förtrolig":[3,2,0],"förtrycka":[3,2,0],"förträfflig":[3,2,0],"förtvivlad":[3,2,0],"förtvivlan":[3,2,0],"förvalta":[3,2,0],"förvaltning":[3,2,0],"förvandla":[3,2,0],"förvandling":[3,2,0],"förvara":[3,2,0],"förvaring":[3,2,0],"förvirra":[3,2,0],"förvirrad":[3,2,0],"förvirring":[3,2,0],"förvisso":[3,2,0],"förvåna":[3,2,0],"förvånad":[3,2,0],"förvåning":[3,2,0],"förvänta":[3,2,0],"förväntan":[3,2,0],"förväntning":[3,2,0],"förvärra":[3,2,0],"förvärva":[3,2,0],"förväxla":[3,2,0],"föråldrad":[3,2,0],"förälder":[3,2,0],"förälskad":[3,2,0],"förändra":[3,2,0],"förändrad":[3,2,0],"förändring":[3,2,0],"föröka":[3,2,0],"beaktande":[4,2,0],"bebyggelse":[4,2,0],"bedragare":[4,2,0],"bedårande":[4,2,0],"befrielse":[4,2,0],"begynnelse":[4,2,0],"behållare":[4,2,0],"behövande":[4,2,0],"bekräftelse":[4,2,0],"bekännelse":[4,2,0],"bemärkelse":[4,2,0],"beroende":[4,2,0],"berättelse":[4,2,0],"berättiga":[4,2,0],"berättigad":[4,2,0],"berömmelse":[4,2,0],"beskyddare":[4,2,0],"bestående":[4,2,0],"bestämmelse":[4,2,0],"besvikelse":[4,2,0],"besökare":[4,2,0],"betecknande":[4,2,0],"beteende":[4,2,0],"betingelse":[4,2,0],"betraktelse":[4,2,0],"beträffande":[4,2,0],"betydande":[4,2,0],"betydelse":[4,2,0],"beundrare":[4,2,0],"bevarande":[4,2,0],"bevisligen":[4,2,0],"förbannelse":[4,2,0],"förbindelse":[4,2,0],"förbluffande":[4,2,0],"förbrukare":[4,2,0],"förfarande":[4,2,0],"författare":[4,2,0],"förfogande":[4,2,0],"förföljelse":[4,2,0],"förhoppningsvis":[4,2,0],"förhållande":[4,2,0],"förhållningssätt":[4,2,0],"förintelse":[4,2,0],"förlorare":[4,2,0],"förlåtelse":[4,2,0],"förläggare":[4,2,0],"förmodligen":[4,2,0],"förmyndare":[4,2,0],"förnekande":[4,2,0],"förnyelse":[4,2,0],"förpliktelse":[4,2,0],"förrädare":[4,2,0],"försakelse":[4,2,0],"förståelig":[4,2,0],"förståelse":[4,2,0],"förstörelse":[4,2,0],"försvarare":[4,2,0],"försvinnande":[4,2,0],"försäljare":[4,2,0],"försändelse":[4,2,0],"förtjusande":[4,2,0],"förtroende":[4,2,0],"förtydliga":[4,2,0],"förvaltare":[4,2,0],"förverkliga":[4,2,0],"förvånansvärt":[4,2,0],"föräldralös":[4,2,0],"förövare":[4,2,0],"berättigande":[5,2,0],"förhållandevis":[5,2,0],"förkroppsligande":[5,2,0],"förverkligande":[5,2,0],"ana":[2,1,2],"anbud":[2,1,2],"anfalla":[3,1,2],"anföra":[3,1,2],"anarki":[3,3,0],"anarkist":[3,3,0],"anekdot":[3,3,0],"anonym":[3,3,0],"areal":[3,3,0],"argument":[3,3,0],"arkitekt":[3,3,0],"arrangör":[3,3,0],"arrogans":[3,3,0],"arrogant":[3,3,0],"artefakt":[3,3,0],"bageri":[3,3,0],"batteri":[3,3,0],"dynasti":[3,3,0],"empati":[3,3,0],"energi":[3,3,0],"fantasi":[3,3,0],"galleri":[3,3,0],"garanti":[3,3,0],"harmoni":[3,3,0],"hyckleri":[3,3,0],"hysteri":[3,3,0],"industri":[3,3,0],"ironi":[3,3,0],"kalori":[3,3,0],"kirurgi":[3,3,0],"koloni":[3,3,0],"komedi":[3,3,0],"kompani":[3,3,0],"leukemi":[3,3,0],"lotteri":[3,3,0],"mejeri":[3,3,0],"melodi":[3,3,0],"monarki":[3,3,0],"måleri":[3,3,0],"analysera":[5,4,0],"argumentera":[5,4,0],"arkeologisk":[5,4,0],"arkitektonisk":[5,4,0],"artikulera":[5,4,0],"angripa":[3,1,2],"anda":[2,1,2],"onani":[3,3,0],"poesi":[3,3,0],"raseri":[3,3,0],"slaveri":[3,3,0],"slöseri":[3,3,0],"strategi":[3,3,0],"sympati":[3,3,0],"teori":[3,3,0],"terapi":[3,3,0],"tragedi":[3,3,0],"utopi":[3,3,0],"bedrägeri":[4,4,0],"fyrverkeri":[4,4,0],"förräderi":[4,4,0],"akademi":[4,4,0],"analogi":[4,4,0],"animation":[4,4,0],"antikvitet":[4,4,0],"arkeolog":[4,4,0],"arkitektur":[4,4,0],"arrangemang":[4,4,0],"artilleri":[4,4,0],"autonomi":[4,4,0],"biografi":[4,4,0],"biologi":[4,4,0],"byråkrati":[4,4,0],"ceremoni":[4,4,0],"demokrati":[4,4,0],"diplomati":[4,4,0],"ekologi":[4,4,0],"ekonomi":[4,4,0],"epilepsi":[4,4,0],"filosofi":[4,4,0],"fotografi":[4,4,0],"geografi":[4,4,0],"geometri":[4,4,0],"hierarki":[4,4,0],"kategori":[4,4,0],"kavalleri":[4,4,0],"maskineri":[4,4,0],"ortopedi":[4,4,0],"periferi":[4,4,0],"psykiatri":[4,4,0],"psykologi":[4,4,0],"schizofreni":[4,4,0],"teknologi":[4,4,0],"teologi":[4,4,0],"trakasseri":[4,4,0],"encyklopedi":[5,5,0],"bibliografi":[5,5,0],"antisemitism":[5,5,0],"argumentation":[5,5,0],"artificiell":[5,5,0],"ideologi":[5,5,0],"sociologi":[5,5,0],"terminologi":[5,5,0],"analytisk":[4,3,0],"animalisk":[4,3,0],"animering":[4,3,0],"annullera":[4,3,0],"aritmetisk":[4,3,0],"arkivera":[4,3,0],"arrangera":[4,3,0],"arrestera":[4,3,0],"arresterad":[4,3,0],"arrestering":[4,3,0],"februari":[4,3,0],"januari":[4,3,0],"analytiker":[5,3,0],"anamma":[3,2,0],"anus":[2,1,0],"bebis":[2,1,0],"chili":[2,1,0],"däri":[2,1,0],"första":[2,1,0],"juli":[2,1,0],"juni":[2,1,0],"sushi":[2,1,0],"taxi":[2,1,0],"area":[3,1,0],"förtio":[3,1,0],"tivoli":[3,1,0],"fyrtionde":[4,1,0],"andas":[2,1,2],"anhörig":[3,1,2],"anklaga":[3,1,2],"ande":[2,1,2],"andel":[2,1,2],"andlig":[2,1,2],"andning":[2,1,2],"andra":[2,1,2],"anfall":[2,1,2],"ange":[2,1,2],"angrepp":[2,1,2],"angå":[2,1,2],"aning":[2,1,2],"anka":[2,1,2],"ankomst":[2,1,2],"anlag":[2,1,2],"annan":[2,1,2],"annars":[2,1,2],"anor":[2,1,2],"ansats":[2,1,2],"anse":[2,1,2],"anslag":[2,1,2],"anslå":[2,1,2],"anspråk":[2,1,2],"anstalt":[2,1,2],"anställd":[2,1,2],"anstöt":[2,1,2],"ansvar":[2,1,2],"anta":[2,1,2],"antal":[2,1,2],"använd":[2,1,2],"ara":[2,1,2],"artig":[2,1,2],"artigt":[2,1,2],"anklagad":[3,1,2],"anknyta":[3,1,2],"anknytning":[3,1,2],"ankomma":[3,1,2],"anledning":[3,1,2],"anlita":[3,1,2],"anlägga":[3,1,2],"anläggning":[3,1,2],"anlända":[3,1,2],"anmäla":[3,1,2],"anmälan":[3,1,2],"anmälning":[3,1,2],"anmärkning":[3,1,2],"anordna":[3,1,2],"anordning":[3,1,2],"anpassa":[3,1,2],"anpassad":[3,1,2],"anpassning":[3,1,2],"ansikte":[3,1,2],"anskaffa":[3,1,2],"anskaffning":[3,1,2],"ansluta (sig till ngt)":[3,1,2],"ansluten":[3,1,2],"anslutning":[3,1,2],"anstränga (sig)":[3,1,2],"ansträngning":[3,1,2],"anställa":[3,1,2],"anställning":[3,1,2],"anständig":[3,1,2],"ansvara":[3,1,2],"ansvarig":[3,1,2],"ansöka":[3,1,2],"ansökan":[3,1,2],"ansökning":[3,1,2],"antagen":[3,1,2],"anteckna":[3,1,2],"anteckning":[3,1,2],"anträffa":[3,1,2],"antyda":[3,1,2],"arton":[2,1,2],"behå":[2,1,2],"bergig":[2,1,2],"bergskam":[2,1,2],"bergstopp":[2,1,2],"beta":[2,1,2],"bete":[2,1,2],"bitti":[2,1,2],"föra":[2,1,2],"fördel":[2,1,2],"fördom":[2,1,2],"före":[2,1,2],"förgrund":[2,1,2],"förhand":[2,1,2],"förman":[2,1,2],"förmån":[2,1,2],"förnamn":[2,1,2],"förort":[2,1,2],"förra":[2,1,2],"förrän":[2,1,2],"förrätt":[2,1,2],"förskott":[2,1,2],"förspel":[2,1,2],"försprång":[2,1,2],"gummi":[2,1,2],"uti":[2,1,2],"arena":[3,2,3],"förutom":[3,2,3],"ananas":[3,1,3],"andetag":[3,1,3],"anförtro":[3,1,3],"angenäm":[3,1,3],"angenämt":[3,1,3],"ankare":[3,1,3],"annanstans":[3,1,3],"antingen":[3,1,3],"användbar":[3,1,3],"arbetsam":[3,1,3],"arbetsdag":[3,1,3],"artonde":[3,1,3],"förare":[3,1,3],"förbehåll":[3,1,3],"förberedd":[3,1,3],"förebild":[3,1,3],"föredra":[3,1,3],"föredrag":[3,1,3],"föregå":[3,1,3],"förekomst":[3,1,3],"föremål":[3,1,3],"föresats":[3,1,3],"föreskrift":[3,1,3],"föreslå":[3,1,3],"förestå":[3,1,3],"företa":[3,1,3],"företag":[3,1,3],"förmiddag":[3,1,3],"förutse":[3,1,3],"inuti":[3,1,3],"utebli":[3,1,3],"förutsägbar":[4,1,4],"företrädesvis":[5,1,5],"antydning":[3,1,2],"anvisa":[3,1,2],"anvisning":[3,1,2],"använda":[3,1,2],"användning":[3,1,2],"arbeta":[3,1,2],"arbete":[3,1,2],"arvinge":[3,1,2],"arvode":[3,1,2],"förfader":[3,1,2],"förkläde":[3,1,2],"förskola":[3,1,2],"förvarna":[3,1,2],"betygsätta":[4,2,3],"förevändning":[4,1,3],"angelägen":[4,1,3],"annorlunda":[4,1,3],"bearbeta":[4,1,3],"bearbetning":[4,1,3],"förbereda":[4,1,3],"fördelaktig":[4,1,3],"förebygga":[4,1,3],"föredöme":[4,1,3],"förefalla":[4,1,3],"förekomma":[4,1,3],"föreligga":[4,1,3],"föreläsa":[4,1,3],"föreläsning":[4,1,3],"föreskriva":[4,1,3],"förespråka":[4,1,3],"föreställa (sig ngt)":[4,1,3],"föreställning":[4,1,3],"företräda":[4,1,3],"företräde":[4,1,3],"förolämpa":[4,1,3],"förolämpning":[4,1,3],"förorena":[4,1,3],"förorening":[4,1,3],"förorsaka":[4,1,3],"förutsäga":[4,1,3],"förutsätta":[4,1,3],"förutsättning":[4,1,3],"anförande":[4,1,2],"angränsande":[4,1,2],"angående":[4,1,2],"anhängare":[4,1,2],"anklagelse":[4,1,2],"anseende":[4,1,2],"antagande":[4,1,2],"antagligen":[4,1,2],"användande":[4,1,2],"användare":[4,1,2],"arbetare":[4,1,2],"befälhavare":[5,2,3],"förundersökning":[5,1,4],"förutbestämma":[5,1,4],"förberedelse":[5,1,3],"förebyggande":[5,1,3],"föregående":[5,1,3],"föregångare":[5,1,3],"föreläsare":[5,1,3],"förespråkare":[5,1,3],"förestående":[5,1,3],"föreståndare":[5,1,3],"företagare":[5,1,3],"företeelse":[5,1,3],"företrädare":[5,1,3],"förutsägelse":[5,1,3]};
+const STORY = [
+  "En kväll i augusti anlände en anonym besökare till stadens museum med ett antikt föremål och ett fotografi av en försvunnen artist.",
+  "Museets föreståndare, en begåvad arkeolog med ett förflutet inom psykologin, kunde ana att besöket dolde en berättelse om förräderi, förlust och förlåtelse.",
+  "På fotografiets baksida fanns en anteckning: ”Förvara detta i arkivet, annars kommer någon att förgöra det sista beviset.”",
+  "Hon anlitade en analytiker för att analysera fotografiet och en arkitekt för att bedöma teaterns märkliga arkitektur.",
+  "Analytikern upptäckte en förfalskning: en annons om en föreställning hade klistrats över en äldre förteckning.",
+  "I förteckningen stod ett namn, ett belopp och en begäran om att bevara en melodi som någon hade försökt förbjuda.",
+  "När föreståndaren ville bekräfta uppgifterna, kom ett bestämt besked från museets förvaltare: varje försök till förundersökning måste omedelbart avbrytas.",
+  "Förvaltaren förklarade att en betydande försäljning var förestående och att ytterligare frågor kunde försvåra en besvärlig förhandling.",
+  "Men föreståndaren förstod att beslutet berodde på förakt och begär snarare än förnuft, och beslöt att bedriva en egen undersökning.",
+  "I ett förfallet förråd anträffade hon en förseglad behållare, försedd med en arabisk beteckning och en förfärlig förbannelse.",
+  "Inuti låg ett notblad, en bekännelse och ett gammalt fotografi där samma artist syntes tillsammans med en föräldralös pojke.",
+  "Hon började ana att melodin hade använts för att förmedla en hemlighet som kunde förvandla beundran till förakt.",
+  "När hon försökte spela melodin på museets piano började den anonyme besökaren andas häftigt och begärde att hon skulle behålla notbladet.",
+  "Mannen berättade att hans förfader hade försökt förhindra en avrättning genom att anförtro sin bekännelse åt artisten, som ansåg sig kunna besegra varje hot.",
+  "Artisten hade blivit förföljd, anklagad för bedrägeri och slutligen arresterad av ett befäl som fått befallning att förstöra alla bevis.",
+  "För att beskydda sina anhöriga hade han förvandlat vittnesmålet till musik och anförtrott noterna åt en anställd vid teatern.",
+  "Men den anställde hade ett begär efter berömmelse, förrådde artisten och sålde noterna till en förmögen förläggare.",
+  "Föreståndaren var förtvivlad men beredd att avslöja detta förräderi, trots att förvaltaren försökte förbjuda henne att beröra saken.",
+  "När hon frågade om mannens anknytning till artisten, blev han förvirrad och svarade: ”Jag har väntat på den här melodin i hundrafemtio år.”",
+  "Hon betraktade fotografiet igen och förstod med förfäran: den anonyme besökaren var den föräldralöse pojken – och fotografiet var taget för hundrafemtio år sedan."
+];
+const FORM_LINKS = {"augusti":"augusti","anlände":"anlända","anonym":"anonym","besökare":"besökare","antikt":"antik","föremål":"föremål","fotografi":"fotografi","försvunnen":"försvunnen","artist":"artist","föreståndare":"föreståndare","begåvad":"begåvad","arkeolog":"arkeolog","förflutet":"förfluten","psykologin":"psykologi","ana":"ana","besöket":"besök","berättelse":"berättelse","förräderi":"förräderi","förlust":"förlust","förlåtelse":"förlåtelse","fotografiets":"fotografi","anteckning":"anteckning","förvara":"förvara","arkivet":"arkiv","annars":"annars","förgöra":"förgöra","beviset":"bevis","anlitade":"anlita","analytiker":"analytiker","analysera":"analysera","fotografiet":"fotografi","arkitekt":"arkitekt","bedöma":"bedöma","arkitektur":"arkitektur","analytikern":"analytiker","förfalskning":"förfalskning","annons":"annons","föreställning":"föreställning","förteckning":"förteckning","förteckningen":"förteckning","belopp":"belopp","begäran":"begäran","bevara":"bevara","melodi":"melodi","försökt":"försöka","förbjuda":"förbjuda","föreståndaren":"föreståndare","bekräfta":"bekräfta","besked":"besked","förvaltare":"förvaltare","försök":"försök","förundersökning":"förundersökning","förvaltaren":"förvaltare","förklarade":"förklara","betydande":"betydande","försäljning":"försäljning","förestående":"förestående","försvåra":"försvåra","besvärlig":"besvärlig","förhandling":"förhandling","förstod":"förstå","beslutet":"beslut","förakt":"förakt","begär":"begär","förnuft":"förnuft","beslöt":"besluta","bedriva":"bedriva","förfallet":"förfalla","förråd":"förråd","förseglad":"försegla","behållare":"behållare","försedd":"förse","arabisk":"arabisk","beteckning":"beteckning","förfärlig":"förfärlig","förbannelse":"förbannelse","inuti":"inuti","bekännelse":"bekännelse","föräldralös":"föräldralös","melodin":"melodi","använts":"använda","förmedla":"förmedla","förvandla":"förvandla","beundran":"beundran","försökte":"försöka","anonyme":"anonym","besökaren":"besökare","andas":"andas","begärde":"begära","behålla":"behålla","berättade":"berätta","förfader":"förfader","förhindra":"förhindra","anförtro":"anförtro","artisten":"artist","besegra":"besegra","förföljd":"förföljd","anklagad":"anklagad","bedrägeri":"bedrägeri","arresterad":"arrestera","befäl":"befäl","befallning":"befallning","förstöra":"förstöra","bevis":"bevis","beskydda":"beskydda","anhöriga":"anhörig","förvandlat":"förvandla","anförtrott":"anförtro","anställd":"anställd","anställde":"anställd","berömmelse":"berömmelse","förrådde":"förråda","förmögen":"förmögen","förläggare":"förläggare","förtvivlad":"förtvivlad","beredd":"beredd","beröra":"beröra","anknytning":"anknytning","förvirrad":"förvirrad","betraktade":"betrakta","föräldralöse":"föräldralös"};
+const SYLLABLE_MAP = {"augusti":["au","gus","ti"],"anlände":["an","län","de"],"anonym":["a","no","nym"],"besökare":["be","sö","ka","re"],"antikt":["an","tikt"],"föremål":["fö","re","mål"],"fotografi":["fo","to","gra","fi"],"försvunnen":["för","svun","nen"],"artist":["ar","tist"],"föreståndare":["fö","re","stån","da","re"],"begåvad":["be","gå","vad"],"arkeolog":["ar","ke","o","log"],"förflutet":["för","flu","tet"],"psykologin":["psy","ko","lo","gin"],"ana":["a","na"],"besöket":["be","sö","ket"],"berättelse":["be","rät","tel","se"],"förräderi":["för","rä","de","ri"],"förlust":["för","lust"],"förlåtelse":["för","lå","tel","se"],"fotografiets":["fo","to","gra","fi","ets"],"anteckning":["an","teck","ning"],"förvara":["för","va","ra"],"arkivet":["ar","ki","vet"],"annars":["an","nars"],"förgöra":["för","gö","ra"],"beviset":["be","vi","set"],"anlitade":["an","li","ta","de"],"analytiker":["a","na","ly","ti","ker"],"analysera":["a","na","ly","se","ra"],"fotografiet":["fo","to","gra","fi","et"],"arkitekt":["ar","ki","tekt"],"bedöma":["be","dö","ma"],"arkitektur":["ar","ki","tek","tur"],"analytikern":["a","na","ly","ti","kern"],"förfalskning":["för","falsk","ning"],"annons":["an","nons"],"föreställning":["fö","re","ställ","ning"],"förteckning":["för","teck","ning"],"förteckningen":["för","teck","ning","en"],"belopp":["be","lopp"],"begäran":["be","gä","ran"],"bevara":["be","va","ra"],"melodi":["me","lo","di"],"försökt":["för","sökt"],"förbjuda":["för","bju","da"],"föreståndaren":["fö","re","stån","da","ren"],"bekräfta":["be","kräf","ta"],"besked":["be","sked"],"förvaltare":["för","val","ta","re"],"försök":["för","sök"],"förundersökning":["för","un","der","sök","ning"],"förvaltaren":["för","val","ta","ren"],"förklarade":["för","kla","ra","de"],"betydande":["be","ty","dan","de"],"försäljning":["för","sälj","ning"],"förestående":["fö","re","stå","en","de"],"försvåra":["för","svå","ra"],"besvärlig":["be","svär","lig"],"förhandling":["för","hand","ling"],"förstod":["för","stod"],"beslutet":["be","slu","tet"],"förakt":["för","akt"],"begär":["be","gär"],"förnuft":["för","nuft"],"beslöt":["be","slöt"],"bedriva":["be","dri","va"],"förfallet":["för","fal","let"],"förråd":["för","råd"],"förseglad":["för","seg","lad"],"behållare":["be","hål","la","re"],"försedd":["för","sedd"],"arabisk":["a","ra","bisk"],"beteckning":["be","teck","ning"],"förfärlig":["för","fär","lig"],"förbannelse":["för","ban","nel","se"],"inuti":["in","u","ti"],"bekännelse":["be","kän","nel","se"],"föräldralös":["för","äld","ra","lös"],"melodin":["me","lo","din"],"använts":["an","vänts"],"förmedla":["för","med","la"],"förvandla":["för","vand","la"],"beundran":["be","und","ran"],"försökte":["för","sök","te"],"anonyme":["a","no","ny","me"],"besökaren":["be","sö","ka","ren"],"andas":["an","das"],"begärde":["be","gär","de"],"behålla":["be","hål","la"],"berättade":["be","rät","ta","de"],"förfader":["för","fa","der"],"förhindra":["för","hind","ra"],"anförtro":["an","för","tro"],"artisten":["ar","tis","ten"],"besegra":["be","seg","ra"],"förföljd":["för","följd"],"anklagad":["an","kla","gad"],"bedrägeri":["be","drä","ge","ri"],"arresterad":["ar","res","te","rad"],"befäl":["be","fäl"],"befallning":["be","fall","ning"],"förstöra":["för","stö","ra"],"bevis":["be","vis"],"beskydda":["be","skyd","da"],"anhöriga":["an","hö","ri","ga"],"förvandlat":["för","vand","lat"],"anförtrott":["an","för","trott"],"anställd":["an","ställd"],"anställde":["an","ställ","de"],"berömmelse":["be","röm","mel","se"],"förrådde":["för","råd","de"],"förmögen":["för","mö","gen"],"förläggare":["för","läg","ga","re"],"förtvivlad":["för","tviv","lad"],"beredd":["be","redd"],"beröra":["be","rö","ra"],"anknytning":["an","knyt","ning"],"förvirrad":["för","vir","rad"],"betraktade":["be","trak","ta","de"],"föräldralöse":["för","äld","ra","lö","se"]};
+
+const $ = (id) => document.getElementById(id);
+const storyEl = $('story');
+const wordPattern = /(\p{L}+(?:[’'-]\p{L}+)*)/gu;
+let activeWord = null;
+let previousFocus = null;
+
+function renderStory() {
+  storyEl.replaceChildren();
+  STORY.forEach((sentence, i) => {
+    if (i % 5 === 0) {
+      const p = document.createElement('p');
+      storyEl.appendChild(p);
+    }
+    const p = storyEl.lastElementChild;
+    const nodes = sentence.split(wordPattern);
+    for (const str of nodes) {
+      const key = str.toLocaleLowerCase('sv-SE');
+      const lemma = FORM_LINKS[key];
+      if (lemma && LEXICON[lemma] && SYLLABLE_MAP[key]) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'word';
+        btn.textContent = str;
+        btn.addEventListener('click', () => openWord(str,key,lemma));
+        p.appendChild(btn);
+      } else {
+        p.appendChild(document.createTextNode(str));
+      }
+    }
+    if (i % 5 !== 4 && i !== STORY.length - 1) p.appendChild(document.createTextNode(' '));
+  });
+}
+
+function openWord(display, key, lemma) {
+  previousFocus = document.activeElement;
+  activeWord = display;
+  window.speechSynthesis?.cancel();
+  $('audioStatus').textContent = '';
+  $('modalTitle').textContent = display;
+  $('baseForm').textContent = key === lemma ? 'Uppslagsord' : `Böjd form av ”${lemma}”`;
+  const [expectedSyllables, mainStress, accent2] = LEXICON[lemma];
+  const parts = SYLLABLE_MAP[key];
+  $('syllables').replaceChildren();
+  parts.forEach((part,i) => {
+    const pos = i + 1;
+    const unit = document.createElement('div');
+    unit.className = 'syllable' + (pos === mainStress ? ' primary' : (pos === accent2 ? ' secondary' : ''));
+    const syllableText = document.createElement('span');
+    syllableText.textContent = part;
+    unit.appendChild(syllableText);
+    if (pos === mainStress || pos === accent2) {
+      const small = document.createElement('small');
+      small.textContent = pos === mainStress ? 'Huvud' : 'Accent 2';
+      unit.appendChild(small);
+    }
+    $('syllables').appendChild(unit);
+  });
+  $('legend').replaceChildren();
+  for (const [label, css] of [['Huvudbetoning',''], ...(accent2 ? [['Accent 2','accent2']] : [])]) {
+    const legend = document.createElement('span');
+    legend.className = 'legend-item';
+    const square = document.createElement('span');
+    square.className = 'swatch ' + css;
+    square.setAttribute('aria-hidden','true');
+    legend.append(square,document.createTextNode(label));
+    $('legend').append(legend);
+  }
+  const baseNote = key === lemma ? '' : ` Grundformen har ${expectedSyllables} stavelser; den här formen har ${parts.length}.`;
+  $('modalNote').textContent = `Huvudbetoning på stavelse ${mainStress}` + (accent2 ? `; accent 2 markerad på stavelse ${accent2}.` : '; ingen accent 2 angiven i databasen.') + baseNote;
+  $('backdrop').hidden = false;
+  document.body.style.overflow='hidden';
+  $('closeModal').focus();
+}
+
+function closeWord() {
+  window.speechSynthesis?.cancel();
+  $('backdrop').hidden = true;
+  document.body.style.overflow='';
+  if (previousFocus && previousFocus.isConnected) previousFocus.focus();
+  activeWord = null;
+}
+$('closeModal').addEventListener('click',closeWord);
+$('backdrop').addEventListener('click',e => { if(e.target === $('backdrop')) closeWord(); });
+document.addEventListener('keydown', e => {
+  if ($('backdrop').hidden) return;
+  if (e.key === 'Escape') { closeWord(); return; }
+  if (e.key === 'Tab') {
+    const focusables = [...$('backdrop').querySelectorAll('button:not([disabled]), select')];
+    const first = focusables[0], last = focusables[focusables.length-1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+
+const canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+if (!canSpeak) {
+  $('playAudio').disabled=true;
+  $('audioStatus').textContent='Webbläsaren saknar talsyntes.';
+}
+$('playAudio').addEventListener('click', () => {
+  if (!canSpeak || !activeWord) return;
+  const synth=window.speechSynthesis;
+  synth.cancel();
+  const speech=new SpeechSynthesisUtterance(activeWord);
+  speech.lang='sv-SE';
+  speech.rate=0.7;
+  speech.pitch=1;
+  const voices=synth.getVoices();
+  const swedish = voices.find(v=>v.lang.toLowerCase()==='sv-se') || voices.find(v=>v.lang.toLowerCase().startsWith('sv'));
+  if (swedish) speech.voice=swedish;
+  $('audioStatus').textContent=swedish ? 'Spelar upp ordet.' : 'Spelar upp. Ingen svensk röst hittades; uttalet kan avvika.';
+  speech.onerror=()=>{$('audioStatus').textContent='Uppspelningen kunde inte genomföras.';};
+  speech.onend=()=>{$('audioStatus').textContent='Uppspelning klar.';};
+  synth.speak(speech);
+});
+renderStory();
+</script>
+</body>
+</html>
