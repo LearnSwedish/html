@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Öva svenska ordspråk på svår nivå: läs ett scenario och välj rätt ordspråk – alternativen är dolda.">
+<link rel="canonical" href="https://learnswedish.github.io/html/svenska-ordsprak-hard.html">
+<link rel="alternate" hreflang="sv" href="https://learnswedish.github.io/html/svenska-ordsprak-hard.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Svenska ordspråk – Svår">
+<meta property="og:description" content="Öva svenska ordspråk på svår nivå: läs ett scenario och välj rätt ordspråk – alternativen är dolda.">
+<meta property="og:url" content="https://learnswedish.github.io/html/svenska-ordsprak-hard.html">
+<meta property="og:locale" content="sv_SE">
+<title>Svenska ordspråk – Svår</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<script>
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('ordsprak-tema'); } catch (e) {}
+    if (!t) t = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --bg-grad: radial-gradient(1200px 600px at 10% -10%, #fbf8f1 0%, transparent 60%), radial-gradient(900px 500px at 110% 10%, #ece6d8 0%, transparent 55%);
+    --surface: #ffffff;
+    --surface-2: #f8f6f1;
+    --border: #e3ddd0;
+    --text: #1f2430;
+    --muted: #6a6f7b;
+    --accent: #1f4e79;
+    --accent-2: #2d6aa3;
+    --accent-soft: #e6eef7;
+    --gold: #b8892e;
+    --ok: #237a4b;
+    --ok-soft: #e3f3ea;
+    --err: #b3352d;
+    --err-soft: #fbe7e5;
+    --hint-soft: #fff6e0;
+    --hint-border: #ecd9a6;
+    --shadow: 0 1px 2px rgba(30, 30, 40, .05), 0 8px 24px rgba(30, 30, 40, .07);
+    --shadow-lg: 0 4px 12px rgba(30, 30, 40, .08), 0 24px 48px rgba(30, 30, 40, .16);
+    --radius: 14px;
+  }
+  [data-theme="dark"] {
+    --bg: #12151c;
+    --bg-grad: radial-gradient(1200px 600px at 10% -10%, #1b2030 0%, transparent 60%), radial-gradient(900px 500px at 110% 10%, #181c26 0%, transparent 55%);
+    --surface: #1a1f2a;
+    --surface-2: #212734;
+    --border: #2d3442;
+    --text: #e7e9ee;
+    --muted: #9aa1af;
+    --accent: #7fb2e5;
+    --accent-2: #9cc5ee;
+    --accent-soft: #1f2d40;
+    --gold: #e0b45a;
+    --ok: #5cc98d;
+    --ok-soft: #173326;
+    --err: #f0857c;
+    --err-soft: #3a1e1d;
+    --hint-soft: #2e2817;
+    --hint-border: #5a4b23;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 30px rgba(0, 0, 0, .35);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, .35), 0 24px 48px rgba(0, 0, 0, .5);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  /* Reservera alltid plats för rullningslisten, så att sidan inte flyttar sig i sidled
+     när innehållet blir högre än fönstret (t.ex. när övningen startar). */
+  html { scrollbar-gutter: stable; overflow-y: scroll; }
+  body {
+    min-height: 100vh;
+    background: var(--bg-grad), var(--bg);
+    color: var(--text);
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    transition: background-color .3s, color .3s;
+  }
+  .wrap { max-width: var(--wrap-max, 1300px); margin: 0 auto; padding: 24px 20px 48px; }
+
+  header.top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding-bottom: 18px; margin-bottom: 26px; border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-mark {
+    width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center;
+    background: var(--accent); color: var(--surface); font-size: 20px; box-shadow: var(--shadow);
+  }
+  [data-theme="dark"] .brand-mark { color: #12151c; }
+  h1 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    font-weight: 700; font-size: 30px; letter-spacing: .2px; margin: 0; line-height: 1.1;
+  }
+  .subtitle { color: var(--muted); font-size: 14px; margin-top: 3px; }
+  .top-right { display: flex; align-items: center; gap: 14px; }
+
+  .mode-link {
+    font-size: 14px; font-weight: 600; text-decoration: none; color: var(--accent);
+    border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 8px 16px;
+    display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: var(--shadow);
+    transition: border-color .2s, transform .12s, background-color .2s;
+  }
+  .mode-link:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .mode-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  /* Växel för ljust/mörkt läge */
+  .theme-switch {
+    position: relative; width: 72px; height: 36px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface-2); cursor: pointer; padding: 0; flex-shrink: 0;
+    transition: background-color .3s, border-color .3s;
+  }
+  .theme-switch:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .theme-switch .track-icon {
+    position: absolute; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--muted); opacity: .7;
+  }
+  .theme-switch .track-icon.sun { left: 11px; }
+  .theme-switch .track-icon.moon { right: 11px; }
+  .theme-switch .knob {
+    position: absolute; top: 3px; left: 3px; width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 14px;
+    background: #ffffff; color: #e0a21b; box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+    transition: transform .3s cubic-bezier(.4, .2, .2, 1), background-color .3s, color .3s;
+  }
+  [data-theme="dark"] .theme-switch .knob { transform: translateX(36px); background: #2f3747; color: #f3d98b; }
+  .theme-switch .knob .fa-moon { display: none; }
+  [data-theme="dark"] .theme-switch .knob .fa-moon { display: inline-block; }
+  [data-theme="dark"] .theme-switch .knob .fa-sun { display: none; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 28px; transition: background-color .3s, border-color .3s;
+  }
+
+  /* Startvy */
+  .intro h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 24px; margin: 0 0 8px;
+  }
+  .intro p { margin: 0 0 14px; color: var(--muted); }
+  .rules { list-style: none; padding: 0; margin: 18px 0 26px; display: grid; gap: 10px; }
+  .rules li { display: flex; gap: 12px; align-items: flex-start; }
+  .rules i { color: var(--accent); width: 20px; text-align: center; margin-top: 4px; }
+  .count-label { font-weight: 600; margin-bottom: 12px; }
+  .counts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .count-btn {
+    font: inherit; cursor: pointer; border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+    border-radius: 12px; padding: 18px 10px; text-align: center; transition: transform .12s, border-color .2s, background-color .2s;
+  }
+  .count-btn strong { display: block; font-size: 26px; line-height: 1.1; color: var(--accent); }
+  .count-btn span { font-size: 13px; color: var(--muted); }
+  .count-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .count-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  /* Frågevy */
+  .status { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 14px; color: var(--muted); }
+  .score-pill {
+    background: var(--accent-soft); color: var(--accent); font-weight: 600; padding: 5px 12px; border-radius: 999px;
+    display: inline-flex; gap: 8px; align-items: center;
+  }
+  .progress { height: 6px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; margin-bottom: 22px; }
+  .progress > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .4s ease; }
+
+  .label {
+    text-transform: uppercase; letter-spacing: .12em; font-size: 12px; font-weight: 700; color: var(--gold);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+  }
+  .clue {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 22px; line-height: 1.45; margin: 0 0 18px;
+  }
+  .hint-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .btn {
+    font: inherit; font-size: 15px; cursor: pointer; border-radius: 10px; padding: 9px 16px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+    display: inline-flex; gap: 8px; align-items: center; transition: border-color .2s, background-color .2s, transform .12s;
+  }
+  .btn:hover:not(:disabled) { border-color: var(--accent); }
+  .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .btn:disabled { opacity: .55; cursor: default; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--surface); font-weight: 600; }
+  [data-theme="dark"] .btn.primary { color: #12151c; }
+  .btn.primary:hover:not(:disabled) { transform: translateY(-1px); }
+  .hint-note { font-size: 13px; color: var(--muted); }
+
+  /* Engelsk motsvarighet: tar alltid sin plats, så att sidan inte hoppar. */
+  .english {
+    visibility: hidden; opacity: 0; background: var(--hint-soft); border: 1px solid var(--hint-border); border-radius: 12px;
+    padding: 12px 16px; margin-bottom: 20px; transition: opacity .25s ease, visibility 0s linear .25s;
+  }
+  .english.show { visibility: visible; opacity: 1; transition: opacity .25s ease, visibility 0s; }
+  .english .en-label { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--gold); font-weight: 700; margin-bottom: 2px; }
+  .english .en-text { font-style: italic; }
+  .english .en-text.none { font-style: normal; }
+
+  /* Lätt nivå: åtta alternativ */
+  .options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .options.two { grid-template-columns: 1fr 1fr; }
+  .opt {
+    font: inherit; text-align: left; cursor: pointer; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); border-radius: 12px; padding: 13px 14px; display: flex; gap: 12px; align-items: flex-start;
+    transition: border-color .15s, background-color .15s, transform .12s;
+  }
+  .opt .num {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center;
+    font-size: 13px; font-weight: 700; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border);
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-1px); }
+  .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .opt:disabled { cursor: default; }
+  .opt.dim { opacity: .45; }
+  .opt.correct { border-color: var(--ok); background: var(--ok-soft); opacity: 1; }
+  .opt.correct .num { background: var(--ok); color: var(--surface); border-color: var(--ok); }
+  .opt.wrong { border-color: var(--err); background: var(--err-soft); opacity: 1; }
+  .opt.wrong .num { background: var(--err); color: var(--surface); border-color: var(--err); }
+
+  /* Svår nivå: rullgardinslista med alla ordspråk */
+  .picker { position: relative; }
+  .picker-btn {
+    width: 100%; font: inherit; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 12px; padding: 14px 16px;
+    transition: border-color .15s, background-color .15s;
+  }
+  .picker-btn:hover:not(:disabled) { border-color: var(--accent); }
+  .picker-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .picker-btn .pb-text { flex: 1; }
+  .picker-btn .pb-text.placeholder { color: var(--muted); }
+  .picker-btn .pb-chev { color: var(--muted); transition: transform .2s; }
+  .picker.open .picker-btn { border-color: var(--accent); }
+  .picker.open .pb-chev { transform: rotate(180deg); }
+  .picker-btn:disabled { cursor: default; }
+  .picker-btn.correct { border-color: var(--ok); background: var(--ok-soft); }
+  .picker-btn.wrong { border-color: var(--err); background: var(--err-soft); }
+  .picker-btn.correct .pb-chev, .picker-btn.wrong .pb-chev { display: none; }
+  .picker-btn .pb-mark { display: none; font-size: 18px; }
+  .picker-btn.correct .pb-mark.ok { display: inline; color: var(--ok); }
+  .picker-btn.wrong .pb-mark.err { display: inline; color: var(--err); }
+
+  .picker-panel {
+    position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 20;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-lg);
+    display: none; flex-direction: column;
+  }
+  .picker.open .picker-panel { display: flex; animation: fade .15s ease; }
+  .picker-list { padding: 10px; display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .picker-list.two { grid-template-columns: 1fr 1fr; }
+  .pick {
+    display: flex; gap: 12px; align-items: flex-start; width: 100%; font: inherit; text-align: left; cursor: pointer;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 10px; padding: 11px 14px;
+    transition: border-color .15s, background-color .15s;
+  }
+  .pick .num {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center;
+    font-size: 13px; font-weight: 700; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border);
+  }
+  .pick:hover, .pick:focus-visible { background: var(--accent-soft); border-color: var(--accent); outline: 0; }
+
+  .feedback {
+    display: none; margin-top: 20px; padding: 14px 16px; border-radius: 12px; border: 1px solid;
+    align-items: flex-start; gap: 12px;
+  }
+  .feedback.show { display: flex; animation: fade .25s ease; }
+  .feedback.ok { background: var(--ok-soft); border-color: var(--ok); }
+  .feedback.err { background: var(--err-soft); border-color: var(--err); }
+  .feedback > i { font-size: 20px; margin-top: 2px; }
+  .feedback.ok > i { color: var(--ok); }
+  .feedback.err > i { color: var(--err); }
+  .feedback .fb-title { font-weight: 700; }
+
+  .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; gap: 12px; flex-wrap: wrap; }
+  .keys { font-size: 13px; color: var(--muted); }
+  kbd {
+    font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; padding: 1px 6px; border-radius: 5px;
+    border: 1px solid var(--border); background: var(--surface-2);
+  }
+
+  /* Resultatvy */
+  .result-head { text-align: center; padding: 8px 0 18px; }
+  .result-head .big {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 54px; font-weight: 700; color: var(--accent); line-height: 1;
+  }
+  .result-head .of { color: var(--muted); margin-top: 6px; }
+  .result-head .verdict { font-size: 20px; margin-top: 12px; font-weight: 600; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0 24px; }
+  .stat { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
+  .stat strong { display: block; font-size: 24px; }
+  .stat span { font-size: 13px; color: var(--muted); }
+  .stat.s-ok strong { color: var(--ok); }
+  .stat.s-half strong { color: var(--gold); }
+  .stat.s-err strong { color: var(--err); }
+  .review h3 { font-size: 16px; margin: 0 0 10px; }
+  .review ol { margin: 0; padding-left: 22px; display: grid; gap: 12px; }
+  .review li .r-ans { font-weight: 600; }
+  .review li .r-clue { color: var(--muted); font-size: 15px; }
+  .result-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 28px; }
+
+  .hidden { display: none !important; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (min-width: 720px) { .opt .txt, .pick .txt { white-space: nowrap; } }
+  @media (max-width: 640px) {
+    body { font-size: 16px; }
+    .wrap { padding: 16px 14px 36px; }
+    h1 { font-size: 22px; }
+    .brand-mark { display: none; }
+    .card { padding: 20px; }
+    .clue { font-size: 19px; }
+    .counts { grid-template-columns: 1fr 1fr; }
+    .stats { grid-template-columns: 1fr; }
+    .keys { display: none; }
+    .mode-link { padding: 7px 12px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><i class="fa-solid fa-quote-right"></i></div>
+      <div>
+        <h1>Svenska ordspråk</h1>
+        <div class="subtitle">Svår nivå · alternativen är dolda</div>
+      </div>
+    </div>
+    <div class="top-right">
+      <a class="mode-link" href="https://learnswedish.github.io/html/svenska-ordsprak-easy.html" title="Byt till lätt nivå: alternativen syns direkt"><i class="fa-solid fa-seedling"></i>Lätt nivå</a>
+      <button class="theme-switch" id="themeSwitch" role="switch" aria-checked="false" aria-label="Mörkt läge" title="Växla mellan ljust och mörkt läge">
+        <i class="fa-solid fa-sun track-icon sun" aria-hidden="true"></i>
+        <i class="fa-solid fa-moon track-icon moon" aria-hidden="true"></i>
+        <span class="knob" aria-hidden="true"><i class="fa-solid fa-sun"></i><i class="fa-solid fa-moon"></i></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Startvy -->
+    <section class="card intro" id="viewStart">
+      <h2>Välkommen!</h2>
+      <p>Du får läsa ett kort scenario. Fundera först själv på vilket ordspråk som passar – de åtta alternativen visas först när du öppnar listan.</p>
+      <ul class="rules">
+        <li><i class="fa-solid fa-circle-check"></i><span>Rätt svar utan hjälp ger <strong>1 poäng</strong>.</span></li>
+        <li><i class="fa-solid fa-language"></i><span>Om du visar den engelska motsvarigheten ger rätt svar <strong>0,5 poäng</strong>.</span></li>
+        <li><i class="fa-solid fa-circle-info"></i><span>Om ordspråket saknar engelsk motsvarighet påverkar ledtråden inte poängen.</span></li>
+        <li><i class="fa-solid fa-circle-xmark"></i><span>Fel svar ger 0 poäng.</span></li>
+      </ul>
+      <div class="count-label">Hur många ordspråk vill du öva på?</div>
+      <div class="counts" id="counts"></div>
+    </section>
+
+    <!-- Frågevy -->
+    <section class="card hidden" id="viewQuiz" aria-live="polite">
+      <div class="status">
+        <span id="qCounter">Fråga 1 av 10</span>
+        <span class="score-pill"><i class="fa-solid fa-star"></i><span id="scoreText">0 poäng</span></span>
+      </div>
+      <div class="progress" aria-hidden="true"><div id="progressBar"></div></div>
+
+      <div class="label"><i class="fa-solid fa-book-open"></i>Scenario</div>
+      <p class="clue" id="clue"></p>
+
+      <div class="hint-row">
+        <button class="btn" id="hintBtn"><i class="fa-solid fa-language"></i>Visa engelsk motsvarighet</button>
+        <span class="hint-note" id="hintNote"></span>
+      </div>
+      <div class="english" id="english">
+        <div class="en-label">Engelsk motsvarighet</div>
+        <div class="en-text" id="enText"></div>
+      </div>
+
+      <!-- Lätt nivå -->
+      <div class="options" id="options"></div>
+
+      <!-- Svår nivå -->
+      <div class="picker" id="picker">
+        <button class="picker-btn" id="pickerBtn" aria-haspopup="listbox" aria-expanded="false">
+          <i class="fa-solid fa-list-ul" style="color:var(--muted)"></i>
+          <span class="pb-text placeholder" id="pickerText">Välj ordspråk …</span>
+          <i class="fa-solid fa-circle-check pb-mark ok"></i>
+          <i class="fa-solid fa-circle-xmark pb-mark err"></i>
+          <i class="fa-solid fa-chevron-down pb-chev"></i>
+        </button>
+        <div class="picker-panel" id="pickerPanel">
+          <div class="picker-list" id="pickerList" role="listbox"></div>
+        </div>
+      </div>
+
+      <div class="feedback" id="feedback">
+        <i class="fa-solid" id="fbIcon"></i>
+        <div>
+          <div class="fb-title" id="fbTitle"></div>
+          <div id="fbBody"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <span class="keys"><kbd>Mellanslag</kbd> öppna listan &nbsp; <kbd>1</kbd>–<kbd>8</kbd> välj &nbsp; <kbd>E</kbd> engelska &nbsp; <kbd>Enter</kbd> nästa</span>
+        <button class="btn primary" id="nextBtn" disabled>Nästa <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </section>
+
+    <!-- Resultatvy -->
+    <section class="card hidden" id="viewResult">
+      <div class="result-head">
+        <div class="big" id="resScore"></div>
+        <div class="of" id="resOf"></div>
+        <div class="verdict" id="resVerdict"></div>
+      </div>
+      <div class="stats">
+        <div class="stat s-ok"><strong id="stFull">0</strong><span>rätt utan ledtråd</span></div>
+        <div class="stat s-half"><strong id="stHalf">0</strong><span>rätt med ledtråd</span></div>
+        <div class="stat s-err"><strong id="stWrong">0</strong><span>fel</span></div>
+      </div>
+      <div class="review" id="review"></div>
+      <div class="result-actions">
+        <button class="btn primary" id="againBtn"><i class="fa-solid fa-rotate-right"></i>Spela igen</button>
+        <button class="btn" id="menuBtn"><i class="fa-solid fa-list"></i>Välj antal</button>
+      </div>
+    </section>
+  </main>
+
+  <footer><span id="footCount"></span> svenska ordspråk och talesätt · Svår nivå</footer>
+</div>
+
+<script>
+const MODE = 'hard';   // 'easy' = åtta alternativ, 'hard' = rullgardinslista med alla ordspråk
+const RAW = [["Alla goda ting är tre.", "Hon har redan ätit två bullar på fikat, sträcker sig efter en tredje och säger med ett leende att tre ändå är ett bra antal.", "All good things come in threes. / Good things come in threes."], ["Alla vägar bär till Rom.", "Eleverna löste uppgiften på helt olika sätt, men alla kom fram till rätt svar.", "All roads lead to Rome."], ["Alla är vi barn i början.", "Den nya kollegan skäms för att hon inte kan systemet ännu. ”Ingen kunde något första dagen”, säger chefen.", "We were all young once. / Everyone has to start somewhere."], ["Allt är inte guld som glimmar.", "Det glänsande nya företaget som alla ville investera i visade sig vara på väg mot konkurs.", "All that glitters is not gold. / All that glisters is not gold. (Shakespeare)"], ["Anfall är bästa försvar.", "När chefen kritiserades på mötet började hon själv kritisera de andra innan de hann säga mer.", "Attack is the best form of defence."], ["Arga katter får rivet skinn.", "Han som alltid bråkar och slåss på rasterna kommer ofta hem med skrubbsår.", "Quarrelsome dogs come limping home."], ["Att skiljas är att dö en smula.", "Det gör ont i hjärtat varje gång hon vinkar av sin dotter på perrongen.", "To part is to die a little. / Parting is such sweet sorrow. (Shakespeare)"], ["Av sig själv känner man andra.", "Hon som själv är ärlig utgår alltid från att alla hon möter också är det.", "We judge others by ourselves."], ["Behandla andra såsom du själv vill bli behandlad.", "Sonen har retat sin syster, och mamma frågar: ”Hur skulle du själv vilja att hon var mot dig?”", "Do unto others as you would have them do unto you. (The Bible) / Treat others as you would like to be treated."], ["Bit inte den hand som föder dig.", "Den anställde skriver elaka saker på nätet om företaget som ger honom lön varje månad.", "Don't bite the hand that feeds you."], ["Blod är tjockare än vatten.", "När det verkligen gällde ställde hon upp för sin bror och inte för sin bästa vän.", "Blood is thicker than water."], ["Borta bra men hemma bäst.", "Efter tre veckors fantastisk resa längtar familjen ändå efter sina egna sängar.", "East, west, home's best. / Home is where the heart is."], ["Bränt barn skyr elden.", "Efter att ha blivit lurad en gång på nätet vågar hon inte längre handla där.", "Once bitten, twice shy. / A burnt child dreads the fire."], ["Bättre en fågel i handen än tio i skogen.", "Hon tackade ja till jobbet hon blev erbjuden istället för att vänta på ett kanske bättre.", "A bird in the hand is worth two in the bush."], ["Bättre fly än illa fäkta.", "När han såg att diskussionen var förlorad gick han hellre därifrån än att fortsätta.", "Discretion is the better part of valour. / He who fights and runs away lives to fight another day."], ["Bättre förekomma än förekommas.", "Han sade upp sig innan chefen hann ge honom sparken.", "Get your retaliation in first. / Strike first."], ["Bättre lyss till den sträng som brast än att aldrig spänna en båge.", "Hon förlorade tävlingen, men hon är glad att hon åtminstone försökte – hellre det än att aldrig ha vågat.", "'Tis better to have loved and lost than never to have loved at all. (Tennyson)"], ["Bättre sent än aldrig.", "Han kom till festen först vid midnatt, men värden blev ändå glad att se honom.", "Better late than never."], ["Bättre stämma i bäcken än i ån.", "Läraren pratar med eleven direkt efter första skolket, innan det hinner bli en vana.", "Nip it in the bud. / A stitch in time saves nine. / Prevention is better than cure."], ["Delad glädje är dubbel glädje, delad sorg är halv sorg.", "Hon berättade om sin oro för vännen och mådde genast bättre, och när hon fick jobbet firade de tillsammans.", "A joy shared is a joy doubled, a sorrow shared is a sorrow halved. / A problem shared is a problem halved."], ["Den enes död är den andres bröd.", "När den gamla affären på hörnet stängde fick kaféet bredvid många nya kunder.", "One man's loss is another man's gain."], ["Den som gapar efter mycket mister ofta hela stycket.", "Han ville ha båda jobben, ställde för höga krav på båda arbetsgivarna och fick inget av dem.", "Grasp all, lose all. / Don't bite off more than you can chew."], ["Den som ger sig in i leken får leken tåla.", "Han gick in i politiken och får nu stå ut med hård kritik i pressen.", "If you can't stand the heat, get out of the kitchen. / If you play with fire, you get burnt."], ["Den som gräver en grop åt andra faller själv däri.", "Han försökte sätta dit sin kollega med en lögn, men lögnen avslöjades och det var han själv som fick sparken.", "He who digs a pit for others falls into it himself. / Hoist with his own petard. (Shakespeare)"], ["Den som lever får se.", "”Kommer Sverige att ta guld i OS?” – ”Det kan ingen veta ännu. Det får framtiden utvisa.”", "Time will tell. / We shall see."], ["Den som sitter i glashus ska inte kasta sten.", "Han klagar på att grannen spelar hög musik, fast han själv har fest varje helg.", "People who live in glass houses shouldn't throw stones."], ["Den som skrattar sist skrattar bäst.", "Alla hånade hennes affärsidé, men när den blev en succé var det hon som log.", "He who laughs last laughs longest. / He who laughs last laughs best."], ["Den som spar, han har.", "Hon lade undan lite pengar varje månad. När tvättmaskinen gick sönder hade hon råd med en ny.", "Waste not, want not. / A penny saved is a penny earned."], ["Den som väntar på något gott väntar aldrig för länge.", "Paret stod i bostadskö i tolv år, men lägenheten de fick var värd varenda dag i kön.", "Good things come to those who wait. / All things come to those who wait."], ["Den som är satt i skuld är icke fri.", "Efter de stora lånen känner han sig bunden och kan inte längre välja sitt liv som han vill.", "The borrower is servant to the lender. (The Bible) / Neither a borrower nor a lender be. (Shakespeare)"], ["Det börjar med en knappnål och slutar med en silverskål.", "Han började med att snatta godis och hamnade till slut i stora stölder.", "He that will steal an egg will steal an ox."], ["Det dunkelt sagda är det dunkelt tänkta.", "Lärarens genomgång blir krånglig och invecklad. Det märks att han inte riktigt förstår ämnet själv.", "[tr.] What is dimly said is dimly thought. (cf. Clear writing comes from clear thinking.)"], ["Det finns inget dåligt väder, bara dåliga kläder.", "Barnen klagar på regnet, men pappa delar ut regnställ och stövlar och säger att det inte är vädrets fel.", "There's no such thing as bad weather, only unsuitable clothing."], ["Det har varit i säck innan det kom i påse.", "På middagen säger en åttaåring plötsligt tvärsäkert: ”Alla som kör elbil har gått på en stor bluff – det är mycket sämre för miljön.” Gästerna sneglar på pappan.", "What children hear at home soon flies abroad. (cf. Little pitchers have long ears.)"], ["Det man förlorar på gungorna tar man igen på karusellen.", "Hon förlorade pengar på en aktie men tjänade lika mycket på en annan.", "What you lose on the swings you gain on the roundabouts."], ["Det man inte har i huvudet får man ha i benen.", "Han glömde inköpslistan och fick springa tillbaka till affären tre gånger.", "[tr.] What you haven't got in your head, you have to have in your feet."], ["Det man inte vet lider man inte av.", "Hon berättade aldrig för sin man om bucklan på bilen, och han har aldrig blivit ledsen över den.", "What you don't know can't hurt you. / Ignorance is bliss."], ["Det ska tidigt krökas som god krok ska bli.", "Föräldrarna lär barnen att säga tack och hej redan när de är mycket små.", "As the twig is bent, so grows the tree. / Train up a child in the way he should go. (The Bible)"], ["Det som göms i snö kommer upp i tö.", "Fusket hon gömde i bokföringen avslöjades till slut vid revisionen.", "Truth will out. / Murder will out."], ["Det som inte dödar, härdar.", "Den svåra tiden som arbetslös gjorde honom starkare och mer uthållig.", "What doesn't kill you makes you stronger."], ["Det är aldrig ens fel när två träter.", "Båda syskonen skyller på varandra efter bråket, men mamma vet att båda har bidragit.", "It takes two to tango. / It takes two to make a quarrel."], ["Det är alltid mörkast före gryningen.", "Precis när företaget var nära konkurs kom den stora beställningen.", "It's always darkest before the dawn. / The darkest hour is just before the dawn."], ["Det är mänskligt att fela.", "Den nya medarbetaren gjorde ett misstag, och chefen sa att sådant händer alla människor.", "To err is human (to forgive divine). (Pope)"], ["Det är svårt att lära gamla hundar sitta.", "Farfar vägrar lära sig använda smarttelefon – han har klarat sig utan i åttio år.", "You can't teach an old dog new tricks."], ["Djävulen sitter i detaljerna.", "Projektet var nästan klart, men det var de små sakerna på slutet som tog längst tid.", "The devil is in the detail."], ["Dra inte alla över en kam.", "Bara för att en polis betedde sig illa betyder det inte att alla poliser är dåliga.", "Don't tar everyone with the same brush."], ["Droppen urholkar stenen.", "Hon skrev ett brev till kommunen varje vecka i två år, och till slut byggde de cykelbanan.", "Constant dripping wears away the stone. / Little strokes fell great oaks."], ["Döm inte hunden efter håren.", "Den slitna boken med fula pärmar visade sig vara den bästa hon någonsin läst.", "Don't judge a book by its cover."], ["Efter regn kommer solsken.", "Efter en tung och mörk höst kom en vår full av goda nyheter.", "After rain comes sunshine. / After a storm comes a calm."], ["Egen härd är guld värd.", "Det kostade mycket att köpa huset, men känslan av att ha en plats som är helt deras går inte att sätta pris på.", "There's no place like home. / Home sweet home."], ["En kedja är aldrig starkare än sin svagaste länk.", "Laget hade flera stjärnor, men den sämsta spelarens misstag gjorde att de förlorade.", "A chain is only as strong as its weakest link."], ["En olycka kommer sällan ensam.", "Först gick bilen sönder, sedan blev han sjuk, och samma dag kom ett tråkigt brev från banken.", "It never rains but it pours. / Misfortunes never come singly."], ["En svala gör ingen sommar.", "Det var en varm dag i mars, men det betyder inte att våren har kommit.", "One swallow does not make a summer."], ["Ensam är stark.", "Hon flyttade utomlands utan att känna någon och klarade sig utmärkt på egen hand.", "He travels fastest who travels alone. / The strongest man is he who stands alone. (Ibsen)"], ["Ett gott skratt förlänger livet.", "Mormor säger att humorn och skämten har hållit henne frisk i nittio år.", "Laughter is the best medicine."], ["Finns det hjärterum så finns det stjärterum.", "Det finns bara fyra platser i soffan, men de trycker in sig fem så att alla får se filmen.", "The more the merrier. / There's always room for one more."], ["Fint folk kommer alltid sent.", "Hon dök upp en halvtimme efter alla andra på middagen och skämtade om att det hör till god ton.", "To be fashionably late."], ["Friskt vågat, hälften vunnet.", "Han sökte jobbet fast han saknade erfarenhet – och blev kallad till intervju.", "Nothing ventured, nothing gained."], ["Först till kvarn får först mala.", "Konsertbiljetterna gick till dem som köade tidigast, och resten fick gå hem tomhänta.", "First come, first served."], ["Gammal kärlek rostar aldrig.", "De träffades igen på klassåterträffen efter trettio år och blev ett par på nytt.", "Old love never dies. / Old flames never die."], ["Gammal är äldst.", "Den unga ingenjören hade en ny teori, men den äldre kollegan visste av erfarenhet att den inte skulle fungera.", "There's many a good tune played on an old fiddle. / Older and wiser."], ["Genvägar är senvägar.", "Han tog en okänd stig genom skogen för att spara tid och gick vilse i två timmar.", "The longest way round is the shortest way home. / More haste, less speed."], ["Ger man fan ett lillfinger tar han hela handen.", "Hon lät grannen låna gräsklipparen en gång, och nu lånar han den varje vecka – och har börjat låna bilen också.", "Give him an inch and he'll take a mile."], ["Gråt inte över spilld mjölk.", "Han missade bussen och irriterar sig fortfarande på det, fast inget går att ändra.", "It's no use crying over spilt milk."], ["Gräset är alltid grönare på andra sidan.", "Hon tror alltid att alla andras jobb är roligare än hennes eget.", "The grass is always greener on the other side (of the fence)."], ["Gräv där du står.", "Byborna började forska om sin egen bygds historia istället för att läsa om andra platser.", "[tr.] Dig where you stand. (cf. Make the most of what you have.)"], ["Gå inte över ån efter vatten.", "Han åkte in till stan för att köpa mjölk, fast kiosken på hans egen gata säljer mjölk.", "[tr.] Don't cross the river to fetch water. (cf. It's right under your nose.)"], ["Har man sagt A får man säga B.", "Hon hade lovat att gå kursen och kunde inte gärna hoppa av efter första veckan.", "In for a penny, in for a pound."], ["Har man tagit fan i båten får man ro honom i land.", "Han tog in en besvärlig delägare i företaget och måste nu stå ut med honom tills projektet är klart.", "[tr.] He who takes the devil into his boat must row him ashore. (cf. Once you've started, you must see it through.)"], ["Hellre fria än fälla.", "Domstolen var inte säker på att den åtalade var skyldig och släppte honom.", "Innocent until proven guilty. / Better that ten guilty persons escape than that one innocent suffer. (Blackstone)"], ["Hoppet är det sista som överger människan.", "Fast läkarna hade gett upp vägrade hon tro att allt var slut.", "Hope springs eternal. (Pope)"], ["Hur man än vänder sig har man ändan bak.", "Säger han ja blir frun sur, säger han nej blir svärmor sur.", "Damned if you do, damned if you don't. / You can't win."], ["Hälsan tiger still.", "Man tänker inte på hur skönt det är att vara frisk förrän man blir sjuk.", "Health is not valued till sickness comes."], ["Hämnden är ljuv.", "Han log när hans gamla plågoande inte fick jobbet som han själv fick.", "Revenge is sweet."], ["Högmod går före fall.", "Han skröt om att han skulle vinna loppet och snubblade redan i första kurvan.", "Pride comes before a fall. (The Bible)"], ["I de lugnaste vattnen går de största fiskarna.", "Den tystlåtna eleven som aldrig sa något i klassen fick högst betyg av alla.", "Still waters run deep."], ["I krig och kärlek är allting tillåtet.", "För att vinna hennes hjärta ljög han om att han var en skicklig dansare.", "All's fair in love and war."], ["I nöden prövas vännen.", "När hon låg på sjukhus var det bara en enda kompis som kom och hälsade på.", "A friend in need is a friend indeed."], ["Ingen fara på taket, så länge skorstenen står.", "Bilen fick en buckla men ingen blev skadad. ”Det är lugnt, det viktigaste håller.”", "No harm done. / All's well."], ["Ingen kan allt, men alla kan något.", "I arbetslaget är en duktig på siffror, en på att skriva och en på att prata med kunder.", "No one can do everything, but everyone can do something. / Everyone is good at something."], ["Ingen ko på isen.", "”Vi har gott om tid till tåget, det är ingen brådska.”", "Not to worry. / There's no rush."], ["Ingen rök utan eld.", "Det har länge pratats om att chefen ska sluta, och nu tror alla att det ligger något i ryktet.", "There's no smoke without fire."], ["Ingen är profet i sitt eget land.", "Konstnären var känd i hela världen, men ingen i hennes hemby brydde sig om hennes tavlor.", "A prophet is not without honour, save in his own country. (The Bible) / No man is a prophet in his own land."], ["Ingenting är nytt under solen.", "Ungdomarnas ”nya” mode är exakt samma som deras föräldrar bar på 80-talet.", "There is nothing new under the sun. (The Bible)"], ["Inget ont som inte har något gott med sig.", "Han blev av med jobbet, men därför fick han tid att starta det företag han alltid drömt om.", "Every cloud has a silver lining. / It's an ill wind that blows nobody any good."], ["Inget varar för evigt.", "Sommarlovet tog slut och skolan började igen.", "Nothing lasts for ever. / All good things must come to an end."], ["Inget är så bra att det inte kan göras bättre.", "Uppsatsen fick högsta betyg, men hon ville ändå finslipa den en gång till.", "There's always room for improvement."], ["Ju fler kockar, desto sämre soppa.", "Tio personer skulle planera festen tillsammans, och det blev bara kaos.", "Too many cooks spoil the broth."], ["Kaka söker maka.", "De två bokmalarna hittade varandra direkt på festen.", "Like attracts like. / Like will to like."], ["Kasta inte pärlor för svin.", "Han bjöd på sin dyraste whisky till gäster som blandade den med läsk.", "Don't cast pearls before swine. (The Bible)"], ["Kasta inte ut barnet med badvattnet.", "Programmet hade några fel, men chefen ville skrota hela systemet istället för att rätta dem.", "Don't throw the baby out with the bathwater."], ["Kläder efter väder.", "Det blåser kallt idag, så hon tar fram mössan och vantarna.", "Dress for the weather."], ["Kläderna gör mannen.", "I sin nya kostym blev han plötsligt bemött med mycket mer respekt.", "Clothes make the man. / Fine feathers make fine birds."], ["Kärleken är blind.", "Alla ser att hennes pojkvän är lat och otrevlig – utom hon själv.", "Love is blind."], ["Kärt barn har många namn.", "Mormor kallar sin lilla dotterdotter för gullet, snuttan, hjärtat och skruttan.", "[tr.] A beloved child has many names."], ["Köp inte grisen i säcken.", "Han köpte en begagnad bil på nätet utan att ha sett den, och den startade inte.", "Don't buy a pig in a poke."], ["Lagom är bäst.", "Inte för mycket socker och inte för lite – precis rätt mängd.", "Everything in moderation. / Enough is as good as a feast."], ["Lagt kort ligger.", "Mitt i schackpartiet ville han ångra sitt drag, men motspelaren sa att det inte går.", "A card laid is a card played. / What's done is done."], ["Lika barn leka bäst.", "De två busiga killarna i klassen blev genast bästa kompisar.", "Birds of a feather flock together."], ["Liten tuva stjälper ofta stort lass.", "En liten felräkning i början gjorde att hela bygget fick göras om.", "A small leak will sink a great ship. / For want of a nail the kingdom was lost."], ["Lugn som en filbunke.", "Medan alla andra fick panik inför tentan satt hon helt avslappnad och åt sin frukost.", "As cool as a cucumber."], ["Lugnet före stormen.", "Det var alldeles tyst i klassrummet minuten innan läraren delade ut de dåliga provresultaten.", "The calm before the storm."], ["Lyckan kommer, lyckan går.", "Förra året vann han på lotto, i år förlorade han jobbet.", "Fortune is fickle. / You win some, you lose some."], ["Lyckan står den djärve bi.", "Hon vågade satsa allt på sin idé – och det gick strålande.", "Fortune favours the brave. / Fortune favours the bold."], ["Låt inte gräset gro under fötterna.", "”Sitt inte bara och vänta – sök jobben nu, innan någon annan tar dem!”", "Don't let the grass grow under your feet."], ["Låt inte vargen vakta fåren.", "Föreningen lät den kända fuskaren ansvara för klubbens kassa.", "Don't put the fox in charge of the henhouse."], ["Låt maten tysta mun.", "Det var så gott vid middagsbordet att ingen sa ett ord på flera minuter.", "[tr.] Let the food silence the mouth. (cf. Don't talk with your mouth full.)"], ["Lägg inte alla ägg i samma korg.", "Hon satsade alla sina pengar i ett enda företag, och när det gick i konkurs förlorade hon allt.", "Don't put all your eggs in one basket."], ["Lätt fånget, lätt förgånget.", "Han vann en stor summa på trav och hade gjort av med allt inom en månad.", "Easy come, easy go."], ["Man får ta saken i egna händer.", "Ingen kom och lagade gatlampan, så grannarna gjorde det själva.", "Take matters into your own hands."], ["Man får ta seden dit man kommer.", "I Japan tog hon av sig skorna innan hon gick in, precis som alla andra gjorde.", "When in Rome, do as the Romans do."], ["Man får vad man betalar för.", "Han köpte de billigaste skorna och de gick sönder efter en vecka.", "You get what you pay for."], ["Man har aldrig roligare än man gör sig.", "Festen var trist tills hon själv började dansa och dra igång lekar.", "Life is what you make it."], ["Man kan inte både äta kakan och ha den kvar.", "Han vill både köpa en dyr bil och spara pengar till ett hus.", "You can't have your cake and eat it."], ["Man lär sig av misstagen.", "Efter att ha bränt såsen två gånger vet han nu att han ska sänka värmen.", "You learn from your mistakes. / Experience is the best teacher."], ["Man lär så länge man lever.", "Farmor började studera spanska när hon var åttiofem.", "Live and learn. / You learn something new every day."], ["Man måste krypa innan man kan gå.", "Han vill springa maraton men har aldrig ens joggat en kilometer.", "You have to crawl before you can walk. / Learn to walk before you run."], ["Man måste rätta munnen efter matsäcken.", "De ville resa till Thailand men hade bara råd med en vecka i Dalarna.", "Cut your coat according to your cloth."], ["Man saknar inte kon förrän båset är tomt.", "Först när kollegan hade slutat märkte de hur mycket hon hade gjort.", "You never miss the water till the well runs dry."], ["Man ska inte lägga näsan i blöt.", "Hon funderar på att säga något om grannarnas bråk men bestämmer sig för att hålla sig utanför.", "Don't poke your nose in. / Mind your own business."], ["Man ska inte ropa varg i onödan.", "Han låtsades vara sjuk så många gånger att ingen trodde honom när han verkligen blev sjuk.", "Don't cry wolf."], ["Man ska inte sälja skinnet förrän björnen är skjuten.", "Han köpte champagne för att fira befordran innan beslutet ens var fattat.", "Don't count your chickens before they're hatched. / Don't sell the bearskin before you've caught the bear."], ["Man ska skilja på sak och person.", "Hon tycker om sin kollega som människa men tycker att hans förslag är dåligt.", "Play the ball, not the man."], ["Man ska smida medan järnet är varmt.", "Säljaren märkte att kunden var intresserad och erbjöd genast ett avtal.", "Strike while the iron is hot. / Make hay while the sun shines."], ["Man är alltid sig själv närmast.", "När nedskärningarna kom tänkte var och en mest på att rädda sitt eget jobb.", "Look after number one. / Every man for himself."], ["Morgonstund har guld i mund.", "Hon gör sitt bästa arbete tidigt, innan resten av familjen har vaknat.", "The early bird catches the worm. / Early to bed and early to rise makes a man healthy, wealthy and wise."], ["Mycket vill ha mer.", "Han fick löneförhöjning men vill genast ha ännu mer.", "Much would have more. / The more you have, the more you want."], ["Måla inte fan på väggen.", "”Säg inte att det kommer att regna på bröllopet – tänk om det blir så!”", "Don't tempt fate."], ["Många bäckar små gör en stor å.", "Varje familj gav bara en tia, men tillsammans blev det tillräckligt för en ny lekplats.", "Many a little makes a mickle. / Mony a mickle maks a muckle. (skotska)"], ["Nya kvastar sopar bäst.", "Den nya rektorn ändrade på allt på skolan redan första veckan.", "A new broom sweeps clean."], ["När det regnar välling har den fattige ingen sked.", "När det äntligen erbjöds förmånliga lån hade de som hade minst pengar ändå ingen möjlighet att ta del av dem.", "[tr.] When it rains porridge, the poor man has no spoon."], ["När fan blir gammal blir han religiös.", "Den gamle skurken började gå i kyrkan varje söndag när han blev pensionär.", "The devil was sick, the devil a monk would be – the devil was well, the devil a monk was he."], ["När katten är borta dansar råttorna på bordet.", "När läraren gick ut ur klassrummet började eleverna kasta suddgummin.", "When the cat's away, the mice will play."], ["När man talar om trollen så står de i farstun.", "De pratade just om Pelle när han plötsligt stod i dörren.", "Speak of the devil (and he shall appear). / Talk of the devil."], ["När vinet går in går vettet ut.", "Efter tredje glaset började den annars så förnuftige chefen säga dumma saker.", "When the wine is in, the wit is out."], ["Nära skjuter ingen hare.", "Han var bara en poäng från att klara provet, men underkänt är underkänt.", "A miss is as good as a mile. / Close, but no cigar."], ["Nöden har ingen lag.", "Den hungriga mannen stal bröd för att överleva.", "Necessity knows no law."], ["Nöden är uppfinningarnas moder.", "Strömmen gick, och familjen hittade på ett sätt att laga mat med värmeljus.", "Necessity is the mother of invention."], ["Omväxling förnöjer.", "Efter en vecka med pasta varje dag var det skönt med fisk.", "Variety is the spice of life. / A change is as good as a rest."], ["Ont krut förgås inte så lätt.", "Den sura gamla grannen, som alla trodde skulle gå bort snart, fyllde hundra år.", "Ill weeds grow apace. / The devil looks after his own. (cf. Only the good die young.)"], ["Ont ska med ont fördrivas.", "Han mötte hårda ord med ännu hårdare ord.", "Fight fire with fire. / Desperate diseases require desperate remedies."], ["Osvuret är bäst.", "”Jag ska aldrig mer äta godis!” sa han – och åt en chokladbit samma kväll.", "Never say never."], ["Otack är världens lön.", "Hon hjälpte grannen i flera år men fick aldrig ens ett tack.", "No good deed goes unpunished."], ["Pengar växer inte på träd.", "Barnen vill ha nya mobiler, men pappa påminner dem om att han måste arbeta för varje krona.", "Money doesn't grow on trees."], ["Rent mjöl i påsen.", "Polisen granskade hans bokföring, men allt var i ordning.", "Above board. / To have clean hands."], ["Repetition är kunskapens moder.", "Hon läste glosorna om och om igen tills hon kunde dem utantill.", "Repetition is the mother of learning."], ["Rom byggdes inte på en dag.", "Att bygga upp ett företag tar många år – det går inte på en vecka.", "Rome wasn't built in a day."], ["Ropa inte hej förrän du är över bäcken.", "Han jublade när han ledde loppet, men snubblade precis före mål.", "Don't halloo till you're out of the wood."], ["Sent ska syndaren vakna.", "Först när han hade fått en hjärtattack började han motionera och äta nyttigt.", "Shutting the stable door after the horse has bolted."], ["Själv är bästa dräng.", "Hon bad kollegorna om hjälp flera gånger, men till slut gjorde hon jobbet själv.", "If you want a thing done well, do it yourself."], ["Skadeglädjen är den enda sanna glädjen.", "Alla log lite i smyg när den mallige kollegan halkade i lunchrummet.", "[tr.] Schadenfreude is the only true joy."], ["Skam den som ger sig.", "Fast laget låg under med fyra mål kämpade de ända till slutsignalen.", "Never say die. / Never give up."], ["Skenet bedrar.", "Den vänlige försäljaren visade sig vara en svindlare.", "Appearances can be deceptive."], ["Skilja agnarna från vetet.", "Av hundra ansökningar valde de ut de fem bästa.", "Separate the wheat from the chaff."], ["Skillnaden mellan män och pojkar är priset på leksakerna.", "Pappan köpte en dyr sportbil när han fyllde femtio.", "The only difference between men and boys is the price of their toys."], ["Skita i det blå skåpet.", "På den viktiga middagen råkade han förolämpa värdinnan och blev aldrig bjuden igen.", "Blot one's copybook. / Put one's foot in it."], ["Skjut inte upp till morgondagen det du kan göra idag.", "”Gör läxan nu, så slipper du stressa sen.”", "Never put off till tomorrow what you can do today."], ["Skomakare, bliv vid din läst.", "Fotbollsspelaren började ge råd om ekonomi i tv, något han inte visste någonting om.", "Let the cobbler stick to his last."], ["Skomakarens barn går barfota.", "Snickaren har en trasig trappa hemma som han aldrig hinner laga.", "The shoemaker's children go barefoot. / The cobbler's children are the worst shod."], ["Skåda inte given häst i munnen.", "Hon fick en begagnad cykel i present och klagade på att den hade fel färg.", "Don't look a gift horse in the mouth."], ["Slutet gott, allting gott.", "Resan var full av förseningar, men de kom fram i tid till bröllopet.", "All's well that ends well. (Shakespeare)"], ["Smaken är som baken – delad.", "Han älskar surströmming, hon tycker att det är äckligt.", "There's no accounting for taste. / Each to their own."], ["Små grytor har också öron.", "Föräldrarna pratade om grannen och glömde att femåringen satt och lyssnade.", "Little pitchers have long ears."], ["Små smulor är också bröd.", "Hon fick bara ett litet bidrag, men varje krona hjälpte.", "Every little helps. / Half a loaf is better than no bread."], ["Som man bäddar får man ligga.", "Han slarvade med pluggandet hela terminen och fick nu underkänt.", "You've made your bed, now you must lie in it."], ["Som man ropar i skogen får man svar.", "Hon var otrevlig mot alla på kontoret och undrade sedan varför ingen var trevlig mot henne.", "What goes around comes around."], ["Som man sår får man skörda.", "Han hade arbetat hårt i tio år och fick nu äntligen se resultatet.", "As you sow, so shall you reap. / You reap what you sow."], ["Sopa framför egen dörr.", "”Innan du klagar på hur andra avdelningar sköter sig, se till att din egen fungerar.”", "Put your own house in order. / Physician, heal thyself. (The Bible)"], ["Spotta inte i motvind.", "Han försökte bråka med skattemyndigheten och fick själv betala mer i slutändan.", "Don't spit into the wind."], ["Stor i orden, liten på jorden.", "Han lovar alltid att han ska göra fantastiska saker, men det blir aldrig något.", "Great boast, small roast. / All talk and no action."], ["Surt, sa räven om rönnbären.", "När hon inte kom in på utbildningen sa hon att den ändå var dålig.", "Sour grapes."], ["Synden straffar sig själv.", "Han ljög för att slippa jobba och fick sedan jobba dubbelt för att reda ut lögnerna.", "Be sure your sin will find you out. (The Bible)"], ["Så länge det finns liv finns det hopp.", "Båten hade kantrat, men så länge de kunde hålla sig flytande fanns det en chans att bli räddade.", "While there's life, there's hope."], ["Sådan far, sådan son.", "Pappan är snickare, och sonen har också blivit snickare.", "Like father, like son."], ["Sådan herre, sådan hund.", "Chefen är alltid sen till möten, och nu är hela avdelningen det också.", "Like master, like man. / Like master, like dog."], ["Såga inte av den gren du själv sitter på.", "Han kritiserade öppet den enda kund som höll företaget vid liv.", "Don't saw off the branch you're sitting on."], ["Ta dagen som den kommer.", "Hon planerar inte semestern utan ser vad varje morgon har att erbjuda.", "Take each day as it comes. / One day at a time."], ["Tala är silver, tiga är guld.", "Under förhandlingen höll hon tyst och lät motparten prata – och fick de bästa villkoren.", "Speech is silver, silence is golden."], ["Tiden läker alla sår.", "Efter skilsmässan var hon förtvivlad, men efter några år kunde hon tänka på den utan att gråta.", "Time heals all wounds. / Time is a great healer."], ["Tillfället gör tjuven.", "Han hade aldrig stulit något, men när någon glömde plånboken på bordet kunde han inte låta bli.", "Opportunity makes the thief."], ["Tomma tunnor skramlar mest.", "Den som pratade högst på mötet hade minst att komma med.", "Empty vessels make the most noise."], ["Trägen vinner.", "Hon sökte jobb i två år och fick till slut sin drömtjänst.", "Slow and steady wins the race. / If at first you don't succeed, try, try again."], ["Undantaget bekräftar regeln.", "Mammas kakor blir alltid perfekta. När en plåt en gång blev bränd sa hon att den enda misslyckade bara visar hur bra de andra brukar bli.", "The exception proves the rule."], ["Upp som en sol, ner som en pannkaka.", "Popstjärnan blev känd över en natt och var bortglömd efter ett år.", "Up like a rocket, down like a stick. (Thomas Paine) / A flash in the pan."], ["Var dag har nog av sin egen plåga.", "”Oroa dig inte för nästa veckas prov nu – du har nog att tänka på idag.”", "Sufficient unto the day is the evil thereof. (The Bible) / Don't cross that bridge till you come to it."], ["Var och en är sin egen lyckas smed.", "Han kom från enkla förhållanden och byggde själv upp sin framgång.", "Every man is the architect of his own fortune. / You make your own luck."], ["Var sak har sin tid.", "Det är inte läge att prata semesterplaner på en begravning.", "There's a time and a place for everything. / To everything there is a season. (The Bible)"], ["Vill man vara fin får man lida pin.", "Hon bär högklackade skor hela kvällen fast fötterna värker.", "Beauty is pain. / One must suffer to be beautiful."], ["Väck inte den björn som sover.", "Konflikten mellan grannarna hade lagt sig, så det var dumt att ta upp den igen.", "Let sleeping dogs lie."], ["Vägen till mannens hjärta går genom magen.", "Hon vann sin pojkväns kärlek genom att laga hans favoriträtt.", "The way to a man's heart is through his stomach."], ["Ändamålet helgar medlen.", "Han ljög för att samla in pengar till välgörenhet – det goda målet fick ursäkta metoden.", "The end justifies the means."], ["Äpplet faller inte långt från trädet.", "Dottern är precis lika envis som sin mamma.", "The apple doesn't fall far from the tree. / A chip off the old block."], ["Ärlighet varar längst.", "Bilhandlaren som alltid sa sanningen om bilarnas fel fick de mest lojala kunderna.", "Honesty is the best policy."], ["Äta bör man, annars dör man.", "Mitt i stressen tog hon sig ändå tid att äta lunch.", "[tr.] One must eat, or else one dies. (cf. A man's got to eat.)"], ["Även den bäste kan fela.", "Världsmästaren missade en enkel straff i finalen.", "Even Homer nods. (Horatius) / Nobody's perfect."], ["Även en blind höna kan finna ett korn.", "Han som aldrig kan något på frågesporter svarade rätt på den svåraste frågan.", "[tr.] Even a blind hen sometimes finds a grain of corn. (cf. amerikanska Even a blind squirrel finds a nut.)"], ["Även en trasig klocka visar rätt två gånger per dygn.", "Han som alltid spår undergång fick för en gångs skull rätt när börsen rasade.", "Even a stopped clock is right twice a day."], ["Även solen har sina fläckar.", "Den nästan perfekta kollegan har en ovana: han glömmer alltid födelsedagar.", "There are spots even on the sun. / Every rose has its thorn."], ["Öga för öga, tand för tand.", "Han krossade grannens fönster, och nu vill grannen krossa hans.", "An eye for an eye, a tooth for a tooth. (The Bible)"], ["Övning ger färdighet.", "Hon spelade piano varje dag och blev till slut riktigt skicklig.", "Practice makes perfect."]];
+
+const DATA = RAW.map(([sv, clue, en]) => ({
+  sv, clue, en, hasEn: !en.trim().startsWith('[tr.]')
+}));
+
+const NO_EN = 'Det finns tyvärr ingen engelsk motsvarighet.';
+const OPTIONS = 8;
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('sv-SE', { maximumFractionDigits: 1 });
+const points = n => fmt(n) + ' poäng';
+const collator = new Intl.Collator('sv');
+
+function shuffle(a) {
+  const b = a.slice();
+  for (let i = b.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+}
+
+const root = document.documentElement;
+
+/* Bredd: mät det längsta ordspråket med sidans eget typsnitt och gör huvudytan
+   precis så bred att två kolumner får plats utan radbrytning. */
+function layout() {
+  const ref = document.createElement('button');
+  const probe = document.createElement('span');
+  ref.className = 'opt'; ref.style.cssText = 'position:absolute;visibility:hidden;left:-9999px';
+  probe.className = 'txt'; probe.style.whiteSpace = 'nowrap';
+  ref.append(probe); document.body.append(ref);
+  let w = 0;
+  DATA.forEach(d => { probe.textContent = d.sv; w = Math.max(w, probe.getBoundingClientRect().width); });
+  ref.remove();
+  // alternativ: text + siffra (26) + mellanrum (12) + inre marginal (28) + kant (2) + lite luft (14)
+  const opt = Math.ceil(w) + 82;
+  // två alternativ + mellanrum (10) + kortets marginal och kant (58) + sidans marginal (40)
+  const wrapMax = opt * 2 + 10 + 58 + 40;
+  root.style.setProperty('--wrap-max', wrapMax + 'px');
+  const two = window.innerWidth >= wrapMax;
+  $('options').classList.toggle('two', two);
+  $('pickerList').classList.toggle('two', two);
+}
+
+/* Tema */
+const sw = $('themeSwitch');
+function syncSwitch() {
+  sw.setAttribute('aria-checked', root.getAttribute('data-theme') === 'dark' ? 'true' : 'false');
+}
+sw.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  try { localStorage.setItem('ordsprak-tema', next); } catch (e) {}
+  syncSwitch();
+});
+syncSwitch();
+
+/* Visa rätt svarsdel för nivån */
+$('options').classList.toggle('hidden', MODE !== 'easy');
+$('picker').classList.toggle('hidden', MODE !== 'hard');
+
+layout();
+window.addEventListener('resize', layout);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+
+/* Tillstånd */
+let deck = [], idx = 0, score = 0, lastCount = 10;
+let cur = null, opts = [], answered = false, hintUsed = false;
+let log = [];
+
+/* Startvy */
+const choices = [
+  { n: 10 }, { n: 25 }, { n: 50 }, { n: DATA.length, all: true }
+];
+$('counts').innerHTML = choices.map(c =>
+  `<button class="count-btn" data-n="${c.n}"><strong>${c.all ? 'Alla' : c.n}</strong><span>${c.all ? c.n + ' ordspråk' : 'ordspråk'}</span></button>`
+).join('');
+$('counts').addEventListener('click', e => {
+  const b = e.target.closest('.count-btn');
+  if (b) start(parseInt(b.dataset.n, 10));
+});
+$('footCount').textContent = DATA.length;
+
+function show(view) {
+  ['viewStart', 'viewQuiz', 'viewResult'].forEach(v => $(v).classList.toggle('hidden', v !== view));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function start(n) {
+  lastCount = n;
+  deck = shuffle(DATA).slice(0, Math.min(n, DATA.length));
+  idx = 0; score = 0; log = [];
+  show('viewQuiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  cur = deck[idx];
+  answered = false; hintUsed = false;
+
+  $('qCounter').textContent = `Fråga ${idx + 1} av ${deck.length}`;
+  $('scoreText').textContent = points(score);
+  $('progressBar').style.width = (idx / deck.length * 100) + '%';
+  $('clue').textContent = cur.clue;
+
+  $('hintBtn').disabled = false;
+  $('hintNote').textContent = 'Rätt svar ger då 0,5 poäng.';
+  $('english').classList.remove('show');
+  fillEnglish();
+  $('feedback').className = 'feedback';
+  $('nextBtn').disabled = true;
+  $('nextBtn').innerHTML = idx === deck.length - 1
+    ? 'Se resultat <i class="fa-solid fa-flag-checkered"></i>'
+    : 'Nästa <i class="fa-solid fa-arrow-right"></i>';
+
+  makeOpts();
+  if (MODE === 'easy') renderOptions(); else resetPicker();
+}
+
+/* ---------- Lätt nivå ---------- */
+/* Åtta alternativ (båda nivåerna). De rätta svaren från de tre senaste
+   rundorna får inte förekomma bland alternativen. */
+function makeOpts() {
+  const recent = deck.slice(Math.max(0, idx - 3), idx);
+  const others = shuffle(DATA.filter(d => d !== cur && !recent.includes(d))).slice(0, OPTIONS - 1);
+  opts = shuffle([cur, ...others]);
+}
+function renderOptions() {
+  $('options').innerHTML = opts.map((o, i) =>
+    `<button class="opt" data-i="${i}"><span class="num">${i + 1}</span><span class="txt"></span></button>`
+  ).join('');
+  [...$('options').children].forEach((b, i) => { b.querySelector('.txt').textContent = opts[i].sv; });
+}
+$('options').addEventListener('click', e => {
+  const b = e.target.closest('.opt');
+  if (b) answer(opts[parseInt(b.dataset.i, 10)]);
+});
+
+/* ---------- Svår nivå: samma åtta alternativ, men dolda i en rullgardinslista ---------- */
+function buildList() {
+  const list = $('pickerList');
+  list.innerHTML = '';
+  opts.forEach((d, i) => {
+    const b = document.createElement('button');
+    b.className = 'pick'; b.type = 'button'; b.setAttribute('role', 'option'); b.dataset.i = i;
+    const n = document.createElement('span'); n.className = 'num'; n.textContent = i + 1;
+    const t = document.createElement('span'); t.className = 'txt'; t.textContent = d.sv;
+    b.append(n, t); list.append(b);
+  });
+}
+function resetPicker() {
+  closePicker();
+  const btn = $('pickerBtn');
+  btn.disabled = false; btn.className = 'picker-btn';
+  $('pickerText').textContent = 'Välj ordspråk …';
+  $('pickerText').classList.add('placeholder');
+  buildList();
+}
+const isOpen = () => $('picker').classList.contains('open');
+function openPicker() {
+  if (answered) return;
+  $('picker').classList.add('open');
+  $('pickerBtn').setAttribute('aria-expanded', 'true');
+  const first = $('pickerList').querySelector('.pick');
+  if (first) setTimeout(() => first.focus({ preventScroll: true }), 0);
+}
+function closePicker() {
+  $('picker').classList.remove('open');
+  $('pickerBtn').setAttribute('aria-expanded', 'false');
+}
+$('pickerBtn').addEventListener('click', () => { isOpen() ? closePicker() : openPicker(); });
+$('pickerList').addEventListener('click', e => {
+  const b = e.target.closest('.pick');
+  if (b) choosePick(parseInt(b.dataset.i, 10));
+});
+function choosePick(i) {
+  const d = opts[i];
+  if (!d || answered) return;
+  closePicker();
+  $('pickerText').textContent = d.sv;
+  $('pickerText').classList.remove('placeholder');
+  answer(d);
+}
+document.addEventListener('click', e => {
+  if (!$('picker').contains(e.target)) closePicker();
+});
+
+/* ---------- Engelsk motsvarighet ---------- */
+/* Texten fylls i redan när frågan visas (dold), så att rutan alltid tar
+   samma plats och sidan inte hoppar när den visas. */
+function fillEnglish() {
+  const t = $('enText');
+  if (cur.hasEn) { t.textContent = cur.en; t.classList.remove('none'); }
+  else { t.textContent = NO_EN; t.classList.add('none'); }
+}
+function revealEnglish() { $('english').classList.add('show'); }
+
+$('hintBtn').addEventListener('click', useHint);
+function useHint() {
+  if ($('hintBtn').disabled) return;
+  if (!answered && cur.hasEn) hintUsed = true;
+  revealEnglish();
+  $('hintBtn').disabled = true;
+  if (!answered) $('hintNote').textContent = cur.hasEn ? 'Ledtråd använd – rätt svar ger 0,5 poäng.' : 'Poängen påverkas inte.';
+}
+
+/* ---------- Svar ---------- */
+function answer(chosen) {
+  if (answered || !chosen) return;
+  answered = true;
+  const ok = chosen === cur;
+  const gained = ok ? (hintUsed ? 0.5 : 1) : 0;
+  score += gained;
+  log.push({ item: cur, ok, gained, chosen });
+
+  if (MODE === 'easy') {
+    [...$('options').children].forEach((b, j) => {
+      b.disabled = true;
+      if (opts[j] === cur) b.classList.add('correct');
+      else if (opts[j] === chosen) b.classList.add('wrong');
+      else b.classList.add('dim');
+    });
+  } else {
+    const btn = $('pickerBtn');
+    btn.disabled = true;
+    btn.classList.add(ok ? 'correct' : 'wrong');
+  }
+
+  const fb = $('feedback');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+  $('fbIcon').className = 'fa-solid ' + (ok ? 'fa-circle-check' : 'fa-circle-xmark');
+  if (ok) {
+    $('fbTitle').textContent = gained === 1 ? 'Rätt! +1 poäng' : 'Rätt! +0,5 poäng';
+    $('fbBody').textContent = '';
+  } else {
+    $('fbTitle').textContent = 'Tyvärr fel – 0 poäng';
+    $('fbBody').textContent = 'Rätt svar: ' + cur.sv;
+  }
+
+  revealEnglish();
+  $('hintBtn').disabled = true;
+  $('hintNote').textContent = '';
+  $('scoreText').textContent = points(score);
+  $('progressBar').style.width = ((idx + 1) / deck.length * 100) + '%';
+  $('nextBtn').disabled = false;
+  $('nextBtn').focus({ preventScroll: true });
+}
+
+$('nextBtn').addEventListener('click', next);
+function next() {
+  if (!answered) return;
+  idx++;
+  if (idx < deck.length) renderQuestion();
+  else showResult();
+}
+
+function showResult() {
+  const total = deck.length;
+  const full = log.filter(l => l.gained === 1).length;
+  const half = log.filter(l => l.gained === 0.5).length;
+  const wrong = log.filter(l => !l.ok);
+  const pct = Math.round(score / total * 100);
+
+  $('resScore').textContent = fmt(score);
+  $('resOf').textContent = `av ${total} möjliga poäng (${pct} %)`;
+  $('resVerdict').textContent =
+    pct === 100 ? 'Fullpott – imponerande!' :
+    pct >= 85 ? 'Utmärkt resultat!' :
+    pct >= 65 ? 'Bra jobbat!' :
+    pct >= 40 ? 'Godkänt – fortsätt öva!' :
+    'Övning ger färdighet – försök igen!';
+  $('stFull').textContent = full;
+  $('stHalf').textContent = half;
+  $('stWrong').textContent = wrong.length;
+
+  const rv = $('review');
+  rv.innerHTML = '';
+  if (wrong.length) {
+    const h = document.createElement('h3');
+    h.textContent = 'Ordspråk att repetera';
+    const ol = document.createElement('ol');
+    wrong.forEach(w => {
+      const li = document.createElement('li');
+      const a = document.createElement('div'); a.className = 'r-ans'; a.textContent = w.item.sv;
+      const c = document.createElement('div'); c.className = 'r-clue'; c.textContent = w.item.clue;
+      li.append(a, c); ol.append(li);
+    });
+    rv.append(h, ol);
+  }
+  show('viewResult');
+}
+
+$('againBtn').addEventListener('click', () => start(lastCount));
+$('menuBtn').addEventListener('click', () => show('viewStart'));
+
+/* Tangentbord */
+document.addEventListener('keydown', e => {
+  if ($('viewQuiz').classList.contains('hidden')) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (MODE === 'easy' && /^[1-8]$/.test(e.key) && !answered) { e.preventDefault(); answer(opts[parseInt(e.key, 10) - 1]); }
+  else if (MODE === 'hard' && /^[1-8]$/.test(e.key) && !answered && isOpen()) { e.preventDefault(); choosePick(parseInt(e.key, 10) - 1); }
+  else if (MODE === 'hard' && e.key === 'Escape' && isOpen()) { e.preventDefault(); closePicker(); $('pickerBtn').focus(); }
+  else if (MODE === 'hard' && e.key === ' ' && !answered && !isOpen() && !document.activeElement.closest('button')) { e.preventDefault(); openPicker(); }
+  else if ((e.key === 'e' || e.key === 'E') && !answered) { e.preventDefault(); useHint(); }
+  else if ((e.key === 'Enter' || e.key === 'ArrowRight') && answered) { e.preventDefault(); next(); }
+});
+</script>
+</body>
+</html>
