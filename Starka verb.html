@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starka verb</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: lugn och tydlig, som ett välgjort skolplansch-kort
+IDEA: en uppsättning registerkort i tre lådor – vänd kortet och böjningen syns
+PICTURE: själva korten i tre kolumner är bilden
+COLOUR and TYPE: djupblå ram, ljust papper, gul markering för öppet kort; Outfit + Inter
+LAYOUT: rubrik + knappar överst, tre lika breda kolumner under
+*/
+:root{color-scheme:light dark;
+  --bg:light-dark(#eef1f7,#0f1626);
+  --band:light-dark(#1d3a6e,#16264a);
+  --card:light-dark(#ffffff,#1a2440);
+  --ink:light-dark(#141a2b,#e8ecf5);
+  --muted:light-dark(#5b6479,#9aa5bf);
+  --line:light-dark(#d6dcea,#2a3658);
+  --accent:light-dark(#f2c230,#f2c230);
+  --pre:light-dark(#1d4fa8,#8fb3ff);
+  --sup:light-dark(#0f7a55,#6fd6a8);
+}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+header{background:var(--band);color:#fff;padding:clamp(24px,4vw,44px) max(5vw,16px) clamp(20px,3vw,32px)}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font:700 clamp(30px,5vw,46px)/1.05 Outfit,sans-serif;margin:0 0 8px;text-wrap:balance}
+header p{margin:0;color:#c9d5ee;max-width:60ch}
+.tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.tools button{font:600 15px Inter,sans-serif;min-height:44px;padding:0 18px;border-radius:10px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
+.tools button:hover{background:rgba(255,255,255,.18)}
+.tools button:focus-visible,.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+main{padding:clamp(20px,3vw,40px) max(5vw,16px) 48px}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,2vw,22px);align-items:start}
+.col{display:flex;flex-direction:column;gap:clamp(8px,1.4vw,14px)}
+.card{display:block;width:100%;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;font:inherit;box-shadow:0 1px 2px rgba(10,20,50,.06);transition:box-shadow .2s,border-color .2s}
+.card:hover{border-color:var(--pre)}
+.card[aria-expanded=true]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent),0 6px 18px rgba(10,20,50,.12)}
+.inf{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.inf b{font:700 clamp(18px,2.4vw,24px)/1.2 Outfit,sans-serif}
+.inf span{color:var(--muted);font-size:13px;white-space:nowrap}
+.forms{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+.card[aria-expanded=true] .forms{grid-template-rows:1fr}
+.forms>div{overflow:hidden}
+dl{margin:12px 0 0;padding-top:10px;border-top:1px dashed var(--line);display:grid;gap:6px}
+dl div{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+dt{color:var(--muted);font-size:13px}
+dd{margin:0;font-weight:600}
+dd.pre{color:var(--pre)}dd.sup{color:var(--sup)}
+.mean{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.chev{color:var(--muted);font-size:13px}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 32px}
+@media(max-width:600px){
+  .card{padding:10px 10px;border-radius:10px}
+  .inf{flex-direction:column;gap:0}
+  dl div{flex-direction:column;gap:0}
+}
+@media(prefers-reduced-motion:reduce){.forms,.card{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Svenska starka verb</h1>
+    <p>Klicka på ett verb för att se presens, preteritum och supinum.</p>
+    <div class="tools">
+      <button type="button" id="openAll">Visa alla former</button>
+      <button type="button" id="closeAll">Dölj alla</button>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="wrap"><div class="cols" id="cols"></div></div>
+</main>
+<footer>18 starka och oregelbundna verb</footer>
+
+<script>
+{
+const verbs = [
+  ["skriva","skriver","skrev","skrivit","write"],
+  ["skrika","skriker","skrek","skrikit","yell"],
+  ["bli","blir","blev","blivit","be, become"],
+  ["flyga","flyger","flög","flugit","fly"],
+  ["frysa","fryser","frös","frusit","freeze, feel cold"],
+  ["krypa","kryper","kröp","krupit","creep"],
+  ["bjuda","bjuder","bjöd","bjudit","invite"],
+  ["sjunga","sjunger","sjöng","sjungit","sing"],
+  ["njuta","njuter","njöt","njutit","enjoy"],
+  ["sitta","sitter","satt","suttit","sit"],
+  ["springa","springer","sprang","sprungit","run"],
+  ["finnas","finns","fanns","funnits","be, exist"],
+  ["dra","drar","drog","dragit","pull"],
+  ["bära","bär","bar","burit","carry"],
+  ["komma","kommer","kom","kommit","come"],
+  ["äta","äter","åt","ätit","eat"],
+  ["vara","är","var","varit","be"],
+  ["bita","biter","bet","bitit","bite"]
+];
+
+const card = ([inf,pres,pret,sup,mean], i) => `
+  <button type="button" class="card" id="v${i}" aria-expanded="false">
+    <div class="inf"><b>${inf}</b><span class="chev">Visa former</span></div>
+    <div class="forms"><div>
+      <dl>
+        <div><dt>Presens</dt><dd>${pres}</dd></div>
+        <div><dt>Preteritum</dt><dd class="pre">${pret}</dd></div>
+        <div><dt>Supinum</dt><dd class="sup">${sup}</dd></div>
+      </dl>
+      <p class="mean">${mean}</p>
+    </div></div>
+  </button>`;
+
+const per = Math.ceil(verbs.length / 3);
+const cols = [0,1,2].map(c =>
+  `<div class="col">${verbs.slice(c*per, c*per+per).map((v,j) => card(v, c*per+j)).join('')}</div>`
+).join('');
+const root = document.getElementById('cols');
+root.innerHTML = cols;
+
+const setOpen = (el, open) => {
+  el.setAttribute('aria-expanded', open);
+  el.querySelector('.chev').textContent = open ? 'Dölj' : 'Visa former';
+};
+
+root.addEventListener('click', e => {
+  const c = e.target.closest('.card');
+  if (c) setOpen(c, c.getAttribute('aria-expanded') !== 'true');
+});
+document.getElementById('openAll').addEventListener('click', () =>
+  root.querySelectorAll('.card').forEach(c => setOpen(c, true)));
+document.getElementById('closeAll').addEventListener('click', () =>
+  root.querySelectorAll('.card').forEach(c => setOpen(c, false)));
+}
+</script>
+</body>
+</html>
